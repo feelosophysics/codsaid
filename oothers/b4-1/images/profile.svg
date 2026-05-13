@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 540" role="img" aria-labelledby="title desc">
+  <title id="title">웹 포트폴리오 프로필 일러스트</title>
+  <desc id="desc">노트북과 코드 패널 앞에서 포트폴리오를 설계하는 개발자</desc>
+  <rect width="720" height="540" rx="36" fill="#f4f7f2"/>
+  <circle cx="580" cy="118" r="72" fill="#ffd166"/>
+  <rect x="88" y="112" width="356" height="248" rx="22" fill="#163832"/>
+  <rect x="112" y="142" width="308" height="170" rx="12" fill="#f8fbf7"/>
+  <rect x="144" y="170" width="116" height="14" rx="7" fill="#1b7f79"/>
+  <rect x="144" y="202" width="220" height="12" rx="6" fill="#b7cec7"/>
+  <rect x="144" y="230" width="178" height="12" rx="6" fill="#d9e7e2"/>
+  <rect x="144" y="258" width="236" height="12" rx="6" fill="#f9735b"/>
+  <rect x="156" y="360" width="224" height="34" rx="10" fill="#0f221e"/>
+  <path d="M206 394h124l24 44H182z" fill="#334d46"/>
+  <rect x="152" y="438" width="232" height="22" rx="11" fill="#163832"/>
+  <circle cx="506" cy="224" r="58" fill="#f7b199"/>
+  <path d="M444 222c16-56 92-78 134-24 4-46-28-82-78-82-54 0-92 38-92 86 0 22 8 42 22 58 0-12 4-26 14-38z" fill="#26332f"/>
+  <path d="M426 336c16-58 58-88 104-88s88 30 104 88v92H426z" fill="#1b7f79"/>
+  <path d="M462 342c20 28 50 42 84 42 28 0 54-10 74-30v74H462z" fill="#145f5b" opacity=".65"/>
+  <rect x="462" y="414" width="128" height="20" rx="10" fill="#f9735b"/>
+  <circle cx="486" cy="222" r="8" fill="#1d2825"/>
+  <circle cx="544" cy="222" r="8" fill="#1d2825"/>
+  <path d="M490 252c20 18 52 18 72 0" fill="none" stroke="#1d2825" stroke-width="10" stroke-linecap="round"/>
+  <path d="M94 458c116 30 240 42 372 34 60-4 116-14 168-28" fill="none" stroke="#b7cec7" stroke-width="10" stroke-linecap="round"/>
+</svg>

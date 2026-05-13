@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Vanilla HTML, CSS, JavaScript로 만든 반응형 포트폴리오 웹사이트"
+    />
+    <title>Vanilla Portfolio</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <script defer src="js/main.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">본문으로 이동</a>
+
+    <header class="site-header" data-header>
+      <nav class="navbar" aria-label="주요 메뉴">
+        <a class="logo" href="#hero" aria-label="홈으로 이동">VP</a>
+
+        <button class="menu-button" type="button" data-menu-button aria-expanded="false" aria-controls="site-menu">
+          <span class="menu-button__line"></span>
+          <span class="menu-button__line"></span>
+          <span class="menu-button__line"></span>
+          <span class="visually-hidden">메뉴 열기</span>
+        </button>
+
+        <ul class="nav-list" id="site-menu" data-nav-list>
+          <li><a href="#about">About</a></li>
+          <li><a href="#skills">Skills</a></li>
+          <li><a href="#projects">Projects</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+
+        <button class="theme-button" type="button" data-theme-button aria-pressed="false">
+          <span data-theme-label>Dark</span>
+        </button>
+      </nav>
+    </header>
+
+    <main id="main">
+      <section class="hero section" id="hero" data-animate>
+        <div class="section__inner hero__inner">
+          <p class="eyebrow">Vanilla Web Portfolio</p>
+          <h1>
+            안녕하세요, <span class="accent">웹의 기본기</span>를 배우는 개발자입니다.
+          </h1>
+          <p class="hero__typing" aria-live="polite" data-typing-text></p>
+          <p class="hero__summary">
+            HTML의 의미 있는 구조, CSS의 반응형 레이아웃, JavaScript의 상태 기반 DOM 업데이트를
+            한 페이지 안에서 직접 다룹니다.
+          </p>
+          <div class="hero__actions" aria-label="주요 이동 링크">
+            <a class="button button--primary" href="#projects">프로젝트 보기</a>
+            <a class="button button--ghost" href="#contact">문의하기</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="section about" id="about" data-animate>
+        <div class="section__inner two-column">
+          <div>
+            <p class="eyebrow">About</p>
+            <h2>기본기를 코드로 증명하는 포트폴리오</h2>
+            <p>
+              이 사이트는 프레임워크 없이 브라우저가 제공하는 표준 기능만 사용해 제작되었습니다.
+              이벤트를 듣고, 상태를 바꾸고, 바뀐 상태를 화면에 다시 그리는 흐름을 명확히 보여주는
+              것이 핵심입니다.
+            </p>
+            <p>
+              GitHub API 연동, 다크 모드 유지, 폼 검증, 스크롤 인터랙션을 통해 실제 서비스에서
+              자주 만나는 UI 상태를 작은 규모로 연습합니다.
+            </p>
+          </div>
+
+          <figure class="profile-card">
+            <img src="images/profile.svg" alt="노트북 앞에서 웹사이트를 설계하는 개발자 일러스트" />
+            <figcaption>Semantic structure, responsive layout, interactive state.</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="section skills" id="skills" data-animate>
+        <div class="section__inner">
+          <p class="eyebrow">Skills</p>
+          <h2>이번 미션에서 다루는 기술</h2>
+          <ul class="skill-list" aria-label="기술 스택 목록">
+            <li><strong>HTML</strong><span>시맨틱 태그와 접근성</span></li>
+            <li><strong>CSS</strong><span>Flexbox, Grid, 반응형 변수</span></li>
+            <li><strong>JavaScript</strong><span>DOM, 이벤트, 상태 관리</span></li>
+            <li><strong>Async</strong><span>fetch, async/await, 예외 처리</span></li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="section projects" id="projects" data-animate>
+        <div class="section__inner">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Projects</p>
+              <h2>GitHub 저장소</h2>
+            </div>
+            <button class="button button--small" type="button" data-retry-button>새로고침</button>
+          </div>
+
+          <div class="filter-group" aria-label="프로젝트 언어 필터" data-filter-group></div>
+          <div class="project-status" role="status" aria-live="polite" data-project-status></div>
+          <div class="project-grid" data-project-grid></div>
+        </div>
+      </section>
+
+      <section class="section contact" id="contact" data-animate>
+        <div class="section__inner two-column">
+          <div>
+            <p class="eyebrow">Contact</p>
+            <h2>문의 폼</h2>
+            <p>
+              제출 시 페이지가 새로고침되지 않고, JavaScript가 입력값을 검증한 뒤 성공 또는 에러
+              메시지를 화면에 표시합니다.
+            </p>
+          </div>
+
+          <form class="contact-form" novalidate data-contact-form>
+            <div class="field">
+              <label for="name">이름</label>
+              <input id="name" name="name" type="text" autocomplete="name" data-field="name" />
+              <p class="field__error" data-error-for="name"></p>
+            </div>
+
+            <div class="field">
+              <label for="email">이메일</label>
+              <input id="email" name="email" type="email" autocomplete="email" data-field="email" />
+              <p class="field__error" data-error-for="email"></p>
+            </div>
+
+            <div class="field">
+              <label for="message">메시지</label>
+              <textarea id="message" name="message" rows="5" data-field="message"></textarea>
+              <p class="field__error" data-error-for="message"></p>
+            </div>
+
+            <button class="button button--primary" type="submit">보내기</button>
+            <p class="form-message" role="status" aria-live="polite" data-form-message></p>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="section__inner footer__inner">
+        <p>&copy; 2026 Vanilla Portfolio</p>
+        <ul class="social-links" aria-label="소셜 링크">
+          <li><a href="https://github.com/octocat" target="_blank" rel="noreferrer">GitHub</a></li>
+          <li><a href="https://www.linkedin.com/" target="_blank" rel="noreferrer">LinkedIn</a></li>
+        </ul>
+      </div>
+    </footer>
+
+    <button class="scroll-top" type="button" data-scroll-top aria-label="페이지 맨 위로 이동">
+      Top
+    </button>
+  </body>
+</html>
