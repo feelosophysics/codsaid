@@ -1,24 +1,25 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 540" role="img" aria-labelledby="title desc">
   <title id="title">웹 포트폴리오 프로필 일러스트</title>
-  <desc id="desc">노트북과 코드 패널 앞에서 포트폴리오를 설계하는 개발자</desc>
-  <rect width="720" height="540" rx="36" fill="#f4f7f2"/>
-  <circle cx="580" cy="118" r="72" fill="#ffd166"/>
-  <rect x="88" y="112" width="356" height="248" rx="22" fill="#163832"/>
-  <rect x="112" y="142" width="308" height="170" rx="12" fill="#f8fbf7"/>
-  <rect x="144" y="170" width="116" height="14" rx="7" fill="#1b7f79"/>
-  <rect x="144" y="202" width="220" height="12" rx="6" fill="#b7cec7"/>
-  <rect x="144" y="230" width="178" height="12" rx="6" fill="#d9e7e2"/>
-  <rect x="144" y="258" width="236" height="12" rx="6" fill="#f9735b"/>
-  <rect x="156" y="360" width="224" height="34" rx="10" fill="#0f221e"/>
-  <path d="M206 394h124l24 44H182z" fill="#334d46"/>
-  <rect x="152" y="438" width="232" height="22" rx="11" fill="#163832"/>
-  <circle cx="506" cy="224" r="58" fill="#f7b199"/>
-  <path d="M444 222c16-56 92-78 134-24 4-46-28-82-78-82-54 0-92 38-92 86 0 22 8 42 22 58 0-12 4-26 14-38z" fill="#26332f"/>
-  <path d="M426 336c16-58 58-88 104-88s88 30 104 88v92H426z" fill="#1b7f79"/>
-  <path d="M462 342c20 28 50 42 84 42 28 0 54-10 74-30v74H462z" fill="#145f5b" opacity=".65"/>
-  <rect x="462" y="414" width="128" height="20" rx="10" fill="#f9735b"/>
-  <circle cx="486" cy="222" r="8" fill="#1d2825"/>
-  <circle cx="544" cy="222" r="8" fill="#1d2825"/>
-  <path d="M490 252c20 18 52 18 72 0" fill="none" stroke="#1d2825" stroke-width="10" stroke-linecap="round"/>
-  <path d="M94 458c116 30 240 42 372 34 60-4 116-14 168-28" fill="none" stroke="#b7cec7" stroke-width="10" stroke-linecap="round"/>
+  <desc id="desc">노트북 앞에서 HTML CSS JavaScript 포트폴리오를 만드는 개발자</desc>
+  <rect width="720" height="540" rx="36" fill="#f6f7f3"/>
+  <rect x="58" y="68" width="604" height="404" rx="30" fill="#ffffff" stroke="#d8dfda" stroke-width="6"/>
+  <circle cx="584" cy="126" r="54" fill="#f3c34f"/>
+  <rect x="100" y="118" width="330" height="226" rx="20" fill="#17211f"/>
+  <rect x="128" y="148" width="274" height="142" rx="12" fill="#eef5f2"/>
+  <rect x="154" y="176" width="96" height="12" rx="6" fill="#166f68"/>
+  <rect x="154" y="206" width="196" height="10" rx="5" fill="#aebdb8"/>
+  <rect x="154" y="232" width="154" height="10" rx="5" fill="#d8dfda"/>
+  <rect x="154" y="258" width="210" height="10" rx="5" fill="#d95d39"/>
+  <rect x="150" y="344" width="230" height="34" rx="10" fill="#101413"/>
+  <path d="M210 378h110l28 46H182z" fill="#33423f"/>
+  <rect x="154" y="424" width="220" height="22" rx="11" fill="#17211f"/>
+  <circle cx="512" cy="218" r="56" fill="#f1b39d"/>
+  <path d="M450 216c8-48 50-82 96-82 48 0 84 34 86 82-26-24-58-30-94-18-32 10-58 10-88 18z" fill="#273330"/>
+  <circle cx="490" cy="220" r="7" fill="#17211f"/>
+  <circle cx="536" cy="220" r="7" fill="#17211f"/>
+  <path d="M492 250c18 16 44 16 62 0" fill="none" stroke="#17211f" stroke-width="9" stroke-linecap="round"/>
+  <path d="M422 354c18-58 54-88 102-88s84 30 102 88v80H422z" fill="#166f68"/>
+  <path d="M460 354c18 28 48 42 82 42 26 0 52-10 72-28v66H460z" fill="#0f514c" opacity=".72"/>
+  <rect x="460" y="410" width="126" height="20" rx="10" fill="#d95d39"/>
+  <path d="M92 458c110 30 234 42 374 34 64-4 120-14 168-28" fill="none" stroke="#aebdb8" stroke-width="10" stroke-linecap="round"/>
 </svg>

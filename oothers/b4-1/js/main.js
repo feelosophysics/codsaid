@@ -1,5 +1,6 @@
-const GITHUB_USERNAME = "octocat";
-const API_URL = `https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=9`;
+const GITHUB_USERNAME = "feelosophysics";
+const API_URL = `https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=12`;
+const THEME_STORAGE_KEY = "b4-1-theme";
 
 const elements = {
   root: document.documentElement,
@@ -9,16 +10,18 @@ const elements = {
   navList: document.querySelector("[data-nav-list]"),
   navLinks: document.querySelectorAll("[data-nav-list] a"),
   themeButton: document.querySelector("[data-theme-button]"),
+  themeIcon: document.querySelector("[data-theme-icon]"),
   themeLabel: document.querySelector("[data-theme-label]"),
-  scrollTop: document.querySelector("[data-scroll-top]"),
-  animatedSections: document.querySelectorAll("[data-animate]"),
   typingText: document.querySelector("[data-typing-text]"),
+  scrollTopButton: document.querySelector("[data-scroll-top]"),
+  animatedSections: document.querySelectorAll("[data-animate]"),
+  retryButton: document.querySelector("[data-retry-button]"),
   filterGroup: document.querySelector("[data-filter-group]"),
   projectStatus: document.querySelector("[data-project-status]"),
   projectGrid: document.querySelector("[data-project-grid]"),
-  retryButton: document.querySelector("[data-retry-button]"),
   contactForm: document.querySelector("[data-contact-form]"),
   formMessage: document.querySelector("[data-form-message]"),
+  fields: document.querySelectorAll("[data-field]"),
 };
 
 const state = {
@@ -33,39 +36,65 @@ const state = {
   form: {
     errors: {},
     submitted: false,
+    touched: false,
   },
 };
 
 function getInitialTheme() {
-  const savedTheme = localStorage.getItem("portfolio-theme");
+  const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
 
   if (savedTheme === "light" || savedTheme === "dark") {
     return savedTheme;
   }
 
-  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  return prefersDark ? "dark" : "light";
 }
 
 function setTheme(nextTheme) {
   state.theme = nextTheme;
   elements.root.dataset.theme = state.theme;
   elements.themeButton.setAttribute("aria-pressed", String(state.theme === "dark"));
+  elements.themeIcon.textContent = state.theme === "dark" ? "☀" : "☾";
   elements.themeLabel.textContent = state.theme === "dark" ? "Light" : "Dark";
-  localStorage.setItem("portfolio-theme", state.theme);
+  localStorage.setItem(THEME_STORAGE_KEY, state.theme);
 }
 
 function toggleMenu() {
   state.menuOpen = !state.menuOpen;
   elements.navList.classList.toggle("active", state.menuOpen);
+  elements.menuButton.classList.toggle("is-open", state.menuOpen);
   elements.body.classList.toggle("menu-open", state.menuOpen);
   elements.menuButton.setAttribute("aria-expanded", String(state.menuOpen));
+  elements.menuButton.setAttribute("aria-label", state.menuOpen ? "메뉴 닫기" : "메뉴 열기");
 }
 
 function closeMenu() {
   state.menuOpen = false;
   elements.navList.classList.remove("active");
+  elements.menuButton.classList.remove("is-open");
   elements.body.classList.remove("menu-open");
   elements.menuButton.setAttribute("aria-expanded", "false");
+  elements.menuButton.setAttribute("aria-label", "메뉴 열기");
+}
+
+function handleNavClick(event) {
+  const link = event.currentTarget;
+  const targetId = link.getAttribute("href");
+
+  if (!targetId || !targetId.startsWith("#")) {
+    return;
+  }
+
+  const target = document.querySelector(targetId);
+
+  if (!target) {
+    return;
+  }
+
+  event.preventDefault();
+  closeMenu();
+  target.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 function updateScrollUi() {
@@ -73,7 +102,7 @@ function updateScrollUi() {
   const canScrollTop = window.scrollY > 300;
 
   elements.header.classList.toggle("is-scrolled", isPastHeader);
-  elements.scrollTop.classList.toggle("visible", canScrollTop);
+  elements.scrollTopButton.classList.toggle("visible", canScrollTop);
 }
 
 function observeSections() {
@@ -93,7 +122,7 @@ function observeSections() {
 }
 
 function startTypingEffect() {
-  const text = "이벤트 → 상태 변경 → DOM 업데이트의 흐름을 직접 구현합니다.";
+  const text = "이벤트가 상태를 바꾸고, 상태가 화면을 다시 그립니다.";
   let index = 0;
 
   const typeNextCharacter = () => {
@@ -101,7 +130,7 @@ function startTypingEffect() {
     index += 1;
 
     if (index <= text.length) {
-      window.setTimeout(typeNextCharacter, 58);
+      window.setTimeout(typeNextCharacter, 55);
     }
   };
 
@@ -118,33 +147,54 @@ function setProjectState(nextState) {
 }
 
 async function fetchProjects() {
-  setProjectState({ status: "loading", error: "", items: [] });
+  setProjectState({
+    status: "loading",
+    items: [],
+    error: "",
+    filter: "All",
+  });
 
   try {
     const response = await fetch(API_URL);
 
     if (!response.ok) {
-      throw new Error(`GitHub API 요청 실패: ${response.status}`);
+      throw new Error(`GitHub API 응답 코드: ${response.status}`);
     }
 
     const repos = await response.json();
-    const visibleRepos = repos
+    const projects = repos
       .filter(({ fork }) => !fork)
-      .map(({ name, description, html_url: url, language, stargazers_count: stars, updated_at: updatedAt }) => ({
-        name,
-        description,
-        url,
-        language: language || "Other",
-        stars,
-        updatedAt,
-      }));
+      .map(
+        ({
+          name,
+          description,
+          html_url: url,
+          homepage,
+          language,
+          stargazers_count: stars,
+          updated_at: updatedAt,
+        }) => ({
+          name,
+          description,
+          url,
+          homepage,
+          language: language || "Other",
+          stars,
+          updatedAt,
+        })
+      );
 
-    setProjectState({ status: "success", items: visibleRepos, filter: "All" });
+    setProjectState({
+      status: "success",
+      items: projects,
+      error: "",
+      filter: "All",
+    });
   } catch (error) {
     setProjectState({
       status: "error",
-      error: error.message || "프로젝트를 불러올 수 없습니다.",
       items: [],
+      error: error.message || "프로젝트를 불러올 수 없습니다.",
     });
   }
 }
@@ -170,7 +220,7 @@ function renderProjects() {
       <div class="state-panel">
         <p>프로젝트를 불러올 수 없습니다.</p>
         <p>${escapeHtml(error)}</p>
-        <button class="button button--small" type="button" data-inline-retry>재시도</button>
+        <button class="button button-small" type="button" data-inline-retry>재시도</button>
       </div>
     `;
     document.querySelector("[data-inline-retry]").addEventListener("click", fetchProjects);
@@ -190,7 +240,8 @@ function renderProjects() {
     return;
   }
 
-  const filteredItems = filter === "All" ? items : items.filter((project) => project.language === filter);
+  const filteredItems =
+    filter === "All" ? items : items.filter((project) => project.language === filter);
 
   if (filteredItems.length === 0) {
     elements.projectStatus.innerHTML = `
@@ -205,20 +256,19 @@ function renderProjects() {
 }
 
 function renderFilters(items, activeFilter) {
-  const languages = ["All", ...new Set(items.map(({ language }) => language))];
-
   if (items.length === 0) {
     elements.filterGroup.innerHTML = "";
     return;
   }
 
+  const languages = ["All", ...new Set(items.map(({ language }) => language))];
   elements.filterGroup.innerHTML = languages
     .map(
       (language) => `
         <button
           class="filter-button ${language === activeFilter ? "active" : ""}"
           type="button"
-          data-filter="${escapeHtml(language)}"
+          data-filter="${escapeAttribute(language)}"
         >
           ${escapeHtml(language)}
         </button>
@@ -227,21 +277,30 @@ function renderFilters(items, activeFilter) {
     .join("");
 }
 
-function createProjectCard({ name, description, url, language, stars, updatedAt }) {
+function createProjectCard({ name, description, url, homepage, language, stars, updatedAt }) {
   const updatedDate = new Intl.DateTimeFormat("ko-KR", {
     year: "numeric",
     month: "short",
     day: "numeric",
   }).format(new Date(updatedAt));
 
+  const homepageLink = homepage
+    ? `<a href="${escapeAttribute(homepage)}" target="_blank" rel="noreferrer">Demo</a>`
+    : "";
+
   return `
     <article class="project-card">
-      <h3><a href="${escapeAttribute(url)}" target="_blank" rel="noreferrer">${escapeHtml(name)}</a></h3>
+      <h3>
+        <a href="${escapeAttribute(url)}" target="_blank" rel="noreferrer">
+          ${escapeHtml(name)}
+        </a>
+      </h3>
       <p>${escapeHtml(description || "설명이 등록되지 않은 저장소입니다.")}</p>
-      <div class="project-card__meta" aria-label="${escapeAttribute(name)} 저장소 정보">
+      <div class="project-card-meta" aria-label="${escapeAttribute(name)} 저장소 정보">
         <span>${escapeHtml(language)}</span>
         <span>Stars ${Number(stars)}</span>
         <span>${updatedDate}</span>
+        ${homepageLink ? `<span>${homepageLink}</span>` : ""}
       </div>
     </article>
   `;
@@ -255,6 +314,10 @@ function handleFilterClick(event) {
   }
 
   setProjectState({ filter: filterButton.dataset.filter });
+}
+
+function getFormData() {
+  return Object.fromEntries(new FormData(elements.contactForm).entries());
 }
 
 function validateForm(formData) {
@@ -278,12 +341,26 @@ function validateForm(formData) {
   return errors;
 }
 
+function setFormState(nextState) {
+  state.form = {
+    ...state.form,
+    ...nextState,
+  };
+
+  renderFormState();
+}
+
 function renderFormState() {
   const { errors, submitted } = state.form;
 
   document.querySelectorAll("[data-error-for]").forEach((errorElement) => {
     const fieldName = errorElement.dataset.errorFor;
-    errorElement.textContent = errors[fieldName] || "";
+    const field = document.querySelector(`[data-field="${fieldName}"]`);
+    const message = errors[fieldName] || "";
+
+    errorElement.textContent = message;
+    field.classList.toggle("has-error", Boolean(message));
+    field.setAttribute("aria-invalid", String(Boolean(message)));
   });
 
   if (Object.keys(errors).length > 0) {
@@ -291,25 +368,37 @@ function renderFormState() {
     return;
   }
 
-  elements.formMessage.textContent = submitted ? "문의가 접수된 것으로 처리했습니다." : "";
+  elements.formMessage.textContent = submitted
+    ? "문의가 접수된 것으로 처리했습니다. 실제 전송은 연결하지 않았습니다."
+    : "";
 }
 
 function handleContactSubmit(event) {
   event.preventDefault();
 
-  const formData = Object.fromEntries(new FormData(elements.contactForm).entries());
-  const errors = validateForm(formData);
+  const errors = validateForm(getFormData());
+  const isValid = Object.keys(errors).length === 0;
 
-  state.form = {
+  setFormState({
     errors,
-    submitted: Object.keys(errors).length === 0,
-  };
+    touched: true,
+    submitted: isValid,
+  });
 
-  renderFormState();
-
-  if (state.form.submitted) {
+  if (isValid) {
     elements.contactForm.reset();
   }
+}
+
+function handleFormInput() {
+  if (!state.form.touched) {
+    return;
+  }
+
+  setFormState({
+    errors: validateForm(getFormData()),
+    submitted: false,
+  });
 }
 
 function escapeHtml(value) {
@@ -331,11 +420,14 @@ function bindEvents() {
   });
 
   elements.menuButton.addEventListener("click", toggleMenu);
-  elements.navLinks.forEach((link) => link.addEventListener("click", closeMenu));
-  elements.scrollTop.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
+  elements.navLinks.forEach((link) => link.addEventListener("click", handleNavClick));
+  elements.scrollTopButton.addEventListener("click", () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
   elements.retryButton.addEventListener("click", fetchProjects);
   elements.filterGroup.addEventListener("click", handleFilterClick);
   elements.contactForm.addEventListener("submit", handleContactSubmit);
+  elements.fields.forEach((field) => field.addEventListener("input", handleFormInput));
   window.addEventListener("scroll", updateScrollUi, { passive: true });
 }
 

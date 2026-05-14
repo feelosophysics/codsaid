@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="Vanilla HTML, CSS, JavaScript로 만든 반응형 포트폴리오 웹사이트"
+      content="순수 HTML, CSS, JavaScript로 구현한 반응형 포트폴리오 웹사이트"
     />
-    <title>Vanilla Portfolio</title>
+    <title>Vanilla Web Portfolio</title>
     <link rel="stylesheet" href="css/style.css" />
     <script defer src="js/main.js"></script>
   </head>
@@ -16,13 +16,19 @@
 
     <header class="site-header" data-header>
       <nav class="navbar" aria-label="주요 메뉴">
-        <a class="logo" href="#hero" aria-label="홈으로 이동">VP</a>
+        <a class="brand" href="#hero" aria-label="홈으로 이동">VWP</a>
 
-        <button class="menu-button" type="button" data-menu-button aria-expanded="false" aria-controls="site-menu">
-          <span class="menu-button__line"></span>
-          <span class="menu-button__line"></span>
-          <span class="menu-button__line"></span>
-          <span class="visually-hidden">메뉴 열기</span>
+        <button
+          class="icon-button menu-button"
+          type="button"
+          aria-label="메뉴 열기"
+          aria-expanded="false"
+          aria-controls="site-menu"
+          data-menu-button
+        >
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
         </button>
 
         <ul class="nav-list" id="site-menu" data-nav-list>
@@ -32,7 +38,13 @@
           <li><a href="#contact">Contact</a></li>
         </ul>
 
-        <button class="theme-button" type="button" data-theme-button aria-pressed="false">
+        <button
+          class="theme-toggle"
+          type="button"
+          aria-pressed="false"
+          data-theme-button
+        >
+          <span aria-hidden="true" data-theme-icon>☾</span>
           <span data-theme-label>Dark</span>
         </button>
       </nav>
@@ -40,106 +52,152 @@
 
     <main id="main">
       <section class="hero section" id="hero" data-animate>
-        <div class="section__inner hero__inner">
-          <p class="eyebrow">Vanilla Web Portfolio</p>
-          <h1>
-            안녕하세요, <span class="accent">웹의 기본기</span>를 배우는 개발자입니다.
-          </h1>
-          <p class="hero__typing" aria-live="polite" data-typing-text></p>
-          <p class="hero__summary">
-            HTML의 의미 있는 구조, CSS의 반응형 레이아웃, JavaScript의 상태 기반 DOM 업데이트를
-            한 페이지 안에서 직접 다룹니다.
-          </p>
-          <div class="hero__actions" aria-label="주요 이동 링크">
-            <a class="button button--primary" href="#projects">프로젝트 보기</a>
-            <a class="button button--ghost" href="#contact">문의하기</a>
-          </div>
-        </div>
-      </section>
-
-      <section class="section about" id="about" data-animate>
-        <div class="section__inner two-column">
-          <div>
-            <p class="eyebrow">About</p>
-            <h2>기본기를 코드로 증명하는 포트폴리오</h2>
-            <p>
-              이 사이트는 프레임워크 없이 브라우저가 제공하는 표준 기능만 사용해 제작되었습니다.
-              이벤트를 듣고, 상태를 바꾸고, 바뀐 상태를 화면에 다시 그리는 흐름을 명확히 보여주는
-              것이 핵심입니다.
+        <div class="section-inner hero-layout">
+          <div class="hero-copy">
+            <p class="eyebrow">Vanilla Web Portfolio</p>
+            <h1>브라우저의 기본기로 완성한 포트폴리오</h1>
+            <p class="typing-line" aria-live="polite" data-typing-text></p>
+            <p class="hero-summary">
+              HTML의 의미 있는 구조, CSS의 반응형 레이아웃, JavaScript의 상태 기반
+              화면 업데이트를 한 페이지에 담았습니다.
             </p>
-            <p>
-              GitHub API 연동, 다크 모드 유지, 폼 검증, 스크롤 인터랙션을 통해 실제 서비스에서
-              자주 만나는 UI 상태를 작은 규모로 연습합니다.
-            </p>
+            <div class="hero-actions" aria-label="주요 이동 링크">
+              <a class="button button-primary" href="#projects">프로젝트 보기</a>
+              <a class="button button-secondary" href="#contact">연락하기</a>
+            </div>
           </div>
 
-          <figure class="profile-card">
-            <img src="images/profile.svg" alt="노트북 앞에서 웹사이트를 설계하는 개발자 일러스트" />
-            <figcaption>Semantic structure, responsive layout, interactive state.</figcaption>
+          <figure class="hero-visual">
+            <img
+              src="images/profile.svg"
+              alt="노트북으로 웹 포트폴리오를 제작하는 개발자 일러스트"
+            />
+            <figcaption>HTML, CSS, JavaScript로 움직이는 작은 웹앱</figcaption>
           </figure>
         </div>
       </section>
 
+      <section class="section about" id="about" data-animate>
+        <div class="section-inner split-layout">
+          <div>
+            <p class="eyebrow">About</p>
+            <h2>기본 동작 원리를 직접 구현합니다</h2>
+          </div>
+          <div class="rich-text">
+            <p>
+              이 포트폴리오는 외부 프레임워크 없이 브라우저가 기본으로 제공하는
+              기능만 사용합니다. 버튼을 누르면 이벤트가 발생하고, JavaScript는
+              상태를 바꾸며, 바뀐 상태에 맞게 DOM을 다시 업데이트합니다.
+            </p>
+            <p>
+              이런 흐름은 React, Vue 같은 프레임워크를 배울 때도 그대로 이어집니다.
+              그래서 이 프로젝트는 보기 좋은 페이지를 만드는 것뿐 아니라, 웹 앱이
+              어떤 순서로 생각하고 움직이는지 익히는 연습입니다.
+            </p>
+          </div>
+        </div>
+      </section>
+
       <section class="section skills" id="skills" data-animate>
-        <div class="section__inner">
-          <p class="eyebrow">Skills</p>
-          <h2>이번 미션에서 다루는 기술</h2>
-          <ul class="skill-list" aria-label="기술 스택 목록">
-            <li><strong>HTML</strong><span>시맨틱 태그와 접근성</span></li>
-            <li><strong>CSS</strong><span>Flexbox, Grid, 반응형 변수</span></li>
-            <li><strong>JavaScript</strong><span>DOM, 이벤트, 상태 관리</span></li>
-            <li><strong>Async</strong><span>fetch, async/await, 예외 처리</span></li>
+        <div class="section-inner">
+          <div class="section-heading">
+            <p class="eyebrow">Skills</p>
+            <h2>이번 미션의 핵심 기술</h2>
+          </div>
+
+          <ul class="skill-grid" aria-label="기술 스택 목록">
+            <li>
+              <strong>HTML</strong>
+              <span>시맨틱 태그, 앵커 링크, label과 input 연결</span>
+            </li>
+            <li>
+              <strong>CSS</strong>
+              <span>CSS 변수, Flexbox, Grid, 모바일 퍼스트 반응형</span>
+            </li>
+            <li>
+              <strong>JavaScript</strong>
+              <span>DOM 선택, 이벤트 처리, classList 기반 화면 변화</span>
+            </li>
+            <li>
+              <strong>Async API</strong>
+              <span>fetch, async/await, try/catch, 상태별 렌더링</span>
+            </li>
           </ul>
         </div>
       </section>
 
       <section class="section projects" id="projects" data-animate>
-        <div class="section__inner">
-          <div class="section-heading">
+        <div class="section-inner">
+          <div class="project-header">
             <div>
               <p class="eyebrow">Projects</p>
               <h2>GitHub 저장소</h2>
             </div>
-            <button class="button button--small" type="button" data-retry-button>새로고침</button>
+            <button class="button button-small" type="button" data-retry-button>
+              새로고침
+            </button>
           </div>
 
-          <div class="filter-group" aria-label="프로젝트 언어 필터" data-filter-group></div>
+          <div class="filter-group" aria-label="언어별 프로젝트 필터" data-filter-group></div>
           <div class="project-status" role="status" aria-live="polite" data-project-status></div>
           <div class="project-grid" data-project-grid></div>
         </div>
       </section>
 
       <section class="section contact" id="contact" data-animate>
-        <div class="section__inner two-column">
+        <div class="section-inner split-layout">
           <div>
             <p class="eyebrow">Contact</p>
-            <h2>문의 폼</h2>
-            <p>
-              제출 시 페이지가 새로고침되지 않고, JavaScript가 입력값을 검증한 뒤 성공 또는 에러
-              메시지를 화면에 표시합니다.
+            <h2>문의하기</h2>
+            <p class="contact-intro">
+              입력값 검증은 JavaScript가 처리합니다. 필수 입력과 이메일 형식을
+              확인한 뒤, 화면에 성공 또는 오류 메시지를 표시합니다.
             </p>
           </div>
 
           <form class="contact-form" novalidate data-contact-form>
             <div class="field">
               <label for="name">이름</label>
-              <input id="name" name="name" type="text" autocomplete="name" data-field="name" />
-              <p class="field__error" data-error-for="name"></p>
+              <input
+                id="name"
+                name="name"
+                type="text"
+                autocomplete="name"
+                required
+                aria-describedby="name-error"
+                data-field="name"
+              />
+              <p class="field-error" id="name-error" data-error-for="name"></p>
             </div>
 
             <div class="field">
               <label for="email">이메일</label>
-              <input id="email" name="email" type="email" autocomplete="email" data-field="email" />
-              <p class="field__error" data-error-for="email"></p>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                autocomplete="email"
+                required
+                aria-describedby="email-error"
+                data-field="email"
+              />
+              <p class="field-error" id="email-error" data-error-for="email"></p>
             </div>
 
             <div class="field">
               <label for="message">메시지</label>
-              <textarea id="message" name="message" rows="5" data-field="message"></textarea>
-              <p class="field__error" data-error-for="message"></p>
+              <textarea
+                id="message"
+                name="message"
+                rows="5"
+                required
+                aria-describedby="message-error"
+                data-field="message"
+              ></textarea>
+              <p class="field-error" id="message-error" data-error-for="message"></p>
             </div>
 
-            <button class="button button--primary" type="submit">보내기</button>
+            <button class="button button-primary" type="submit">보내기</button>
             <p class="form-message" role="status" aria-live="polite" data-form-message></p>
           </form>
         </div>
@@ -147,17 +205,25 @@
     </main>
 
     <footer class="site-footer">
-      <div class="section__inner footer__inner">
-        <p>&copy; 2026 Vanilla Portfolio</p>
+      <div class="section-inner footer-layout">
+        <p>&copy; 2026 Vanilla Web Portfolio</p>
         <ul class="social-links" aria-label="소셜 링크">
-          <li><a href="https://github.com/octocat" target="_blank" rel="noreferrer">GitHub</a></li>
-          <li><a href="https://www.linkedin.com/" target="_blank" rel="noreferrer">LinkedIn</a></li>
+          <li>
+            <a href="https://github.com/feelosophysics" target="_blank" rel="noreferrer">
+              GitHub
+            </a>
+          </li>
+          <li>
+            <a href="https://www.linkedin.com/" target="_blank" rel="noreferrer">
+              LinkedIn
+            </a>
+          </li>
         </ul>
       </div>
     </footer>
 
-    <button class="scroll-top" type="button" data-scroll-top aria-label="페이지 맨 위로 이동">
-      Top
+    <button class="scroll-top" type="button" aria-label="페이지 맨 위로 이동" data-scroll-top>
+      ↑
     </button>
   </body>
 </html>
