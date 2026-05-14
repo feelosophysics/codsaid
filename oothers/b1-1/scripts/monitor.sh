@@ -113,7 +113,9 @@ echo ""
 echo "[RESOURCE MONITORING]"
 
 # CPU 사용률 (idle을 뺀 값)
-CPU_IDLE=$(top -bn1 | grep "Cpu(s)" | awk '{print $8}' | tr -d '%')
+# CPU_IDLE=$(top -bn1 | grep "Cpu(s)" | awk '{print $8}' | tr -d '%')
+# 이 줄로 교체하세요 (숫자와 소수점만 순수하게 뽑아내는 코드)
+CPU_IDLE=$(top -bn1 | grep "Cpu(s)" | sed -n 's/.*, *\([0-9.]*\) *id.*/\1/p')
 # top 출력 포맷이 환경마다 다를 수 있어 fallback 처리
 if [ -z "$CPU_IDLE" ]; then
     CPU_IDLE=$(top -bn1 | grep "Cpu(s)" | sed 's/.*,\s*\([0-9.]*\)\s*id.*/\1/')
