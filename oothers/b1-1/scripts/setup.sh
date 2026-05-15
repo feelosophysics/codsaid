@@ -102,6 +102,9 @@ sudo mkdir -p $AGENT_HOME/api_keys
 sudo mkdir -p $AGENT_HOME/bin
 sudo mkdir -p /var/log/agent-app
 
+# [추가] 보너스 과제용 아카이브 경로 미리 생성
+sudo mkdir -p /var/log/monitor/agent-app/archive
+
 # upload_files	agent-common	"공용 게시판" - 개발자, 관리자, 테스터 모두가 파일을 올리고 지울 수 있음.
 # api_keys	agent-core	"비밀 금고" - 관리자와 개발자만 볼 수 있음. 테스터는 접근 불가.
 # /var/log/...	agent-core	"작업 일지" - 시스템 로그이므로 핵심 인력만 관리함.
@@ -131,6 +134,9 @@ sudo chmod 2770                    $AGENT_HOME/api_keys
 sudo chown agent-admin:agent-core  /var/log/agent-app
 sudo chmod 2770                    /var/log/agent-app
 
+# [추가] 아카이브 상위 폴더부터 소유권 부여
+sudo chown -R agent-admin:agent-core /var/log/monitor
+
 # ACL 설정
 sudo setfacl -m  g:agent-common:rwx $AGENT_HOME/upload_files
 # -m g:agent-common:rwx: agent-common 그룹에게 이 폴더에 대해 읽기(r), 쓰기(w), 실행(x) 권한을 추가로 부여해라.
@@ -141,6 +147,10 @@ sudo setfacl -m  g:agent-core:rwx  $AGENT_HOME/api_keys
 sudo setfacl -d  -m g:agent-core:rwx  $AGENT_HOME/api_keys
 sudo setfacl -m  g:agent-core:rwx  /var/log/agent-app
 sudo setfacl -d  -m g:agent-core:rwx  /var/log/agent-app
+
+# [추가] 아카이브 폴더 ACL 설정
+sudo setfacl -m  g:agent-core:rwx  /var/log/monitor/agent-app/archive
+sudo setfacl -d  -m g:agent-core:rwx  /var/log/monitor/agent-app/archive
 
 # set: 설정하다
 # f: file (파일)
@@ -211,22 +221,45 @@ echo "   ✅ agent-app 배치 완료"
 echo ""
 
 # ──────────────────────────────────────────────────────────────────────────────
+# ── [5단계] 스크립트 배치 ──────────────────────────────────────────────────────
 echo "▶ [5단계] 스크립트 배치..."
-sudo cp /tmp/scripts/monitor.sh $AGENT_HOME/bin/monitor.sh
-sudo cp /tmp/scripts/report.sh  $AGENT_HOME/bin/report.sh
-sudo cp /tmp/scripts/archive.sh $AGENT_HOME/bin/archive.sh
 
-sudo chown agent-dev:agent-core $AGENT_HOME/bin/monitor.sh
-sudo chown agent-dev:agent-core $AGENT_HOME/bin/report.sh
-sudo chown agent-dev:agent-core $AGENT_HOME/bin/archive.sh
-sudo chmod 750 $AGENT_HOME/bin/monitor.sh
-sudo chmod 750 $AGENT_HOME/bin/report.sh
-sudo chmod 750 $AGENT_HOME/bin/archive.sh
+# 현재 setup.sh가 실행되고 있는 폴더 경로를 자동으로 찾아냅니다.
+CURRENT_SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-echo "   스크립트 확인:"
+# 소스 파일 존재 확인 후 복사
+for script_file in "monitor.sh" "report.sh" "archive.sh"; do
+    if [ -f "$CURRENT_SCRIPT_DIR/$script_file" ]; then
+        sudo cp "$CURRENT_SCRIPT_DIR/$script_file" "$AGENT_HOME/bin/$script_file"
+        sudo chown agent-dev:agent-core "$AGENT_HOME/bin/$script_file"
+        sudo chmod 750 "$AGENT_HOME/bin/$script_file"
+        echo "   [성공] $script_file -> $AGENT_HOME/bin/"
+    else
+        echo "   [경고] $script_file 파일을 $CURRENT_SCRIPT_DIR 에서 찾을 수 없습니다."
+    fi
+done
+
+echo "   스크립트 확인 ($AGENT_HOME/bin):"
 sudo ls -la $AGENT_HOME/bin/
 echo "   ✅ 스크립트 배치 완료"
 echo ""
+
+# echo "▶ [5단계] 스크립트 배치..."
+# sudo cp /tmp/scripts/monitor.sh $AGENT_HOME/bin/monitor.sh
+# sudo cp /tmp/scripts/report.sh  $AGENT_HOME/bin/report.sh
+# sudo cp /tmp/scripts/archive.sh $AGENT_HOME/bin/archive.sh
+
+# sudo chown agent-dev:agent-core $AGENT_HOME/bin/monitor.sh
+# sudo chown agent-dev:agent-core $AGENT_HOME/bin/report.sh
+# sudo chown agent-dev:agent-core $AGENT_HOME/bin/archive.sh
+# sudo chmod 750 $AGENT_HOME/bin/monitor.sh
+# sudo chmod 750 $AGENT_HOME/bin/report.sh
+# sudo chmod 750 $AGENT_HOME/bin/archive.sh
+
+# echo "   스크립트 확인:"
+# sudo ls -la $AGENT_HOME/bin/
+# echo "   ✅ 스크립트 배치 완료"
+# echo ""
 
 # ──────────────────────────────────────────────────────────────────────────────
 echo ""

@@ -101,13 +101,13 @@ orb -m ubuntu-agent -u root
 OrbStack CLI 도움말 기준 생성 명령 형태는 아래입니다.
 
 ```bash
-orb create -a amd64 ubuntu:22.04 ubuntu-agent
+orb create -a amd64 ubuntu:24.04 ubuntu-agent
 ```
 
 뜻:
 
 - `-a amd64`: x86-64 아키텍처 사용
-- `ubuntu:22.04`: Ubuntu 22.04 생성
+- `ubuntu:24.04`: Ubuntu 24.04 생성
 - `ubuntu-agent`: 머신 이름
 
 ### 0-6. 이 미션은 어디서부터 어디까지를 "리눅스 안에서" 해야 하나?
@@ -168,7 +168,7 @@ orbctl push -m ubuntu-agent scripts
 
 1. macOS에서 OrbStack 앱 실행
 2. 터미널에서 `orbctl status` 확인
-3. 필요하면 `orb create -a amd64 ubuntu:22.04 ubuntu-agent`
+3. 필요하면 `orb create -a amd64 ubuntu:24.04 ubuntu-agent`
 4. `orb -m ubuntu-agent -u root`로 리눅스 root 쉘 진입
 5. 그 안에서 미션 수행
 6. 필요하면 일반 사용자/운영 사용자로 다시 전환해 앱과 스크립트 실행 테스트
