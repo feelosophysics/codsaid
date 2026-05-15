@@ -1,0 +1,6 @@
+# case=deadlock-on started_at=2026-05-16 00:33:12 +0900
+# MEMORY_LIMIT=512 CPU_MAX_OCCUPY=10 MULTI_THREAD_ENABLE=true
+pid=12993
+cleanup=SIGTERM
+exit_code=143
+# case=deadlock-on finished_at=2026-05-16 00:33:39 +0900

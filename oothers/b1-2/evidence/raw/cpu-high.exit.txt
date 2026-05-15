@@ -1,0 +1,5 @@
+# case=cpu-high started_at=2026-05-16 00:30:44 +0900
+# MEMORY_LIMIT=512 CPU_MAX_OCCUPY=100 MULTI_THREAD_ENABLE=false
+pid=12321
+exit_code=143
+# case=cpu-high finished_at=2026-05-16 00:31:15 +0900

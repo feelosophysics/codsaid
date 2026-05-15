@@ -1,0 +1,5 @@
+# case=oom-high started_at=2026-05-16 00:29:17 +0900
+# MEMORY_LIMIT=100 CPU_MAX_OCCUPY=100 MULTI_THREAD_ENABLE=false
+pid=11357
+exit_code=137
+# case=oom-high finished_at=2026-05-16 00:29:28 +0900
