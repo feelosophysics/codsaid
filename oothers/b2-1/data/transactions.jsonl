@@ -1,0 +1,5 @@
+{"id": "TX-000001", "type": "expense", "date": "2026-05-10", "amount": 12000, "category": "식비", "memo": "맛있는 점심", "tags": ["점심", "회사"]}
+{"id": "TX-000002", "type": "expense", "date": "2026-05-15", "amount": 55000, "category": "교통", "memo": "KTX 기차표", "tags": ["여행"]}
+{"id": "TX-000003", "type": "income", "date": "2026-05-20", "amount": 2500000, "category": "수입", "memo": "월급", "tags": ["회사"]}
+{"id": "TX-000004", "type": "expense", "date": "2026-05-21", "amount": 45000, "category": "식비", "memo": "저녁 회식", "tags": ["회식", "고기"]}
+{"id": "TX-000005", "type": "expense", "date": "2026-06-10", "amount": 250000, "category": "식비", "memo": "인터넷요금", "tags": ["정기지출", "REC-000001"]}
