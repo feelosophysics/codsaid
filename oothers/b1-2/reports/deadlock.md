@@ -62,23 +62,37 @@ PID `12995`는 살아 있고 스레드도 3개 존재하지만, Worker 스레드
 `MULTI_THREAD_ENABLE=false`에서는 strict locking 기반 concurrent transaction processor가 아니라 정상 스케줄러 흐름이 실행되어 Deadlock 로그가 발생하지 않았다.
 
 ## 3. Root Cause Analysis (원인 분석)
-Deadlock의 원인은 락 획득 순서가 서로 반대인 두 스레드다.
-
-| 스레드 | 먼저 획득한 자원 | 나중에 요청한 자원 |
-| :--- | :--- | :--- |
-| Worker-Thread-1 | `Shared_Memory_A` | `Socket_Pool_B` |
-| Worker-Thread-2 | `Socket_Pool_B` | `Shared_Memory_A` |
-
-이 상황은 교착상태 4대 조건 중 특히 `상호 배제`, `점유 대기`, `비선점`, `순환 대기`를 만족한다. `Shared_Memory_A`와 `Socket_Pool_B`는 동시에 여러 스레드가 마음대로 사용할 수 없는 자원이다. 각 스레드는 이미 하나의 자원을 잡은 상태로 다른 자원을 기다린다. 락은 강제로 빼앗기지 않는다. 그리고 Thread-1 → Socket_Pool_B → Thread-2 → Shared_Memory_A → Thread-1의 순환 대기가 완성된다.
+* **순환 의존의 도식화**:
+  본 장애는 두 스레드가 각자 하나의 자원을 이미 쥐어 점유(Hold)한 상태에서, 상대방이 쥐고 있는 다른 자원을 얻기 위해 무한히 락 해제를 대기(Wait)하는 **순환 의존성 고리**가 만들어지며 발생합니다.
+  ```text
+  [ Worker-Thread-1 ] ──(점유)──> [ Shared_Memory_A ] ──(대기)──> [ Worker-Thread-2 ]
+          ▲                                                               │
+          │                                                               │
+        (대기)                                                          (점유)
+          │                                                               ▼
+  [ Socket_Pool_B ] <─────────────────────────────────────────────────────┘
+  ```
+  이를 락 자원 관점에서 매핑하면 단방향 순환 그래프(Closed Loop)가 완성됩니다.
+  `Worker-Thread-1` ➔ `Socket_Pool_B` 대기 ➔ `Worker-Thread-2` ➔ `Shared_Memory_A` 대기 ➔ `Worker-Thread-1`
+* **교착상태 4대 조건과의 대조**:
+  1. **상호 배제 (Mutual Exclusion)**: 메모리 블록 `Shared_Memory_A`와 네트워크 자원 `Socket_Pool_B`는 다중 스레드가 동시에 소유할 수 없는 상호 배제적 자원(Mutex/Lock)입니다.
+  2. **점유 대기 (Hold and Wait)**: `Worker-Thread-1`은 자신이 이미 획득한 `Shared_Memory_A`를 손에 쥔 상태로 `Socket_Pool_B`를 요청하며 대기합니다.
+  3. **비선점 (No Preemption)**: 다른 스레드가 쥐고 있는 자원을 운영체제 수준이나 강제 호출로 중도 탈취(Preempt)할 수 없습니다.
+  4. **순환 대기 (Circular Wait)**: 자원을 양보하지 않는 두 스레드 간 대기 경로가 하나의 닫힌 고리(Closed Loop)인 원을 그립니다.
+  네 가지 조건이 동시에 충족됨으로써 스레드가 꼼짝 못 하고 굳어버리는 전형적인 Deadlock 상태가 영구 고착화되었습니다.
 
 ## 4. Workaround & Verification (조치 및 검증)
-임시 조치로 `MULTI_THREAD_ENABLE=true`를 `false`로 바꿨다.
+임시 조치로 멀티스레드 경합 시나리오를 차단하기 위해 `MULTI_THREAD_ENABLE` 환경변수를 `false`로 변환했다.
 
-| 항목 | Before | After |
+### Before & After 대조 검증 표
+| 항목 | Before (멀티스레드 활성화) | After (싱글스레드/스케줄러 모드) |
 | :--- | :--- | :--- |
-| 설정 | `MULTI_THREAD_ENABLE=true` | `MULTI_THREAD_ENABLE=false` |
-| 마지막 로그 | `WAITING ... BLOCKED` | `Scheduler All tasks completed` 후 정상 모니터링 |
-| PID 상태 | 살아 있으나 정체 | 살아 있으며 계속 작업 진행 |
-| 스레드 상태 | Worker 스레드 CPU 0.0 | 워커/스케줄러 로그 진행 |
+| 제어 변수 설정 | `MULTI_THREAD_ENABLE=true` | `MULTI_THREAD_ENABLE=false` |
+| 감시 대상 PID | 12995 | 13210 (테스트 예시) |
+| 프로세스 CPU 수렴 | **0.3%** 바닥 수준으로 고착 수렴 | 작업 완료 후 기동 시 정상적인 CPU 연산 진행 |
+| RSS 물리 메모리 | **21,696 KB**에 고정되어 단 1B도 움직이지 않음 | 작업 기동 시 메모리 맵 변화 및 정상 완료 |
+| 워커 스레드 상태 | `TID 13122, 13123` 스레드 CPU **0.0%** 동결 | 워커/스케줄러 순차적 정상 진행 |
+| 최종 애플리케이션 로그 | `WAITING ... BLOCKED` 상태에서 영구 Hang | `All tasks completed` 성공적으로 찍으며 정상 가동 |
 
-근본 해결은 모든 스레드가 같은 순서로 락을 잡게 만들거나, 락 획득 timeout을 두거나, 두 자원을 하나의 상위 락으로 보호하거나, 락을 오래 잡은 채 외부 자원을 기다리지 않도록 코드를 재설계하는 것이다.
+* **근본 대책 (Code-level Remedy)**: 환경변수 비활성화 방식은 동시성 대용량 처리를 포기하는 임시방편입니다. 소스 코드를 근본적으로 교정하려면, 두 스레드가 자원을 획득하는 전역 순서를 **동일하게 일치(Lock Ordering)**시켜야 합니다. 즉, 두 스레드 모두 항상 `Shared_Memory_A`를 먼저 쥐고 난 뒤에만 `Socket_Pool_B`를 획득할 수 있게 통일하면 순환 고리가 절대 생성되지 않습니다. 또는 락 획득 시 **`try_lock(timeout=N)`** 과 같은 타임아웃 기법을 구현하여, 일정 시간 내에 락을 잡지 못하면 이미 자기가 쥐고 있던 모든 락을 즉각 릴리즈(Release)하고 무작위 시간 동안 대기(Jitter Backoff) 후 다시 재시도하도록 롤백 설계를 해야 합니다.
+
