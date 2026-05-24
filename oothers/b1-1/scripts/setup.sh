@@ -225,6 +225,16 @@ id agent-dev
 id agent-test
 log_success "역할 기반 계정 및 보조 보안 그룹 구성 완료"
 
+# ── [Sudoers 설정] agent-admin이 비밀번호 없이 ufw status 및 firewall-cmd --state를 실행할 수 있도록 권한 부여 ──
+# 이를 통해 monitor.sh가 백그라운드(cron) 또는 수동 실행 시 패스워드를 묻지 않고 방화벽 상태를 진단할 수 있습니다.
+sudoers_file="/etc/sudoers.d/agent-admin"
+sudo bash -c "cat > $sudoers_file << 'SUDOEOF'
+# agent-admin passwordless privilege for firewall monitoring
+agent-admin ALL=(ALL) NOPASSWD: /usr/sbin/ufw status, /sbin/ufw status, /usr/bin/firewall-cmd --state
+SUDOEOF"
+sudo chmod 440 "$sudoers_file"
+log_success "agent-admin 방화벽 상태 조회용 passwordless sudo 설정 완료"
+
 # ──────────────────────────────────────────────────────────────────────────────
 log_step "[3단계] 디렉토리 보존 구조 수립 및 권한/SetGID/ACL 적용..."
 
