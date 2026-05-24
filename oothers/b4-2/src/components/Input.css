@@ -1,0 +1,86 @@
+/*
+ * ============================================================
+ * Input.css — 입력 필드 스타일
+ * ============================================================
+ */
+
+/* 입력 필드 그룹 (라벨 + 입력 + 에러 메시지를 묶는 컨테이너) */
+.input-group {
+  display: flex;
+  flex-direction: column; /* 세로로 쌓기: 라벨 → 입력 → 에러 */
+  gap: 0.4rem;            /* 요소 사이 간격 */
+  width: 100%;
+}
+
+/* 라벨 스타일 */
+.input-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+/* 필수 표시 (*) */
+.input-required {
+  color: var(--accent-danger);
+  font-size: 0.9rem;
+}
+
+/* 입력 필드 자체 스타일 */
+.input-field {
+  padding: 0.7rem 1rem;
+  border: 1.5px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  transition: all var(--transition-fast);
+  outline: none;          /* 브라우저 기본 포커스 아웃라인 제거 */
+  width: 100%;
+}
+
+/* 포커스(클릭하여 활성화) 시 — 테두리 색상 변경 + 글로우 효과 */
+.input-field:focus {
+  border-color: var(--border-color-focus);
+  box-shadow: 0 0 0 3px var(--accent-primary-light);
+}
+
+/* placeholder 스타일 */
+.input-field::placeholder {
+  color: var(--text-tertiary);
+}
+
+/* textarea(여러 줄 입력) 스타일 */
+.input-textarea {
+  resize: vertical;     /* 세로 방향으로만 크기 조절 가능 */
+  min-height: 100px;
+  line-height: 1.6;
+}
+
+/* 에러 상태일 때 — 빨간 테두리 */
+.input-group-error .input-field {
+  border-color: var(--accent-danger);
+}
+
+/* 에러 상태에서 포커스 시 — 빨간 글로우 */
+.input-group-error .input-field:focus {
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+}
+
+/* 에러 메시지 텍스트 */
+.input-error {
+  font-size: 0.8rem;
+  color: var(--accent-danger);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+/* 비활성화 상태 */
+.input-field:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: var(--bg-tertiary);
+}

@@ -1,0 +1,133 @@
+/*
+ * ============================================================
+ * Button.css — 버튼 컴포넌트 스타일
+ * ============================================================
+ * 
+ * 각 variant(primary, secondary, danger, ghost)마다
+ * 다른 색상이 적용되고, size(small, medium, large)마다
+ * 다른 크기가 적용됩니다.
+ */
+
+/* ======================== */
+/* 기본 버튼 스타일          */
+/* ======================== */
+.btn {
+  display: inline-flex;       /* 아이콘과 텍스트를 가로로 나란히 배치 */
+  align-items: center;        /* 세로 중앙 정렬 */
+  justify-content: center;    /* 가로 중앙 정렬 */
+  gap: 0.5rem;                /* 아이콘과 텍스트 사이 간격 */
+  border: none;               /* 기본 테두리 제거 */
+  border-radius: var(--radius-sm); /* 둥근 모서리 */
+  font-weight: 600;           /* 약간 굵은 글자 */
+  cursor: pointer;            /* 마우스 커서를 손가락 모양으로 */
+  transition: all var(--transition-fast); /* 모든 속성에 부드러운 전환 */
+  position: relative;
+  overflow: hidden;           /* 내부 요소가 넘치면 숨김 */
+}
+
+/* 호버(마우스를 올렸을 때) 효과 — 살짝 위로 올라가는 느낌 */
+.btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+/* 클릭(활성화) 시 — 다시 원래 위치로 + 살짝 줄어드는 느낌 */
+.btn:active:not(:disabled) {
+  transform: translateY(0) scale(0.98);
+}
+
+/* 비활성화(disabled) 상태 */
+.btn:disabled {
+  opacity: 0.5;              /* 반투명하게 */
+  cursor: not-allowed;       /* 금지 커서 */
+}
+
+/* ======================== */
+/* variant별 색상            */
+/* ======================== */
+
+/* Primary — 메인 액센트 색상 (채워진 버튼) */
+.btn-primary {
+  background: var(--accent-primary);
+  color: white;
+}
+.btn-primary:hover:not(:disabled) {
+  background: var(--accent-primary-hover);
+  box-shadow: var(--shadow-glow);
+}
+
+/* Secondary — 테두리만 있는 버튼 */
+.btn-secondary {
+  background: transparent;
+  color: var(--accent-primary);
+  border: 1.5px solid var(--accent-primary);
+}
+.btn-secondary:hover:not(:disabled) {
+  background: var(--accent-primary-light);
+}
+
+/* Danger — 삭제/위험 동작용 빨간 버튼 */
+.btn-danger {
+  background: var(--accent-danger);
+  color: white;
+}
+.btn-danger:hover:not(:disabled) {
+  background: var(--accent-danger-hover);
+}
+
+/* Ghost — 배경 없는 투명한 버튼 */
+.btn-ghost {
+  background: transparent;
+  color: var(--text-secondary);
+}
+.btn-ghost:hover:not(:disabled) {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  box-shadow: none;
+}
+
+/* ======================== */
+/* size별 크기               */
+/* ======================== */
+.btn-small {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.8rem;
+}
+
+.btn-medium {
+  padding: 0.6rem 1.2rem;
+  font-size: 0.9rem;
+}
+
+.btn-large {
+  padding: 0.8rem 1.8rem;
+  font-size: 1rem;
+}
+
+/* 부모 너비에 꽉 차게 */
+.btn-full {
+  width: 100%;
+}
+
+/* ======================== */
+/* 로딩 스피너               */
+/* ======================== */
+.btn-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite; /* index.css에 정의된 spin 애니메이션 */
+}
+
+/* Secondary 버튼의 스피너는 다른 색상 */
+.btn-secondary .btn-spinner {
+  border-color: rgba(99, 102, 241, 0.3);
+  border-top-color: var(--accent-primary);
+}
+
+/* 로딩 중일 때 텍스트를 살짝 투명하게 */
+.btn-loading .btn-content {
+  opacity: 0.7;
+}

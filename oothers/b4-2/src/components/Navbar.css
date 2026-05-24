@@ -1,0 +1,87 @@
+/*
+ * Navbar.css — 네비게이션 바 스타일
+ */
+
+/* 네비게이션 바 — 상단 고정 */
+.navbar {
+  position: fixed;           /* 스크롤해도 항상 상단에 고정 */
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--navbar-height);
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+  z-index: 100;              /* 다른 콘텐츠 위에 표시 */
+  backdrop-filter: blur(12px); /* 배경 흐림 효과 (글래스모피즘) */
+  /* 배경을 약간 투명하게 하여 흐림 효과가 보이게 */
+  background: rgba(var(--bg-secondary), 0.9);
+  transition: background-color var(--transition-normal),
+              border-color var(--transition-normal);
+}
+
+/* 다크모드에서의 Navbar 배경 */
+[data-theme="dark"] .navbar {
+  background: rgba(26, 29, 46, 0.85);
+}
+
+[data-theme="light"] .navbar {
+  background: rgba(255, 255, 255, 0.85);
+}
+
+/* 내부 컨테이너 — 최대 너비 제한 + 가운데 정렬 */
+.navbar-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  height: 100%;
+  display: flex;
+  align-items: center;       /* 세로 중앙 정렬 */
+  justify-content: space-between; /* 로고는 왼쪽, 링크는 오른쪽 */
+}
+
+/* 로고 */
+.navbar-logo {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: color var(--transition-fast);
+}
+
+.navbar-logo:hover {
+  color: var(--accent-primary);
+}
+
+/* 링크 영역 */
+.navbar-links {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* 개별 링크 */
+.navbar-link {
+  padding: 0.5rem 0.85rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: all var(--transition-fast);
+}
+
+/* 호버 시 */
+.navbar-link:hover {
+  color: var(--text-primary);
+  background: var(--bg-tertiary);
+}
+
+/* 현재 활성화된 링크 (NavLink의 isActive) */
+.navbar-link-active {
+  color: var(--accent-primary);
+  background: var(--accent-primary-light);
+  font-weight: 600;
+}

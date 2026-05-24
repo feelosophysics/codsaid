@@ -1,0 +1,33 @@
+/*
+ * ErrorState.css — 에러 상태 컴포넌트 스타일
+ */
+
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  padding: 3rem 2rem;
+  text-align: center;
+  animation: fadeIn 0.4s ease;
+}
+
+.error-state-icon {
+  font-size: 3.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.error-state-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--accent-danger);
+}
+
+.error-state-message {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  max-width: 350px;
+  line-height: 1.5;
+  margin-bottom: 0.5rem;
+}

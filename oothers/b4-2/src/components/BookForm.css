@@ -1,0 +1,24 @@
+/*
+ * BookForm.css — 독서 기록 폼 스타일
+ */
+
+.book-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  max-width: 600px;
+  width: 100%;
+  animation: fadeInUp 0.3s ease;
+}
+
+/* 서버 에러 메시지 — 폼 상단에 빨간 박스로 표시 */
+.book-form-error {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: var(--radius-sm);
+  padding: 0.8rem 1rem;
+  color: var(--accent-danger);
+  font-size: 0.9rem;
+  font-weight: 500;
+  animation: fadeIn 0.3s ease;
+}

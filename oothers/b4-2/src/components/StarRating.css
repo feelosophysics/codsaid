@@ -1,0 +1,48 @@
+/*
+ * StarRating.css — 별점 컴포넌트 스타일
+ */
+
+.star-rating {
+  display: inline-flex;
+  gap: 0.15rem;
+}
+
+/* 개별 별 */
+.star {
+  transition: all var(--transition-fast);
+  user-select: none; /* 텍스트 선택 방지 */
+}
+
+/* 채워진 별 (선택됨) */
+.star-filled {
+  color: var(--accent-secondary); /* 앰버(노란색) */
+  text-shadow: 0 0 8px rgba(245, 158, 11, 0.3); /* 은은한 글로우 */
+}
+
+/* 빈 별 (선택 안 됨) */
+.star-empty {
+  color: var(--border-color); /* 연한 회색 */
+}
+
+/* 읽기 전용이 아닐 때 (클릭 가능) */
+.star-rating:not(.star-rating-readonly) .star {
+  cursor: pointer;
+}
+
+/* 호버 시 크기 확대 */
+.star-rating:not(.star-rating-readonly) .star:hover {
+  transform: scale(1.2);
+}
+
+/* 사이즈별 크기 */
+.star-rating-small .star {
+  font-size: 1rem;
+}
+
+.star-rating-medium .star {
+  font-size: 1.4rem;
+}
+
+.star-rating-large .star {
+  font-size: 1.8rem;
+}

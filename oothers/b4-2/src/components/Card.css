@@ -1,0 +1,29 @@
+/*
+ * Card.css — 카드 컴포넌트 스타일
+ */
+
+.card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  transition: all var(--transition-normal);
+  animation: fadeInUp 0.3s ease forwards; /* 등장 시 페이드인 + 위로 슬라이드 */
+}
+
+/* 클릭 가능한 카드 — 호버 시 살짝 올라가고 그림자 강해짐 */
+.card-clickable {
+  cursor: pointer;
+}
+
+.card-clickable:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--accent-primary);
+}
+
+/* 포커스(키보드 탭) 시 — 접근성 */
+.card-clickable:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}

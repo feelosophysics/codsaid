@@ -1,0 +1,12 @@
+/*
+ * Layout.css — 공통 레이아웃 스타일
+ */
+
+.layout {
+  min-height: 100vh;
+}
+
+.layout-main {
+  /* Navbar 높이만큼 padding-top을 주어 콘텐츠가 가려지지 않게 */
+  padding-top: var(--navbar-height);
+}

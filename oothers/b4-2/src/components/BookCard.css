@@ -1,0 +1,71 @@
+/*
+ * BookCard.css — 독서 기록 카드 스타일
+ */
+
+.book-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* 카드 헤더 */
+.book-card-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+/* 책 제목 */
+.book-card-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  /* 긴 제목이 2줄을 넘으면 말줄임 처리 */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.4;
+}
+
+/* 저자 */
+.book-card-author {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+/* 별점 영역 */
+.book-card-rating {
+  display: flex;
+  align-items: center;
+}
+
+/* 카드 하단 */
+.book-card-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: auto; /* 하단에 고정 */
+}
+
+/* 감상문 미리보기 */
+.book-card-preview {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  /* 3줄까지만 표시 */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* 읽은 날짜 */
+.book-card-date {
+  font-size: 0.8rem;
+  color: var(--text-tertiary);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}

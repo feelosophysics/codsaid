@@ -1,0 +1,42 @@
+/*
+ * BooksPage.css — 독서 기록 목록 페이지 스타일
+ */
+
+/* 페이지 헤더 — 제목과 버튼을 가로로 배치 */
+.books-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.books-count {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-top: 0.25rem;
+}
+
+/* 검색 바 */
+.books-search {
+  margin-bottom: 1.5rem;
+  max-width: 400px;
+}
+
+/* 카드 그리드 — 반응형 3열 레이아웃 */
+.books-grid {
+  display: grid;
+  /* auto-fill: 가능한 많은 열을 자동으로 배치 */
+  /* minmax(280px, 1fr): 최소 280px, 최대 균등 분배 */
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.25rem;
+}
+
+/* 카드 등장 시 순차 애니메이션 */
+.books-grid .card:nth-child(1) { animation-delay: 0s; }
+.books-grid .card:nth-child(2) { animation-delay: 0.05s; }
+.books-grid .card:nth-child(3) { animation-delay: 0.1s; }
+.books-grid .card:nth-child(4) { animation-delay: 0.15s; }
+.books-grid .card:nth-child(5) { animation-delay: 0.2s; }
+.books-grid .card:nth-child(6) { animation-delay: 0.25s; }
