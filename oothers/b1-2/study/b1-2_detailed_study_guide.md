@@ -1,6 +1,6 @@
 # B1-2 리눅스 프로세스 및 시스템 리소스 트러블슈팅 초상세 학습 가이드
 
-이 문서는 `mission_b1-2.md` 미션을 처음 공부하는 비기너가 “무슨 일이 일어났는지”, “왜 그런 판단을 했는지”, “어떤 명령어를 어떤 순서로 썼는지”, “리포트에는 무엇을 증거로 써야 하는지”를 끝까지 따라갈 수 있도록 작성한 학습 가이드다.
+이 문서는 처음 공부하는 비기너가 “무슨 일이 일어났는지”, “왜 그런 판단을 했는지”, “어떤 명령어를 어떤 순서로 썼는지”, “리포트에는 무엇을 증거로 써야 하는지”를 끝까지 따라갈 수 있도록 작성한 학습 가이드다.
 
 이번 미션의 핵심은 단순히 앱을 실행하는 것이 아니다. 앱이 비정상적으로 종료되거나, 느려지거나, 멈췄을 때 운영자/개발자처럼 증거를 수집하고 원인을 추론한 뒤 GitHub Issue 형식으로 소통 가능한 보고서를 만드는 것이다.
 
@@ -11,18 +11,14 @@
 ```text
 .
 ├── agent-app-leak
-├── mission_b1-2.md
+├── README.md
+├── diagnose.sh
 ├── b1-2_detailed_study_guide.md
 ├── monitor.sh
 ├── scripts/
 │   ├── monitor.sh
 │   ├── run_agent_case.sh
 │   └── capture_cpu_late.sh
-├── reports/
-│   ├── oom-crash.md
-│   ├── cpu-latency.md
-│   ├── deadlock.md
-│   └── scheduling-analysis.md
 └── evidence/
     ├── run_workspace/
     └── raw/
@@ -37,8 +33,6 @@
 | `scripts/run_agent_case.sh` | 장애 케이스를 반복 실행하기 위한 보조 스크립트 |
 | `scripts/capture_cpu_late.sh` | CPU 케이스의 종료 직전 `top`/`ps` 캡처를 보강하기 위한 스크립트 |
 | `evidence/raw/*.log` | 실제 OrbStack Ubuntu에서 수집한 원본 증거 |
-| `reports/*.md` | 제출 가능한 GitHub Issue 스타일 장애 리포트 |
-| `reports/scheduling-analysis.md` | 보너스 과제인 스케줄링 알고리즘 추론 리포트 |
 
 ## 2. 이 미션의 큰 그림
 
@@ -428,8 +422,6 @@ Priority도 아니다. 특정 스레드가 계속 우선 실행되는 편향이 
 Round-Robin은 여러 작업에 공평한 응답 기회를 준다. 웹 서버처럼 응답성이 중요한 시스템에 어울린다. 단, 컨텍스트 전환 비용이 있고, 순수 처리량이 중요한 배치 작업에서는 최적이 아닐 수 있다.
 
 ## 10. 평가 문항 답변 가이드
-
-이 섹션은 `mission_b1-2.md`에 추가된 평가 문항에 직접 답할 수 있도록 정리한 것이다.
 
 ### 항목 1: 필수 결과물 체크
 
