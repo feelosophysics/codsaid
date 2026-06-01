@@ -1,5 +1,13 @@
-{"id": "TX-000001", "type": "expense", "date": "2026-05-10", "amount": 12000, "category": "식비", "memo": "맛있는 점심", "tags": ["점심", "회사"]}
+{"id": "TX-000001", "type": "income", "date": "2026-05-11", "amount": 100000, "category": "운동", "memo": "", "tags": []}
 {"id": "TX-000002", "type": "expense", "date": "2026-05-15", "amount": 55000, "category": "교통", "memo": "KTX 기차표", "tags": ["여행"]}
 {"id": "TX-000003", "type": "income", "date": "2026-05-20", "amount": 2500000, "category": "수입", "memo": "월급", "tags": ["회사"]}
 {"id": "TX-000004", "type": "expense", "date": "2026-05-21", "amount": 45000, "category": "식비", "memo": "저녁 회식", "tags": ["회식", "고기"]}
 {"id": "TX-000005", "type": "expense", "date": "2026-06-10", "amount": 250000, "category": "식비", "memo": "인터넷요금", "tags": ["정기지출", "REC-000001"]}
+{"id": "TX-000006", "type": "expense", "date": "2026-05-29", "amount": 3300, "category": "교통", "memo": "정윤정 선정릉", "tags": ["여행", "심"]}
+{"id": "TX-000007", "type": "income", "date": "2026-05-29", "amount": 50000, "category": "수입", "memo": "용돈", "tags": ["이자"]}
+{"id": "TX-000008", "type": "expense", "date": "2026-08-29", "amount": 600000, "category": "주거", "memo": "카카오", "tags": ["우리", "안녕", "REC-000002"]}
+{"id": "TX-000009", "type": "expense", "date": "2026-05-30", "amount": 25000, "category": "문화생활", "memo": "친구랑", "tags": ["신촌"]}
+{"id": "TX-000010", "type": "expense", "date": "2026-05-01", "amount": 50000000, "category": "문화생활", "memo": "충동소비", "tags": ["요트"]}
+{"id": "TX-000011", "type": "expense", "date": "2026-06-01", "amount": 1600, "category": "교통", "memo": "개포", "tags": ["학습"]}
+{"id": "TX-000012", "type": "expense", "date": "2026-06-01", "amount": 300000, "category": "문화생활", "memo": "보드게임", "tags": ["동재랑"]}
+{"id": "TX-000013", "type": "income", "date": "2026-07-03", "amount": 5000000, "category": "수입", "memo": "월급", "tags": ["회사"]}

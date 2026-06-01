@@ -71,7 +71,7 @@ def run_cli() -> None:
     # 1. 메인 파서 정의 (명령어 도움말 설계)
     parser = argparse.ArgumentParser(
         prog="python -m budget_app",
-        description="★ 스마트 가계부 콘솔 서비스 (Antigravity 설계) ★",
+        description="★ 스마트 가계부 콘솔 서비스 ★",
         epilog="상세 명령에 대한 도움말은 '명령어 --help'를 입력하세요."
     )
     
