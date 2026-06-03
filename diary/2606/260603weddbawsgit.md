@@ -13,13 +13,19 @@
 
 - 18:30 주재문님 / hermes agent(도커 안에서 oauth 해야 한다.), gstack, tmux, oh-my-x series, ecc(everything claude code), 
 
+- 21:00 AWS 안 됨...... union?
+
+- 22:00 권창범님. 6-1 tip
+
 
 
 - 6-1 AWS
-    - [ ] guide
+    - [x] guide
     - [ ] 진짜 ㄱ
 
 - 6-2 issu & PR
+    - [x] build demo
+
 
 - 5-1 SQL, DB
 
