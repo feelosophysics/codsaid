@@ -1,5 +1,28 @@
 
+.venv/bin/pip install pyyaml python-dotenv
+.venv/bin/python main.py commit
 
+
+## 궁금
+
+- 레포 새로, 완성본 말고, 추적용 유틸 따로?
+
+---
+
+## 미션
+1. AI API를 호출하는 python 코드를 기반으로, git diff를 입력값으로 받아 커밋 메시지와 PR 설명을 자동 생성하는 CLI 도구를 개발. 단순 호출에 그치지 않고, API 파라미터와 컨텍스트(Commit/PR 양식, 변경 이유, 요구사항)를 설계해 원하는 품질의 결과가 나오도록 프롬프트를 최적화
+2. 또한 Git 명령 실행 결과를 프로그램에 연결하고, 생성된 결과물을 실제 커밋/PR 작성 흐름에 적용하며 연동·검증·자동화를 하나의 흐름으로 구현
+
+## 결과물
+1. 단일 실행으로 자동화 흐름
+2. GitHub repo
+3. README.md: 설치 방법, 환경변수(API Key) 설정 방법, 실행 예시, 커밋/PR 생성 결과 예시, 주의사항(또는 운영 관점)이 포함되어 있어 사용자는 문서만 보고 도구를 실행할 수 있다.
+
+
+---
+
+
+## 희수님 memo
 - REST API 이용해서 통신 -> commit, PR
 - subprocess LIB: 파이썬 코드 안에서 운영체제(OS)의 명령어(쉘 명령어)나 다른 외부 프로그램을 직접 실행하고 제어할 수 있게 해주는 표준 모듈
 - gem 2.5 flash, max_toeknizer ~500 무료
@@ -30,7 +53,6 @@
 1. 터미널에서 사용자님이 진행하셨던 **예전 미션 폴더(리포지토리)**로 이동합니다. (`cd 예전_미션_폴더`)
 2. 코드를 수정하고, `git add` 를 합니다. (변경 사항 만들기)
 3. 이 프로그램(`main.py`와 `.ai-gitgen.yml`)을 그 예전 미션 폴더에 복사하거나, 경로를 지정하여 실행합니다.
-   `python /Users/f22losophysics1091/Desktop/codsaid/oothers/b6-2/main.py pr`
 4. 화면에 출력된 마크다운 결과물을 복사합니다.
 5. GitHub 홈페이지로 가서 평소처럼 **New Pull Request** 버튼을 누르고, 복사해둔 내용을 붙여넣기 하여 완료합니다.
 
@@ -50,3 +72,53 @@
 
 - **안전 모드 (Safe Mode)**
   정규표현식(`re` 모듈)을 썼습니다. `re.sub(패턴, 바꿀글자, 원본텍스트)` 함수를 이용해서 `[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}` 처럼 생긴 이메일을 찾아내고 `***@***.***` 로 바꿔치기(마스킹)해서 구글 서버로 정보를 보내기 전에 안전하게 차단했습니다.
+
+---
+
+Ran command: `git push`
+Ran command: `git status`
+Ran command: `git add .`
+Ran command: `git commit -m 'del'`
+Ran command: `git push`
+Viewed venv_guide.md:1-75
+Listed directory check
+
+원인을 찾았습니다! 
+
+터미널에서 `pip` 명령어가 시스템 파이썬 경로인 `$PYTHON_HOME/bin/pip3.12`로 **별칭(alias) 설정**되어 있기 때문에 발생한 문제입니다.
+
+### 🔍 원인 분석
+가상환경(`source .venv/bin/activate`)을 활성화하면 터미널의 `PATH` 환경 변수가 가상환경 내부를 가리키도록 변경됩니다. 하지만 **셸 별칭(alias)은 `PATH`보다 우선순위가 높습니다.** 
+따라서 `(.venv)` 상태임에도 불구하고 `pip`를 입력했을 때 가상환경 내부의 `pip` 대신 시스템 전역 `pip`가 강제로 실행되었고, 이로 인해 `externally-managed-environment` 에러가 발생한 것입니다.
+
+---
+
+### 🛠️ 해결 방법 (아래 방법 중 하나를 선택해서 실행해 보세요)
+
+#### 방법 1. 가상환경 내부의 pip 직접 실행하기 (가장 확실하고 추천하는 방법)
+별칭(alias)을 무시하고 가상환경 폴더 내부에 있는 `pip` 실행 파일을 상대 경로로 직접 지정하여 설치합니다.
+```bash
+.venv/bin/pip install pyyaml python-dotenv
+```
+
+#### 방법 2. 현재 터미널 세션에서 pip 별칭 일시적으로 해제하기
+현재 터미널 창에서만 `pip` 별칭 설정을 해제한 후 설치를 진행합니다.
+```bash
+unalias pip
+pip install pyyaml python-dotenv
+```
+*(이 방법은 현재 열려 있는 터미널 창에서만 유효하며, 새 터미널 창을 열면 다시 별칭이 적용됩니다.)*
+
+#### 방법 3. python 명령어로 실행하기 (python 별칭이 없을 때 가능)
+만약 `python` 명령어에는 별칭이 걸려있지 않다면, 아래와 같이 모듈 호출 방식으로 설치할 수도 있습니다.
+```bash
+python -m pip install pyyaml python-dotenv
+```
+
+---
+
+### 작업 완료 후 실행할 때도 주의할 점
+프로그램을 실행하실 때도 `python main.py commit`을 입력했을 때 동일하게 시스템 파이썬이 실행된다면, 가상환경 내부의 파이썬을 직접 지정하여 실행해 주세요.
+```bash
+.venv/bin/python main.py commit
+```
