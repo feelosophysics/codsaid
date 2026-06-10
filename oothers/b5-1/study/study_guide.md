@@ -317,4 +317,63 @@ LLM(대형 언어 모델) 시대에 필수적인 **RAG(검색 증강 생성)** �
 우리가 무심코 치는 `SELECT * FROM ...` 한 줄의 쿼리 이면에는, 지난 반세기 동안 인류 최고의 컴퓨터 과학자들과 천재들이 고안해 낸 가장 우아하고 견고한 전산학의 정수들이 살아 숨 쉬고 있습니다.
 
 이 심연을 이해한 자만이 데이터의 폭주 속에서도 흔들리지 않는 견고한 시스템을 빚어낼 수 있습니다.
-이제 다시 `bonus_queries.sql`과 `queries.sql`의 쿼리들을 바라보십시오. 이전과는 완전히 다른 관점으로 엔진의 톱니바퀴가 돌아가는 소리가 들릴 것입니다.
+이제 다시 [queries.sql](file:///Users/f22losophysics1091/Desktop/glad/query/queries.sql) 내부에 통합된 핵심 쿼리와 보너스 쿼리들을 바라보십시오. 이전과는 완전히 다른 관점으로 엔진의 톱니바퀴가 돌아가는 소리가 들릴 것입니다.
+
+---
+
+# 9. [Appendix] 프로젝트 결과물 구조 및 핵심 쿼리 결과 요약
+
+본 부록은 이 문서에서 다룬 RDBMS 이론과 무결성 제약조건들이 실제 도서 대여 시스템 데이터베이스 설계 프로젝트에 어떻게 적용되고 실행되었는지 요약합니다.
+
+## 📂 최종 생성된 결과물 및 구조
+
+모든 결과물은 작업 공간 내에 유기적으로 배치되었습니다.
+
+1. **스키마 정의서**: [schema.sql](file:///Users/f22losophysics1091/Desktop/glad/query/schema.sql)
+   - `CATEGORY`, `MEMBER`, `BOOK`, `RENTAL` 테이블 설계
+   - PK/FK 선언, `ON DELETE CASCADE / RESTRICT` 무결성 검증, `CHECK` 제약조건 설정
+2. **샘플 데이터**: [data.sql](file:///Users/f22losophysics1091/Desktop/glad/query/data.sql)
+   - 테이블별 10개 행 이상의 유의미한 시나리오 데이터 삽입
+   - 서브쿼리 검증을 위해 대여 이력이 없는 휴면 회원(고길동) 추가
+3. **핵심 및 보너스 쿼리**: [queries.sql](file:///Users/f22losophysics1091/Desktop/glad/query/queries.sql)
+   - 기본 조회, 조인, 집계, 서브쿼리, 데이터 조작, 인덱스 생성 및 보너스 과제 분석 (총 19개 쿼리)
+4. **실행 결과 보고**: [query_results.txt](file:///Users/f22losophysics1091/Desktop/glad/query/query_results.txt)
+   - 실제 SQLite를 구동하여 모든 쿼리를 일괄 수행해 추출한 터미널 데이터 출력 결과본
+5. **CS & AI 연계 학습서**: [study_guide.md](file:///Users/f22losophysics1091/Desktop/glad/study/study_guide.md)
+   - RDBMS 이론, 정규화, SQL 쿼리 논리 처리 순서, B-Tree 인덱스 아키텍처, AI 엔지니어링 접점 기술 정리
+
+---
+
+## 📊 핵심 쿼리 실행 결과 (요약)
+
+실제 실행 결과에서 추출한 주요 통계 요약본입니다. 전체 결과 텍스트는 [query_results.txt](file:///Users/f22losophysics1091/Desktop/glad/query/query_results.txt)에서 확인하실 수 있습니다.
+
+### 1. [Query 5] 현재 대여 및 연체 중인 현황 (INNER JOIN)
+```text
+rental_id  member_name  book_title          rental_date  status 
+---------  -----------  ------------------  -----------  -------
+3          김철수          코스모스                2026-04-10   OVERDUE
+7          강동원          사피엔스                2026-04-25   OVERDUE
+5          최지우          부의 시나리오             2026-05-20   RENTED 
+10         아이유          원씽 (The One Thing)  2026-05-21   RENTED 
+8          한소희          총, 균, 쇠             2026-05-22   RENTED 
+11         아이유          밑바닥부터 시작하는 딥러닝      2026-05-22   RENTED 
+15         박민수          클린 코드               2026-05-23   RENTED 
+```
+
+### 2. [Query 11] 대여 상태별 거시적 수치 집계 (GROUP BY + COUNT)
+```text
+status    count
+--------  -----
+RETURNED  8    
+RENTED    5    
+OVERDUE   2    
+```
+
+### 3. [Query 13] 대여 이력이 없는 휴면 회원 추출 (NOT EXISTS Subquery)
+`data.sql`에 추가한 휴면 회원 '고길동'이 정확하게 반환되어 서브쿼리 연산의 정밀함을 입증했습니다.
+```text
+id  name  email                   join_date 
+--  ----  ----------------------  ----------
+12  고길동   gildong_go@example.com  2025-11-20
+```

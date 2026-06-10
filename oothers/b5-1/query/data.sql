@@ -66,16 +66,17 @@ INSERT INTO MEMBER (id, name, email, phone, join_date) VALUES (12, '고길동', 
 -- category_id 값은 반드시 상단의 CATEGORY(id) 테이블에 존재하는 1~10 사이의 값이어야 합니다.
 -- 만약 category_id에 99를 입력하려 한다면 SQLite는 Referential Integrity 위반으로 차단합니다.
 -- 가격(price)은 책마다 고유한 값으로 배정하고, CHECK(price >= 0) 조건에 부합하는 양수입니다.
-INSERT INTO BOOK (id, title, category_id, author, price, published_date) VALUES (1, '밑바닥부터 시작하는 딥러닝', 1, '사이토 고키', 28000, '2016-12-01');
-INSERT INTO BOOK (id, title, category_id, author, price, published_date) VALUES (2, '클린 코드', 1, '로버트 C. 마틴', 33000, '2013-12-24');
+INSERT INTO BOOK (id, title, category_id, author, price, published_date) VALUES (1, '딥러닝', 1, '사이토 고키', 28000, '2016-12-01');
+INSERT INTO BOOK (id, title, category_id, author, price, published_date) VALUES (2, '클린코드', 1, '로버트 C. 마틴', 33000, '2013-12-24');
 INSERT INTO BOOK (id, title, category_id, author, price, published_date) VALUES (3, '코스모스', 2, '칼 세이건', 19500, '2006-12-20');
-INSERT INTO BOOK (id, title, category_id, author, price, published_date) VALUES (4, '정의란 무엇인가', 3, '마이클 샌델', 15000, '2010-05-24');
-INSERT INTO BOOK (id, title, category_id, author, price, published_date) VALUES (5, '부의 시나리오', 4, '오건영', 18000, '2021-06-15');
-INSERT INTO BOOK (id, title, category_id, author, price, published_date) VALUES (6, '해리 포터와 마법사의 돌', 5, 'J.K. 롤링', 12000, '1997-06-26');
+INSERT INTO BOOK (id, title, category_id, author, price, published_date) VALUES (4, '정의', 3, '마이클 샌델', 15000, '2010-05-24');
+INSERT INTO BOOK (id, title, category_id, author, price, published_date) VALUES (5, '부의시나리오', 4, '오건영', 18000, '2021-06-15');
+INSERT INTO BOOK (id, title, category_id, author, price, published_date) VALUES (6, '해리포터', 5, 'J.K. 롤링', 12000, '1997-06-26');
 INSERT INTO BOOK (id, title, category_id, author, price, published_date) VALUES (7, '사피엔스', 7, '유발 하라리', 22000, '2015-11-24');
-INSERT INTO BOOK (id, title, category_id, author, price, published_date) VALUES (8, '총, 균, 쇠', 7, '재레드 다이아몬드', 28000, '2005-12-19');
+INSERT INTO BOOK (id, title, category_id, author, price, published_date) VALUES (8, '총균쇠', 7, '재레드 다이아몬드', 28000, '2005-12-19');
 INSERT INTO BOOK (id, title, category_id, author, price, published_date) VALUES (9, '데미안', 5, '헤르만 헤세', 10000, '1919-06-01');
-INSERT INTO BOOK (id, title, category_id, author, price, published_date) VALUES (10, '원씽 (The One Thing)', 10, '게리 켈러', 14000, '2013-08-30');
+INSERT INTO BOOK (id, title, category_id, author, price, published_date) VALUES (10, '원씽', 10, '게리 켈러', 14000, '2013-08-30');
+INSERT INTO BOOK (id, title, category_id, author, price, published_date) VALUES (11, '자바정석', 1, '남궁성', 32000, '2005-01-01');
 
 
 -- -----------------------------------------------------------------------------
