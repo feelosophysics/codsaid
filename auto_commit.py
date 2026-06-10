@@ -98,7 +98,7 @@ def main():
     
     parser.add_argument('--model', '-model', type=str, default='gemma-4-31b-it', help='사용할 AI 모델 이름 (기본값: gemma-4-31b-it)')
     parser.add_argument('--temperature', '-temperature', type=float, default=0.3, help='AI 응답의 창의성 정도 (0.0 ~ 1.0, 기본값: 0.3)')
-    parser.add_argument('--max-tokens', '-max-tokens', type=int, default=2000, help='생성할 최대 토큰 수 (기본값: 2000)')
+    parser.add_argument('--max-tokens', '-max-tokens', type=int, default=1000, help='생성할 최대 토큰 수 (기본값: 1000)')
     parser.add_argument('--safe-mode', '-safe-mode', action='store_true', help='안전 모드 활성화 (민감 정보 마스킹 및 전송량 제한)')
     parser.add_argument('--safe-lines', '-safe-lines', type=int, default=200, help='안전 모드 활성화 시 전송할 최대 diff 라인 수 (기본값: 200)')
     parser.add_argument('--thinking-level', '-thinking-level', type=str, default='unspecified', choices=['high', 'unspecified'], help='Gemma 4 모델 사용 시 사고 수준 설정 (기본값: unspecified)')
