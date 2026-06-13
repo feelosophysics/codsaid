@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<!-- 
+  [HTML의 역할: 웹페이지의 뼈대(Structure) 만들기]
+  HTML(HyperText Markup Language)은 웹 페이지의 정보 구조를 정의하는 마크업 언어입니다.
+  브라우저는 이 파일을 위에서 아래로 한 줄씩 읽어가며(파싱), 화면에 그릴 요소들의 트리 구조인 'DOM(Document Object Model) 트리'를 메모리에 생성합니다.
+-->
+<html lang="ko">
+
+<head>
+  <!-- 
+    [<head> 영역: 문서의 메타데이터(설정 정보)]
+    사용자 눈에는 보이지 않지만, 브라우저가 페이지를 올바르게 렌더링하고 검색 엔진(SEO)에 정보를 제공하기 위한 설정들이 위치합니다.
+  -->
+  <meta charset="UTF-8">
+  <!-- UTF-8: 한글을 포함한 전 세계 모든 언어와 특수문자를 깨짐 없이 표시하기 위한 문자 인코딩 설정입니다. -->
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- 
+    viewport: 반응형 웹의 핵심 설정입니다. 
+    너비를 디바이스 화면 너비(device-width)로 맞추고 초기 배율을 1.0으로 설정하여 모바일 기기에서도 화면이 축소되지 않고 알맞게 보이도록 조절합니다.
+  -->
+
+  <title>Portfolio - feelosophysics</title>
+  <!-- 브라우저 탭에 표시되는 제목이자, 검색 엔진이 페이지 주제를 파악하는 가장 중요한 텍스트입니다. -->
+
+  <meta name="description" content="tourist Portfolio">
+  <!-- 검색 결과 화면에 노출되는 요약 설명 글(Meta Description)로, SEO(검색엔진 최적화)에 직접적인 영향을 줍니다. -->
+
+  <!-- 
+    [폰트 최적화: Google Fonts 연결]
+    preconnect: 폰트 파일이 저장된 서버(fonts.gstatic.com 등)와 미리 연결을 맺어두어, 
+    나중에 폰트를 내려받을 때 통신 지연 시간을 줄여 웹 페이지가 더 빠르게 표시되도록 돕습니다.
+  -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- 
+    [CSS와 HTML의 연결 고리]
+    href="css/style.css": 외부에 분리된 CSS 파일을 불러옵니다.
+    1. 브라우저는 HTML 파싱 중 이 태그를 만나면, 파싱을 멈추거나 백그라운드에서 style.css를 다운로드합니다.
+    2. 다운로드 완료 후 CSS 코드를 파싱하여 스타일 규칙 트리인 'CSSOM(CSS Object Model)'을 만듭니다.
+    3. DOM 트리와 CSSOM 트리가 합쳐져 실제 화면에 그려질 대상인 '렌더 트리(Render Tree)'가 생성됩니다.
+  -->
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- 
+    [JavaScript와 HTML의 연결 고리: defer 속성의 중요성]
+    src="js/main.js" defer: 외부에 작성된 JavaScript 파일을 불러옵니다.
+    - defer 속성이 없으면: 브라우저는 JS 파일을 다운로드하고 실행하느라 HTML 파싱(DOM 생성)을 완전히 멈춥니다(렌더링 차단 현상).
+    - defer 속성이 있으면: HTML 파싱을 멈추지 않고 계속 진행하면서, 백그라운드에서 JS 파일을 동시에 다운로드합니다.
+      그리고 HTML 파싱이 완료되어 DOM 트리가 완전히 만들어진 직후(DOMContentLoaded 이벤트 발생 직전)에 JS 코드를 실행합니다.
+      따라서 JS 코드 내부에서 HTML 요소(DOM)를 찾고 조작할 때, 해당 요소가 아직 만들어지지 않아 발생하는 에러를 원천적으로 방지합니다.
+  -->
+  <script src="js/main.js" defer></script>
+</head>
+
+<body>
+  <!-- 
+    [<body> 영역: 사용자에게 실제로 보이는 콘텐츠]
+    시맨틱 태그(Semantic Tags: 의미가 명확한 태그)를 사용하여 구조화하였습니다.
+    검색 엔진과 스크린 리더가 페이지 내 각 영역의 역할을 정확히 파악할 수 있도록 돕습니다.
+  -->
+
+  <!-- <header>: 상단 네비게이션 영역 -->
+  <header class="header">
+    <nav class="nav container">
+      <!-- 
+        nav__logo: 로고 링크
+        CSS에서는 '.nav__logo' 클래스를 선택하여 포인트 컬러(var(--color-primary))와 글자 크기를 조절합니다.
+      -->
+      <a href="#" class="nav__logo">Dev.feel</a>
+
+      <!-- 
+        nav__menu: 네비게이션 메뉴 목록
+        - CSS 연결: '.nav__menu' 클래스로 레이아웃을 잡고, 모바일 화면에서는 화면 밖에 숨겨둡니다.
+        - JS 연결: id="nav-menu"를 통해 JS가 이 요소를 선택하고, active 클래스를 추가/제거하여 모바일에선 화면에 나타나게 합니다.
+      -->
+      <div class="nav__menu" id="nav-menu">
+        <ul class="nav__list">
+          <!-- 
+            nav__link: 각 섹션으로 이동하는 앵커(Anchor) 태그들
+            - HTML 연결: href="#home", href="#about" 등은 클릭 시 해당 id를 가진 <section>으로 브라우저가 스크롤하게 만듭니다.
+            - CSS 연결: html { scroll-behavior: smooth; } 설정 덕분에 덜컥거리지 않고 부드럽게 스크롤됩니다.
+            - JS 연결: 모바일 화면에서 링크를 클릭하면 메뉴 창이 자동으로 닫히도록 클릭 이벤트가 걸려있습니다.
+          -->
+          <li class="nav__item"><a href="#home" class="nav__link">Home</a></li>
+          <li class="nav__item"><a href="#about" class="nav__link">About</a></li>
+          <li class="nav__item"><a href="#skills" class="nav__link">Skills</a></li>
+          <li class="nav__item"><a href="#projects" class="nav__link">Projects</a></li>
+          <li class="nav__item"><a href="#contact" class="nav__link">Contact</a></li>
+        </ul>
+      </div>
+
+      <div class="nav__actions">
+        <!-- 
+          다크 모드 토글 버튼
+          - JS 연결: id="theme-toggle"을 사용해 클릭 이벤트를 감지하고, 로컬 스토리지 및 HTML 테마 속성(data-theme)을 바꿉니다.
+          - CSS 연결: class="theme-btn"으로 모양과 호버 효과를 다듬습니다.
+        -->
+        <button id="theme-toggle" class="theme-btn" aria-label="Toggle Dark Mode">
+          <!-- 🌙 아이콘은 JS에서 테마 상태에 따라 ☀️와 🌙로 실시간으로 바뀝니다(renderTheme() 함수). -->
+          <span class="icon">🌙</span>
+        </button>
+
+        <!-- 
+          햄버거 메뉴 버튼 (모바일용)
+          - JS 연결: id="nav-toggle"을 통해 클릭 이벤트를 감지하여 메뉴바의 active 클래스를 켜고 끕니다.
+          - CSS 연결: class="nav__toggle"로 세 줄의 막대기(.bar) 모양을 잡고, active 클래스가 붙으면 X자 모양으로 애니메이션을 줍니다.
+        -->
+        <div class="nav__toggle" id="nav-toggle">
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <!-- 
+      Hero Section: 페이지 진입 시 가장 먼저 마주하는 첫인상 영역
+      - HTML: id="home"은 네비게이션의 Home 링크와 연결됩니다.
+      - CSS: min-height: 100vh를 주어 화면 높이를 100% 꽉 채우도록 스타일링합니다.
+    -->
+    <section id="home" class="hero section">
+      <div class="container hero__container">
+        <div class="hero__content">
+          <!-- 
+            hero__title: 자기소개 타이핑 영역
+            - JS 연결: id="typing-text"가 지정된 빈 span 태그에 JS가 한 글자씩 텍스트를 채워 타이핑 효과를 구현합니다.
+            - CSS 연결: 클래스 '.cursor'와 @keyframes blink 애니메이션으로 타이핑 중인 듯 깜빡이는 커서(|)를 그립니다.
+          -->
+          <h1 class="hero__title">
+            <span class="typing-text" id="typing-text"></span><span class="cursor">|</span>
+          </h1>
+          <p class="hero__subtitle">코디세이에서 동료들과 항해중입니다.</p>
+          <div class="hero__buttons">
+            <a href="#projects" class="btn btn--primary">View Projects</a>
+            <a href="#contact" class="btn btn--outline">Contact Me</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 
+      About Section: 개발자 소개 영역
+      - JS 연결: '.about__img-wrapper'와 '.about__info' 클래스가 Intersection Observer의 타겟으로 등록되어 있어, 
+        사용자가 스크롤을 내려 이 영역이 화면에 나타나는 순간 클래스 '.appear'가 붙으며 서서히 떠오르는 애니메이션이 실행됩니다.
+    -->
+    <section id="about" class="about section">
+      <div class="container">
+        <h2 class="section__title">About Me</h2>
+        <div class="about__container">
+          <div class="about__img-wrapper">
+            <!-- 프로필 이미지 -->
+            <img src="images/profile.jpg" alt="feelosophysics 프로필 이미지" class="about__img" id="profile-img">
+          </div>
+          <div class="about__info">
+            <p>퍼즐 탐험과 새로운 기술을 배우는 것을 좋아합니다.</p>
+            <p>그냥은 보이지 않는 것을 보고 싶습니다.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 
+      Skills Section: 기술 스택 카드 영역
+      - CSS 연결: '.skills__container'는 Grid 레이아웃(repeat(auto-fit, minmax(250px, 1fr)))을 사용해 
+        화면 크기에 따라 카드가 자동으로 1열, 2열, 혹은 3열로 유연하게 재배치됩니다.
+    -->
+    <section id="skills" class="skills section">
+      <div class="container">
+        <h2 class="section__title">Skills</h2>
+        <div class="skills__container">
+          <!-- 각 기술군을 묶어주는 시맨틱 태그 <article> 활용 -->
+          <article class="skills__card">
+            <h3>Frontend</h3>
+            <ul>
+              <li>HTML5 / CSS3</li>
+              <li>JavaScript (ES6+)</li>
+              <li>React (예정)</li>
+            </ul>
+          </article>
+          <article class="skills__card">
+            <h3>Backend</h3>
+            <ul>
+              <li>Python</li>
+            </ul>
+          </article>
+          <article class="skills__card">
+            <h3>Database & Tools</h3>
+            <ul>
+              <li>SQLite3</li>
+              <li>Git / GitHub</li>
+              <li>Docker</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- 
+      Projects Section: 프로젝트 목록 영역
+      - JS 연결: 
+        1. 상단 필터 버튼을 누르면 JS 이벤트 리스너가 클릭된 언어 정보를 감지합니다.
+        2. JS는 전체 프로젝트 데이터(STATE.portfolio.allData)에서 선택된 언어만 필터링합니다.
+        3. 필터링된 결과물은 id="projects-container" 내부에 HTML 카드 템플릿으로 실시간 렌더링됩니다.
+    -->
+    <section id="projects" class="projects section">
+      <div class="container">
+        <h2 class="section__title">Projects</h2>
+
+        <!-- 
+          언어별 필터링 버튼 영역
+          - HTML 연결: data-filter 속성(사용자 정의 속성)에 언어 이름을 적어두어, JS에서 e.target.getAttribute('data-filter')로 쉽게 추출할 수 있게 합니다.
+        -->
+        <div class="projects__filter">
+          <button class="filter-btn active" data-filter="all">All</button>
+          <button class="filter-btn" data-filter="JavaScript">JavaScript</button>
+          <button class="filter-btn" data-filter="Python">Python</button>
+          <button class="filter-btn" data-filter="Java">Java</button>
+        </div>
+
+        <!-- 
+          프로젝트 카드들이 동적으로 삽입되는 컨테이너
+          - HTML: 초기에는 "로딩 중" 메시지가 표시됩니다.
+          - JS: API 호출이 성공하면 이 컨테이너 내부의 내용(innerHTML)을 GitHub에서 받아온 실제 카드로 완전히 교체합니다.
+        -->
+        <div class="projects__container" id="projects-container">
+          <div class="projects__loading">프로젝트를 불러오는 중입니다...</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 
+      Contact Section: 문의 사항 폼 입력 영역
+      - HTML: action="https://formspree.io/f/xpqejrwb" 속성을 통해 폼 데이터를 Formspree 서버로 보냅니다.
+      - JS 연결: 
+        1. 사용자가 Submit(보내기) 버튼을 클릭하면 JS가 e.preventDefault()로 브라우저의 기본 페이지 새로고침 동작을 차단합니다.
+        2. 입력 필드들의 유효성 검사(빈칸 감지, 이메일 형식 체크 등)를 실행합니다.
+        3. 입력에 오류가 있다면, 오류를 알리는 에러 클래스(.invalid)를 input 태그에 붙이고 아래의 에러 span 태그를 화면에 노출시킵니다.
+        4. 모든 값이 유효하면 fetch API를 활용해 백그라운드에서 데이터를 비동기 전송하고, 성공 문구(form-success)를 띄웁니다.
+    -->
+    <section id="contact" class="contact section">
+      <div class="container">
+        <h2 class="section__title">Contact</h2>
+        <div class="contact__container">
+          <form id="contact-form" class="contact__form" action="https://formspree.io/f/xpqejrwb" method="POST">
+            <!-- Name 필드 그룹 -->
+            <div class="form__group">
+              <label for="name" class="form__label">Name</label>
+              <!-- for="name"과 id="name"을 매핑하여 접근성(스크린 리더가 레이블을 읽을 수 있음)과 마우스 클릭 편의성을 높임 -->
+              <input type="text" id="name" name="name" class="form__input" placeholder="이름을 입력하세요">
+              <!-- 유효성 검사 실패 시 JS가 이 에러 메시지의 display 속성을 block으로 변경하여 사용자에게 경고합니다. -->
+              <span class="form__error" id="name-error">이름은 필수 항목입니다.</span>
+            </div>
+
+            <!-- Email 필드 그룹 -->
+            <div class="form__group">
+              <label for="email" class="form__label">Email</label>
+              <input type="email" id="email" name="email" class="form__input" placeholder="이메일을 입력하세요">
+              <span class="form__error" id="email-error">유효한 이메일을 입력해주세요.</span>
+            </div>
+
+            <!-- Message 필드 그룹 -->
+            <div class="form__group">
+              <label for="message" class="form__label">Message</label>
+              <textarea id="message" name="message" class="form__input" rows="5" placeholder="메시지를 남겨주세요"></textarea>
+              <span class="form__error" id="message-error">메시지는 필수 항목입니다.</span>
+            </div>
+
+            <button type="submit" class="btn btn--primary form__submit">Send Message</button>
+
+            <!-- 전송 성공 메시지: 초기에는 display: none으로 숨겨져 있다가, JS 전송 성공 시 5초 동안 노출됩니다. -->
+            <div id="form-success" class="form__success">메시지가 성공적으로 전송되었습니다!</div>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- <footer>: 저작권 및 소셜 링크 등 페이지 최하단 영역 -->
+  <footer class="footer">
+    <div class="container footer__container">
+      <p class="footer__copy">&copy; 2026 feelosophysics. All rights reserved.</p>
+      <div class="footer__socials">
+        <!-- target="_blank"로 새 탭에서 열고, rel="noopener noreferrer"로 보안 및 성능 결함을 예방합니다. -->
+        <a href="https://github.com/feelosophysics" target="_blank" class="footer__social-link"
+          rel="noopener noreferrer">GitHub</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- 
+    Scroll Top Button: 최상단으로 이동하는 플로팅 버튼
+    - CSS: 초기에는 화면 아래쪽 외부에 숨겨져 있고 투명하게 설정(bottom: -50px; opacity: 0)되어 있습니다.
+      스크롤이 300px 이상 내려가면 JS가 '.show' 클래스를 부여하여 화면 위로 띄우고 부드럽게 보이게 만듭니다.
+    - JS: 클릭 시 e.preventDefault()로 앵커 이동(#)의 급격한 동작을 막고, window.scrollTo({behavior: 'smooth'})를 통해 부드럽게 맨 위로 올립니다.
+  -->
+  <a href="#" class="scroll-top" id="scroll-top" aria-label="Scroll to top">
+    ↑
+  </a>
+</body>
+
+</html>
