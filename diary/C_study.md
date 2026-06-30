@@ -46,6 +46,15 @@ https://velog.io/@yser/series/cstudy
 ```
 
 ## 4. Memory Model
+- stack은 보통 8mb로 작기 때문에, 지역 변수에 큰 배열을 잡으면 안됨(int arr[10000000] 같은 것)
+- C 표준에 따르면 arr[i]는 컴파일러가 *(arr + i)로 번역. 2[arr];   // 30 (!!) 왜냐하면 2[arr]도 컴파일러가 *(2 + arr)로 번역하기 때문입니다. 덧셈은 교환법칙이 성립하니까 결과가 같습니다.
+- C 컴파일러는 함수 인자에서 배열을 항상 포인터로 변환합니다. 그래서 함수 안에서 sizeof(arr)를 하면 배열 크기가 아니라 포인터 크기(8바이트) 가 나옵니다. 그래서 C에서는 배열을 함수에 넘길 때 크기를 따로 인자로 같이 넘기는 게 관례입니다. void print_array(int *arr, size_t n) { ... }
+
+
+## 5. Memory Structure
+
+
+
 
 
 
