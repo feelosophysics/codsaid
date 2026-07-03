@@ -173,3 +173,19 @@ OS를 한 가지 정의로 묶으면 애플리케이션과 하드웨어 사이�
 
 ## 5. Heap
 
+## 6. Blcok
+- PCB는 프로세스의 스냅샷을 저장하는 구조체입니다. 식별 정보, CPU 문맥, 스케줄링 정보, 자원 정보의 네 영역을 담습니다.
+- TCB는 스레드 단위의 관리를 위한 구조체입니다. 스레드들은 프로세스의 자원을 공유하지만 PC, Registers, Stack은 각자 가져야 하므로 TCB가 필요합니다.
+- Linux는 PCB와 TCB를 구분하지 않고 모든 실행 단위를 Task로 통합하여 task_struct 하나로 관리합니다.
+- Context는 Task의 부분집합으로, CPU 실행에 필요한 데이터의 묶음을 의미합니다. Context Switch에서 교체되는 부분이 이 영역입니다.
+- FCB는 파일을 관리하는 구조체이며, Unix/Linux에서는 vnode(추상 계층)와 inode(물리 계층) 두 층으로 나뉩니다.
+세 Control Block은 모두 OS가 객체를 추적하는 메타데이터라는 같은 역할을 가지며, 관리 대상만 다릅니다.
+
+다음 글에서는 PCB에 저장된 Context가 실제로 어떻게 교체되는가를 다루는 Context Switching 메커니즘으로 넘어갑니다.
+
+## 7. Well Known PID
+
+
+
+
+

@@ -1,0 +1,1 @@
+ # 표준화된 명령어: setup, test, lint, check
