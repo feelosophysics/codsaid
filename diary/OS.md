@@ -184,6 +184,9 @@ OS를 한 가지 정의로 묶으면 애플리케이션과 하드웨어 사이�
 다음 글에서는 PCB에 저장된 Context가 실제로 어떻게 교체되는가를 다루는 Context Switching 메커니즘으로 넘어갑니다.
 
 ## 7. Well Known PID
+- PID 0, PID 1
+
+## 8, Process Impl
 
 
 

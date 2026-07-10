@@ -77,6 +77,7 @@ double *p → p는 8바이트 읽음
 ## 7. Ownership and Responsibility
 
 
+## 8. Right
 
 
 
