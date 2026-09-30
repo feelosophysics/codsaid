@@ -1,165 +1,175 @@
-# ☁️ AWS VPC 및 EC2 기반 웹 서비스 인프라 구축 미션
+# 📚 SQL로 만드는 나만의 도서 대여 데이터베이스
 
-## 0. 개발 환경 및 인프라 설계 규격
+이 프로젝트는 백엔드 프레임워크나 외부 라이브러리 없이, 순수 SQL 스크립트만으로 도서 대여 시스템을 위한 관계형 데이터베이스(RDBMS)를 설계하고 데이터 구축, 핵심 비즈니스 쿼리 작성, 성능 최적화(인덱싱) 및 비즈니스 의사결정을 위한 리포트 쿼리까지 수행한 종합 포트폴리오입니다.
 
-- **Cloud Provider**: Amazon Web Services (AWS)
-- **Region**: ap-northeast-2 (서울 리전)
-- **Instance**: t3.micro (프리 티어 대상 인스턴스)
-- **OS**: Ubuntu 24.04 LTS
-- **Web Server**: Nginx (Docker 컨테이너 환경)
-- **네트워크 설계**:
-  - **VPC**: `mission-vpc` (`10.0.0.0/16`)
-  - **Public Subnet**: `mission-public-subnet` (`10.0.1.0/24`, 퍼블릭 IPv4 자동 할당 활성화)
-  - **Internet Gateway**: `mission-igw` (VPC 연결 및 라우팅 테이블 `0.0.0.0/0 -> IGW` 연결 완료)
-- **보안 그룹 (mission-web-sg) 규칙**:
-  - **인바운드**:
-    - `HTTP (80)`: `0.0.0.0/0` (모든 외부 인터넷 허용)
-    - `HTTPS (443)`: `0.0.0.0/0` (모든 외부 인터넷 허용)
-    - `SSH (22)`: 학습자 개인 IP (보안 최소 권한 적용)
-  - **아웃바운드**: All Traffic 허용 (`0.0.0.0/0`)
+> **💡 핵심 학습 정리 문서 안내:**  
+> RDBMS 이론, 정규화, SQL 실행 순서, B-Tree 인덱스 아키텍처 및 AI 피처 스토어 접점 기술 등 심층적인 컴퓨터 과학(CS) 이론은 [study_guide.md](file:///Users/f22losophysics1091/Desktop/glad/study/study_guide.md) 가이드에 별도로 정리되어 있습니다.
 
-## 1. 아키텍처 다이어그램 (Architecture Diagram)
-> VPC, Subnet, Internet Gateway, EC2, Security Group 구성 요소와 외부에서 서비스로 들어오는 트래픽 흐름을 표현한 다이어그램입니다.
+---
 
-### 🌐 AWS 인프라 아키텍처 및 트래픽 흐름도
+## 📂 프로젝트 구조 및 결과물
 
-```mermaid
-flowchart TD
-    %% 외부 인터넷 사용자
-    Client((👤 외부 브라우저 사용자))
+프로젝트의 디렉토리 구조 및 각 파일의 역할은 다음과 같습니다:
 
-    %% AWS 클라우드 영역
-    subgraph AWS ["☁️ AWS Cloud (Seoul Region)"]
-        IGW["🚪 인터넷 게이트웨이<br/>(mission-igw)"]
-
-        subgraph VPC ["🌐 VPC (mission-vpc: 10.0.0.0/16)"]
-            RT["🪧 라우팅 테이블<br/>(mission-public-rt)"]
-
-            subgraph Subnet ["📂 Public Subnet (10.0.1.0/24)"]
-                subgraph SG ["🛡️ 보안 그룹 (mission-web-sg)"]
-                    EC2["💻 EC2 인스턴스 (mission-web-server)<br/>🐳 Docker Nginx (Port 80/443)"]
-                end
-            end
-        end
-    end
-
-    %% 트래픽 흐름 (화살표)
-    Client -->|1. 도메인 접속 HTTP / HTTPS| IGW
-    IGW -->|2. VPC 내부 트래픽 유입| RT
-    RT -->|3. 퍼블릭 서브넷으로 경로 안내| SG
-    SG -->|4. 포트 규칙 통과 시 최종 도달| EC2
+```text
+glad/
+├── query/
+│   ├── schema.sql         # 데이터베이스 스키마 정의서 (DDL)
+│   ├── data.sql           # 샘플 시나리오 데이터 적재 (DML)
+│   ├── queries.sql        # 핵심 쿼리 16선 & 인덱스 & 보너스 과제 분석 (DQL/DML)
+│   └── query_results.txt  # SQLite 구동을 통한 전체 쿼리 실행 결과 보고서
+└── study/
+    └── study_guide.md     # 데이터베이스 엔진 이론 학습서 (CS & AI 연계)
 ```
 
-
-1. **사용자 (Client)**: 발급받은 도메인(`https://내도메인.ddns.net`)을 통해 웹 브라우저로 접속을 시도합니다.
-2. **인터넷 게이트웨이 (IGW)**: VPC가 외부 인터넷과 통신할 수 있도록 연결해 주는 '대문' 역할을 하여 트래픽을 받아들입니다.
-3. **라우팅 테이블 (Route Table)**: 들어온 트래픽이 올바른 서브넷(Public Subnet)으로 찾아갈 수 있도록 '이정표(길 안내)' 역할을 합니다.
-4. **보안 그룹 (Security Group)**: EC2 인스턴스를 감싸고 있는 가상 방화벽입니다. 설정해 둔 규칙에 따라 80번(HTTP) 또는 443번(HTTPS) 포트의 접근만 안전하게 통과시킵니다.
-5. **EC2 인스턴스 & Docker Nginx**: 보안 그룹을 무사히 통과한 트래픽이 최종적으로 우분투 서버 내부의 도커 컨테이너(Nginx)에 도달하여 "Welcome to nginx!" 웹 페이지를 반환합니다.
-
----
-
-## 2. 외부 접속 증빙 (방식 A 선택)
-**선택한 검증 방식**: (A) 브라우저에서 `http://[도메인]`으로 접속
-
-> [!NOTE]
-> 보너스 과제를 통해 HTTPS(SSL/TLS) 및 도메인을 추가 설정하였기 때문에, 일반 HTTP(80) 포트로의 접속 시도 역시 HTTPS(443) 포트로 자동 리다이렉션되도록 설계했습니다. 아래의 접속 스크린샷은 최종 HTTPS 환경의 웹 서버 웰컴 페이지 접속 화면입니다.
-
-### 외부 접속 결과 스크린샷
-![웹 브라우저 접속 화면](./docs/https.png)
+| 파일명 (File Link) | 유형 (Type) | 용도 및 핵심 역할 (Purpose & Key Role) | 주요 포함 내용 (Key Contents) |
+| :--- | :---: | :--- | :--- |
+| [schema.sql](file:///Users/f22losophysics1091/Desktop/glad/query/schema.sql) | DDL (스키마) | 데이터베이스 물리/논리 설계 정의 | 테이블 생성, PK/FK 제약 조건, CASCADE 처리, CHECK 제약조건 |
+| [data.sql](file:///Users/f22losophysics1091/Desktop/glad/query/data.sql) | DML (데이터) | 시나리오 기반 실무 데이터 구축 | 10행 이상의 테스트 데이터, 외래키 참조 무결성을 고려한 순차 적재 |
+| [queries.sql](file:///Users/f22losophysics1091/Desktop/glad/query/queries.sql) | SQL (통합) | 핵심 비즈니스 로직 구현 및 성능 튜닝 | 기본 조회/조인/집계/서브쿼리 16선, SQLite 설정, 보너스 분석 및 미니 리포트 3선 |
+| [query_results.txt](file:///Users/f22losophysics1091/Desktop/glad/query/query_results.txt) | TXT (결과) | 쿼리 일괄 실행에 따른 최종 터미널 출력본 | `.headers on`, `.mode column` 이 적용된 실제 쿼리 수행 이력 데이터 |
+| [study_guide.md](file:///Users/f22losophysics1091/Desktop/glad/study/study_guide.md) | MD (가이드) | RDBMS 심층 기술 이론 및 AI 피처 스토어 접점 가이드 | 트랜잭션(WAL/MVCC), B+Tree 인덱싱 아키텍처, 쿼리 처리 순서 |
 
 ---
 
-## 3. 보너스 과제 1: HTTPS 적용 및 SSL 인증서 발급
-> 무료 DDNS 도메인을 발급받고, Let's Encrypt를 통해 SSL/TLS 인증서를 인스턴스에 적용하여 HTTPS 보안 접속을 구성했습니다.
+## 🧪 로컬 실행 및 검증 프로세스
 
-### 1) No-IP 도메인 설정
-* **도메인(DDNS) 주소**: `https://[여기에 도메인을 입력하세요]`
-* **설정 방식**: No-IP 서비스에서 고유 호스트 네임을 생성하고, 생성된 EC2 인스턴스의 퍼블릭 IP를 타겟 IP로 지정하여 도메인과 인스턴스 IP를 연동했습니다.
+프로젝트 루트 디렉토리에서 제공되는 자동화 스크립트를 사용하거나, 수동으로 쿼리를 실행하여 데이터베이스 구축 및 검증을 진행할 수 있습니다.
 
-### 2) Let's Encrypt를 통한 SSL/TLS 인증서 발급 (Certbot Standalone)
-* 80번 포트를 임시 점유하여 도메인 소유권을 인증하는 standalone 방식을 사용했습니다.
-* **인증서 발급 명령어**:
-  ```bash
-  sudo apt-get update
-  sudo apt-get install -y certbot
-  sudo certbot certonly --standalone -d mission61.ddns.net
-  ```
-* **결과**: 발급 완료 후 `fullchain.pem` 및 `privkey.pem` 파일이 정상적으로 생성된 것을 확인했습니다.
+### 1. 자동화 스크립트 실행 (권장)
+제공된 `setup.sh` 스크립트를 실행하면 기존 데이터베이스 초기화부터 스키마 생성, 샘플 데이터 적재, 핵심 쿼리 결과 보고서 갱신까지 모든 단계가 일괄 처리됩니다.
 
-### 3) Nginx SSL 설정 (`~/nginx/conf.d/default.conf`)
-* HTTP(80)로 유입되는 모든 요성을 HTTPS(443)로 강제 리다이렉트하고, 443번 포트에서 SSL/TLS 암호화 통신을 처리하기 위한 Nginx 설정 파일 내용입니다.
-  ```nginx
-  server {
-      listen 80;
-      server_name [도메인];
+```bash
+# 프로젝트 루트 디렉토리에서 실행
+./setup.sh
+```
 
-      # HTTP 요청을 HTTPS로 301 강제 리다이렉트
-      return 301 https://$host$request_uri;
-  }
+### 2. 수동 실행 프로세스 (참고)
+각 단계를 수동으로 직접 수행하여 검증하고 싶다면, `query` 디렉토리로 이동하여 다음 명령어들을 순차적으로 실행할 수 있습니다.
 
-  server {
-      listen 443 ssl;
-      server_name [도메인];
+```bash
+# 1. 터미널에서 query 디렉토리로 이동하여 기존 데이터베이스 파일 초기화
+rm -f library.db
 
-      # Let's Encrypt SSL 인증서 및 개인키 경로 설정
-      ssl_certificate /etc/letsencrypt/live/[도메인]/fullchain.pem;
-      ssl_certificate_key /etc/letsencrypt/live/[도메인]/privkey.pem;
+# 2. DDL 스크립트 실행 (외래키 제약조건 활성화 및 스키마 생성)
+sqlite3 library.db < schema.sql
 
-      # 보안성 향상을 위한 프로토콜 및 암호화 목록 명시
-      ssl_protocols TLSv1.2 TLSv1.3;
-      ssl_ciphers HIGH:!aNULL:!MD5;
+# 3. 샘플 데이터(DML) 삽입
+sqlite3 library.db < data.sql
 
-      location / {
-          root /usr/share/nginx/html;
-          index index.html index.htm;
-      }
-  }
-  ```
+# 4. 핵심 및 보너스 쿼리 일괄 실행 및 파일 추출 (.headers on, .mode column 자동 적용됨)
+sqlite3 library.db < queries.sql > query_results.txt
+```
+---
+
+## 🗺️ 데이터베이스 모델링 및 ERD
+
+본 도서 대여 데이터베이스는 **분류(Category), 회원(Member), 도서(Book), 대여(Rental)**의 4대 핵심 엔티티를 도출하여 구축되었습니다.
+
+### Entity Relationship Diagram (ERD)
+
+```mermaid
+erDiagram
+    CATEGORY {
+        int id PK "카테고리 고유 식별자"
+        varchar name UK "카테고리명 (NOT NULL, UNIQUE)"
+    }
+    MEMBER {
+        int id PK "회원 고유 식별자"
+        varchar name "이름 (NOT NULL)"
+        varchar email UK "이메일 (NOT NULL, UNIQUE)"
+        varchar phone "전화번호 (NULL 허용)"
+        date join_date "가입일 (기본값 CURRENT_DATE)"
+    }
+    BOOK {
+        int id PK "도서 고유 식별자"
+        varchar title "도서명 (NOT NULL)"
+        varchar author "저자명 (NOT NULL)"
+        int price "도서 가격 (NOT NULL, CHECK >= 0)"
+        date published_date "출판일"
+        int category_id FK "카테고리 식별자 (ON DELETE RESTRICT)"
+    }
+    RENTAL {
+        int id PK "대여 트랜잭션 식별자"
+        int member_id FK "대여 회원 식별자 (ON DELETE CASCADE)"
+        int book_id FK "대여 도서 식별자 (ON DELETE RESTRICT)"
+        date rental_date "대여일 (NOT NULL, 기본값 CURRENT_DATE)"
+        date return_date "반납일 (미반납 시 NULL)"
+        varchar status "대여 상태 (NOT NULL, CHECK: RENTED/RETURNED/OVERDUE)"
+    }
+
+    CATEGORY ||--o{ BOOK : "categorizes (1:N)"
+    MEMBER ||--o{ RENTAL : "initiates (1:N)"
+    BOOK ||--o{ RENTAL : "undergoes (1:N)"
+```
+
+### 테이블 간 1:N 관계 설명
+
+1. **CATEGORY (1) : BOOK (N)**  
+   * 한 카테고리(예: 컴퓨터과학) 아래에는 여러 권의 책이 귀속될 수 있습니다. 
+   * `BOOK` 테이블의 `category_id` 컬럼이 `CATEGORY` 테이블의 `id`를 가리켜 소속 관계를 표현합니다.
+2. **MEMBER (1) : RENTAL (N)**  
+   * 한 명의 회원은 가입 기간 동안 여러 차례 도서를 대여할 수 있습니다.
+   * `RENTAL` 테이블의 `member_id` 컬럼이 `MEMBER` 테이블의 `id`를 참조하여 대여 기록의 주체를 특정합니다.
+3. **BOOK (1) : RENTAL (N)**  
+   * 한 권의 책은 시간이 흐르며 대여와 반납을 반복하여 여러 번의 대여 트랜잭션에 기여할 수 있습니다.
+   * `RENTAL` 테이블의 `book_id` 컬럼이 `BOOK` 테이블의 `id`를 참조합니다.
 
 ---
 
-## 4. 보너스 과제 2: Docker 컨테이너 배포 상세 정보
-> EC2 인스턴스 내부에 Docker 엔진을 설치하고, 컨테이너 환경으로 Nginx 웹 서비스를 격리하여 구성했습니다.
+## 📥 샘플 데이터 적재 아키텍처
 
-* **실행한 컨테이너 이미지명**: `nginx:latest` (공식 Nginx 이미지)
-* **컨테이너 실행 명령어**:
-  ```bash
-  sudo docker run -d \
-    -p 80:80 \
-    -p 443:443 \
-    -v /etc/letsencrypt:/etc/letsencrypt \
-    -v ~/nginx/conf.d:/etc/nginx/conf.d \
-    --name nginx-https \
-    nginx
-  ```
-* **포트 매핑 정보**:
-  - `80:80`: 호스트(EC2) 포트 80번을 컨테이너 내부 80번 포트로 전달 (HTTP 접속 및 HTTPS 리다이렉션 처리 목적)
-  - `443:443`: 호스트(EC2) 포트 443번을 컨테이너 내부 443번 포트로 전달 (HTTPS SSL 암호화 통신 처리 목적)
-* **볼륨 마운트 정보**:
-  - `/etc/letsencrypt:/etc/letsencrypt`: 호스트에 생성된 Let's Encrypt SSL 인증서 디렉토리를 컨테이너 내부에 공유
-  - `~/nginx/conf.d:/etc/nginx/conf.d`: 호스트에 작성된 SSL 리다이렉션 Nginx 설정 파일을 컨테이너 내부 가상 호스트 설정 경로에 주입
+외래키 제약조건이 걸려 있는 시스템에서는 아무 테이블이나 먼저 데이터를 넣을 수 없습니다. 데이터 간의 **참조 종속성 계층(Referential Dependency Hierarchy)**을 고려해 데이터를 삽입해야 에러가 발생하지 않습니다.
 
-### Docker 검증 스크린샷 1: 컨테이너 정상 구동 (`docker ps`)
-* **HTTP(80) 포트 구동 상태**:  
-  ![docker ps 화면(80)](./docs/dockerps_80.png)
-* **HTTPS(443) 포트 구동 상태**:  
-  ![docker ps 화면(443)](./docs/dockerps_443.png)
+```mermaid
+graph TD
+    A[1계층: 마스터 테이블<br>CATEGORY, MEMBER] -->|참조| B[2계층: 중간 기준 테이블<br>BOOK]
+    A -->|참조| C[3계층: 거래 트랜잭션 테이블<br>RENTAL]
+    B -->|참조| C
+```
 
-### Docker 검증 스크린샷 2: 외부 접속 확인
-* **HTTP 접속 시도 및 HTTPS 리다이렉션**:  
-  ![외부 접속 화면(HTTP)](./docs/http.png)
-* **HTTPS 보안 접속 최종 확인**:  
-  ![외부 접속 화면(HTTPS)](./docs/https.png)
+1. **1계층 (독립 데이터)**: `CATEGORY`(10행), `MEMBER`(11행)  
+   * 다른 테이블을 참조하지 않으므로 가장 먼저 생성하고 데이터를 삽입합니다.
+2. **2계층 (1차 종속 데이터)**: `BOOK`(11행)  
+   * 생성된 `CATEGORY.id` 중 하나를 반드시 가지고 있어야 하므로, `CATEGORY` 적재 후에 삽입합니다.
+3. **3계층 (2차 종속 데이터)**: `RENTAL`(15행)  
+   * 빌리는 회원(`MEMBER`)과 빌려주는 책(`BOOK`)이 모두 실재해야 하므로 가장 마지막에 적재합니다.
 
 ---
 
-## 5. 트러블슈팅 보고서
-인프라 구축 및 설정 과정에서 발생했던 결제 및 환경 관련 문제와 해결 과정을 구조적으로 기록한 문서입니다.
-* 📄 **문서 바로가기**: [트러블슈팅 보고서 (troubleshooting.md)](./docs/troubleshooting.md)
+## 🔍 핵심 SQL 쿼리 및 분석 요약
+
+과제 수행에 필요한 15+1개 쿼리는 [queries.sql](file:///Users/f22losophysics1091/Desktop/glad/query/queries.sql) 파일에 가장 단순하고 직관적인 형태로 작성되어 있습니다.
+
+### 쿼리 및 분석 범위 요약
+- **기본 조회 (Query 1 ~ 4)**: 전체 회원 목록 조회(가입일 순), 고가 도서 필터링, 이메일 패턴 매칭 및 페이징, 카테고리 목록 조회.
+- **테이블 조인 (Query 5 ~ 8)**: 대여 기록과 회원 정보 결합(Inner Join), 도서와 카테고리 결합(Inner Join), 도서별 대여일 조회(Left Join), 회원별 대여 상태 조회(Left Join).
+- **집계 및 그룹화 (Query 9 ~ 11)**: 카테고리별 도서 평균 가격, 회원별 누적 대여 횟수, 카테고리별 도서 총 가격 합산.
+- **서브쿼리 (Query 12 ~ 13)**: 평균 도서 가격 상위 도서 필터링, 대여 이력이 없는 회원 추출.
+- **데이터 조작 (Query 14 ~ 15)**: 특정 대여 기록을 반납 완료로 업데이트, 특정 회원 삭제를 통한 외래키 CASCADE 검증.
+- **성능 최적화 (Query 16)**: 회원별 대여 기록 조회 최적화를 위한 인덱스 생성 (`CREATE INDEX idx_rental_member ON RENTAL(member_id)`).
 
 ---
 
-## 6. 리소스 정리 체크리스트 (운영 안정성/과금 방지)
-실습 종료 후 과금을 방지하기 위해 생성된 모든 리소스(EC2, 보안그룹, VPC 등)를 안전하게 삭제하고 확인한 체크리스트입니다.
-* 📄 **문서 바로가기**: [리소스 정리 체크리스트 (cleanup-checklist.md)](./docs/cleanup-checklist.md)
+## 🏆 보너스 과제 분석 요약
+
+상세 쿼리와 작동 설명은 [queries.sql](file:///Users/f22losophysics1091/Desktop/glad/query/queries.sql) 파일의 최하단(`PART G: 보너스 과제`)에서 확인할 수 있습니다.
+
+1. **JOIN vs Subquery 비교**: '이영희' 회원의 대여 기록 조회 시 JOIN 방식과 Subquery 방식의 문법 구조 및 결과 비교.
+2. **참조 무결성 파괴 실험**: 존재하지 않는 카테고리 ID(999)로 도서 등록 시도 시 외래키 제약조건 위배 에러(`FOREIGN KEY constraint failed`) 유도.
+3. **비즈니스 의사결정 미니 리포트**: 
+   - 지표 1: 가장 대여가 많이 된 도서 TOP 3 (도서 ID 및 횟수)
+   - 지표 2: 카테고리별 등록된 도서 개수
+   - 지표 3: 현재 대여 중인 도서 건수
+
+---
+
+## 🏛️ 아키텍처 개선 제안: Soft Delete 패턴 도입
+
+우리 설계에서는 회원 탈퇴 시 `ON DELETE CASCADE`를 사용해 회원의 대여 이력을 함께 지워버립니다. 하지만 실무에서는 큰 문제를 낳습니다.
+
+* **CASCADE의 문제점**: 대여 이력은 도서관의 자산 통계, 도서 마모도 분석, 매출 결산에 쓰이는 귀중한 지표입니다. 회원이 떠났다고 거래 이력까지 지우면 연말 결산 시 수치가 불일치하는 **정합성 붕괴**가 일어납니다.
+* **해결 대안 (Soft Delete)**: 
+  - `MEMBER` 테이블에 물리적인 `DELETE` 명령을 내리지 않고, `is_active` (1/0) 혹은 `member_status` ('ACTIVE', 'WITHDRAWN') 필드를 둡니다.
+  - 회원이 탈퇴할 때 `UPDATE MEMBER SET member_status = 'WITHDRAWN' WHERE id = 11;` 형태로 상태만 변경(논리적 삭제)합니다.
+  - 이 방식은 회원의 시스템 로그인은 막으면서도, 외래키로 연결된 대여 이력(`RENTAL`)은 훼손 없이 보존하므로 통계 정합성을 완벽하게 지킬 수 있습니다.

@@ -1,0 +1,1865 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Mini-Redis Interactive Visualizer & Learning Hub</title>
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #0a0d14;
+      --bg-secondary: #121824;
+      --bg-card: #1a2234;
+      --bg-card-hover: #222d42;
+      --accent-red: #ff4757;
+      --accent-orange: #ff7f50;
+      --accent-green: #2ed573;
+      --accent-blue: #1e90ff;
+      --accent-purple: #70a1ff;
+      --accent-pink: #e84393;
+      --text-main: #f1f2f6;
+      --text-muted: #a4b0be;
+      --border-color: #2f3640;
+      --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-code: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      font-family: var(--font-ui);
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header Styling */
+    header {
+      background: rgba(18, 24, 36, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+      padding: 16px 32px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-icon {
+      width: 38px;
+      height: 38px;
+      background: linear-gradient(135deg, var(--accent-red), var(--accent-orange));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 20px;
+      box-shadow: 0 4px 15px rgba(255, 71, 87, 0.4);
+    }
+
+    .brand-text h1 {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    .brand-text p {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .nav-tabs {
+      display: flex;
+      background: var(--bg-primary);
+      padding: 4px;
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-weight: 500;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tab-btn.active {
+      background: var(--bg-card);
+      color: var(--text-main);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+      font-weight: 600;
+    }
+
+    .tab-btn:hover:not(.active) {
+      color: var(--text-main);
+    }
+
+    /* Stats Bar */
+    .stats-bar {
+      display: flex;
+      gap: 16px;
+    }
+
+    .stat-badge {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .stat-value {
+      font-family: var(--font-code);
+      font-weight: 700;
+      color: var(--accent-green);
+    }
+
+    /* Main Container */
+    main {
+      flex: 1;
+      padding: 24px 32px;
+      max-width: 1600px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .view-section {
+      display: none;
+    }
+
+    .view-section.active {
+      display: block;
+    }
+
+    /* Simulator Layout */
+    .simulator-grid {
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      gap: 24px;
+    }
+
+    /* Control Panel & Terminal */
+    .control-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--text-main);
+    }
+
+    .card-title .badge {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 6px;
+      background: rgba(30, 144, 255, 0.15);
+      color: var(--accent-blue);
+      border: 1px solid rgba(30, 144, 255, 0.3);
+    }
+
+    /* Terminal Styling */
+    .terminal-window {
+      background: #080a0f;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      font-family: var(--font-code);
+      overflow: hidden;
+    }
+
+    .terminal-header {
+      background: #121620;
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .dot.red { background: #ff5f56; }
+    .dot.yellow { background: #ffbd2e; }
+    .dot.green { background: #27c93f; }
+
+    .terminal-title {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-left: 8px;
+    }
+
+    .terminal-body {
+      padding: 14px;
+      height: 220px;
+      overflow-y: auto;
+      font-size: 13px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .log-entry {
+      display: flex;
+      gap: 8px;
+      word-break: break-all;
+    }
+
+    .log-entry .prompt {
+      color: var(--accent-green);
+      font-weight: 600;
+    }
+
+    .log-entry .cmd {
+      color: #fff;
+    }
+
+    .log-entry .response {
+      color: var(--accent-purple);
+      margin-left: 16px;
+    }
+
+    .log-entry .error {
+      color: var(--accent-red);
+      margin-left: 16px;
+    }
+
+    .terminal-input-row {
+      display: flex;
+      align-items: center;
+      padding: 10px 14px;
+      background: #0c0f17;
+      border-top: 1px solid var(--border-color);
+      gap: 8px;
+    }
+
+    .terminal-input-row span {
+      color: var(--accent-green);
+      font-family: var(--font-code);
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    .terminal-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #fff;
+      font-family: var(--font-code);
+      font-size: 13px;
+    }
+
+    /* Preset Buttons */
+    .preset-btns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .preset-btn {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: left;
+    }
+
+    .preset-btn:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--accent-blue);
+      transform: translateY(-1px);
+    }
+
+    /* Pipeline Status Indicator */
+    .pipeline-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 20px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      padding: 12px 20px;
+      border-radius: 12px;
+    }
+
+    .pipeline-step {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      background: var(--bg-secondary);
+      border: 1px solid transparent;
+      transition: all 0.3s ease;
+      opacity: 0.6;
+    }
+
+    .pipeline-step.active {
+      opacity: 1;
+      background: rgba(30, 144, 255, 0.15);
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 12px rgba(30, 144, 255, 0.3);
+    }
+
+    .pipeline-step .step-num {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .pipeline-step.active .step-num {
+      background: var(--accent-blue);
+      color: #fff;
+    }
+
+    .pipeline-step .step-text {
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .pipeline-arrow {
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    /* Visualizers Grid */
+    .ds-visualizer-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    /* Visualizer Cards */
+    .ds-card {
+      min-height: 280px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .ds-container {
+      flex: 1;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 14px;
+      overflow-x: auto;
+      position: relative;
+    }
+
+    /* HashMap Visualization */
+    .bucket-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .bucket-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255,255,255,0.02);
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .bucket-idx {
+      font-family: var(--font-code);
+      font-size: 11px;
+      width: 65px;
+      color: var(--accent-orange);
+      font-weight: 600;
+    }
+
+    .bucket-chain {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .kv-node {
+      background: linear-gradient(135deg, #2b3853, #1e283d);
+      border: 1px solid #3d4f75;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-family: var(--font-code);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      animation: fadeIn 0.3s ease;
+    }
+
+    .kv-node .k { color: var(--accent-purple); font-weight: 600; }
+    .kv-node .v { color: var(--accent-green); }
+
+    .chain-arrow {
+      color: var(--text-muted);
+      font-size: 12px;
+    }
+
+    /* DoublyLinkedList Visualization */
+    .dll-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 20px 10px;
+      overflow-x: auto;
+    }
+
+    .dll-node {
+      background: var(--bg-card);
+      border: 2px solid var(--border-color);
+      border-radius: 10px;
+      padding: 10px 14px;
+      min-width: 100px;
+      text-align: center;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .dll-node.sentinel {
+      border-style: dashed;
+      background: rgba(255, 255, 255, 0.03);
+      opacity: 0.7;
+    }
+
+    .dll-node.mru {
+      border-color: var(--accent-green);
+      box-shadow: 0 0 12px rgba(46, 213, 115, 0.3);
+    }
+
+    .dll-node.lru {
+      border-color: var(--accent-red);
+      box-shadow: 0 0 12px rgba(255, 71, 87, 0.3);
+    }
+
+    .dll-node .label {
+      font-size: 10px;
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .dll-node.mru .label { color: var(--accent-green); }
+    .dll-node.lru .label { color: var(--accent-red); }
+
+    .dll-node .key-val {
+      font-family: var(--font-code);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .dll-pointer {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: var(--text-muted);
+      font-size: 12px;
+      font-family: var(--font-code);
+    }
+
+    /* MinHeap Tree Visualization */
+    .heap-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .heap-array-view {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+    }
+
+    .heap-cell {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 6px 10px;
+      min-width: 90px;
+      text-align: center;
+      font-family: var(--font-code);
+      font-size: 11px;
+    }
+
+    .heap-cell.root {
+      border-color: var(--accent-orange);
+      background: rgba(255, 127, 80, 0.15);
+    }
+
+    .heap-cell .idx {
+      font-size: 9px;
+      color: var(--text-muted);
+      margin-bottom: 2px;
+    }
+
+    /* Dynamic Array / Memory Gauge */
+    .memory-gauge-container {
+      margin-bottom: 14px;
+    }
+
+    .gauge-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      margin-bottom: 6px;
+    }
+
+    .gauge-bar-bg {
+      height: 10px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 5px;
+      overflow: hidden;
+    }
+
+    .gauge-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-blue), var(--accent-pink));
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .array-slots {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+    }
+
+    .array-slot {
+      width: 44px;
+      height: 44px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      background: var(--bg-card);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-code);
+      font-size: 11px;
+      position: relative;
+    }
+
+    .array-slot.occupied {
+      background: rgba(30, 144, 255, 0.2);
+      border-color: var(--accent-blue);
+      color: #fff;
+    }
+
+    .array-slot .slot-idx {
+      position: absolute;
+      top: 2px;
+      left: 4px;
+      font-size: 8px;
+      color: var(--text-muted);
+    }
+
+    /* Top-Down Roadmap Styling */
+    .roadmap-container {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .roadmap-step-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .roadmap-step-card:hover {
+      border-color: var(--accent-purple);
+      box-shadow: 0 6px 24px rgba(112, 161, 255, 0.15);
+    }
+
+    .step-header {
+      background: var(--bg-secondary);
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .step-title-group {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .step-badge {
+      background: var(--accent-purple);
+      color: #fff;
+      font-weight: 700;
+      font-size: 13px;
+      padding: 4px 12px;
+      border-radius: 20px;
+    }
+
+    .step-title-group h2 {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .file-tag {
+      font-family: var(--font-code);
+      font-size: 13px;
+      color: var(--accent-orange);
+      background: rgba(255, 127, 80, 0.1);
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 127, 80, 0.2);
+    }
+
+    .step-body {
+      padding: 24px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .step-explain {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .explain-box {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 14px 18px;
+    }
+
+    .explain-box h4 {
+      font-size: 13px;
+      color: var(--accent-blue);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .explain-box p {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    .code-viewer {
+      background: #080a0f;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 16px;
+      font-family: var(--font-code);
+      font-size: 12px;
+      overflow-x: auto;
+      max-height: 320px;
+      overflow-y: auto;
+      line-height: 1.5;
+    }
+
+    .code-viewer pre {
+      margin: 0;
+    }
+
+    .kw { color: #ff79c6; font-weight: 600; }
+    .fn { color: #50fa7b; }
+    .str { color: #f1fa8c; }
+    .cm { color: #6272a4; font-style: italic; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    /* Mobile & Responsive Optimizations for Galaxy S21+ (360px - 412px viewport) */
+    @media (max-width: 900px) {
+      header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+        padding: 12px 16px;
+        position: relative;
+      }
+
+      .brand {
+        justify-content: flex-start;
+      }
+
+      .brand-icon {
+        width: 32px;
+        height: 32px;
+        font-size: 16px;
+      }
+
+      .brand-text h1 {
+        font-size: 16px;
+      }
+
+      .brand-text p {
+        font-size: 11px;
+      }
+
+      .nav-tabs {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .tab-btn {
+        flex: 1;
+        justify-content: center;
+        padding: 10px 12px;
+        font-size: 13px;
+        min-height: 44px; /* Touch target size */
+      }
+
+      .stats-bar {
+        width: 100%;
+        overflow-x: auto;
+        padding-bottom: 4px;
+        justify-content: flex-start;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .stat-badge {
+        flex-shrink: 0;
+        font-size: 12px;
+        padding: 4px 10px;
+      }
+
+      main {
+        padding: 14px 10px;
+        padding-bottom: calc(20px + env(safe-area-inset-bottom));
+      }
+
+      .simulator-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      .pipeline-bar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 6px;
+        padding: 10px 12px;
+      }
+
+      .pipeline-arrow {
+        display: none;
+      }
+
+      .pipeline-step {
+        padding: 6px 10px;
+      }
+
+      .ds-visualizer-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      .card {
+        padding: 14px;
+        border-radius: 12px;
+      }
+
+      .card-title {
+        font-size: 14px;
+      }
+
+      .preset-btns {
+        display: flex;
+        overflow-x: auto;
+        gap: 8px;
+        padding-bottom: 6px;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .preset-btn {
+        flex-shrink: 0;
+        white-space: nowrap;
+        padding: 10px 14px;
+        font-size: 12px;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+      }
+
+      .terminal-body {
+        height: 160px;
+        font-size: 12px;
+        padding: 10px;
+      }
+
+      .terminal-input-row {
+        padding: 8px 10px;
+      }
+
+      .terminal-input {
+        font-size: 13px;
+      }
+
+      .step-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        padding: 12px 16px;
+      }
+
+      .step-title-group h2 {
+        font-size: 15px;
+      }
+
+      .step-body {
+        grid-template-columns: 1fr;
+        padding: 14px;
+        gap: 14px;
+      }
+
+      .code-viewer {
+        max-height: 240px;
+        font-size: 11px;
+        padding: 12px;
+      }
+
+      .explain-box {
+        padding: 12px 14px;
+      }
+
+      .explain-box h4 {
+        font-size: 12px;
+      }
+
+      .explain-box p {
+        font-size: 12px;
+      }
+
+      .kv-node {
+        font-size: 11px;
+        padding: 3px 6px;
+      }
+
+      .dll-node {
+        min-width: 80px;
+        padding: 8px 10px;
+      }
+
+      .dll-node .key-val {
+        font-size: 11px;
+      }
+
+      .heap-cell {
+        min-width: 75px;
+        padding: 4px 8px;
+        font-size: 10px;
+      }
+
+      .array-slot {
+        width: 38px;
+        height: 38px;
+        font-size: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="brand">
+      <div class="brand-icon">R</div>
+      <div class="brand-text">
+        <h1>Mini-Redis Interactive Visualizer</h1>
+        <p>Top-down Code Roadmap & Real-time Subsystem Simulator</p>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="nav-tabs">
+      <button class="tab-btn active" onclick="switchTab('sim')">
+        ⚡ Live Simulator
+      </button>
+      <button class="tab-btn" onclick="switchTab('roadmap')">
+        📚 Top-Down Code Roadmap
+      </button>
+    </div>
+
+    <!-- Live Engine Stats -->
+    <div class="stats-bar">
+      <div class="stat-badge">
+        <span>Keys:</span>
+        <span id="stat-keys" class="stat-value">0</span>
+      </div>
+      <div class="stat-badge">
+        <span>Memory:</span>
+        <span id="stat-mem" class="stat-value">0 B</span>
+      </div>
+      <div class="stat-badge">
+        <span>Max:</span>
+        <span id="stat-maxmem" class="stat-value">Unset</span>
+      </div>
+      <div class="stat-badge">
+        <span>Evictions:</span>
+        <span id="stat-evicted" class="stat-value">0</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- SECTION 1: LIVE SIMULATOR & DATA STRUCTURE VISUALIZER -->
+    <div id="sim-section" class="view-section active">
+      
+      <!-- Top Pipeline Indicator -->
+      <div class="pipeline-bar">
+        <div id="pipe-1" class="pipeline-step">
+          <div class="step-num">1</div>
+          <div class="step-text">Data Refinement</div>
+        </div>
+        <div class="pipeline-arrow">➔</div>
+        <div id="pipe-2" class="pipeline-step">
+          <div class="step-num">2</div>
+          <div class="step-text">Validation & Memory Check</div>
+        </div>
+        <div class="pipeline-arrow">➔</div>
+        <div id="pipe-3" class="pipeline-step">
+          <div class="step-num">3</div>
+          <div class="step-text">Logic Execution & Data Sync</div>
+        </div>
+      </div>
+
+      <div class="simulator-grid">
+        <!-- Control Panel & REPL Terminal -->
+        <div class="control-panel">
+          <div class="card">
+            <div class="card-title">
+              <span>Interactive CLI Terminal</span>
+              <span class="badge">REPL Engine</span>
+            </div>
+            
+            <div class="terminal-window">
+              <div class="terminal-header">
+                <div class="dot red"></div>
+                <div class="dot yellow"></div>
+                <div class="dot green"></div>
+                <span class="terminal-title">mini-redis-cli — zsh</span>
+              </div>
+              <div id="terminal-body" class="terminal-body">
+                <div class="log-entry">
+                  <span class="prompt">127.0.0.1:6379></span>
+                  <span class="cmd">PING</span>
+                </div>
+                <div class="log-entry">
+                  <span class="response">PONG</span>
+                </div>
+              </div>
+              <div class="terminal-input-row">
+                <span>127.0.0.1:6379></span>
+                <input type="text" id="cmd-input" class="terminal-input" placeholder="e.g., SET user:1 Alice, GET user:1, EXPIRE user:1 10" autofocus>
+              </div>
+            </div>
+
+            <!-- Quick Presets -->
+            <div class="preset-btns">
+              <button class="preset-btn" onclick="runPreset('SET user:1 Alice')">🚀 SET user:1 Alice</button>
+              <button class="preset-btn" onclick="runPreset('GET user:1')">🔍 GET user:1</button>
+              <button class="preset-btn" onclick="runPreset('EXPIRE user:1 15')">⏰ EXPIRE user:1 15s</button>
+              <button class="preset-btn" onclick="runPreset('CONFIG SET maxmemory 30')">🔥 Limit MaxMemory 30B</button>
+              <button class="preset-btn" onclick="runPreset('SET user:2 Bob')">⚡ SET user:2 (LRU Test)</button>
+              <button class="preset-btn" onclick="runPreset('PUBLISH news Hello')">📡 PUBLISH news Hello</button>
+            </div>
+          </div>
+
+          <!-- Explanation box for current command -->
+          <div class="card">
+            <div class="card-title">
+              <span>Execution Explanation</span>
+              <span class="badge">Pipeline Trace</span>
+            </div>
+            <div id="command-trace-explain" style="font-size:13px; color:var(--text-muted); line-height:1.6;">
+              명령어를 입력하면 4개 자료구조(HashMap, DoublyLinkedList, MinHeap, DynamicArray)에 동시 반영되는 과정이 실시간 애니메이션으로 표시됩니다.
+            </div>
+          </div>
+        </div>
+
+        <!-- 4 Data Structure Visualizers -->
+        <div class="ds-visualizer-grid">
+          
+          <!-- HashMap Visualizer -->
+          <div class="card ds-card">
+            <div class="card-title">
+              <span>1. HashMap (Key-Value Store)</span>
+              <span id="hashmap-meta" class="badge">Cap: 8 | Load: 0.00</span>
+            </div>
+            <div class="ds-container">
+              <div id="hashmap-buckets" class="bucket-list">
+                <!-- Dynamically populated buckets -->
+              </div>
+            </div>
+          </div>
+
+          <!-- DoublyLinkedList (LRU) Visualizer -->
+          <div class="card ds-card">
+            <div class="card-title">
+              <span>2. DoublyLinkedList (LRU Eviction Order)</span>
+              <span class="badge">Head=MRU | Tail=LRU</span>
+            </div>
+            <div class="ds-container">
+              <div id="dll-view" class="dll-container">
+                <!-- Dynamically populated DLL nodes -->
+              </div>
+            </div>
+          </div>
+
+          <!-- MinHeap (TTL Expiration) Visualizer -->
+          <div class="card ds-card">
+            <div class="card-title">
+              <span>3. MinHeap (TTL Expiration Queue)</span>
+              <span class="badge">Root=Earliest Expiration</span>
+            </div>
+            <div class="ds-container">
+              <div id="heap-view" class="heap-grid">
+                <!-- Dynamically populated heap nodes -->
+              </div>
+            </div>
+          </div>
+
+          <!-- DynamicArray & Memory Visualizer -->
+          <div class="card ds-card">
+            <div class="card-title">
+              <span>4. DynamicArray & UTF-8 Memory</span>
+              <span class="badge">Fixed Array + 2x Resize</span>
+            </div>
+            <div class="ds-container">
+              <div class="memory-gauge-container">
+                <div class="gauge-header">
+                  <span>Used Memory</span>
+                  <span id="mem-gauge-label">0 / Unlimited Bytes</span>
+                </div>
+                <div class="gauge-bar-bg">
+                  <div id="mem-gauge-fill" class="gauge-bar-fill"></div>
+                </div>
+              </div>
+              <div id="array-slots-view" class="array-slots">
+                <!-- Dynamically populated slots -->
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 2: TOP-DOWN CODE ROADMAP -->
+    <div id="roadmap-section" class="view-section">
+      <div style="margin-bottom: 24px;">
+        <h2 style="font-size: 22px; font-weight:700;">Top-Down Execution-Flow Code Roadmap</h2>
+        <p style="color:var(--text-muted); font-size: 14px;">CLI 입력 수신부터 Core 3단계 파이프라인, 자료구조 저장소, 상수 정의까지의 코드 호출 궤적 순서입니다.</p>
+      </div>
+
+      <div class="roadmap-container">
+        
+        <!-- Step 1: cli.py -->
+        <div class="roadmap-step-card">
+          <div class="step-header">
+            <div class="step-title-group">
+              <span class="step-badge">Step 1</span>
+              <h2>CLI REPL & 입력 수신 모듈</h2>
+            </div>
+            <span class="file-tag">cli.py</span>
+          </div>
+          <div class="step-body">
+            <div class="step-explain">
+              <div class="explain-box">
+                <h4>📌 어떤 로직인가</h4>
+                <p>사용자 입력을 무한 루프(REPL)로 수신하고, 공백 기준으로 명령어(SET, GET 등)와 인자를 나누어 `MiniRedis` 코어 엔진으로 전달합니다.</p>
+              </div>
+              <div class="explain-box">
+                <h4>🎯 왜 존재하는가</h4>
+                <p>터미널 대화형 인터페이스를 제공하고, 파이썬 대화창처럼 직관적으로 레디스 명령어를 수행 및 응답 받기 위해 존재합니다.</p>
+              </div>
+              <div class="explain-box">
+                <h4>💡 남에게 설명할 때 핵심 포인트</h4>
+                <p>"CLI는 인터페이스 역할만 수행하고, 모든 실제 검증과 데이터 저장은 `MiniRedis` 클래스에 위임하여 단일 책임 원칙(SRP)을 준수합니다."</p>
+              </div>
+            </div>
+            <div class="code-viewer">
+<pre><span class="kw">class</span> MiniRedisCLI:
+    <span class="kw">def</span> <span class="fn">run</span>(self):
+        <span class="kw">while</span> True:
+            user_input = input(<span class="str">"127.0.0.1:6379> "</span>)
+            tokens = user_input.strip().split()
+            cmd, args = tokens[0].upper(), tokens[1:]
+            response = self.engine.execute(cmd, args)
+            print(response)</pre>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2: mini_redis_core.py -->
+        <div class="roadmap-step-card">
+          <div class="step-header">
+            <div class="step-title-group">
+              <span class="step-badge">Step 2</span>
+              <h2>메인 코어 엔진 & 오케스트레이션 모듈</h2>
+            </div>
+            <span class="file-tag">mini_redis_core.py</span>
+          </div>
+          <div class="step-body">
+            <div class="step-explain">
+              <div class="explain-box">
+                <h4>📌 어떤 로직인가</h4>
+                <p>4개 자료구조(HashMap, DoublyLinkedList, MinHeap, HashMap)를 결합하여 [Refinement -> Validation -> Logic Execution] 3단계 파이프라인을 총괄합니다.</p>
+              </div>
+              <div class="explain-box">
+                <h4>🎯 왜 존재하는가</h4>
+                <p>개별 자료구조 부품들을 연결하여 LRU 캐시 교체, 만료 시간 지연 삭제(Lazy Deletion), 바이트 메모리 측정 등 통합 인메모리 엔터프라이즈 로직을 작동시키기 위함입니다.</p>
+              </div>
+              <div class="explain-box">
+                <h4>💡 남에게 설명할 때 핵심 포인트</h4>
+                <p>"모든 커맨드는 먼저 만료된 키를 `_cleanup_expired()`로 청소(Lazy Deletion)한 뒤, maxmemory 도달 시 `_evict_lru()`로 가장 오래된 데이터를 밀어냅니다."</p>
+              </div>
+            </div>
+            <div class="code-viewer">
+<pre><span class="kw">class</span> MiniRedis:
+    <span class="kw">def</span> <span class="fn">set</span>(self, key: str, value: str):
+        <span class="cm"># 1. 지연 삭제 (Lazy Cleanup)</span>
+        self._cleanup_expired()
+        <span class="cm"># 2. 메모리 한도 검사 & LRU Eviction</span>
+        <span class="kw">while</span> self._is_oom(key, value):
+            self._evict_lru()
+        <span class="cm"># 3. 자료구조 동시 반영</span>
+        node = self.lru_list.add_front(key, value)
+        self.store.put(key, node)</pre>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3: hash_map.py -->
+        <div class="roadmap-step-card">
+          <div class="step-header">
+            <div class="step-title-group">
+              <span class="step-badge">Step 3</span>
+              <h2>다항식 롤링 해시 & 체이닝 해시맵</h2>
+            </div>
+            <span class="file-tag">hash_map.py</span>
+          </div>
+          <div class="step-body">
+            <div class="step-explain">
+              <div class="explain-box">
+                <h4>📌 어떤 로직인가</h4>
+                <p>다항식 롤링 해시공식 H(s)=(sum(s[i]*31^i)) mod (10^9+9)를 사용해 아나그램 충돌을 방지하고, 체이닝 리스트로 데이터를 저장합니다.</p>
+              </div>
+              <div class="explain-box">
+                <h4>🎯 왜 존재하는가</h4>
+                <p>파이썬 dict 없이 O(1) 시간 복잡도로 키-값 저장 및 접근을 가능하게 하기 위함입니다. Load Factor가 0.75에 달하면 2배 재해싱합니다.</p>
+              </div>
+              <div class="explain-box">
+                <h4>💡 남에게 설명할 때 핵심 포인트</h4>
+                <p>"'abc'와 'cba'가 같은 해시를 갖지 않도록 위치별 31의 거듭제곱을 곱해 해시를 생성하며, 충돌 시 버킷 내 체이닝으로 해결합니다."</p>
+              </div>
+            </div>
+            <div class="code-viewer">
+<pre><span class="kw">def</span> <span class="fn">_hash</span>(self, key: str) -> int:
+    hash_val, p, m, p_pow = 0, 31, 10**9 + 9, 1
+    <span class="kw">for</span> char <span class="kw">in</span> key:
+        hash_val = (hash_val + ord(char) * p_pow) % m
+        p_pow = (p_pow * p) % m
+    <span class="kw">return</span> hash_val % self._capacity</pre>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 4: doubly_linked_list.py -->
+        <div class="roadmap-step-card">
+          <div class="step-header">
+            <div class="step-title-group">
+              <span class="step-badge">Step 4</span>
+              <h2>Sentinel Node 패턴 이중 연결 리스트 (LRU)</h2>
+            </div>
+            <span class="file-tag">doubly_linked_list.py</span>
+          </div>
+          <div class="step-body">
+            <div class="step-explain">
+              <div class="explain-box">
+                <h4>📌 어떤 로직인가</h4>
+                <p>Head 더미 노드와 Tail 더미 노드를 배치하여 경계 조건 에러 없이 O(1) 시간에 노드 삽입, 제거, 맨 앞 이동을 수행합니다.</p>
+              </div>
+              <div class="explain-box">
+                <h4>🎯 왜 존재하는가</h4>
+                <p>LRU(Least Recently Used) 캐시 순서를 유지하기 위해 사용됩니다. 데이터가 읽히거나 쓰이면 Head(MRU)로 이동하고, 메모리 부족 시 Tail(LRU) 노드를 즉시 제거합니다.</p>
+              </div>
+              <div class="explain-box">
+                <h4>💡 남에게 설명할 때 핵심 포인트</h4>
+                <p>"Sentinel 패턴 덕분에 `if node.prev is None` 같은 예외 처리가 필요 없어 코드가 간결하고 100% O(1) 성능이 보장됩니다."</p>
+              </div>
+            </div>
+            <div class="code-viewer">
+<pre><span class="kw">def</span> <span class="fn">insert_front</span>(self, node: Node):
+    first = self.head.next
+    node.prev, node.next = self.head, first
+    self.head.next = node
+    first.prev = node
+    self._size += 1</pre>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 5: min_heap.py -->
+        <div class="roadmap-step-card">
+          <div class="step-header">
+            <div class="step-title-group">
+              <span class="step-badge">Step 5</span>
+              <h2>1차원 배열 기반 완전 이진 트리 최소 힙 (TTL)</h2>
+            </div>
+            <span class="file-tag">min_heap.py</span>
+          </div>
+          <div class="step-body">
+            <div class="step-explain">
+              <div class="explain-box">
+                <h4>📌 어떤 로직인가</h4>
+                <p>DynamicArray 위에 완전 이진 트리를 얹어 루트(0번 인덱스)에 가장 빠른 (만료시간, 키)를 항상 O(1)로 유지합니다.</p>
+              </div>
+              <div class="explain-box">
+                <h4>🎯 왜 존재하는가</h4>
+                <p>전체 키를 순회하지 않고도 가장 먼저 만료될 항목을 단 O(1) 검사 및 O(log N) 청소하기 위해 존재합니다.</p>
+              </div>
+              <div class="explain-box">
+                <h4>💡 남에게 설명할 때 핵심 포인트</h4>
+                <p>"부모 인덱스 `(i-1)//2`, 자식 인덱스 `2i+1`, `2i+2` 지수 공식을 이용해 pointer 객체 생성 없이 배열만으로 트리를 구성합니다."</p>
+              </div>
+            </div>
+            <div class="code-viewer">
+<pre><span class="kw">def</span> <span class="fn">_heapify_up</span>(self, index: int):
+    parent_idx = (index - 1) // 2
+    <span class="kw">while</span> index > 0 <span class="kw">and</span> self._data.get(index) < self._data.get(parent_idx):
+        self._swap(index, parent_idx)
+        index = parent_idx
+        parent_idx = (index - 1) // 2</pre>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 6: dynamic_array.py -->
+        <div class="roadmap-step-card">
+          <div class="step-header">
+            <div class="step-title-group">
+              <span class="step-badge">Step 6</span>
+              <h2>고정 크기 버퍼 & 2배 동적 확장 배열</h2>
+            </div>
+            <span class="file-tag">dynamic_array.py</span>
+          </div>
+          <div class="step-body">
+            <div class="step-explain">
+              <div class="explain-box">
+                <h4>📌 어떤 로직인가</h4>
+                <p>파이썬 내장 list 자동 확장을 쓰지 않고 `[None] * capacity` 고정 배열을 직접 할당받아 `_size` 포인터와 2배 리사이징을 구현합니다.</p>
+              </div>
+              <div class="explain-box">
+                <h4>🎯 왜 존재하는가</h4>
+                <p>모든 자료구조(HashMap 버킷, MinHeap 트리)의 최하단 기초 메모리 빌딩 블록으로 작동하기 위함입니다.</p>
+              </div>
+              <div class="explain-box">
+                <h4>💡 남에게 설명할 때 핵심 포인트</h4>
+                <p>"원시적인 고정 크기 메모리 상자 위에서 Amortized O(1) 요소 추가를 직접 구현한 밑바닥 부품입니다."</p>
+              </div>
+            </div>
+            <div class="code-viewer">
+<pre><span class="kw">def</span> <span class="fn">_resize</span>(self):
+    new_capacity = self._capacity * 2
+    new_data = [None] * new_capacity
+    <span class="kw">for</span> i <span class="kw">in</span> range(self._size):
+        new_data[i] = self._data[i]
+    self._data = new_data
+    self._capacity = new_capacity</pre>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 7: constants.py -->
+        <div class="roadmap-step-card">
+          <div class="step-header">
+            <div class="step-title-group">
+              <span class="step-badge">Step 7</span>
+              <h2>단일 진실 출처(SSOT) 상수 및 설정 규격</h2>
+            </div>
+            <span class="file-tag">constants.py</span>
+          </div>
+          <div class="step-body">
+            <div class="step-explain">
+              <div class="explain-box">
+                <h4>📌 어떤 로직인가</h4>
+                <p>Redis 프로토콜 명령어 문자열, 표준 응답 포맷(OK, (nil), (integer) N), 에러 메시지, 기본 튜닝 상수를 중앙 집약 관리합니다.</p>
+              </div>
+              <div class="explain-box">
+                <h4>🎯 왜 존재하는가</h4>
+                <p>코드 여러 곳에 하드코딩된 리터럴 문자열 오타 버그를 원천 차단하고 중앙 일관성을 유지하기 위해 존재합니다.</p>
+              </div>
+              <div class="explain-box">
+                <h4>💡 남에게 설명할 때 핵심 포인트</h4>
+                <p>"Python `Final` 타입 힌트를 적용하여 상수가 실행 도중 변조되지 않도록 정적 분석기 레벨에서 보호합니다."</p>
+              </div>
+            </div>
+            <div class="code-viewer">
+<pre><span class="kw">class</span> RedisCommands:
+    SET: Final[str] = <span class="str">"SET"</span>
+    GET: Final[str] = <span class="str">"GET"</span>
+    EXPIRE: Final[str] = <span class="str">"EXPIRE"</span>
+
+<span class="kw">class</span> ConfigDefaults:
+    INITIAL_CAPACITY: Final[int] = 8
+    DEFAULT_LOAD_FACTOR: Final[float] = 0.75</pre>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- JavaScript Simulator Engine -->
+  <script>
+    // --- MINI REDIS SIMULATOR ENGINE (JS Mirror of Python Code) ---
+    class Node {
+      constructor(key = null, val = null) {
+        this.key = key;
+        this.val = val;
+        this.prev = null;
+        this.next = null;
+      }
+    }
+
+    class DoublyLinkedList {
+      constructor() {
+        this.head = new Node();
+        this.tail = new Node();
+        this.head.next = this.tail;
+        this.tail.prev = this.head;
+        this.size = 0;
+      }
+
+      insertFront(node) {
+        const first = this.head.next;
+        node.prev = this.head;
+        node.next = first;
+        this.head.next = node;
+        first.prev = node;
+        this.size++;
+      }
+
+      addFront(key, val) {
+        const node = new Node(key, val);
+        this.insertFront(node);
+        return node;
+      }
+
+      removeNode(node) {
+        if (!node || node === this.head || node === this.tail) return;
+        node.prev.next = node.next;
+        node.next.prev = node.prev;
+        node.prev = null;
+        node.next = null;
+        this.size--;
+      }
+
+      moveToFront(node) {
+        this.removeNode(node);
+        this.insertFront(node);
+      }
+
+      removeBack() {
+        if (this.size === 0) return null;
+        const last = this.tail.prev;
+        this.removeNode(last);
+        return last;
+      }
+
+      toArray() {
+        const res = [];
+        let curr = this.head.next;
+        while (curr && curr !== this.tail) {
+          res.push({ key: curr.key, val: curr.val });
+          curr = curr.next;
+        }
+        return res;
+      }
+    }
+
+    class MiniRedisEngine {
+      constructor() {
+        this.capacity = 8;
+        this.loadFactor = 0.75;
+        this.store = new Map(); // key -> { val, node, expireAt }
+        this.lruList = new DoublyLinkedList();
+        this.ttlHeap = []; // { expireAt, key }
+        this.maxmemory = 0; // 0 = unlimited
+        this.usedMemory = 0;
+        this.evictedKeys = 0;
+        this.channels = new Map(); // channel -> array of messages
+      }
+
+      calcMemory(key, val) {
+        const encoder = new TextEncoder();
+        return encoder.encode(key).length + encoder.encode(String(val)).length;
+      }
+
+      hash(key) {
+        let hashVal = 0;
+        const p = 31;
+        const m = 1000000009;
+        let pPow = 1;
+        for (let i = 0; i < key.length; i++) {
+          hashVal = (hashVal + key.charCodeAt(i) * pPow) % m;
+          pPow = (pPow * p) % m;
+        }
+        return hashVal % this.capacity;
+      }
+
+      cleanupExpired() {
+        const now = Date.now() / 1000;
+        while (this.ttlHeap.length > 0) {
+          const peek = this.ttlHeap[0];
+          if (peek.expireAt > now) break;
+          this.popHeap();
+          const entry = this.store.get(peek.key);
+          if (entry && entry.expireAt && entry.expireAt <= now) {
+            this.rawDelete(peek.key);
+          }
+        }
+      }
+
+      rawDelete(key) {
+        const entry = this.store.get(key);
+        if (!entry) return 0;
+        this.lruList.removeNode(entry.node);
+        this.usedMemory -= this.calcMemory(key, entry.val);
+        this.store.delete(key);
+        return 1;
+      }
+
+      evictLru() {
+        const lruNode = this.lruList.removeBack();
+        if (!lruNode || !lruNode.key) return;
+        const key = lruNode.key;
+        const entry = this.store.get(key);
+        if (entry) {
+          this.usedMemory -= this.calcMemory(key, entry.val);
+          this.store.delete(key);
+          this.evictedKeys++;
+        }
+      }
+
+      pushHeap(item) {
+        this.ttlHeap.push(item);
+        let idx = this.ttlHeap.length - 1;
+        while (idx > 0) {
+          let parent = Math.floor((idx - 1) / 2);
+          if (this.ttlHeap[idx].expireAt < this.ttlHeap[parent].expireAt) {
+            let tmp = this.ttlHeap[idx];
+            this.ttlHeap[idx] = this.ttlHeap[parent];
+            this.ttlHeap[parent] = tmp;
+            idx = parent;
+          } else {
+            break;
+          }
+        }
+      }
+
+      popHeap() {
+        if (this.ttlHeap.length === 0) return null;
+        const root = this.ttlHeap[0];
+        const last = this.ttlHeap.pop();
+        if (this.ttlHeap.length > 0) {
+          this.ttlHeap[0] = last;
+          let idx = 0;
+          const size = this.ttlHeap.length;
+          while (true) {
+            let smallest = idx;
+            let left = 2 * idx + 1;
+            let right = 2 * idx + 2;
+            if (left < size && this.ttlHeap[left].expireAt < this.ttlHeap[smallest].expireAt) smallest = left;
+            if (right < size && this.ttlHeap[right].expireAt < this.ttlHeap[smallest].expireAt) smallest = right;
+            if (smallest === idx) break;
+            let tmp = this.ttlHeap[idx];
+            this.ttlHeap[idx] = this.ttlHeap[smallest];
+            this.ttlHeap[smallest] = tmp;
+            idx = smallest;
+          }
+        }
+        return root;
+      }
+
+      execute(cmdStr) {
+        const tokens = cmdStr.trim().split(/\s+/);
+        if (!tokens || tokens.length === 0 || tokens[0] === '') return '';
+        const cmd = tokens[0].toUpperCase();
+        const args = tokens.slice(1);
+
+        this.cleanupExpired();
+
+        if (cmd === 'SET') {
+          if (args.length < 2) return { res: 'ERR wrong number of arguments', err: true };
+          const key = args[0];
+          const val = args[1];
+          const addedMem = this.calcMemory(key, val);
+
+          // Check memory limit & Evict
+          if (this.maxmemory > 0) {
+            while (this.usedMemory + addedMem > this.maxmemory && this.store.size > 0) {
+              this.evictLru();
+            }
+            if (this.usedMemory + addedMem > this.maxmemory) {
+              return { res: "OOM command not allowed when used memory > 'maxmemory'", err: true };
+            }
+          }
+
+          if (this.store.has(key)) {
+            const existing = this.store.get(key);
+            this.usedMemory -= this.calcMemory(key, existing.val);
+            this.lruList.removeNode(existing.node);
+          }
+
+          const node = this.lruList.addFront(key, val);
+          this.store.set(key, { val, node, expireAt: null });
+          this.usedMemory += addedMem;
+
+          // Rehash check
+          if (this.store.size / this.capacity >= this.loadFactor) {
+            this.capacity *= 2;
+          }
+
+          return { res: 'OK', trace: `SET key '${key}' = '${val}' stored. Memory +${addedMem}B.` };
+        }
+
+        if (cmd === 'GET') {
+          if (args.length < 1) return { res: 'ERR wrong number of arguments', err: true };
+          const key = args[0];
+          if (!this.store.has(key)) return { res: '(nil)' };
+          const entry = this.store.get(key);
+          this.lruList.moveToFront(entry.node);
+          return { res: `"${entry.val}"`, trace: `GET key '${key}' hit! Node moved to MRU Head.` };
+        }
+
+        if (cmd === 'EXPIRE') {
+          if (args.length < 2) return { res: 'ERR wrong number of arguments', err: true };
+          const key = args[0];
+          const seconds = parseInt(args[1], 10);
+          if (isNaN(seconds)) return { res: 'ERR value is not an integer', err: true };
+          if (!this.store.has(key)) return { res: '(integer) 0' };
+
+          const expireAt = Date.now() / 1000 + seconds;
+          this.store.get(key).expireAt = expireAt;
+          this.pushHeap({ expireAt, key });
+          return { res: '(integer) 1', trace: `EXPIRE set on '${key}' for ${seconds}s. Pushed to MinHeap.` };
+        }
+
+        if (cmd === 'DEL') {
+          if (args.length < 1) return { res: 'ERR wrong number of arguments', err: true };
+          const deleted = this.rawDelete(args[0]);
+          return { res: `(integer) ${deleted}` };
+        }
+
+        if (cmd === 'CONFIG') {
+          if (args.length >= 3 && args[0].toUpperCase() === 'SET' && args[1].toLowerCase() === 'maxmemory') {
+            const limit = parseInt(args[2], 10);
+            this.maxmemory = limit;
+            while (this.maxmemory > 0 && this.usedMemory > this.maxmemory && this.store.size > 0) {
+              this.evictLru();
+            }
+            return { res: 'OK', trace: `CONFIG maxmemory set to ${limit} Bytes.` };
+          }
+        }
+
+        if (cmd === 'PUBLISH') {
+          if (args.length < 2) return { res: 'ERR wrong number of arguments', err: true };
+          const ch = args[0];
+          const msg = args[1];
+          if (!this.channels.has(ch)) this.channels.set(ch, []);
+          this.channels.get(ch).push(msg);
+          return { res: '(integer) 1', trace: `Message published to channel '${ch}'.` };
+        }
+
+        if (cmd === 'PING') return { res: 'PONG' };
+        if (cmd === 'KEYS') return { res: Array.from(this.store.keys()).join('\n') || '(empty list)' };
+        if (cmd === 'INFO') return { res: `used_memory:${this.usedMemory}\nmaxmemory:${this.maxmemory}\nevicted_keys:${this.evictedKeys}` };
+
+        return { res: 'ERR unknown command', err: true };
+      }
+    }
+
+    // --- GLOBAL INSTANCES & UI UPDATER ---
+    const engine = new MiniRedisEngine();
+
+    function switchTab(tab) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
+
+      if (tab === 'sim') {
+        document.querySelectorAll('.tab-btn')[0].classList.add('active');
+        document.getElementById('sim-section').classList.add('active');
+      } else {
+        document.querySelectorAll('.tab-btn')[1].classList.add('active');
+        document.getElementById('roadmap-section').classList.add('active');
+      }
+    }
+
+    function animatePipeline() {
+      const p1 = document.getElementById('pipe-1');
+      const p2 = document.getElementById('pipe-2');
+      const p3 = document.getElementById('pipe-3');
+
+      p1.classList.add('active');
+      p2.classList.remove('active');
+      p3.classList.remove('active');
+
+      setTimeout(() => {
+        p1.classList.remove('active');
+        p2.classList.add('active');
+      }, 150);
+
+      setTimeout(() => {
+        p2.classList.remove('active');
+        p3.classList.add('active');
+      }, 300);
+
+      setTimeout(() => {
+        p3.classList.remove('active');
+      }, 600);
+    }
+
+    function updateUI(traceText = null) {
+      // Update Top Stats
+      document.getElementById('stat-keys').textContent = engine.store.size;
+      document.getElementById('stat-mem').textContent = `${engine.usedMemory} B`;
+      document.getElementById('stat-maxmem').textContent = engine.maxmemory > 0 ? `${engine.maxmemory} B` : 'Unset';
+      document.getElementById('stat-evicted').textContent = engine.evictedKeys;
+
+      if (traceText) {
+        document.getElementById('command-trace-explain').textContent = traceText;
+      }
+
+      // 1. HashMap View
+      const bucketContainer = document.getElementById('hashmap-buckets');
+      bucketContainer.innerHTML = '';
+      const buckets = Array.from({ length: engine.capacity }, () => []);
+
+      for (let [k, entry] of engine.store.entries()) {
+        const idx = engine.hash(k);
+        buckets[idx].push({ key: k, val: entry.val });
+      }
+
+      const load = (engine.store.size / engine.capacity).toFixed(2);
+      document.getElementById('hashmap-meta').textContent = `Cap: ${engine.capacity} | Load: ${load}`;
+
+      buckets.forEach((chain, idx) => {
+        const row = document.createElement('div');
+        row.className = 'bucket-row';
+        
+        let chainHTML = `<div class="bucket-idx">[Bucket ${idx}]</div><div class="bucket-chain">`;
+        if (chain.length === 0) {
+          chainHTML += `<span style="color:var(--text-muted); font-size:11px; font-style:italic;">(empty)</span>`;
+        } else {
+          chain.forEach((node, nIdx) => {
+            chainHTML += `<div class="kv-node"><span class="k">${node.key}:</span><span class="v">${node.val}</span></div>`;
+            if (nIdx < chain.length - 1) chainHTML += `<span class="chain-arrow">➔</span>`;
+          });
+        }
+        chainHTML += `</div>`;
+        row.innerHTML = chainHTML;
+        bucketContainer.appendChild(row);
+      });
+
+      // 2. DoublyLinkedList (LRU) View
+      const dllView = document.getElementById('dll-view');
+      dllView.innerHTML = '';
+      const dllArray = engine.lruList.toArray();
+
+      let dllHTML = `
+        <div class="dll-node sentinel">
+          <div class="label">Head</div>
+          <div class="key-val">Dummy</div>
+        </div>
+        <div class="dll-pointer">⇄</div>
+      `;
+
+      dllArray.forEach((item, idx) => {
+        let isMru = idx === 0 ? 'mru' : '';
+        let isLru = idx === dllArray.length - 1 ? 'lru' : '';
+        let nodeClass = `dll-node ${isMru} ${isLru}`.trim();
+        let badge = isMru ? 'MRU' : (isLru ? 'LRU' : '');
+
+        dllHTML += `
+          <div class="${nodeClass}">
+            ${badge ? `<div class="label">${badge}</div>` : ''}
+            <div class="key-val">${item.key}:${item.val}</div>
+          </div>
+          <div class="dll-pointer">⇄</div>
+        `;
+      });
+
+      dllHTML += `
+        <div class="dll-node sentinel">
+          <div class="label">Tail</div>
+          <div class="key-val">Dummy</div>
+        </div>
+      `;
+      dllView.innerHTML = dllHTML;
+
+      // 3. MinHeap View
+      const heapView = document.getElementById('heap-view');
+      heapView.innerHTML = '';
+
+      if (engine.ttlHeap.length === 0) {
+        heapView.innerHTML = `<div style="color:var(--text-muted); font-size:12px; font-style:italic;">등록된 TTL 만료 항목이 없습니다. (EXPIRE 명령어로 등록 가능)</div>`;
+      } else {
+        let heapArrHTML = `<div class="heap-array-view">`;
+        engine.ttlHeap.forEach((item, idx) => {
+          let isRoot = idx === 0 ? 'root' : '';
+          let remain = Math.max(0, Math.round(item.expireAt - Date.now() / 1000));
+          heapArrHTML += `
+            <div class="heap-cell ${isRoot}">
+              <div class="idx">[${idx}] ${idx === 0 ? 'ROOT' : ''}</div>
+              <div><strong>${item.key}</strong></div>
+              <div style="color:var(--accent-orange); font-size:10px;">${remain}s left</div>
+            </div>
+          `;
+        });
+        heapArrHTML += `</div>`;
+        heapView.innerHTML = heapArrHTML;
+      }
+
+      // 4. Memory & DynamicArray View
+      const memFill = document.getElementById('mem-gauge-fill');
+      const memLabel = document.getElementById('mem-gauge-label');
+      if (engine.maxmemory > 0) {
+        const pct = Math.min(100, Math.round((engine.usedMemory / engine.maxmemory) * 100));
+        memFill.style.width = `${pct}%`;
+        memLabel.textContent = `${engine.usedMemory} / ${engine.maxmemory} Bytes (${pct}%)`;
+      } else {
+        memFill.style.width = '10%';
+        memLabel.textContent = `${engine.usedMemory} Bytes (Unlimited)`;
+      }
+
+      const slotsView = document.getElementById('array-slots-view');
+      slotsView.innerHTML = '';
+      for (let i = 0; i < engine.capacity; i++) {
+        const slot = document.createElement('div');
+        const occupied = i < engine.store.size;
+        slot.className = `array-slot ${occupied ? 'occupied' : ''}`;
+        slot.innerHTML = `<span class="slot-idx">${i}</span>${occupied ? 'DATA' : 'None'}`;
+        slotsView.appendChild(slot);
+      }
+    }
+
+    // Terminal Input Controller
+    const cmdInput = document.getElementById('cmd-input');
+    const termBody = document.getElementById('terminal-body');
+
+    cmdInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const rawCmd = cmdInput.value;
+        if (!rawCmd) return;
+        executeCommand(rawCmd);
+        cmdInput.value = '';
+      }
+    });
+
+    function executeCommand(rawCmd) {
+      animatePipeline();
+
+      // Log input to terminal
+      const inputLog = document.createElement('div');
+      inputLog.className = 'log-entry';
+      inputLog.innerHTML = `<span class="prompt">127.0.0.1:6379></span><span class="cmd">${rawCmd}</span>`;
+      termBody.appendChild(inputLog);
+
+      const out = engine.execute(rawCmd);
+
+      // Log response to terminal
+      const resLog = document.createElement('div');
+      resLog.className = 'log-entry';
+      if (out.err) {
+        resLog.innerHTML = `<span class="error">${out.res}</span>`;
+      } else {
+        resLog.innerHTML = `<span class="response">${out.res}</span>`;
+      }
+      termBody.appendChild(resLog);
+      termBody.scrollTop = termBody.scrollHeight;
+
+      updateUI(out.trace);
+    }
+
+    function runPreset(cmdStr) {
+      cmdInput.value = cmdStr;
+      executeCommand(cmdStr);
+    }
+
+    // Initialize UI on load
+    updateUI();
+  </script>
+</body>
+</html>

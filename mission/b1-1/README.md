@@ -1,289 +1,452 @@
-# 🚀 시스템 관제 자동화 스크립트 개발 프로젝트 (Agent Mission)
+# Frontend Portfolio Project (Vanilla HTML/CSS/JS)
 
-> 본 문서는 다중 사용자 환경에서의 정밀한 권한 제어, 네트워크 보안 강화, 백그라운드 애플리케이션의 안정적 구동, 그리고 시스템 리소스 관제 및 로그 수집/보존 정책 자동화를 다루는 리눅스 시스템 엔지니어링 프로젝트에 대한 종합 안내서입니다.
+순수 HTML, CSS, JavaScript만을 사용하여 제작한 반응형 포트폴리오 웹사이트입니다. 외부 라이브러리(React, Bootstrap, Tailwind 등)를 일절 사용하지 않고, DOM 조작과 이벤트 처리, 비동기 통신 등 웹의 동작 원리를 체득하기 위해 만들어졌습니다.
+
+## 🚀 배포 링크
+
+- 배포 URL: [https://feelosophysics.github.io/glad/portfolio/](https://feelosophysics.github.io/glad/portfolio/)
+
+## ✨ 주요 기능
+
+| 기능 | 설명 |
+|------|------|
+| **시맨틱 마크업** | `header`, `nav`, `main`, `section`, `article`, `footer` 등 시맨틱 태그를 활용한 구조적 마크업 |
+| **반응형 레이아웃** | CSS Flexbox와 Grid를 적극 활용, **모바일 퍼스트**(`min-width`) 미디어 쿼리 적용 |
+| **다크 모드** | CSS 변수(`:root`)와 시스템 설정 감지(`prefers-color-scheme`)를 조합한 다크 모드 지원 및 상태 유지(`localStorage`) |
+| **외부 API 연동** | GitHub API 비동기 호출(`fetch`, `async/await`)을 통한 프로젝트 카드 렌더링 |
+| **언어별 필터링** | 가져온 저장소 목록을 언어별로 필터링 (`Array.prototype.filter`) |
+| **폼 유효성 검사** | 실시간(`input` 이벤트) + 제출 시(`submit` 이벤트) 유효성 검사. Formspree 연동 |
+| **스크롤 인터랙션** | Intersection Observer를 활용한 스크롤 등장 애니메이션 및 부드러운 스크롤 이동 |
+
+## 🛠️ 기술 스택
+
+- **HTML5** — 시맨틱 태그, 접근성(`alt`, `label`-`for` 매칭)
+- **CSS3** — Variables, Flexbox, Grid, `transition`, `@keyframes`, 모바일 퍼스트 미디어 쿼리
+- **JavaScript (ES6+)** — `const`/`let`, 화살표 함수, 템플릿 리터럴, 구조분해 할당, `map`/`filter`/`forEach`, `async`/`await`, Intersection Observer
+
+## 📁 프로젝트 구조 및 파일 분리 이유
+
+본 프로젝트는 유지보수성과 웹 성능 최적화를 위해 HTML(구조), CSS(스타일), JavaScript(동작) 코드를 독립적인 파일로 철저히 분리하여 관리합니다.
+
+```text
+glad/portfolio/
+├── index.html        # 웹페이지의 뼈대 (구조 정의, 시맨틱 마크업)
+├── css/
+│   └── style.css     # 웹페이지의 의상 (스타일링, 레이아웃, 테마 정의)
+└── js/
+    └── main.js       # 웹페이지의 행동 및 두뇌 (상태 관리, 이벤트 처리, API 연동)
+```
+
+### 💡 웹 테크놀로지 파일 분리(Separation of Concerns)의 의의
+- **관심사 분리(Separation of Concerns):** 웹 문서의 내용(HTML), 외형(CSS), 상호작용(JS)의 역할을 명확히 분리함으로써 코드의 가독성을 극대화하고, 특정 요소를 수정할 때 다른 기술 스택 코드에 미치는 영향을 최소화합니다.
+- **유지보수성 향상:** 협업 시 마크업 개발자, 디자이너, 프론트엔드 개발자가 각자의 영역(파일)만 전담하여 수정할 수 있어 충돌 위험을 줄이고 생산성을 높입니다.
+- **캐싱 및 웹 성능 최적화:** 브라우저는 한 번 다운로드한 CSS와 JS 파일을 캐싱(Caching)합니다. 페이지 이동 시 HTML 뼈대만 새로 받고 스타일과 스크립트는 로컬 캐시에서 불러오므로 트래픽을 아끼고 초기 로딩 속도를 대폭 단축시킵니다.
+
+## ⚙️ 인터랙션 기준값
+
+미션 요구사항에 따라, 본 프로젝트에서 사용하는 인터랙션 기준값은 다음과 같습니다.
+
+| 인터랙션 | 기준값 | 설명 |
+|----------|--------|------|
+| **스크롤 탑 버튼** | `300px` | 스크롤이 300px 이상일 때 버튼이 나타남 |
+| **네비게이션 스타일 변경** | `60px` | 스크롤이 60px 이상일 때 네비게이션 배경에 `box-shadow` 추가 |
+| **스크롤 애니메이션** | `threshold: 0.5` | Intersection Observer의 임계값. 요소가 50% 이상 화면에 보일 때 애니메이션 발동 |
+
+## 🔄 상태 → 렌더링 흐름 (중앙 집중식 STATE 패턴)
+
+본 프로젝트는 난잡하게 흩어지기 쉬운 상태 값들을 하나의 객체(`STATE`)로 묶어 관리하고, **"이벤트 발생 → 상태 업데이트 → 화면 업데이트(Render)"**로 흐르는 단방향 데이터 바인딩 패턴을 수동으로 구현했습니다. 이는 모던 프론트엔드 라이브러리(React, Vue 등)의 동작 철학과 완벽히 궤를 같이 합니다.
+
+### 💡 중앙 집중식 STATE 객체 관리 이유
+- **일반 개별 변수 관리의 문제점:** 테마 상태 변수(`theme`), 프로젝트 데이터 변수(`projects`), 필터 상태 변수(`currentFilter`) 등을 제각각 전역 변수로 관리하면, 규모가 커질 때 어떤 이벤트가 어떤 변수를 언제 바꾸었는지 파악(스파게티 코드)하기 힘들며, 변수가 변경되었는데 화면을 갱신하지 않는 싱크 불일치 버그가 흔히 발생합니다.
+- **STATE 패턴의 이점:** 앱 전체의 핵심 데이터가 `STATE`라는 단 하나의 객체 안에 묶여 있어 "현재 애플리케이션의 상태"를 스냅샷처럼 한눈에 파악할 수 있으며, 상태 변화가 일어날 때마다 지정된 `render()` 함수를 연쇄 호출함으로써 항상 최신의 상태와 화면이 한 몸처럼 동기화됩니다.
+
+```javascript
+// js/main.js 에 정의된 중앙 상태 관리 객체
+const STATE = {
+  theme: localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'),
+  portfolio: {
+    allData: [],      // API 원본 데이터
+    filter: 'all',    // 언어 필터 ('all', 'JavaScript', 'Python' 등)
+    status: 'idle',   // 통신 상태 ('idle', 'loading', 'success', 'error', 'empty')
+    errorMsg: ''
+  }
+};
+```
+
+### 🔍 대표적인 "상태 → 렌더링" 4가지 흐름 및 코드 트레이스
+
+| # | 이벤트 (Event) | 상태 변경 (State Update) | 화면 갱신 (DOM Render) |
+|---|--------|-----------|-------------|
+| 1 | **다크 모드 토글 클릭**<br>`themeToggleBtn` 클릭 이벤트 발생 | `STATE.theme`을 `'dark'` ↔ `'light'`로 전환 후 `localStorage` 저장 | `renderTheme()` 실행: `<html>` 태그에 `data-theme` 속성 부여 + 토글 아이콘 텍스트 변경 (`☀️`/`🌙`) |
+| 2 | **GitHub API 호출**<br>페이지 진입 또는 에러창 재시도 버튼 클릭 | `STATE.portfolio.status`를 `'loading'`으로 변경 후 호출 성공/실패에 따라 `'success'` 또는 `'error'`로 전환 | `renderProjectsUI()` 실행:<br>1. `'loading'`: 로딩 중 텍스트 노출<br>2. `'success'`: 프로젝트 리스트 카드 또는 '데이터 없음' 노출<br>3. `'error'`: 에러 메시지 + 다시 시도 버튼 노출 |
+| 3 | **필터 버튼 클릭**<br>`filterBtns` 중 하나를 클릭 | `STATE.portfolio.filter` 값을 선택한 언어로 변경 | `renderProjectsUI()` 실행: 가공 필터링 함수가 실시간 동작하여 일치하는 언어 카드만 재렌더링 |
+| 4 | **폼 입력 및 제출**<br>`contactForm` submit 이벤트 발생 | 각 필드 유효성 통과 여부(`isValid`) 검증 및 상태 갱신 | 검증 실패 시 입력 박스 테두리에 `.invalid` 클래스 부여 및 에러 경고 라벨(`display: block`) 노출 |
+
+#### 🔬 다크 모드 흐름 코드 추적 (Code Trace)
+1. **[이벤트 리스너 등록]** 토글 버튼에 클릭 이벤트를 등록합니다.
+   ```javascript
+   themeToggleBtn.addEventListener('click', () => { ... });
+   ```
+2. **[상태 변경]** 클릭 시 상태값인 `STATE.theme`를 뒤집고, 브라우저가 테마 상태를 영구적으로 기억하도록 `localStorage`에 저장합니다.
+   ```javascript
+   STATE.theme = STATE.theme === 'dark' ? 'light' : 'dark';
+   localStorage.setItem('theme', STATE.theme);
+   ```
+3. **[화면 갱신 호출]** 상태 변경이 완료되면 화면 갱신 함수인 `renderTheme()`를 명시적으로 호출합니다.
+   ```javascript
+   renderTheme();
+   ```
+4. **[DOM 조작]** `renderTheme()` 함수는 오직 `STATE.theme`의 값만 바라보고 `<html>` 엘리먼트 속성과 버튼 아이콘 모양을 갱신합니다.
+   ```javascript
+   const renderTheme = () => {
+     if (STATE.theme === 'dark') {
+       htmlElement.setAttribute('data-theme', 'dark');
+       themeIcon.textContent = '☀️';
+     } else {
+       htmlElement.setAttribute('data-theme', 'light');
+       themeIcon.textContent = '🌙';
+     }
+   };
+   ```
+
+## 📸 스크린샷
+
+| 뷰 | 스크린샷 |
+|-----|----------|
+| 데스크톱 (Light) | ![데스크톱 라이트 모드](portfolio/images/screenshot_desktop.png) |
+| 모바일 (Light) | ![모바일 라이트 모드](portfolio/images/screenshot_mobile.png) |
+| 다크 모드 | ![다크 모드](portfolio/images/screenshot_dark.png) |
+
+## 🧠 학습 목표 및 성과
+
+- HTML 시맨틱 태그의 접근성 및 SEO 이점 체득.
+- CSS 변수를 이용한 글로벌 상태(테마) 관리 방법 이해.
+- `addEventListener`를 통한 이벤트 처리와 DOM 렌더링 사이클 이해.
+- 외부 API 통신 시 발생하는 4가지 상태(Loading, Success, Error, Empty)에 대한 UI 처리 완수.
+- 모바일 퍼스트 반응형 디자인 접근법 실습.
 
 ---
 
-## 1. 프로젝트 개요(미션 목표 요약)
+## ✅ 미션 요구사항 체크리스트
 
-본 프로젝트는 현업에서 발생할 수 있는 서버 장애 상황에 대비하여, 시스템 상태를 실시간으로 모니터링하고 기록하여 문제를 신속하게 추적할 수 있도록 지원하는 **'시스템 관제 자동화 솔루션'** 개발을 목표로 합니다.
+### 4-1. 프로젝트 기본 구성
+- [x] `index.html`, `css/`, `js/`, `images/` 폴더 구조 분리
+- [x] 외부 스타일시트(`css/style.css`)와 JavaScript(`js/main.js`)를 HTML에 올바르게 연결
+- [x] VS Code + Live Server로 실시간 개발 환경 구성
 
-### 🎯 핵심 미션 목표
-* **다중 사용자 권한 체계 구축**: 역할 기반 계정(`agent-admin`, `agent-dev`, `agent-test`)과 협업 그룹(`agent-common`, `agent-core`)을 생성하고, 공유/보안 디렉토리를 분리하여 최소 권한 원칙을 실현합니다.
-* **네트워크 보안 강화**: SSH 접속 포트 변경(22 → 20022), Root 원격 접속 차단, UFW 방화벽 설정을 통해 필요한 외부 포트(`20022`, `15034`)만 허용하는 화이트리스트 기반 네트워크 보안을 구축합니다.
-* **실행 환경 격리 및 표준화**: 일반 서비스 계정(`agent-admin`)으로 애플리케이션을 안전하게 구동하고, 환경 변수를 표준화하여 다중 환경에서의 일관성을 확보합니다.
-* **관제 자동화 및 로그 라이프사이클 관리**:
-  * `monitor.sh`: 프로세스/포트 Health Check, 리소스 사용량(CPU/MEM/DISK) 수집 및 자체 로그 롤오버(10MB * 10개 파일)를 수행하는 Bash 스크립트 구현.
-  * `report.sh` (보너스 1): 로그 데이터를 분석하여 통계(평균/최대/최소) 및 특정 구간 분석 기능 구현.
-  * `archive.sh` (보너스 2): 7일 경과 로그 압축 보존 및 30일 경과 아카이브 자동 삭제 기능 구현.
+### 4-2. HTML 구조 (시맨틱 마크업)
+- [x] `<header>`, `<nav>`, `<main>`, `<section>`, `<article>`, `<footer>` 시맨틱 태그 사용
+  <details>
+  <summary><b>💡 시맨틱 태그 선택 기준 및 SEO/웹 접근성 이점 (자세히 보기)</b></summary>
 
----
+  #### 1) 사용한 주요 시맨틱 태그와 설계 기준
+  - `<header>`: 문서나 섹션의 머리말을 정의하며, 본 사이트에서는 최상단 로고와 네비게이션을 감싸는 내비게이션 바 영역에 사용했습니다.
+  - `<nav>`: 다른 페이지나 페이지 내의 다른 부분으로 연결되는 네비게이션 링크들의 집합을 정의합니다. GNB(Global Navigation Bar)의 역할을 명시하기 위해 header 내부에 배치했습니다.
+  - `<main>`: 문서에서 독자적이고 중심적인 핵심 콘텐츠를 담는 영역입니다. 사이트 내에 단 하나만 존재해야 하며, Hero, About, Skills, Projects, Contact 섹션을 묶는 최상위 컨테이너로 사용했습니다.
+  - `<section>`: 문서의 테마별 그룹을 묶어 연관된 콘텐츠를 구획화합니다. `#home`, `#about`, `#skills`, `#projects`, `#contact` 각각을 독립된 주제 영역으로 표현하기 위해 사용했습니다.
+  - `<article>`: 그 자체로 독립적으로 배포되거나 재사용될 수 있는 완성된 콘텐츠 영역을 정의합니다. Skills 섹션의 스택 카드(`.skills__card`)와 Projects 섹션의 개별 프로젝트 카드(`.project-card`)는 그 자체로 독립적인 정보 단위를 이루므로 article로 마크업했습니다.
+  - `<footer>`: 문서나 구획의 하단 정보를 정의하며, 카피라이트와 소셜 링크를 담는 최하단 영역에 사용했습니다.
 
-## 2. 실행 환경(OS/쉘/터미널, Git 버전)
+  #### 2) 시맨틱 마크업의 가치와 이점
+  - **SEO (검색 엔진 최적화):** 구글 등 검색 엔진의 웹 크롤러가 웹페이지를 분석할 때 일반 `<div>` 대신 시맨틱 태그를 통해 사이트의 구조와 콘텐츠의 중요도를 명확히 파악할 수 있어 검색 노출 순위에 긍정적인 영향을 줍니다.
+  - **웹 접근성 (Accessibility):** 시각장애인이 스크린 리더(화면 낭독기)를 이용해 사이트를 탐색할 때, 시맨틱 태그를 이정표(Landmark) 삼아 원하는 영역(예: 메인 본문, 내비게이션 등)으로 즉시 건너뛰거나 효율적으로 내용을 들을 수 있습니다.
+  - **개발자 간 소통 및 가독성:** 코드의 구조가 직관적으로 보여 다른 개발자가 코드를 분석할 때 어느 부분이 헤더인지, 어느 부분이 주요 콘텐츠 영역인지 한눈에 알 수 있습니다.
+  </details>
+- [x] Hero 섹션: 인사말(`타이핑 효과`), CTA 버튼(`View Projects`, `Contact Me`)
+- [x] About 섹션: 자기소개, 프로필 이미지
+- [x] Skills 섹션: 기술 스택 목록 (Frontend / Backend / Database & Tools)
+- [x] Projects 섹션: GitHub API 연동 카드
+- [x] Contact 섹션: 문의 폼 (이름, 이메일, 메시지)
+- [x] Footer: 저작권, 소셜 링크 (GitHub)
+- [x] 네비게이션에 각 섹션으로 이동하는 앵커 링크 존재
+- [x] 모든 이미지에 의미있는 `alt` 속성 존재
+- [x] 폼 요소에 `<label>`이 `for`-`id` 매칭으로 올바르게 연결
 
-본 프로젝트는 다음의 시스템 및 개발 환경에서 검증 및 운영되었습니다.
+### 4-3. CSS 스타일링 (레이아웃 & 반응형)
+- [x] 외부 스타일시트(`css/style.css`) 사용
+- [x] CSS 변수(`:root`)로 색상, 폰트, 간격 정의
+  <details>
+  <summary><b>💡 CSS 변수 사용 이유 및 유지보수 이점 (자세히 보기)</b></summary>
 
-* **대상 운영체제 (OS)**: Ubuntu 24.04 LTS
-* **사용 쉘 (Shell)**: Bash (`/bin/bash`)
-* **터미널 환경**: 표준 Unix Terminal (zsh, bash 호환)
-* **Git 버전**: `git version 2.53.0`
-* **시스템 계정 및 그룹 구성**:
-  | 구분 | 계정/그룹명 | 역할 및 권한 범위 | 소속 멤버 |
-  | :--- | :--- | :--- | :--- |
-  | **계정** | `agent-admin` | 시스템 운영 및 관리자 (cron 배치 실행자) | - |
-  | | `agent-dev` | 개발자 (관제 스크립트 `monitor.sh` 작성자) | - |
-  | | `agent-test` | QA 및 테스터 | - |
-  | **그룹** | `agent-common` | 공용 파일 영역 접근 그룹 | `agent-admin`, `agent-dev`, `agent-test` |
-  | | `agent-core` | 핵심 시스템/로그 및 비밀키 접근 그룹 | `agent-admin`, `agent-dev` |
+  #### 1) CSS 변수 도입 이유
+  웹사이트 전체에서 사용되는 테마 색상(파스텔 코랄, 연한 베이지 등), 전역 글꼴 속성, 고정된 레이아웃 높이 등을 중앙에서 관리하기 위해 사용했습니다.
+  ```css
+  /* css/style.css */
+  :root {
+    --color-bg: #fffbf7;
+    --color-text: #4a403d;
+    --color-primary: #f2a6a6;
+    --font-main: 'Inter', sans-serif;
+  }
+  ```
+  #### 2) CSS 변수 도입의 구체적 이점
+  - **유지보수성 극대화:** 포인트 컬러나 브랜드 테마가 변경될 때 수십, 수백 개의 CSS 규칙을 일일이 찾아 바꿀 필요 없이 `:root`의 변수 정의 하나만 수정하면 사이트 전체에 실시간 적용됩니다. (일명 'Magic Number' 배제)
+  - **동적 테마(다크 모드) 전환의 극대화:** JavaScript에서 HTML 최상단 노드에 속성(`data-theme="dark"`)을 부여하는 것만으로 변수 값을 덮어써서 페이지 전체 색상을 한순간에 바꿀 수 있습니다.
+  ```css
+  [data-theme="dark"] {
+    --color-bg: #2d2a2a;
+    --color-text: #f5f0f0;
+    --color-primary: #f5baba;
+  }
+  ```
+  </details>
+- [x] 다크 모드용 CSS 변수 별도 정의 (`[data-theme="dark"]`)
+- [x] 네비게이션: Flexbox 사용 (로고 왼쪽, 메뉴 오른쪽)
+- [x] Projects 카드: Grid 사용 (`auto-fit`, `minmax`로 반응형)
+  <details>
+  <summary><b>💡 Flexbox와 Grid 사용처 및 선택 이유 비교 (자세히 보기)</b></summary>
 
----
+  #### 1) Flexbox와 Grid의 핵심 차이점
+  - **Flexbox (1차원 레이아웃):** 콘텐츠를 가로(행) 또는 세로(열)의 **단일 축(1-Dimension)**을 기준으로 배치하는 데 최적화되어 있습니다. 아이템의 유연한 크기 조절과 정렬이 핵심 목적입니다.
+  - **Grid (2차원 레이아웃):** 가로줄(Row)과 세로줄(Column)을 모두 활용하는 **2차원 Grid 형태(2-Dimension)**의 정밀한 구조 설계에 최적화되어 있습니다.
 
-## 3. 수행 항목 체크리스트
+  #### 2) 본 프로젝트의 적용 기준 및 선택 이유
+  - **Flexbox 적용처 - 네비게이션 바 (`.nav`):**
+    - 좌측 로고, 우측 링크/토글 버튼을 1차원 가로축으로 단순 정렬합니다. 로고와 메뉴 그룹 사이의 유연한 정렬을 위해 `justify-content: space-between;` 속성을 사용하여 양 끝으로 쉽게 밀어냈습니다.
+  - **Grid 적용처 - Skills 카드 목록 (`.skills__container`) 및 Projects 카드 목록 (`.projects__container`):**
+    - 다수의 카드를 바둑판 모양의 행과 열 형태로 빈틈없이 정렬해야 합니다.
+    - 반응형 디자인 시 화면 너비에 따라 열의 개수를 자동으로 조절하고자 `grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));`를 사용했습니다. 이는 미디어 쿼리 없이도 화면 폭에 따라 1열, 2열, 3열로 카드를 자동 배치하는 유연성을 제공합니다.
+  </details>
+- [x] **모바일 퍼스트**(`min-width`) 미디어 쿼리 적용
+- [x] 브레이크포인트: `768px` (태블릿), `1024px` (데스크톱)
+  <details>
+  <summary><b>💡 모바일 퍼스트 반응형 레이아웃 설계 이유 (자세히 보기)</b></summary>
 
-| 수행 대분류 | 세부 수행 요구사항 | 구현 상태 | 확인 방법 및 증거 자료 |
-| :--- | :--- | :---: | :--- |
-| **0. 시스템 의존성 패키지** | `openssh-server`, `ufw`, `acl`, `file` 자동 설치 | `완료` | `setup.sh` 실행 시 `dpkg` 및 `command -v`로 검사 후 자동 설치 |
-| **1. 기본 보안 & 네트워크** | SSH 접속 포트를 `20022`로 변경 | `완료` | `/etc/ssh/sshd_config` 내 `Port 20022` 설정 및 데몬 리슨 확인 |
-| | Root 계정의 원격 로그인 차단 | `완료` | `/etc/ssh/sshd_config` 내 `PermitRootLogin no` 설정 확인 |
-| | UFW 방화벽 활성화 및 인바운드 기본 차단 | `완료` | `sudo ufw status verbose` (Status: active, Default: deny incoming) |
-| | 허용 포트 제한 (`20022/tcp`, `15034/tcp`만) | `완료` | `scrs/ufw_status.png` 증거 확인 |
-| **2. 계정/그룹/권한 체계** | 3개 역할 기반 계정 및 2개 보안 그룹 생성 | `완료` | `id` 명령어를 통한 그룹 소속 관계 매핑 검증 |
-| | `$AGENT_HOME` 및 하위 디렉토리 구조 설계 | `완료` | `/home/agent-admin/agent-app` 디렉토리 구성 완료 |
-| | `upload_files` 공용 R/W 권한 부여 | `완료` | SetGID (`2770`) 및 `agent-common` ACL 대물림 설정 (`getfacl`로 확인) |
-| | `api_keys` 및 로그 디렉토리 R/W 제한 | `완료` | SetGID (`2770`) 및 `agent-core` 전용 권한/ACL 설정 (`test` 계정 차단) |
-| **3. 앱 실행 환경 구성** | 핵심 실행 환경 변수 5종 정의 및 배포 | `완료` | `.bashrc` 및 `/etc/environment` 등록 확인 |
-| | API 키 파일 (`t_secret.key`) 보안 생성 | `완료` | `640` 권한 부여 및 `agent_api_key_test` 문자열 기록 검증 |
-| | 일반 계정(`agent-admin`) 구동 및 부팅 검증 | `완료` | Boot Sequence 5단계 `[OK]` 완료 및 `Agent READY` 콘솔 출력 검증 |
-| | 애플리케이션 `15034/tcp` 포트 리슨 검증 | `완료` | `ss -tulnp \| grep 15034` 실행 시 프로세스 매핑 확인 |
-| **4. 시스템 관제 자동화** | `monitor.sh` 경로 및 실행 권한 적용 | `완료` | 소유자 `agent-dev`, 그룹 `agent-core`, 권한 `750` 적용 완료 |
-| | 프로세스 & 포트 Health Check 기능 구현 | `완료` | 정상 작동 시 `[OK]` 출력, 비정상 상태 감지 시 `exit 1` 및 에러 로깅 |
-| | 방화벽 활성화 상태 상시 체크 | `완료` | UFW/firewalld 미작동 시 스크립트는 지속하되 `[WARNING]` 출력 |
-| | CPU/MEM/DISK 리소스 실시간 수집 | `완료` | `top`, `free`, `df` 명령 기반 정확한 소수점 파싱 및 백분율 수집 |
-| | 임계치 경고 (CPU>20%, MEM>10%, DISK>80%) | `완료` | 임계치 초과 시 `[WARNING]`을 콘솔 및 로그에 기록 |
-| | 로그 포맷 정규화 및 자체 용량 관리 (롤오버) | `완료` | 표준 포맷 로깅 및 10MB 크기 기준 최대 10개 파일 백업 기능 (`rotate_log`) |
-| **5. 자동 실행 및 배치** | crontab 매분 주기 실행 등록 및 동작 확인 | `완료` | `scrs/monitor_log.png`를 통한 매분 단위 타임스탬프 적재 완료 증빙 |
-| **6. 보너스 수행 (선택)** | `report.sh`: 로그 통계 및 구간 분석 리포트 | `완료` | 평균/최대/최소 자원 사용량 분석 및 `scrs/statistics_report.png` 증빙 |
-| | `archive.sh`: 시간 기반 로그 압축/삭제 정책 | `완료` | 7일 경과 로그 gzip 압축 후 아카이브 이동, 30일 경과 아카이브 자동 삭제 |
+  #### 1) 모바일 퍼스트(Mobile-First)란?
+  미디어 쿼리가 없는 기본 CSS 상태에서 모바일 뷰(가장 좁은 화면)의 스타일을 정의하고, 화면이 넓어짐에 따라 `@media screen and (min-width: 768px)` 등을 추가하여 레이아웃을 단계별로 확장하는 방식입니다.
 
----
+  #### 2) 데스크톱 퍼스트와의 비교 및 선택 이유
+  - **데스크톱 퍼스트 (Desktop-First):** 데스크톱 중심 CSS를 작성한 후 `max-width: 767px` 등을 이용해 화면이 작아질 때 불필요한 스타일을 지우거나 레이아웃을 숨기는 방식입니다. 모바일 기기에서 불필요한 데스크톱용 무거운 스타일 리소스를 우선 로딩하므로 비효율적입니다.
+  - **모바일 퍼스트 선택 이유:**
+    1. **모바일 성능 최적화:** 모바일 기기는 데스크톱에 비해 CPU 성능 및 네트워크 대역폭이 제한적입니다. 미디어 쿼리가 없는 기본 CSS만 파싱하여 즉시 모바일 뷰를 그리므로 로딩 속도와 모바일 사용자 경험(UX)이 극대화됩니다.
+    2. **더 깨끗한 코드 흐름:** 좁은 화면의 1열 레이아웃(단순한 구조)에서 넓은 화면의 다열 레이아웃(복잡한 구조)으로 점진적으로 확장하는 방식이 스타일을 깎아내거나 취소하는 방식보다 코드가 훨씬 간결하고 정돈됩니다.
+  </details>
+- [x] 모바일에서 네비게이션 숨겨짐 + 햄버거 버튼 노출
+- [x] 버튼, 카드에 `hover` 효과 + `transition` 적용
+- [x] 카드에 `box-shadow` 적용
 
-## 4. 검증 방법
+### 4-4. JavaScript 기초 (DOM & 이벤트)
+- [x] JavaScript 파일을 `defer` 속성으로 연결
+- [x] `var` 대신 `const`, `let`만 사용
+- [x] HTML에 `onclick` 속성 미사용, `addEventListener`로 이벤트 연결
+  <details>
+  <summary><b>💡 인라인 onclick 속성 대신 addEventListener를 사용한 이유 (자세히 보기)</b></summary>
 
-구축된 시스템 보안 및 모니터링 환경의 무결성을 검증하기 위한 상세 가이드는 다음과 같습니다.
-
-### 4.1 시스템 환경 설정 검증
-1. **SSH 보안 설정 검증**:
-   ```bash
-   # 포트 변경 및 Root 로그인 제한 여부 확인
-   grep -E "^Port|^PermitRootLogin" /etc/ssh/sshd_config
-   # [출력 기준] Port 20022 및 PermitRootLogin no가 보여야 합니다.
-   
-   # SSH 서비스가 20022 포트에서 리슨 중인지 확인
-   ss -tulnp | grep -E "sshd|ssh"
-   ```
-2. **방화벽(UFW) 정책 검증**:
-   ```bash
-   # ufw 활성화 및 포트 규칙 세부 사항 확인
-   sudo ufw status verbose
-   # [검증 기준] Status: active, 20022/tcp 및 15034/tcp ALLOW Anywhere가 확인되어야 함 (scrs/ufw_status.png)
-   ```
-3. **계정 권한 및 ACL 대물림 검증**:
-   ```bash
-   # 계정별 그룹 소속 상태 확인
-   id agent-admin  # (agent-common, agent-core 모두 소속)
-   id agent-dev    # (agent-common, agent-core 모두 소속)
-   id agent-test   # (agent-common만 소속, agent-core 배제)
-   
-   # 디렉토리 권한 및 ACL 규칙 확인
-   getfacl /home/agent-admin/agent-app/upload_files
-   # [검증 기준] group:agent-common:rwx 및 default:group:agent-common:rwx가 포함되어야 함
-   
-   getfacl /home/agent-admin/agent-app/api_keys
-   # [검증 기준] group:agent-core:rwx 및 default:group:agent-core:rwx가 포함되어야 함 (test 계정 접근 차단)
-   ```
-
-### 4.2 애플리케이션 및 모니터링 동작 검증
-1. **애플리케이션 구동 검증**:
-   ```bash
-   # 일반 운영 계정으로 안전하게 구동
-   sudo -u agent-admin bash -l -c 'cd /home/agent-admin/agent-app && ./agent-app'
-   # [검증 기준] Boot Sequence 5단계 [OK] 및 'Agent READY' 문구가 정상 출력되는지 확인
-   ```
-2. **모니터링 스크립트(monitor.sh) 수동 실행**:
-   ```bash
-   # 운영 계정 권한으로 수동 실행하여 관제 상태 진단
-   sudo -u agent-admin bash -l -c '/home/agent-admin/agent-app/bin/monitor.sh'
-   # [검증 기준] HEALTH CHECK 및 RESOURCE MONITORING 정보가 정해진 템플릿 형태로 출력되는지 확인
-   ```
-3. **자동 실행 배치(cron) 검증**:
-   ```bash
-   # crontab 등록 내용 확인
-   sudo -u agent-admin crontab -l
-   # [검증 기준] "* * * * * . /etc/environment; /home/agent-admin/agent-app/bin/monitor.sh >> /tmp/cron.log 2>&1" 확인
-   
-   # 로그 파일이 실시간으로 증가하는지 확인
-   tail -f /var/log/agent-app/monitor.log
-   # [검증 기준] 매 1분마다 타임스탬프가 갱신되며 리소스 한 줄 일지가 계속 적재되는지 확인 (scrs/monitor_log.png)
-   ```
-
-### 4.3 보너스 스크립트 검증
-1. **통계 분석 리포트(report.sh) 실행**:
-   ```bash
-   # 전체 로그 통계 분석
-   /home/agent-admin/agent-app/bin/report.sh
-   
-   # 특정 일시 구간(시작~종료) 지정 분석
-   /home/agent-admin/agent-app/bin/report.sh "2026-05-13 17:00:00" "2026-05-13 18:00:00"
-   # [검증 기준] CPU, Memory, Disk의 평균/최대/최소값과 수집된 샘플 수가 포맷에 맞추어 콘솔에 예쁘게 출력되어야 함
-   ```
-2. **로그 보존/아카이빙(archive.sh) 실행**:
-   ```bash
-   # 아카이빙 정책 수동 호출 테스트
-   /home/agent-admin/agent-app/bin/archive.sh
-   # [검증 기준] 7일 초과 로그가 gzip(.gz)으로 자동 압축된 후 archive 폴더로 이동되고, 30일 경과 아카이브가 자동 영구 삭제되는지 터미널 메시지로 확인
-   ```
-
----
-
-## 5. 트러블슈팅
-
-본 시스템을 개발하고 모니터링 환경을 튜닝하는 과정에서 발생한 핵심 이슈들과 해결 기법입니다.
-
-### 📌 ISSUE 1: setup.sh의 선행 의존성 패키지 부재 및 멱등성 결여 이슈
-* **문제 상황**: `setup.sh`를 실행할 때, `openssh-server`, `ufw`, `acl`, `file` 등 필수 리눅스 패키지가 서버에 사전에 깔려있지 않아 여러 단계에서 `command not found` 오류가 발생하고 파일 미존재 오류가 발생했습니다. 또한, 스크립트를 여러 번 연속 실행 시 `.bashrc`와 `/etc/environment` 파일 하단에 중복 환경 변수가 지저분하게 계속 덧붙는 멱등성 결여 문제와 주석 실수 버그로 `crontab: invalid option`이 터지는 아키텍처적 불안정성이 드러났습니다.
-* **해결 방안**:
-  * **[1단계] 시스템 의존성 자동 확인 및 설치** 루틴을 맨 앞에 전격 탑재했습니다. `dpkg` 및 `command -v`를 이용하여 필수 패키지가 없을 시 `apt-get`으로 자동 확인 및 선행 설치하게 구현했습니다.
-  * **환경 변수 주입 멱등성 보장**: `grep` 사전 필터링 로직을 장착하여 이미 환경 변수 블록이 적혀있다면 중복 삽입하지 않고 안전하게 스킵되도록 조치했습니다.
-  * **바이너리 유연 탐색 및 버그 척결**: `/tmp/`에 한정되어 있던 바이너리 탐색 위치를 실행 경로 및 부모 디렉토리까지 자동으로 뒤져 안전하게 배치하도록 하고, 설명 문법 버그(`crontab -e:`)를 전원 제거하여 완벽한 안정성을 달성했습니다.
-
-### 📌 ISSUE 2: Ubuntu 22.10+ / 24.04 LTS의 systemd 소켓 활성화(Socket Activation)로 인한 SSH 포트 고정 현상
-* **문제 상황**: `/etc/ssh/sshd_config` 내에 `Port 20022`를 정상적으로 세팅하고 SSH 데몬 서비스를 재시작했음에도 불구하고, `ss -tlnp`로 열려 있는 포트를 조회하면 기존의 `22` 포트가 완강하게 유지되는 현상이 발생했습니다. 소켓 상태 분석 시 프로세스 란에 `sshd`뿐 아니라 마스터 프로세스인 `systemd (PID 1)`가 해당 포트의 파일 디스크립터를 공유 점유하고 있음이 기술적으로 포착되었습니다.
-* **해결 방안**: 최신 Ubuntu 배포판이 지원하는 systemd 소켓 활성화(`ssh.socket`) 유닛이 `22` 포트를 커널 수준에서 선점 관리하여 생기는 현상임을 확인했습니다. `setup.sh` 내에 `ssh.socket`의 활성화 여부를 스스로 감지(`systemctl is-active --quiet ssh.socket`)하는 엔진을 구현하여, 감지 시 `ssh.socket`을 정지 및 영구 비활성화 처리하고 `ssh.service` 독립 상주형 서비스로 멱등하게 자동 리다이렉트 기동함으로써 20022 포트 전환의 자동화를 완벽히 성취했습니다.
-
-### 📌 ISSUE 3: 시연 및 검증 시 실 운영 데이터 소실 방지 조치 (Non-destructive Testbed)
-* **문제 상황**: 보너스 미션(`archive.sh`, `report.sh`)의 동작을 시연하기 위해 가상 테스트 데이터를 빌드하는 과정에서, 기존 관제 디렉토리를 함부로 강제 재생성(포맷)하거나 원본 실시간 로그 파일(`monitor.log`)을 덮어쓰게 될 경우, 기존에 장기간 정상적으로 쌓아 올린 시계열 실 운영 로그 이력이 영구 소실되어 버릴 보안상의 심각한 위협이 존재했습니다.
-* **해결 방안**: 시연용 제너레이터 룰에서 비파괴적(Non-destructive) 검증 메커니즘을 전격 채택하였습니다.
-  * 디렉토리 생성 단계에서는 기존에 축적된 디렉토리를 전면 포맷(rm -rf 등)하지 않고 안전하게 보존하기 위해 `mkdir -p`로만 안전 구조를 다듬습니다.
-  * 7일 경과 압축 시연에서는 실 운영 로그 파일인 `monitor.log`를 임의로 훼손하지 않기 위해, 오직 시연 목적으로 탄생한 **가상의 단독 타겟 파일(`test_history.log`)**을 독립 `touch` 생성하여 실 운영 이력에 전혀 영향을 미치지 않고도 아카이빙 시나리오를 깨끗하게 검증할 수 있도록 설계했습니다.
-  * 3분 자원 스파이크 분석 시연 시에도 기존 로그를 삭제하지 않고, 기 구축된 `monitor.log` 파일의 맨 마지막 오프셋 꼬리에 추가 누적 어펜드(`>>`)하는 방식으로 더미를 삽입하여 기존 관제 데이터의 무결성을 영구 보존하며 안전하게 통계 마이닝을 검증하도록 보강했습니다.
-
----
-
-## 6. 핵심 기술적 배경 및 장애 대응 시나리오 (Feedback 보완 검토 결과 반영)
-
-본 장은 시스템의 안정성, 보안성 및 가용성을 극대화하기 위해 설계된 핵심 기술적 결정 사항에 대한 논리적 배경과, 실무 운영 중에 발생할 수 있는 장애 상황에 대한 체계적인 대응 방안을 다룹니다.
-
-### 6.1 SSH 포트 변경 및 Root 접속 차단의 보안적 효과 (위협 모델 관점)
-서버의 외부 노출 영역을 최소화하고 비인가자의 무단 침입 시도를 차단하기 위해 SSH 보안 설정을 다음과 같이 강화하였습니다.
-
-*   **SSH 기본 포트 변경 (22 → 20022)**
-    *   **위협 완화**: 인터넷 상에는 포트 `22`를 표적으로 하는 수많은 무작위 대입 공격(Brute-Force) 및 자동화된 스캐닝 봇(Bot)이 상시 가동 중입니다. 기본 포트를 `20022`와 같은 비표준 포트(Ephemera/Custom Port Range)로 변경함으로써, 무차별 스캔 대상에서 원천적으로 제외되는 **'Security by Obscurity(보안 은폐성)'** 효과를 누릴 수 있으며 로그 노이즈 또한 현격히 줄어듭니다.
-*   **Root 계정의 원격 로그인 차단 (PermitRootLogin no)**
-    *   **위협 완화**: `root` 계정은 리눅스 시스템에서 무소불위의 권한을 가진 절대 관리자 계정이며, ID가 `root`로 고정되어 있어 공격자들의 일차적인 침투 표적이 됩니다.
-    *   **운영적 강점 (감사 추적성, Audit Trail)**: Root 원격 접속을 차단하고, 권한이 제약된 개별 관리자 계정(`agent-admin`)으로 로그인한 후 필요할 때만 `sudo`를 사용하여 작업하게 강제합니다. 이 경우 `/var/log/auth.log` 등에 실제 명령을 내린 사용자의 식별 정보가 명확히 남아, 사고 발생 시 책임 추적과 체계적인 감사(Auditing)가 가능해집니다.
-
-### 6.2 방화벽 비활성 및 임계치 초과 시 즉각 종료하지 않는 운영상의 설계 의도
-`monitor.sh`는 예외 상황이 발생했을 때 전체 모니터링 데몬을 즉각 중단(`exit 1`)시키지 않고, `[WARNING]` 경고를 출력하며 정상 작동을 유지하도록 설계되었습니다.
-
-*   **방화벽(UFW) 비활성 시 스크립트를 계속 진행하는 이유**
-    *   **시스템 가용성 보장**: 방화벽은 일시적인 네트워크 점검, 정책 변경, 룰 리로드 등으로 인해 아주 잠시 비활성 상태가 될 수 있습니다. 만약 이 시점에 모니터링 스크립트 자체가 즉시 종료되어 버린다면, CPU/Memory/Disk 등의 다른 시스템 임계 리소스 모니터링 및 프로세스 상태 감시가 함께 마비되는 **'관제 사각지대'**가 초래됩니다. 따라서 네트워크 보안 경고는 신속히 남기되, 본연의 관제 기능은 중단 없이 수행하도록 구성하는 것이 합당합니다.
-*   **리소스 임계치 초과 시 즉각 종료하지 않는 이유**
-    *   **스파이크(Spike) 대응**: 일시적인 대용량 파일 압축, 임시 백업 작업, 짧은 트래픽 급증 등으로 인해 리소스 사용량(예: CPU > 20%, Memory > 10%)은 언제든지 순간적으로 스파이크를 칠 수 있습니다. 
-    *   **서비스 연속성**: 임계치 도달을 장애로 조기 단정 짓고 모니터링 데몬을 죽이거나 대상 서비스를 강제 중단하게 되면, 오히려 멀쩡한 서비스의 가용성을 훼손하는 심각한 오작동이 발생합니다. 운영자에게 시각적/로그상의 경고(`[WARNING]`)를 전달하여 인지시킨 후, 실제 장애 유무를 진단하여 적절한 개입을 하도록 여지를 주는 것이 실무 운영상의 정석입니다.
-
-### 6.3 프로세스 식별 및 포트 확인 명령어 선택 이유 (pgrep, ss)
-시스템의 활동을 검사하기 위해 쉘 스크립트 내에서 구식 유틸리티 대신 성능과 안정성이 입증된 최신 명령어를 사용했습니다.
-
-*   **프로세스 식별: `pgrep`의 채택 이유 (vs `ps aux | grep`)**
-    *   `ps aux | grep "agent-app"` 파이프라인 방식을 사용할 경우, `grep` 명령어 자체 프로세스가 검색 결과 리스트에 포함되어 PID가 2개 이상 잡히는 일명 **'Self-matching' 버그**가 자주 발생합니다. 이를 피하기 위해 `grep -v grep` 등을 추가로 덧붙여야 하므로 코드가 불필요하게 무거워집니다.
-    *   반면 `pgrep -f`는 오직 타겟 프로세스 이름을 정교하게 필터링하여 일치하는 실제 PID 목록만 깔끔하게 정수형으로 반환하므로, 스크립트 내에서 무의미한 CPU 사용을 줄이고 가독성을 대폭 향상시킵니다.
-*   **포트 리슨 점검: `ss`의 채택 이유 (vs `netstat`)**
-    *   기존에 널리 쓰이던 `netstat`은 리눅스 Net-tools 패키지의 일부로, 현재 대부분의 최신 리눅스 배포판에서 기본 제외(Deprecated)되고 있습니다. 또한 `/proc/net` 파일 시스템을 순차적으로 직접 파싱하기 때문에 연결 소켓 수가 많아지면 조회 성능이 현저하게 저하됩니다.
-    *   이에 비해 `ss`(Socket Statistics) 명령어는 커널 내부의 네트워크 서브시스템에서 소켓 상태 정보를 관리하는 **`tcp_diag` 넷링크(Netlink) 모듈을 직접 호출**하므로 데이터 반환 속도가 월등히 빠르고, 대규모 트래픽 환경에서도 서버에 주는 오버헤드가 극히 적습니다.
-
-### 6.4 메모리/디스크 사용량 파싱 방식 및 고정된 로그 포맷의 설계 목적
-*   **메모리(Memory) 파싱 원리**
-    *   `free -m` 명령을 실행하여 출력되는 두 번째 줄(`Mem:`)의 두 번째 필드(`total`)와 세 번째 필드(`used`)를 `awk`로 추출한 뒤, 소수점 백분율로 계산합니다.
-    *   `MEM_USAGE=$(free | grep Mem | awk '{printf "%.1f", $3/$2 * 100}')`
-*   **디스크(Disk) 파싱 원리**
-    *   `df -P` 명령(POSIX 표준 포맷 보장)을 통해 대상 볼륨 `/` 혹은 서비스 경로를 스캔하고, 다섯 번째 열에 위치한 사용 백분율(`Use%`)에서 `%` 문자를 떼어내 정수화합니다.
-    *   `DISK_USED=$(df -P / | tail -1 | awk '{print $5}' | sed 's/%//')`
-*   **로그 포맷을 고정하고 엄격히 제한한 엔지니어링적 이유**
-    *   `[YYYY-MM-DD HH:MM:SS] PID:xxxx CPU:xx% MEM:xx% DISK_USED:xx%`
-    *   **파싱 및 정규화 효율성 (ELK, Logstash, Fluentd 연동)**: 로그 형식이 불규칙하면 파싱 정규식이 복잡해지고 CPU 연산 비용이 급증합니다. 고정된 단일 라인 텍스트는 단일 Regular Expression(`^\[(?<timestamp>[^\]]+)\] PID:(?<pid>\d+) CPU:(?<cpu>[\d\.]+)% MEM:(?<mem>[\d\.]+)% DISK_USED:(?<disk>\d+)%`)만으로 완벽하고 빠르게 인덱싱될 수 있습니다.
-    *   **공간 및 I/O 절약**: 군더더기 텍스트를 배제하고 오직 모니터링 시계열 분석에 필수적인 메트릭(CPU, MEM, DISK)만을 담아 I/O 부하를 낮추고 디스크 저장 공간을 효율적으로 절약합니다.
-
-### 6.5 소유자(agent-dev), 그룹(agent-core), 권한(750) 정책의 보안적 의도
-`monitor.sh` 스크립트 파일에 대한 소유자 및 권한 설정(`agent-dev:agent-core` 및 `750`)은 다중 사용자 운영 환경에서 권한 격리를 위한 정교한 계층화 정책의 산물입니다.
-
-*   **소유자 `agent-dev` (u=rwx)**
-    *   관제 스크립트의 소스 코드를 개발 및 업데이트하는 주체는 개발자(`agent-dev`)입니다. 따라서 해당 계정에 읽기, 쓰기, 실행 권한을 모두 부여하여 코드 수정 및 로컬 테스트가 가능하게 합니다.
-*   **그룹 `agent-core` (g=rx)**
-    *   실제 이 관제 스크립트를 주기적으로 구동하고 백그라운드 배치를 돌리는 주체는 운영자 계정인 `agent-admin`입니다. `agent-admin`과 개발자 `agent-dev`만이 핵심 그룹인 `agent-core`에 가입되어 있으므로, `agent-admin`은 그룹 실행 권한(`rx`)을 활용해 문제없이 cron을 통해 스크립트를 기동할 수 있습니다.
-*   **권한 `750` 및 제3자 차단 (o=---)**
-    *   나머지 타 계정(예: QA 및 모니터링 권한이 없는 `agent-test` 계정 등)은 스크립트 파일 자체를 읽지도 실행하지도 못하도록 완전히 차단합니다. 이를 통해 스크립트 파일 내부에 존재할 수 있는 서버 디렉토리 구조, 내부 실행 환경 설정, 로깅 상세 메커니즘 등 민감한 핵심 로직이 노출되는 것을 사전에 전면 차단합니다.
-
-### 6.6 리다이렉션 기호 `>` 와 `>>` 의 기술적 차이 및 로그 보존의 필수성
-쉘 환경에서 스크립트 실행 결과를 파일에 저장할 때 사용하는 두 연산자는 파일 디스크립터(File Descriptor) 조작 관점에서 명확한 동작 차이를 가집니다.
-
-*   **`>` (덮어쓰기 리다이렉션, Overwrite)**
-    *   대상 파일을 열 때 `O_TRUNC` 플래그를 사용하여 열기 때문에, 기존에 적혀있던 모든 데이터가 즉시 0바이트로 초기화(Truncate)되고 그 자리에 새로운 데이터가 처음부터 씌어집니다. 만약 관제 스크립트 로그 저장에 `>`를 쓴다면 매분 실행될 때마다 이전까지 쌓였던 소중한 과거 관제 역사가 흔적도 없이 삭제되어, 1분 직전의 장애 흔적조차 찾을 수 없게 됩니다.
-*   **`>>` (추가 리다이렉션, Append)**
-    *   파일을 열 때 `O_APPEND` 플래그를 사용하여 파일을 생성/호출합니다. 이 경우 파일에 데이터를 쓰기 직전 항상 파일 포인터(Offset)가 파일의 맨 마지막 문자 위치(EOF)로 강제 이동합니다. 따라서 기존 데이터를 절대 훼손하지 않고 꼬리에 새로운 관제 메트릭이 덧붙게 됩니다.
-    *   **로그 보존의 기술적 필연성**: 시스템 모니터링의 궁극적 목표는 **'추세 분석(Trend Analysis)'** 및 **'장애 사후 부검(Post-mortem Analysis)'**입니다. 수일, 수주 간의 리소스 변화 추이를 축적하고, 장애 발생 시점 전후의 메트릭 변화를 시계열적으로 추적하기 위해서는 무손실 로그 누적이 보장되어야 하므로 `>>` 연산자가 필수적입니다.
-
-### 6.7 로그 용량 자체 제어(10MB * 10개) 회전(Rotation) 메커니즘 동작 원리
-`monitor.sh` 내부에 내장된 `rotate_log` 함수는 OS의 기본 `logrotate` 유틸리티에 대한 외부 의존성 없이, 스스로 로그 디스크 풀 임계치를 방어하기 위해 개발된 내장형 회전 메커니즘입니다.
-
-1.  **크기 검사**: 매 실행 시마다 `stat` 혹은 `wc -c` 명령어를 이용하여 현재 로그 파일(`monitor.log`)의 바이트 크기를 정밀 측정합니다.
-2.  **임계치 판정**: 로그 크기가 설정값인 10MB($10 \times 1024 \times 1024 = 10,485,760\text{ bytes}$)를 초과하는지 검사합니다.
-3.  **인덱스 순차 밀어내기 (Shift)**:
-    *   이미 보관 한도인 10번째 백업 파일(`monitor.log.10`)이 존재한다면 이를 먼저 완전히 삭제합니다.
-    *   그 후 `monitor.log.9` -> `monitor.log.10`, `monitor.log.8` -> `monitor.log.9` 순으로 번호를 역순으로 하나씩 올려 이름을 바꿉니다.
-4.  **현재 활성 로그 로테이션**: 마지막으로 실시간 적재되고 있던 `monitor.log`를 `monitor.log.1`로 변경하고, 새로운 `monitor.log` 파일을 0바이트 상태로 비워 재기동합니다.
-5.  **디스크 가용성 안전 보장**: 이 순환 로직을 통해 로그 디렉토리의 전체 보관 용량 상한선은 어떠한 경우에도 최대 약 **110MB** 수준으로 절대 고정되며, 서버의 로그 파티션이 꽉 들어차서 OS 전체가 먹통이 되는 치명적인 디스크 풀 장애를 원천적으로 방지합니다.
-
-### 6.8 모니터링 대상이 웹 서버(Nginx/Apache 등)로 확장될 경우의 핵심 수정 포인트
-만약 관제 시스템이 현재의 백그라운드 단독 앱에서 대고객 웹 서비스 서버로 전환될 경우, `monitor.sh`는 다음과 같이 L4/L7 레이어를 포함하는 구조로 변경 및 고도화되어야 합니다.
-
-1.  **환경 변수 및 기본 프로세스/포트 매핑 수정**
-    *   `APP_PROCESS="nginx"` 혹은 `"apache2"`로 변경하여 데몬 감시 대상을 타겟팅합니다.
-    *   `APP_PORT="80"` (HTTP) 및 `"443"` (HTTPS) 포트로 리슨 감시 상태를 변경합니다.
-2.  **L7 레이어 웹 서비스 응답성 및 상태 코드 검증 추가**
-    *   기존의 단순히 TCP 포트가 열려 있는지를 확인하는 L4 검증(port listening)만으로는, 웹 서버 프로세스가 교착 상태(Deadlock)에 빠져 HTTP 요청에 응답하지 못하는 장애를 잡아낼 수 없습니다.
-    *   따라서 다음과 같이 직접 내부 루프백 주소로 가상의 HTTP Get 요청을 보내 애플리케이션의 정상적인 응답 코드(`200 OK`)를 검사하는 로직을 통합합니다.
-    ```bash
-    # curl을 이용한 HTTP 상태 코드 및 응답 시간 측정 통합 예시
-    HTTP_STATUS=$(curl -o /dev/null -s -w "%{http_code}" --connect-timeout 3 http://localhost:80/)
-    if [ "$HTTP_STATUS" -ne 200 ]; then
-        echo "[ERROR] Web Server Port is open, but HTTP status is $HTTP_STATUS"
-        exit 1
-    fi
+  #### 1) 두 방식의 비교
+  - **인라인 `onclick` 방식:** HTML 태그 내부에 JavaScript 코드를 문자열로 직접 주입합니다.
+    ```html
+    <!-- 권장되지 않는 인라인 방식 -->
+    <button onclick="fetchProjects()">다시 시도</button>
+    ```
+  - **`addEventListener` 방식:** HTML은 구조(뼈대)만 남겨두고, JS 파일에서 DOM 요소를 선택해 동적으로 이벤트를 바인딩합니다.
+    ```javascript
+    // 권장되는 main.js 이벤트 리스너 방식
+    const retryBtn = projectsContainer.querySelector('#retry-btn');
+    retryBtn.addEventListener('click', fetchProjects);
     ```
 
-### 6.9 "프로세스는 존재하나 포트가 리슨되지 않는" 장애 상황의 원인 후보 및 진단 순서
-실무에서 흔히 발견되는 까다로운 장애 중 하나는 프로세스 리스트(`pgrep`)에는 잘 보이나, 네트워크 포트(`ss`)가 열려 있지 않아 클라이언트가 접속할 수 없는 상태입니다.
+  #### 2) addEventListener의 핵심적 이점
+  1. **관심사의 분리:** 마크업(HTML)과 로직(JS)이 완전히 격리되어 코드가 깨끗해지고 유지보수가 수월해집니다.
+  2. **다중 이벤트 핸들러 등록:** 인라인 `onclick`은 하나의 요소에 하나의 함수만 할당할 수 있지만, `addEventListener`는 동일한 요소의 동일한 이벤트에 대해 여러 개의 독립적인 리스너를 추가로 등록할 수 있습니다.
+  3. **동적 이벤트 제어:** 런타임에 이벤트를 동적으로 등록하거나 해제(`removeEventListener`)하는 등 강력한 이벤트 제어가 가능합니다.
+  4. **전역 네임스페이스 오염 방지:** 인라인 방식은 함수가 반드시 글로벌 스코프에 노출되어 있어야 하지만, `addEventListener`는 모듈화된 독립 스코프 내에서도 안전하게 동작합니다.
+  </details>
+- [x] `querySelector`, `querySelectorAll`로 요소 선택
+- [x] `textContent`, `innerHTML`로 내용 변경
+- [x] `classList.add`, `remove`, `toggle`로 클래스 조작
+- [x] `click`, `submit`, `scroll`, `input` 이벤트 처리
+- [x] `event.preventDefault()`로 기본 동작 방지
 
-*   **장애 발생 원인 후보**
-    1.  **애플리케이션 데드락 (Application Deadlock)**: 멀티스레딩이나 동기화 처리 버그로 인해 메인 스레드가 무한 락에 걸려, 소켓 바인딩(Socket Binding)을 시도하는 초기화 코드 단계까지 실행 흐름이 도달하지 못하고 멈춰 있는 상태.
-    2.  **좀비 / 고스트 프로세스 (Zombie/Defunct)**: 프로세스는 이미 치명적인 오류로 사망하여 실제 자원은 반환되었으나, 부모 프로세스가 종료 시그널(SIGCHLD)을 정상적으로 회수하지 않아 커널 프로세스 테이블에 껍데기(Z 상태)만 남아 있는 상태.
-    3.  **파일 디스크립터 고갈 (FD / Socket Exhaustion)**: 시스템 전체 혹은 프로세스당 설정된 최대 열기 가능 파일 디스크립터(`ulimit -n`) 한도에 도달하여, 네트워크 소켓 생성을 위한 `socket()` 또는 `accept()` 시스템 콜이 지속적으로 실패하는 현상.
-    4.  **포트 바인딩 충돌 (Port Bind Conflict)**: 동일 포트를 사용하려는 다른 고스트 프로세스가 백그라운드에 남아 포트를 이미 독점 점유 중이어서, 새로 기동된 프로세스가 소켓 바인딩에 실패하고 무한 재시도/대기 루프에 들어간 상태.
-*   **운영자 진단 파이프라인 (Troubleshooting Order)**
-    1.  **1단계 - 프로세스 정확한 상태 진단 (`ps`)**: `ps -o state -p <PID>`를 실행하여 프로세스의 상태 코드가 좀비(`Z`) 혹은 언인터럽터블 슬립(`D` - 디스크 I/O 병목으로 정지)인지 파악합니다.
-    2.  **2단계 - 소켓 FD 점유 현황 점검 (`lsof`)**: `lsof -p <PID> -i` 혹은 `ls -la /proc/<PID>/fd/`를 수행하여, 현재 프로세스가 열어놓은 파일 디스크립터 한도 초과 여부와 포트 점유 여부를 스캔합니다.
-    3.  **3단계 - 애플리케이션 상세 런타임 로그 확인**: 애플리케이션의 에러 로그 파일(`/var/log/...` 또는 stdout)을 정독하여 `Address already in use` 혹은 `Too many open files` 예외 트레이스백이 발생했는지 검진합니다.
-    4.  **4단계 - 포트 강제 점유 확인 (`ss`)**: `ss -tulnp | grep <포트번호>` 명령을 통해 실제 어떤 PID가 범인으로 소켓을 물고 있는지 추적하여 충돌 프로세스를 강제 정리(`kill -9`)합니다.
-    5.  **5단계 - 시스템 콜 동적 추적 (`strace`)**: `strace -p <PID>` 명령어로 프로세스가 현재 커널에 날리고 있는 시스템 콜을 감시하여, 어떤 락(Lock)이나 대기 함수(`futex`, `epoll_wait`)에 무한 계류되어 있는지 포착합니다.
+### 4-5. 인터랙션 구현
+- [x] **a. 햄버거 메뉴 토글**: `classList.toggle('active')` 활용
+- [x] **b. 부드러운 스크롤**: `scroll-behavior: smooth` + 메뉴 클릭 시 해당 섹션 이동
+- [x] **c. 스크롤 탑 버튼**: 스크롤 `300px` 이상에서 나타남, 클릭 시 페이지 최상단 이동
+- [x] **d. 네비게이션 스타일 변경**: 스크롤 `60px` 이상에서 배경에 `box-shadow` 추가
+- [x] **e. 다크 모드**: 토글 전환 + `localStorage` 저장으로 새로고침 후에도 유지
+- [x] **f. 스크롤 애니메이션**: Intersection Observer `threshold: 0.5` 사용
+  <details>
+  <summary><b>💡 주요 인터랙션 기술 분석 및 임계값 설정 기준 (자세히 보기)</b></summary>
 
-### 6.10 로그 급증으로 인한 디스크 풀(Full) 임계치 도달 시 운영자의 단계별 대응 방안
-갑작스러운 애플리케이션 디버그 옵션 켜짐이나 장애로 인한 무한 에러 덤프 생성으로 디스크가 가득 차는 위급한 장애 상황에서 운영자는 다음의 수칙에 입각하여 시스템 가동 중단을 막아야 합니다.
+  #### 1) 햄버거 메뉴 토글 로직 (`main.js`)
+  모바일 해상도에서 햄버거 버튼 클릭 시 메뉴가 부드럽게 옆에서 미끄러져 들어오며 삼선(三) 버튼이 X 모양으로 변형됩니다.
+  ```javascript
+  navToggle.addEventListener('click', () => {
+    navToggle.classList.toggle('active'); // 삼선 -> X 변환
+    navMenu.classList.toggle('active');   // 메뉴 컨테이너의 right: -100% -> 0
+  });
+  ```
 
-*   **즉각적인 단기 구급 대응 (Immediate Actions)**
-    1.  **비핵심 로그 즉시 압축 기동**: 용량이 거대하고 보관 주기가 지난 구형 텍스트 로그 파일들을 수동으로 찾아 `gzip` 압축을 처리합니다. (텍스트 로그는 압축률이 80~90%에 육박하여 즉시 수십 기가의 숨통을 확보할 수 있습니다.)
-    2.  **로그 로테이션 상한 임시 축소 및 구파일 정기 소거**: 스크립트의 `MAX_BACKUPS`를 임시로 줄이고 `find /var/log/agent-app/ -name "*.log.*" -mtime +2 -delete`와 같이 2일 이상 경과한 백업본을 일시 영구 소거합니다.
-    3.  **애플리케이션 로깅 레벨 강제 조정**: 디스크 유출의 원인이 되는 과도한 정보 출력을 막기 위해 애플리케이션 설정 파일 혹은 환경 변수를 조작하여 로깅 수준을 즉시 `WARN` 또는 `ERROR` 수준으로 격상합니다.
-*   **안정적인 중기 시스템 대응 (Medium-term Strategies)**
-    1.  **로그 로테이션 크기 조정 튜닝**: `monitor.sh` 내의 로그 회전 단위를 기존 10MB에서 5MB 혹은 2MB 단위로 세분화하고 백업 최대 개수도 줄여 디렉토리 점유량의 기본 절대치를 억제합니다.
-    2.  **LVM (Logical Volume Manager) 동적 디스크 확장**: 로그가 적재되는 `/var/log` 파티션을 별도 마운트하여 관리하고, 디스크 경고 시 볼륨 그룹(VG)에서 유휴 공간을 끌어와 논리 볼륨(LV)을 실시간 무중단 확장(`lvextend -r`)합니다.
-    3.  **로그 통합 수집기 이관 (Log Shipping Architecture)**: 로컬 파일 시스템에는 최소한의 롤링 로그(예: 최대 24시간 분량)만 남기고, Fluent-Bit, Filebeat 등의 경량 에이전트를 가동해 수집된 로그를 즉시 외부 중앙 집중식 로그 분석 플랫폼(ELK Stack, AWS CloudWatch, Splunk 등)으로 전송하고 로컬은 바로 파기하는 아키텍처로 전면 수정하여 본원적인 디스크 풀 리스크를 완벽하게 제거합니다.
+  #### 2) 스크롤 탑 버튼 & 네비게이션 스타일링 임계값 기준
+  - **네비게이션 배경 변화 (`scrollY >= 60`):** 헤더 영역의 기본 높이가 `70px`이므로, 사용자가 페이지를 약 `60px` 정도 스크롤하여 콘텐츠 영역이 헤더 밑으로 들어가기 시작하는 순간을 임계값으로 설정했습니다. 이때 헤더에 그림자(`.scrolled`)를 추가하여 스크롤 중임을 시각적으로 분리합니다.
+  - **스크롤 탑 버튼 표시 (`scrollY >= 300`):** 사용자가 약 1~2 스크롤을 내려 헤로(Hero) 섹션을 벗어나는 지점(300px)에 도달했을 때만 탑 버튼(`.scroll-top.show`)이 유용하다고 판단하여 임계값을 설정했습니다.
+  ```javascript
+  window.addEventListener('scroll', () => {
+    // 네비 스타일 변경 (60px)
+    if (window.scrollY >= 60) { header.classList.add('scrolled'); } 
+    else { header.classList.remove('scrolled'); }
+
+    // 탑 버튼 표시 (300px)
+    if (window.scrollY >= 300) { scrollTopBtn.classList.add('show'); } 
+    else { scrollTopBtn.classList.remove('show'); }
+  });
+  ```
+
+  #### 3) 스크롤 등장 애니메이션 (`Intersection Observer`)
+  스크롤할 때 각 요소가 부드럽게 위로 솟아오르며 나타나는 효과입니다.
+  - **`threshold: 0.5`로 설정한 이유:** 대상 요소의 면적이 브라우저 뷰포트에 **최소 50% 이상 노출되었을 때**를 이벤트 트리거 타이밍으로 삼았습니다. 요소의 절반 가량이 확실하게 화면에 진입한 뒤 애니메이션이 발동하여, 사용자가 콘텐츠의 형태를 충분히 인지한 상태에서 등장하도록 유도하여 시각적 안정감을 줍니다.
+  ```javascript
+  const observerOptions = { root: null, threshold: 0.5 };
+  const observer = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('appear'); // opacity: 1, translateY: 0
+        observer.unobserve(entry.target);     // 한 번 등장 후 관찰 해제(성능 확보)
+      }
+    });
+  }, observerOptions);
+  ```
+  </details>
+
+### 4-6. 폼 UX
+- [x] Contact 섹션에 문의 폼 존재 (이름, 이메일, 메시지)
+- [x] 필수값 검증 (빈 필드 제출 불가)
+- [x] 이메일 형식 검증 (정규식)
+- [x] 에러 메시지가 입력 필드 근처에 표시
+- [x] `event.preventDefault()`로 기본 동작 방지 + 성공 메시지 표시
+  <details>
+  <summary><b>💡 실시간 유효성 검사 및 사용자 피드백 메커니즘 (자세히 보기)</b></summary>
+
+  #### 1) 실시간 + 최종 제출 2중 검증 흐름
+  - 사용자가 입력을 완료하기 전에 무턱대고 에러 메시지를 띄우는 나쁜 UX를 방지하기 위해, 최초 폼 제출(`submit` 이벤트) 전까지는 에러를 표시하지 않습니다.
+  - 폼 제출 시 유효하지 않은 입력 항목이 있다면 `event.preventDefault()`로 폼 전송을 즉시 차단하고, 해당 입력 필드 아래에 에러 텍스트를 노출하며 테두리를 붉은색(`.invalid`)으로 변경합니다.
+  - 한 번 에러가 발생한 필드는 사용자가 수정을 시작하는 즉시 피드백을 주기 위해 `input` 실시간 이벤트를 감지하여 입력 값이 유효해지는 순간 즉각 붉은 테두리와 에러 메시지를 소거합니다.
+
+  #### 2) 실시간 피드백 JavaScript 코드 조각
+  ```javascript
+  // 이메일 정규식 검사 함수
+  const validateEmail = (email) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email).toLowerCase());
+  };
+
+  // 실시간 입력(input) 감지하여 에러 제거
+  emailInput.addEventListener('input', () => {
+    if (emailInput.value.trim() && validateEmail(emailInput.value)) {
+      clearError(emailInput, 'email-error');
+    }
+  });
+  ```
+  </details>
+
+### 4-7. ES6+ 문법 & 배열 메서드
+- [x] 화살표 함수 활용
+- [x] 템플릿 리터럴로 HTML 동적 생성
+- [x] 구조분해 할당 (`const { status, allData, filter, errorMsg } = STATE.portfolio`)
+- [x] `map`: GitHub 데이터 → HTML 카드 변환
+- [x] `filter`: 언어별 프로젝트 필터링
+- [x] `forEach`: 배열 순회 (navLinks, filterBtns 등)
+  <details>
+  <summary><b>💡 map과 filter를 활용한 GitHub API 카드 변환 파이프라인 분석 (자세히 보기)</b></summary>
+
+  GitHub API로부터 프로젝트 목록을 비동기식으로 받아온 뒤, 사용자가 클릭한 필터에 부합하도록 데이터를 정제하고 브라우저에 렌더링하는 과정에서 **선언형 배열 메서드**를 연쇄적으로 적용합니다.
+
+  #### 1) 1단계: 언어별 데이터 필터링 (`filter`)
+  `STATE.portfolio.filter`가 `'all'`이 아니라면, 원본 데이터 배열인 `allData`에서 사용자가 선택한 언어(예: `'JavaScript'`)와 저장소의 언어(`repo.language`)가 일치하는 아이템만 골라내어 새로운 배열인 `filteredData`를 동적 생성합니다.
+  ```javascript
+  const filteredData = filter === 'all'
+    ? allData
+    : allData.filter(repo => repo.language === filter);
+  ```
+
+  #### 2) 2단계: 가공된 데이터를 HTML 카드 문자열로 변환 (`map` & `join`)
+  필터링이 완료된 `filteredData` 배열의 각 객체를 `map` 메서드로 순회하면서 템플릿 리터럴을 통해 동적인 HTML 카드 마크업 문자열로 치환합니다. 이후 반환된 마크업 배열을 `.join('')`을 이용하여 하나의 거대한 문자열로 합쳐 DOM에 한 번에 주입합니다.
+  ```javascript
+  const projectsHTML = filteredData.map(repo => {
+    const description = repo.description || '프로젝트에 대한 설명이 없습니다.';
+    const language = repo.language || 'Others';
+
+    return `
+      <article class="project-card fade-in appear">
+        <h3><a href="${repo.html_url}" target="_blank" rel="noopener noreferrer">${repo.name}</a></h3>
+        <p>${description}</p>
+        <div class="project-meta">
+          <span>${language}</span>
+          <span>⭐ ${repo.stargazers_count}</span>
+        </div>
+      </article>
+    `;
+  }).join('');
+
+  projectsContainer.innerHTML = projectsHTML;
+  ```
+  </details>
+
+### 4-8. 비동기 처리 & API 연동
+- [x] `fetch` + `async/await`로 GitHub API 호출
+- [x] 로딩 상태: "프로젝트를 불러오는 중입니다..." 텍스트
+- [x] 성공 상태: 카드 리스트 렌더링
+- [x] 에러 상태: 에러 메시지 + "다시 시도" 버튼
+- [x] 빈 상태: "표시할 프로젝트가 없습니다" 메시지
+- [x] `try/catch`로 에러 처리
+- [x] 레이트 리밋(403) 에러 시 에러 상태 UI 표시
+  <details>
+  <summary><b>💡 async/await & try/catch를 통한 비동기 흐름 및 4대 UI 상태 설계 (자세히 보기)</b></summary>
+
+  #### 1) async/await와 try/catch 기반 에러 핸들링 구조
+  비동기 함수 `fetchProjects`는 동기식 코드처럼 읽기 쉽도록 `async/await` 패턴을 채용했으며, 통신 과정에서 발생할 수 있는 네트워크 장애 및 HTTP 예외 상황을 안전하게 격리하고자 `try/catch`문으로 감쌌습니다.
+  - `response.ok`를 체크하여 실패 시(`!response.ok`) 의도적으로 `Error`를 throw하여 catch 블록으로 흐름을 넘깁니다. 특히 GitHub API의 대표적인 에러인 '시간당 API 요청 횟수 초과(403)'를 감지하여 적절한 경고 메시지를 바인딩합니다.
+
+  #### 2) GitHub API 연동 실제 코드 조각
+  ```javascript
+  const fetchProjects = async () => {
+    // 1. 상태 변경: 로딩 중
+    STATE.portfolio.status = 'loading';
+    renderProjectsUI();
+
+    try {
+      const response = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated`);
+      if (!response.ok) {
+        // 403 레이트 리밋 감지 또는 404 등 예외 분기
+        throw new Error(response.status === 403 ? 'API 호출 제한 초과' : '데이터를 불러올 수 없습니다.');
+      }
+      const data = await response.json();
+
+      // 2. 상태 변경: 성공 (Fork된 레포 제외)
+      STATE.portfolio.allData = data.filter(repo => !repo.fork);
+      STATE.portfolio.status = 'success';
+      renderProjectsUI();
+
+    } catch (error) {
+      // 3. 상태 변경: 에러
+      STATE.portfolio.status = 'error';
+      STATE.portfolio.errorMsg = error.message;
+      renderProjectsUI();
+    }
+  };
+  ```
+
+  #### 3) 비동기 통신의 4가지 상태(State) 설계 및 렌더링 매핑
+  화면이 깜빡이거나 멈춘 느낌을 주지 않고, 사용자에게 명확한 진행 상황을 공유하기 위해 4가지 상태를 정의하여 UI를 갱신합니다.
+  - **Loading 상태 (`status === 'loading'`):** API 데이터가 응답하기 전까지 스피너나 플레이스홀더 텍스트("프로젝트를 불러오는 중입니다...")를 렌더링합니다.
+  - **Success 상태 (`status === 'success'`):** 응답이 완료된 정상 데이터를 받아 배열을 카드로 맵핑하여 그리드 화면에 출력합니다.
+  - **Error 상태 (`status === 'error'`):** 네트워크 차단, 403 API 만료, 서버 오류 발생 시 붉은 텍스트 에러 메시지와 함께 직관적으로 다시 시도할 수 있는 `[다시 시도]` 재시도 버튼을 렌더링합니다.
+  - **Empty 상태 (`status === 'success' && filteredData.length === 0`):** 성공했으나 결과 데이터가 없거나, 필터 조건(예: Python)에 해당하는 프로젝트가 없을 때 "표시할 프로젝트가 없습니다."를 표시해 오동작이 아님을 확인시킵니다.
+  </details>
+
+### 4-9. 상태 관리 패턴
+- [x] "이벤트 → 상태 변경 → 화면 업데이트" 흐름 명확 (중앙 집중식 `STATE` 객체)
+- [x] 상태 → 렌더링 흐름 4가지 구현 (다크 모드, API 상태, 폼 유효성, 필터)
+
+### 4-10. 배포
+- [x] GitHub Pages 배포
+- [x] 배포 URL에서 모든 기능 정상 동작 확인
+- [x] README에 프로젝트 설명, 사용 기술, 배포 URL 섹션 포함
+- [x] README에 스크린샷 포함
+
+---
+
+### 보너스 과제
+
+- [x] **5-1. 프로젝트 필터링**: 언어별 필터링 버튼 구현 (`array.filter()` 활용)
+- [x] **5-2. 타이핑 효과**: Hero 섹션에 타자기처럼 한 글자씩 나타나는 효과 구현
+- [x] **5-3. 폼 실제 전송**: Formspree 연동 (⚠️ action URL을 실제 Formspree ID로 교체 필요: `https://formspree.io/f/my_form_id_here`)
+- [x] **5-4. 시스템 다크 모드 감지**: `prefers-color-scheme` 미디어 쿼리로 초기 테마 자동 감지

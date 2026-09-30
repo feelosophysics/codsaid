@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mini-Redis Interactive Visualizer Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #0f172a;
+      --card-bg: rgba(30, 41, 59, 0.7);
+      --card-border: rgba(255, 255, 255, 0.1);
+      --accent-red: #f43f5e;
+      --accent-blue: #38bdf8;
+      --accent-green: #10b981;
+      --accent-purple: #a855f7;
+      --accent-amber: #f59e0b;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: radial-gradient(circle at top left, #1e1b4b, #0f172a);
+      color: var(--text-main);
+      min-height: 100vh;
+      padding: 24px;
+    }
+
+    header {
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 16px;
+    }
+
+    header h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--accent-red), var(--accent-purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    header p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    .grid-container {
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 24px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+      margin-bottom: 24px;
+    }
+
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Terminal UI */
+    .terminal {
+      background: #020617;
+      border-radius: 10px;
+      padding: 14px;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85rem;
+      height: 240px;
+      overflow-y: auto;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      margin-bottom: 14px;
+    }
+
+    .terminal-line {
+      margin-bottom: 6px;
+      line-height: 1.4;
+    }
+
+    .cmd-prompt { color: var(--accent-blue); }
+    .cmd-out { color: var(--accent-green); }
+    .cmd-err { color: var(--accent-red); }
+
+    .input-box {
+      display: flex;
+      gap: 8px;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      background: #090d16;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      color: #fff;
+      font-family: 'Fira Code', monospace;
+      outline: none;
+    }
+
+    input[type="text"]:focus {
+      border-color: var(--accent-blue);
+    }
+
+    button {
+      background: linear-gradient(135deg, #3b82f6, #6366f1);
+      border: none;
+      color: white;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+    }
+
+    .demo-btn-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .demo-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
+      font-size: 0.75rem;
+      padding: 6px 10px;
+      color: var(--text-muted);
+    }
+
+    .demo-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
+    }
+
+    /* Memory Meter */
+    .memory-meter {
+      height: 16px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      overflow: hidden;
+      margin: 10px 0;
+      position: relative;
+    }
+
+    .memory-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent-green), var(--accent-amber), var(--accent-red));
+      transition: width 0.4s ease;
+    }
+
+    .stats-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* Visualization Panes */
+    .viz-section {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* LRU List */
+    .lru-chain {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 12px 0;
+    }
+
+    .node-box {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(147, 51, 234, 0.2));
+      border: 1px solid rgba(147, 51, 234, 0.4);
+      border-radius: 10px;
+      padding: 10px 14px;
+      min-width: 110px;
+      text-align: center;
+      position: relative;
+      animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .node-sentinel {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.2);
+      color: var(--text-muted);
+      font-size: 0.8rem;
+    }
+
+    .node-key {
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: var(--accent-blue);
+    }
+
+    .node-val {
+      font-size: 0.8rem;
+      color: var(--accent-green);
+    }
+
+    .arrow {
+      color: var(--text-muted);
+      font-weight: bold;
+    }
+
+    /* HashMap Buckets */
+    .buckets-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    .bucket-card {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 0.8rem;
+    }
+
+    .bucket-header {
+      color: var(--accent-purple);
+      font-weight: 600;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding-bottom: 4px;
+      margin-bottom: 6px;
+    }
+
+    /* MinHeap Tree */
+    .heap-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .heap-item {
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid var(--accent-amber);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 0.85rem;
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.7); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div>
+      <h1>Mini-Redis Interactive Visualizer</h1>
+      <p>커스텀 자료구조, LRU 캐시, TTL 힙 실시간 동작 대시보드</p>
+    </div>
+  </header>
+
+  <div class="grid-container">
+
+    <!-- Left Controls Panel -->
+    <div>
+      <!-- Terminal Window -->
+      <div class="card">
+        <div class="card-title">🖥️ Virtual REPL Terminal</div>
+        <div class="terminal" id="terminal">
+          <div class="terminal-line cmd-out">Welcome to Mini-Redis Interactive Shell!</div>
+          <div class="terminal-line cmd-out">Type commands below or click preset demos.</div>
+        </div>
+        <div class="input-box">
+          <input type="text" id="cmdInput" placeholder="SET key value, GET key, EXPIRE key 5..." onkeydown="if(event.key==='Enter') runCmd()">
+          <button onclick="runCmd()">Run</button>
+        </div>
+        <div class="demo-btn-group">
+          <button class="demo-btn" onclick="runPreset('CONFIG SET maxmemory 30')">1. MaxMem 30B</button>
+          <button class="demo-btn" onclick="runPreset('SET user:1 Alice')">2. SET user:1</button>
+          <button class="demo-btn" onclick="runPreset('SET user:2 Bob')">3. SET user:2</button>
+          <button class="demo-btn" onclick="runPreset('SET user:3 Charlie')">4. Evict LRU</button>
+          <button class="demo-btn" onclick="runPreset('EXPIRE user:2 5')">5. EXPIRE 5s</button>
+          <button class="demo-btn" onclick="runPreset('TTL user:2')">6. Check TTL</button>
+        </div>
+      </div>
+
+      <!-- Memory Stats -->
+      <div class="card">
+        <div class="card-title">📊 Memory Usage & Eviction</div>
+        <div class="memory-meter">
+          <div class="memory-fill" id="memoryFill"></div>
+        </div>
+        <div class="stats-row">
+          <span>Used: <strong id="usedMemText">0 Bytes</strong></span>
+          <span>Max: <strong id="maxMemText">Unlimited</strong></span>
+        </div>
+        <div class="stats-row" style="margin-top: 8px;">
+          <span>Evicted Keys: <strong id="evictedText" style="color: var(--accent-red)">0</strong></span>
+          <span>Stored Keys: <strong id="storedText" style="color: var(--accent-blue)">0</strong></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Visualization Panes -->
+    <div class="viz-section">
+
+      <!-- LRU List -->
+      <div class="card">
+        <div class="card-title">
+          <span>🔗 LRU Cache Order (DoublyLinkedList)</span>
+          <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: normal;">(Head = MRU / Tail = LRU)</span>
+        </div>
+        <div class="lru-chain" id="lruContainer">
+          <div class="node-box node-sentinel">Head (MRU)</div>
+          <div class="arrow">⇄</div>
+          <div class="node-box node-sentinel">Tail (LRU)</div>
+        </div>
+      </div>
+
+      <!-- HashMap Buckets -->
+      <div class="card">
+        <div class="card-title">
+          <span>🗄️ HashMap Bucket Chaining Table</span>
+          <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: normal;">(Polynomial Rolling Hash & Chaining)</span>
+        </div>
+        <div class="buckets-grid" id="bucketsContainer"></div>
+      </div>
+
+      <!-- MinHeap TTL -->
+      <div class="card">
+        <div class="card-title">
+          <span>⏳ TTL Expiration Heap (MinHeap)</span>
+          <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: normal;">(Root = Most Immediate Expire)</span>
+        </div>
+        <div class="heap-list" id="heapContainer">
+          <div style="color: var(--text-muted); font-size: 0.85rem;">설정된 만료 키가 없습니다.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    class Node {
+      constructor(key, value) {
+        this.key = key;
+        this.value = value;
+        this.prev = null;
+        this.next = null;
+      }
+    }
+
+    class MiniRedisEngine {
+      constructor() {
+        this.store = new Map();
+        this.lruHead = new Node("Head", null);
+        this.lruTail = new Node("Tail", null);
+        this.lruHead.next = this.lruTail;
+        this.lruTail.prev = this.lruHead;
+        
+        this.ttlMap = new Map();
+        this.maxmemory = 0;
+        this.used_memory = 0;
+        this.evicted_keys = 0;
+        this.bucketsCount = 8;
+      }
+
+      calcMemory(key, val) {
+        return (new TextEncoder().encode(key)).length + (new TextEncoder().encode(String(val))).length;
+      }
+
+      insertFront(node) {
+        const first = this.lruHead.next;
+        node.prev = this.lruHead;
+        node.next = first;
+        this.lruHead.next = node;
+        first.prev = node;
+      }
+
+      removeNode(node) {
+        if (!node.prev || !node.next) return;
+        node.prev.next = node.next;
+        node.next.prev = node.prev;
+        node.prev = null;
+        node.next = null;
+      }
+
+      moveToFront(node) {
+        this.removeNode(node);
+        this.insertFront(node);
+      }
+
+      evictLru() {
+        const lruNode = this.lruTail.prev;
+        if (lruNode === this.lruHead) return;
+        
+        const k = lruNode.key;
+        const v = lruNode.value;
+        this.removeNode(lruNode);
+        this.store.delete(k);
+        this.ttlMap.delete(k);
+        
+        this.used_memory -= this.calcMemory(k, v);
+        this.evicted_keys += 1;
+      }
+
+      cleanupExpired() {
+        const now = Date.now();
+        for (let [k, expireAt] of this.ttlMap.entries()) {
+          if (expireAt <= now) {
+            this.delete(k);
+          }
+        }
+      }
+
+      set(key, value) {
+        this.cleanupExpired();
+        const cost = this.calcMemory(key, value);
+
+        if (this.maxmemory > 0 && cost > this.maxmemory) {
+          return "(error) OOM command not allowed when used memory > 'maxmemory'";
+        }
+
+        if (this.store.has(key)) {
+          const oldNode = this.store.get(key);
+          this.used_memory -= this.calcMemory(key, oldNode.value);
+          this.removeNode(oldNode);
+          this.ttlMap.delete(key);
+        }
+
+        const node = new Node(key, value);
+        this.insertFront(node);
+        this.store.set(key, node);
+        this.used_memory += cost;
+
+        while (this.maxmemory > 0 && this.used_memory > this.maxmemory) {
+          this.evictLru();
+        }
+
+        return "OK";
+      }
+
+      get(key) {
+        this.cleanupExpired();
+        if (!this.store.has(key)) return "(nil)";
+        const node = this.store.get(key);
+        this.moveToFront(node);
+        return `"${node.value}"`;
+      }
+
+      delete(key) {
+        if (!this.store.has(key)) return "(integer) 0";
+        const node = this.store.get(key);
+        this.used_memory -= this.calcMemory(key, node.value);
+        this.removeNode(node);
+        this.store.delete(key);
+        this.ttlMap.delete(key);
+        return "(integer) 1";
+      }
+
+      expire(key, seconds) {
+        this.cleanupExpired();
+        if (!this.store.has(key)) return "(integer) 0";
+        if (seconds <= 0) {
+          this.delete(key);
+          return "(integer) 1";
+        }
+        const expireAt = Date.now() + (seconds * 1000);
+        this.ttlMap.set(key, expireAt);
+        return "(integer) 1";
+      }
+
+      ttl(key) {
+        this.cleanupExpired();
+        if (!this.store.has(key)) return "(integer) -2";
+        if (!this.ttlMap.has(key)) return "(integer) -1";
+        const remSec = Math.max(0, Math.ceil((this.ttlMap.get(key) - Date.now()) / 1000));
+        return `(integer) ${remSec}`;
+      }
+
+      configSetMaxmemory(limit) {
+        this.maxmemory = parseInt(limit, 10);
+        this.cleanupExpired();
+        while (this.maxmemory > 0 && this.used_memory > this.maxmemory) {
+          this.evictLru();
+        }
+        return "OK";
+      }
+    }
+
+    const engine = new MiniRedisEngine();
+
+    function hashString(str) {
+      let hash = 0;
+      for (let i = 0; i < str.length; i++) {
+        hash = (hash * 31 + str.charCodeAt(i)) % 1000000009;
+      }
+      return hash;
+    }
+
+    function renderUI() {
+      document.getElementById('usedMemText').innerText = `${engine.used_memory} Bytes`;
+      document.getElementById('maxMemText').innerText = engine.maxmemory > 0 ? `${engine.maxmemory} Bytes` : "Unlimited";
+      document.getElementById('evictedText').innerText = engine.evicted_keys;
+      document.getElementById('storedText').innerText = engine.store.size;
+
+      const fill = document.getElementById('memoryFill');
+      if (engine.maxmemory > 0) {
+        const pct = Math.min(100, Math.round((engine.used_memory / engine.maxmemory) * 100));
+        fill.style.width = pct + "%";
+      } else {
+        fill.style.width = engine.used_memory > 0 ? "20%" : "0%";
+      }
+
+      const lruContainer = document.getElementById('lruContainer');
+      lruContainer.innerHTML = '<div class="node-box node-sentinel">Head (MRU)</div>';
+      
+      let curr = engine.lruHead.next;
+      while (curr && curr !== engine.lruTail) {
+        lruContainer.innerHTML += `
+          <div class="arrow">⇄</div>
+          <div class="node-box">
+            <div class="node-key">${curr.key}</div>
+            <div class="node-val">${curr.value}</div>
+          </div>
+        `;
+        curr = curr.next;
+      }
+      lruContainer.innerHTML += '<div class="arrow">⇄</div><div class="node-box node-sentinel">Tail (LRU)</div>';
+
+      const bucketsContainer = document.getElementById('bucketsContainer');
+      bucketsContainer.innerHTML = '';
+      const buckets = Array.from({length: 8}, () => []);
+
+      for (let [k, node] of engine.store.entries()) {
+        const idx = hashString(k) % 8;
+        buckets[idx].push(node);
+      }
+
+      buckets.forEach((bList, idx) => {
+        let nodesHtml = bList.map(n => `<span style="color:var(--accent-blue)">${n.key}</span>:<span style="color:var(--accent-green)">${n.value}</span>`).join(' -> ');
+        if (!nodesHtml) nodesHtml = '<span style="color:var(--text-muted); font-size:0.75rem;">(empty)</span>';
+
+        bucketsContainer.innerHTML += `
+          <div class="bucket-card">
+            <div class="bucket-header">Bucket [${idx}]</div>
+            <div>${nodesHtml}</div>
+          </div>
+        `;
+      });
+
+      const heapContainer = document.getElementById('heapContainer');
+      heapContainer.innerHTML = '';
+      const now = Date.now();
+
+      const ttlEntries = Array.from(engine.ttlMap.entries())
+        .map(([k, exp]) => ({ key: k, remSec: Math.max(0, Math.ceil((exp - now)/1000)) }))
+        .sort((a,b) => a.remSec - b.remSec);
+
+      if (ttlEntries.length === 0) {
+        heapContainer.innerHTML = '<div style="color: var(--text-muted); font-size: 0.85rem;">설정된 만료 키가 없습니다.</div>';
+      } else {
+        ttlEntries.forEach(item => {
+          heapContainer.innerHTML += `
+            <div class="heap-item">
+              🔑 <strong>${item.key}</strong> : ⏳ ${item.remSec}s 남음
+            </div>
+          `;
+        });
+      }
+    }
+
+    function logTerminal(text, type='cmd-out') {
+      const term = document.getElementById('terminal');
+      const line = document.createElement('div');
+      line.className = `terminal-line ${type}`;
+      line.innerText = text;
+      term.appendChild(line);
+      term.scrollTop = term.scrollHeight;
+    }
+
+    function runCmdText(rawCmd) {
+      const line = rawCmd.trim();
+      if (!line) return;
+      logTerminal(`mini-redis> ${line}`, 'cmd-prompt');
+
+      const parts = line.split(/\s+/);
+      const cmd = parts[0].toUpperCase();
+
+      if (cmd === 'SET' && parts.length >= 3) {
+        const res = engine.set(parts[1], parts.slice(2).join(' '));
+        logTerminal(res, res.startsWith('(error)') ? 'cmd-err' : 'cmd-out');
+      } else if (cmd === 'GET' && parts.length === 2) {
+        const res = engine.get(parts[1]);
+        logTerminal(res);
+      } else if (cmd === 'DEL' && parts.length === 2) {
+        const res = engine.delete(parts[1]);
+        logTerminal(res);
+      } else if (cmd === 'EXPIRE' && parts.length === 3) {
+        const res = engine.expire(parts[1], parseInt(parts[2], 10));
+        logTerminal(res);
+      } else if (cmd === 'TTL' && parts.length === 2) {
+        const res = engine.ttl(parts[1]);
+        logTerminal(res);
+      } else if (cmd === 'CONFIG' && parts[1]?.toUpperCase() === 'SET' && parts[2]?.toLowerCase() === 'maxmemory') {
+        const res = engine.configSetMaxmemory(parts[3]);
+        logTerminal(res);
+      } else {
+        logTerminal(`(error) ERR unknown or malformed command '${line}'`, 'cmd-err');
+      }
+
+      renderUI();
+    }
+
+    function runCmd() {
+      const input = document.getElementById('cmdInput');
+      runCmdText(input.value);
+      input.value = '';
+    }
+
+    function runPreset(cmdStr) {
+      document.getElementById('cmdInput').value = cmdStr;
+      runCmd();
+    }
+
+    setInterval(() => {
+      if (engine.ttlMap.size > 0) {
+        renderUI();
+      }
+    }, 1000);
+
+    renderUI();
+  </script>
+</body>
+</html>

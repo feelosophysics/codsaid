@@ -1,10 +1,10 @@
-# 📄 doubly_linked_list.py 및 dynamic_array.py 사용 현황과 필요성 종합 분석 리포트 (report33.md)
+# 📄 B5-1 Mini Redis: doubly_linked_list.py 및 dynamic_array.py 사용 현황과 필요성 종합 분석 리포트
 
 ---
 
 ## 1. 개요 (Executive Summary)
 
-본 리포트는 Mini Redis 프로젝트(`b3-1` 미션)의 `doubly_linked_list.py`에 정의된 **`remove_front()` / `remove_back()`** 함수와, `dynamic_array.py`에 정의된 **`DynamicArray`** 클래스의 actual usage(실제 코드베이스 내 사용 현황) 및 학습 미션 설계 의도(Pedagogical Intent)를 종합 분석하여 필요성 여부를 판정합니다.
+본 리포트는 현재 B5-1 Mini Redis 미션의 `doubly_linked_list.py`에 정의된 **`remove_front()` / `remove_back()`** 함수와, `dynamic_array.py`에 정의된 **`DynamicArray`** 클래스의 actual usage(실제 코드베이스 내 사용 현황) 및 학습 미션 설계 의도(Pedagogical Intent)를 종합 분석하여 필요성 여부를 판정합니다.
 
 ### 📌 핵심 결론
 > 1. **`remove_front()` / `remove_back()`**: `mini_redis_core.py`(LRU Eviction)와 `pub_sub.py`(메시지 큐 Poll)의 **핵심 직접 연산자**로서 필수적입니다.
@@ -31,7 +31,7 @@
 
 ### 2.1 `remove_back()` 사용처: Mini Redis LRU 캐시 Eviction
 
-* **사용 모듈**: [`mini_redis_core.py`](file:///Users/f22losophysics1091/Desktop/codsaid/mission/b3-1/mini_redis_core.py#L40) -> `MiniRedis._evict_lru()`
+* **사용 모듈**: [`mini_redis_core.py`](../mini_redis/mini_redis_core.py#L40) -> `MiniRedis._evict_lru()`
 * **코드 조각**:
   ```python
   def _evict_lru(self) -> None:
@@ -53,7 +53,7 @@
 
 ### 2.2 `remove_front()` 사용처: Pub/Sub 메시지 큐 인출 (FIFO Poll)
 
-* **사용 모듈**: [`pub_sub.py`](file:///Users/f22losophysics1091/Desktop/codsaid/mission/b3-1/pub_sub.py#L63) -> `PubSub.poll()`
+* **사용 모듈**: [`pub_sub.py`](../mini_redis/pub_sub.py#L63) -> `PubSub.poll()`
 * **코드 조각**:
   ```python
   def poll(self, channel: str) -> list:
@@ -98,12 +98,12 @@
 ```
 
 1. **`HashMap` 버킷 배열의 기저 저장소**:
-   - 위치: [`hash_map.py:L1, L15`](file:///Users/f22losophysics1091/Desktop/codsaid/mission/b3-1/hash_map.py#L15)
+   - 위치: [`hash_map.py:L1, L15`](../mini_redis/hash_map.py#L15)
    - 코드: `self._buckets = DynamicArray(self._capacity)`
    - 이유: 해시 충돌(Chaining)을 해결하기 위한 버킷 공간으로 고정 배열을 할당하고, Rehash 발생 시 버킷 크기를 확장하는 데 `DynamicArray`를 사용합니다.
 
 2. **`MinHeap` 완전 이진 트리 배열의 기저 저장소**:
-   - 위치: [`min_heap.py:L1, L17`](file:///Users/f22losophysics1091/Desktop/codsaid/mission/b3-1/min_heap.py#L17)
+   - 위치: [`min_heap.py:L1, L17`](../mini_redis/min_heap.py#L17)
    - 코드: `self._data = DynamicArray()`
    - 이유: TTL 관리용 최소 힙은 1차원 배열 기반 완전 이진 트리입니다. 힙 요소의 `push`/`pop` 및 `_swap` 연산이 모두 `DynamicArray` 위에서 수행됩니다.
 
@@ -112,7 +112,7 @@
 ## 4. 필요성 및 학습 미션 설계 의도 (Pedagogical Intent)
 
 ### 4.1 파이썬 내장 자료형 배제 원칙 준수
-- 미션 `b3-1`의 핵심 제약 조건: **"파이썬 내장 `list`의 동적 크기 조절 기능(`append`, `pop`, 동적 할당)과 `dict` 사용을 엄격히 배제할 것"**
+- B5-1 미션의 핵심 제약 조건: **"파이썬 내장 `list`의 동적 크기 조절 기능(`append`, `pop`, 동적 할당)과 `dict` 사용을 엄격히 배제할 것"**
 - `DynamicArray`는 오직 `[None] * capacity` 형태의 원시 고정 크기 메모리 공간만 할당받은 뒤, 용량이 차면 2배로 공간을 늘리는 `_resize()` 연산과 분할 상환 복잡도(Amortized $O(1)$)를 **수동으로 직접 구현**한 클래스입니다.
 - 파이썬 내장 `list` 대신 원시 메모리 배열을 흉내 내어 동적 배열의 원리를 배우는 것이 이 학습 미션의 뿌리입니다.
 
