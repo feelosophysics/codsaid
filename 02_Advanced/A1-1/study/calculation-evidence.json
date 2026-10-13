@@ -1,0 +1,360 @@
+{
+  "tiny_records": [
+    {
+      "customer_id": "A",
+      "order_id": "O1",
+      "order_date": "2026-10-01",
+      "amount": 20000
+    },
+    {
+      "customer_id": "A",
+      "order_id": "O1",
+      "order_date": "2026-10-01",
+      "amount": 10000
+    },
+    {
+      "customer_id": "A",
+      "order_id": "O2",
+      "order_date": "2026-10-08",
+      "amount": 20000
+    },
+    {
+      "customer_id": "B",
+      "order_id": "O3",
+      "order_date": "2026-09-01",
+      "amount": 100000
+    },
+    {
+      "customer_id": "C",
+      "order_id": "O4",
+      "order_date": "2026-10-09",
+      "amount": 5000
+    }
+  ],
+  "tiny_cases": [
+    {
+      "reference": "2026-10-10",
+      "expected": [
+        {
+          "customer_id": "A",
+          "recency": 2,
+          "frequency": 2,
+          "monetary": 50000,
+          "r_score": 4,
+          "f_score": 5,
+          "m_score": 4,
+          "rfm_score": 13,
+          "segment": "Regular"
+        },
+        {
+          "customer_id": "B",
+          "recency": 39,
+          "frequency": 1,
+          "monetary": 100000,
+          "r_score": 2,
+          "f_score": 3,
+          "m_score": 5,
+          "rfm_score": 10,
+          "segment": "Regular"
+        },
+        {
+          "customer_id": "C",
+          "recency": 1,
+          "frequency": 1,
+          "monetary": 5000,
+          "r_score": 5,
+          "f_score": 3,
+          "m_score": 2,
+          "rfm_score": 10,
+          "segment": "New"
+        }
+      ]
+    },
+    {
+      "reference": "2026-10-11",
+      "expected": [
+        {
+          "customer_id": "A",
+          "recency": 3,
+          "frequency": 2,
+          "monetary": 50000,
+          "r_score": 4,
+          "f_score": 5,
+          "m_score": 4,
+          "rfm_score": 13,
+          "segment": "Regular"
+        },
+        {
+          "customer_id": "B",
+          "recency": 40,
+          "frequency": 1,
+          "monetary": 100000,
+          "r_score": 2,
+          "f_score": 3,
+          "m_score": 5,
+          "rfm_score": 10,
+          "segment": "Regular"
+        },
+        {
+          "customer_id": "C",
+          "recency": 2,
+          "frequency": 1,
+          "monetary": 5000,
+          "r_score": 5,
+          "f_score": 3,
+          "m_score": 2,
+          "rfm_score": 10,
+          "segment": "New"
+        }
+      ]
+    },
+    {
+      "reference": "2026-11-10",
+      "expected": [
+        {
+          "customer_id": "A",
+          "recency": 33,
+          "frequency": 2,
+          "monetary": 50000,
+          "r_score": 4,
+          "f_score": 5,
+          "m_score": 4,
+          "rfm_score": 13,
+          "segment": "Regular"
+        },
+        {
+          "customer_id": "B",
+          "recency": 70,
+          "frequency": 1,
+          "monetary": 100000,
+          "r_score": 2,
+          "f_score": 3,
+          "m_score": 5,
+          "rfm_score": 10,
+          "segment": "Regular"
+        },
+        {
+          "customer_id": "C",
+          "recency": 32,
+          "frequency": 1,
+          "monetary": 5000,
+          "r_score": 5,
+          "f_score": 3,
+          "m_score": 2,
+          "rfm_score": 10,
+          "segment": "Regular"
+        }
+      ]
+    }
+  ],
+  "segment_cases": [
+    {
+      "recent": 30,
+      "inactive": 90,
+      "loyal": 4,
+      "expected": {
+        "VIP": 60,
+        "Loyal": 60,
+        "New": 60,
+        "Inactive": 60
+      }
+    },
+    {
+      "recent": 7,
+      "inactive": 90,
+      "loyal": 4,
+      "expected": {
+        "Loyal": 94,
+        "Inactive": 60,
+        "New": 51,
+        "VIP": 26,
+        "Regular": 9
+      }
+    },
+    {
+      "recent": 30,
+      "inactive": 180,
+      "loyal": 4,
+      "expected": {
+        "Loyal": 72,
+        "VIP": 60,
+        "New": 60,
+        "Inactive": 25,
+        "Regular": 23
+      }
+    },
+    {
+      "recent": 30,
+      "inactive": 90,
+      "loyal": 8,
+      "expected": {
+        "VIP": 60,
+        "New": 60,
+        "Inactive": 60,
+        "Regular": 51,
+        "Loyal": 9
+      }
+    }
+  ],
+  "iqr_cases": [
+    {
+      "high": 100,
+      "threshold": 1.5,
+      "lower": -1.0,
+      "upper": 7.0,
+      "flagged": [
+        false,
+        false,
+        false,
+        false,
+        true
+      ],
+      "clipped": [
+        1,
+        2,
+        3,
+        4,
+        7
+      ]
+    },
+    {
+      "high": 6,
+      "threshold": 1.5,
+      "lower": -1.0,
+      "upper": 7.0,
+      "flagged": [
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "clipped": [
+        1,
+        2,
+        3,
+        4,
+        6
+      ]
+    },
+    {
+      "high": 100,
+      "threshold": 0.5,
+      "lower": 1.0,
+      "upper": 5.0,
+      "flagged": [
+        false,
+        false,
+        false,
+        false,
+        true
+      ],
+      "clipped": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "high": 4,
+      "threshold": 3.0,
+      "lower": -4.0,
+      "upper": 10.0,
+      "flagged": [
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "clipped": [
+        1,
+        2,
+        3,
+        4,
+        4
+      ]
+    }
+  ],
+  "image_cases": [
+    {
+      "brightness": 20,
+      "contrast": 1,
+      "pattern": "gradient",
+      "pixels": [
+        20,
+        40,
+        60,
+        80
+      ],
+      "mean": 50.0,
+      "std": 22.360679774997898
+    },
+    {
+      "brightness": 50,
+      "contrast": 0,
+      "pattern": "uniform",
+      "pixels": [
+        50,
+        50,
+        50,
+        50
+      ],
+      "mean": 50.0,
+      "std": 0.0
+    },
+    {
+      "brightness": 180,
+      "contrast": 2,
+      "pattern": "gradient",
+      "pixels": [
+        180,
+        220,
+        255,
+        255
+      ],
+      "mean": 227.5,
+      "std": 30.923292192132454
+    }
+  ],
+  "imputation_cases": [
+    {
+      "repeat": 1,
+      "strategy": "median",
+      "correct": 25.0,
+      "weighted": 25.0
+    },
+    {
+      "repeat": 1,
+      "strategy": "mean",
+      "correct": 25.0,
+      "weighted": 25.0
+    },
+    {
+      "repeat": 3,
+      "strategy": "median",
+      "correct": 25.0,
+      "weighted": 10.0
+    },
+    {
+      "repeat": 3,
+      "strategy": "mean",
+      "correct": 25.0,
+      "weighted": 17.5
+    },
+    {
+      "repeat": 6,
+      "strategy": "median",
+      "correct": 25.0,
+      "weighted": 10.0
+    },
+    {
+      "repeat": 6,
+      "strategy": "mean",
+      "correct": 25.0,
+      "weighted": 14.285714285714286
+    }
+  ]
+}

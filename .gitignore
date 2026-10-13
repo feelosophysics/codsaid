@@ -188,3 +188,7 @@ __marimo__/
 .DS_Store
 agent-app.zip
 tmp/
+
+# Local tools and notebook execution state
+node_modules/
+.notebook-runtime/

@@ -1,0 +1,134 @@
+{
+  "date": "2026-10-10",
+  "scope": "project:check",
+  "hash_mode": "UTF-8 text: CRLF normalized to LF; binary: exact bytes",
+  "files": {
+    "src/run_analysis.py": "edb8cb5b04748d2ef4cbf2524d23ccdfd75270c48c4238b8691f781be9d62882",
+    "src/pipeline.py": "e0e76f8afea47b3682f08cd018777c296fcea6664b15d78b481cde35fd5de582",
+    "src/sample_data.py": "1428dc4bb5e4c6ef01e86d7b6cee6c56739cfe3cb1df93be54894137ee5c5712",
+    "src/report.py": "05e5f47f971ff883f9706a992a773788d2f61b9d92e05db7910cb41d2c9a1c35",
+    "tests/test_pipeline.py": "1a4528741f63f25ada1afd89fdeb8d26f964fe78d90d2d7df54e15cab898985e",
+    "results/figures/01_histogram.png": "10c43f0a7b62203d2f750b8f9e4c270d3c1c00f55004d90931eed1927732ebbf",
+    "results/figures/02_boxplot.png": "8ce39fbd682e6daedd6b03be2cd6685619a386d4dc6f69d6b16b15eb4b226e74",
+    "results/figures/03_bar.png": "dc08ef1441fa719995ca0bb22922f1c096c108be287ac07213f1c82a20e4d16f",
+    "results/figures/04_heatmap.png": "635b696f2a5c02a5b1735569625cd17f68ed2880fc980ccb450d5d4dfe347b4d",
+    "results/figures/05_scatter.png": "7cb4ac9f9931bb2d14fba1e2416675337ce0036ed08f9e47f0c4806017a7a87c",
+    "results/figures/06_line.png": "1327387ec43eab41fb225ea2f9a2d5385d97421096355cd2554cd6252ba273f6",
+    "data/sample/transactions.csv": "ede38d02ea9b4281a1adec27ccc3bb41a2ef22724bb99aaf4a27a7c091f8d995",
+    "data/sample/products.csv": "c6244b515c15d5f911bca26425cc5187c01207b15d8426f5b8c5ca8dc37c2189",
+    "data/sample/images.npy": "a46d01d25f598fdd5ab344fd6b5a25c676be492b3baa95b1a510122dd1263e0d",
+    "results/rfm_customers.csv": "df5ba50e63844e8377dcaf109ed766bbd22534c45ee0f571516756f88f9dcec9",
+    "results/segment_summary.csv": "be341c3fa30aa85b7bb3ef70b5b191abcb476ce8c0d7b436690c86405d27ea7e",
+    "results/audit.json": "a7cce722d95543efcc95b34bb0a026e1364b0832ed1d12529dcdafc483ac8377"
+  },
+  "excerpts": {
+    "flow": {
+      "file": "src/run_analysis.py",
+      "start": 10,
+      "end": 20,
+      "text": "def run_analysis(data_dir, output_dir, reference_date=None):\n    data_dir = Path(data_dir)\n    analyzer = DataAnalyzer(data_dir / \"transactions.csv\")\n    analyzer.load_data()\n    analyzer.handle_missing_values()\n    analyzer.engineer_features()\n    analyzer.detect_outliers(\"shipping_days\")\n    analyzer.detect_outliers(\"unit_price\")\n    analyzer.calculate_rfm(reference_date=reference_date)\n    write_report(analyzer, output_dir)\n    return analyzer"
+    },
+    "state": {
+      "file": "src/pipeline.py",
+      "start": 28,
+      "end": 38,
+      "text": "    def __init__(self, data_path, products_path=None, images_path=None):\n        self.data_path = Path(data_path)\n        base = self.data_path.parent\n        self.products_path = Path(products_path) if products_path else base / \"products.csv\"\n        self.images_path = Path(images_path) if images_path else base / \"images.npy\"\n        self.df = None\n        self.raw_df = None\n        self.products = None\n        self.images = None\n        self.rfm = None\n        self.audit = {}"
+    },
+    "join": {
+      "file": "src/pipeline.py",
+      "start": 78,
+      "end": 84,
+      "text": "        overlap = (set(transactions.columns) & set(products.columns)) - {\"product_id\"}\n        if overlap:\n            raise ValueError(f\"Overlapping table columns: {sorted(overlap)}\")\n        joined = transactions.merge(products, on=\"product_id\", how=\"left\", validate=\"many_to_one\", indicator=True)\n        if (joined[\"_merge\"] != \"both\").any():\n            raise ValueError(\"Every transaction must reference a known product_id\")\n        self.images = np.load(self.images_path, allow_pickle=False)"
+    },
+    "checks": {
+      "file": "src/pipeline.py",
+      "start": 69,
+      "end": 78,
+      "text": "        comparable = transactions[[\"unit_price\", \"quantity\", \"amount\"]].notna().all(axis=1)\n        if not np.isclose(transactions.loc[comparable, \"amount\"],\n                          transactions.loc[comparable, \"unit_price\"] * transactions.loc[comparable, \"quantity\"],\n                          rtol=1e-6, atol=0.01).all():\n            raise ValueError(\"amount must be the line total unit_price * quantity\")\n        order_groups = transactions.groupby(\"order_id\")\n        for key in [\"customer_id\", \"order_date\"]:\n            if (order_groups[key].nunique(dropna=False) > 1).any():\n                raise ValueError(f\"One order_id must have one {key}\")\n        overlap = (set(transactions.columns) & set(products.columns)) - {\"product_id\"}"
+    },
+    "fill": {
+      "file": "src/pipeline.py",
+      "start": 119,
+      "end": 124,
+      "text": "            global_value = getattr(numeric, strategy)()\n            if pd.isna(global_value):\n                raise ValueError(f\"Cannot impute all-missing column {column}\")\n            group_values = frame.groupby(group_col, dropna=False)[column].transform(strategy)\n            frame[column] = numeric.fillna(group_values).fillna(global_value)\n            changes[column] = int(numeric.isna().sum())"
+    },
+    "grain": {
+      "file": "src/pipeline.py",
+      "start": 139,
+      "end": 144,
+      "text": "        product_counts = self._fill_by_group(self.products, product_columns, group_col, strategy)\n        self.products[\"product_name\"] = self.products.product_name.fillna(\"Unknown product\")\n        # A catalog statistic must not be weighted by how often each product sold.\n        for column in [*product_columns, \"product_name\"]:\n            self.df[column] = self.df.product_id.map(self.products.set_index(\"product_id\")[column])\n        line_counts = self._fill_by_group(self.df, transaction_columns, group_col, strategy)"
+    },
+    "image": {
+      "file": "src/pipeline.py",
+      "start": 153,
+      "end": 160,
+      "text": "        axes = tuple(range(1, self.images.ndim))\n        image_mean = self.images.mean(axis=axes, dtype=np.float64)\n        image_std = self.images.std(axis=axes, dtype=np.float64)\n        indices = self.df.image_index.to_numpy(dtype=int)\n        self.df[\"image_mean\"] = image_mean[indices]\n        self.df[\"image_std\"] = image_std[indices]\n        self.df[\"name_length\"] = self.df.product_name.astype(\"string\").str.len()\n        self.df[\"name_word_count\"] = self.df.product_name.astype(\"string\").str.split().str.len()"
+    },
+    "iqr": {
+      "file": "src/pipeline.py",
+      "start": 8,
+      "end": 17,
+      "text": "def iqr_bounds(values, threshold=1.5):\n    \"\"\"Return Tukey fences. Flagging is not a decision to delete a record.\"\"\"\n    if not np.isfinite(threshold) or threshold <= 0:\n        raise ValueError(\"threshold must be finite and positive\")\n    values = pd.to_numeric(values, errors=\"raise\")\n    if not np.isfinite(values.dropna()).all() or values.dropna().empty:\n        raise ValueError(\"IQR requires at least one finite observation\")\n    q1, q3 = values.quantile([0.25, 0.75])\n    spread = q3 - q1\n    return float(q1 - threshold * spread), float(q3 + threshold * spread)"
+    },
+    "flag": {
+      "file": "src/pipeline.py",
+      "start": 163,
+      "end": 172,
+      "text": "    def detect_outliers(self, column, threshold=1.5):\n        \"\"\"Add a flag and return outlier rows; retain the unaltered measurements.\"\"\"\n        self._require_loaded()\n        lower, upper = iqr_bounds(self.df[column], threshold)\n        values = self.df[column]\n        flag = values.lt(lower) | values.gt(upper)\n        self.df[f\"{column}_is_outlier\"] = flag\n        self.audit.setdefault(\"outliers\", {})[column] = {\n            \"threshold\": threshold, \"lower\": lower, \"upper\": upper, \"count\": int(flag.sum())}\n        return self.df.loc[flag].copy()"
+    },
+    "treat": {
+      "file": "src/pipeline.py",
+      "start": 174,
+      "end": 183,
+      "text": "    def treat_outliers(self, column, threshold=1.5, method=\"clip\"):\n        \"\"\"Return a comparison series; do not mutate source columns or RFM inputs.\"\"\"\n        self._require_loaded()\n        if method not in (\"clip\", \"remove\"):\n            raise ValueError(\"method must be clip or remove\")\n        lower, upper = iqr_bounds(self.df[column], threshold)\n        values = self.df[column]\n        if method == \"clip\":\n            return values.clip(lower, upper).rename(f\"{column}_treated\")\n        return values.loc[values.between(lower, upper)].rename(f\"{column}_treated\")"
+    },
+    "eligible": {
+      "file": "src/pipeline.py",
+      "start": 200,
+      "end": 209,
+      "text": "        valid = (self.df[customer_col].notna() & self.df[order_col].notna() & self.df[date_col].notna()\n                 & self.df[amount_col].gt(0) & self.df.quantity.gt(0) & self.df.unit_price.gt(0))\n        purchases = self.df.loc[valid].copy()\n        if purchases.empty:\n            raise ValueError(\"No valid positive purchases available for RFM\")\n        dates = pd.to_datetime(purchases[date_col], errors=\"raise\").dt.normalize()\n        reference = pd.Timestamp(reference_date).normalize() if reference_date is not None else dates.max() + pd.Timedelta(days=1)\n        if pd.isna(reference) or reference < dates.max():\n            raise ValueError(\"reference_date must not precede the latest purchase\")\n        purchases[date_col] = dates"
+    },
+    "aggregate": {
+      "file": "src/pipeline.py",
+      "start": 213,
+      "end": 216,
+      "text": "        grouped = purchases.groupby(customer_col)\n        result = grouped.agg(last_purchase=(date_col, \"max\"), frequency=(order_col, \"nunique\"),\n                             monetary=(amount_col, \"sum\"))\n        result[\"recency\"] = (reference - result.last_purchase).dt.days"
+    },
+    "score": {
+      "file": "src/pipeline.py",
+      "start": 217,
+      "end": 222,
+      "text": "        for variable, ascending, score in [(\"recency\", False, \"r_score\"),\n                                            (\"frequency\", True, \"f_score\"),\n                                            (\"monetary\", True, \"m_score\")]:\n            percentile = result[variable].rank(method=\"average\", pct=True, ascending=ascending)\n            result[score] = np.ceil(percentile * 5).clip(1, 5).astype(int)\n        result[\"rfm_score\"] = result[[\"r_score\", \"f_score\", \"m_score\"]].sum(axis=1)"
+    },
+    "segment": {
+      "file": "src/pipeline.py",
+      "start": 223,
+      "end": 229,
+      "text": "        vip_cutoff = float(result.monetary.quantile(0.75))\n        inactive = result.recency > inactive_days\n        new = (result.recency <= recent_days) & result.frequency.eq(1)\n        vip = (result.recency <= recent_days) & (result.frequency >= loyal_orders) & (result.monetary >= vip_cutoff)\n        loyal = result.frequency >= loyal_orders\n        result[\"segment\"] = np.select([inactive, new, vip, loyal],\n                                       [\"Inactive\", \"New\", \"VIP\", \"Loyal\"], default=\"Regular\")"
+    },
+    "summary": {
+      "file": "src/pipeline.py",
+      "start": 249,
+      "end": 258,
+      "text": "    def segment_summary(self):\n        if self.rfm is None:\n            raise RuntimeError(\"Call calculate_rfm() first\")\n        summary = self.rfm.groupby(\"segment\").agg(\n            customers=(\"monetary\", \"size\"), mean_recency=(\"recency\", \"mean\"),\n            mean_frequency=(\"frequency\", \"mean\"), mean_monetary=(\"monetary\", \"mean\"),\n            revenue=(\"monetary\", \"sum\"))\n        summary[\"customer_share_pct\"] = summary.customers / summary.customers.sum() * 100\n        summary[\"revenue_share_pct\"] = summary.revenue / summary.revenue.sum() * 100\n        return summary"
+    },
+    "sample": {
+      "file": "src/sample_data.py",
+      "start": 25,
+      "end": 29,
+      "text": "    # Broadcasting constructs the whole (product, height, width, channel) batch.\n    levels = rng.uniform(35, 200, (n_products, 1, 1, 3))\n    texture = rng.normal(0, 25, (n_products, 16, 16, 3))\n    gradient = np.linspace(-20, 20, 16)[None, None, :, None]\n    images = np.clip(levels + texture + gradient, 0, 255).astype(np.uint8)"
+    },
+    "test": {
+      "file": "tests/test_pipeline.py",
+      "start": 56,
+      "end": 63,
+      "text": "    def test_rfm_counts_orders_not_lines_and_uses_fixed_date(self):\n        analyzer = self.analyzer()\n        rfm = analyzer.calculate_rfm(reference_date=\"2026-10-10\")\n        self.assertEqual(rfm.loc[\"A\", \"recency\"], 2)\n        self.assertEqual(rfm.loc[\"A\", \"frequency\"], 2)\n        self.assertEqual(rfm.loc[\"A\", \"monetary\"], 50)\n        self.assertEqual(rfm.loc[\"B\", \"recency\"], 39)\n        self.assertEqual(rfm.loc[\"C\", \"segment\"], \"New\")"
+    },
+    "chart": {
+      "file": "src/report.py",
+      "start": 64,
+      "end": 67,
+      "text": "    valid = df.customer_id.notna() & df.order_id.notna() & df.order_date.notna() & df.amount.gt(0) & df.quantity.gt(0) & df.unit_price.gt(0)\n    monthly = df.loc[valid].groupby(df.loc[valid, \"order_date\"].dt.to_period(\"M\"))[\"amount\"].sum()\n    periods = pd.period_range(monthly.index.min(), monthly.index.max(), freq=\"M\")\n    monthly = monthly.reindex(periods, fill_value=0)"
+    }
+  }
+}

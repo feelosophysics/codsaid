@@ -1,0 +1,84 @@
+{
+  "input_rows": 2842,
+  "products": 80,
+  "missing_before": {
+    "line_id": 0,
+    "order_id": 0,
+    "customer_id": 0,
+    "order_date": 0,
+    "product_id": 0,
+    "unit_price": 0,
+    "quantity": 0,
+    "amount": 0,
+    "country": 0,
+    "payment_method": 0,
+    "shipping_days": 272,
+    "product_name": 314,
+    "category": 0,
+    "catalog_price": 431,
+    "rating": 285,
+    "image_index": 0
+  },
+  "imputation": {
+    "strategy": "median",
+    "group": "category",
+    "product_values": {
+      "catalog_price": 12,
+      "rating": 7
+    },
+    "line_values": {
+      "shipping_days": 272
+    }
+  },
+  "missing_after": {
+    "line_id": 0,
+    "order_id": 0,
+    "customer_id": 0,
+    "order_date": 0,
+    "product_id": 0,
+    "unit_price": 0,
+    "quantity": 0,
+    "amount": 0,
+    "country": 0,
+    "payment_method": 0,
+    "shipping_days": 0,
+    "product_name": 0,
+    "category": 0,
+    "catalog_price": 0,
+    "rating": 0,
+    "image_index": 0
+  },
+  "outliers": {
+    "shipping_days": {
+      "threshold": 1.5,
+      "lower": -1.5,
+      "upper": 10.5,
+      "count": 15
+    },
+    "unit_price": {
+      "threshold": 1.5,
+      "lower": -28250.0,
+      "upper": 103350.0,
+      "count": 0
+    }
+  },
+  "rfm": {
+    "reference_date": "2026-10-10",
+    "eligible_rows": 2842,
+    "excluded_rows": 0,
+    "customers": 240,
+    "orders": 1389,
+    "recent_days": 30,
+    "inactive_days": 90,
+    "loyal_orders": 4,
+    "vip_monetary_cutoff": 1786650.0,
+    "excluded_reason_counts_overlapping": {
+      "missing_customer": 0,
+      "missing_order": 0,
+      "invalid_date": 0,
+      "nonpositive_or_missing_amount": 0,
+      "nonpositive_or_missing_quantity": 0,
+      "nonpositive_or_missing_price": 0
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "source": "Locally generated synthetic teaching data; not real commerce records",
+  "seed": 42,
+  "transactions": 2842,
+  "orders": 1389,
+  "customers": 240,
+  "products": 80,
+  "image_shape": [
+    80,
+    16,
+    16,
+    3
+  ],
+  "currency": "KRW (synthetic)",
+  "injected_conditions": [
+    "missing catalog price, rating, name and shipping days",
+    "long shipping times",
+    "legitimate high-price products"
+  ]
+}
