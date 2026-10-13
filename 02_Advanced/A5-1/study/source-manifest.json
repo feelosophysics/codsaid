@@ -1,0 +1,151 @@
+{
+  "mission": "A5-1",
+  "hash_mode": "UTF-8 text: CRLF normalized to LF; binary: exact bytes",
+  "files": {
+    "data_gen.py": "07caffa013021e7a291ee2983b69413a11cbdf2be50f8254c7c0df89cf2cbca1",
+    "src/config.py": "5cc5f7c63aa0072dd5a22edae18f19339e511d70c9b95fca91b910b77d62b125",
+    "src/data.py": "17ce0a252513fecb5ab446961d841b0e2101258b8c7f95466161b56c123f9e7b",
+    "src/baseline.py": "bbb17ea6d78b0c1aabbeed816c37a8e5e6eddf2b3fba358b90765a28c4fda6fa",
+    "src/features.py": "e58503e76c02c5c479eab8d3c8bebb7f5650a87f21a83c163acc55011d649dbd",
+    "src/regression.py": "c5e36d39198b7b29868cef8d6a8d82909dfd81ee7680380c44000dcf6e52b3da",
+    "src/classification.py": "2a39334ccb0666a1cd3d70981cb7eac02460da6efedffc0e2190b7665c9a16ba",
+    "src/diagnostics.py": "d27320a13370c5bcb264f8a009d552d183032e4e6030c06b148db7c4ead5e356",
+    "src/report.py": "552002a2cdfbce9e40c569a45216610ad63667e38a68591cde6b4c4590824a25",
+    "src/run_all.py": "6d9c39da9aec05036ccc0c869caf26f8278878ca2c3fd56d8e8ab06ad8a1bd35",
+    "tests/test_pipeline.py": "d738a55a2b22bd3421443ad891b16b3f704235925158fe06a0aa487cc7c43bd7",
+    "results/figures/01_data_overview.png": "c55db4dcfcee4ae9b0c7894dcf16a44c3dbe486828a239bb422d10bcff934ed1",
+    "results/figures/02_coefficient_paths.png": "87157fa29920ea58de03f42e7b5da42275f3a1e8ce706a135a39edab66f44a2d",
+    "results/figures/03_ridge_extended_alpha.png": "ead4353fc44068347724e8949a8a9b1b0918e4571804efa0c4e1be01981e6c30",
+    "results/figures/04_regression_fit.png": "9f7c2552386adaf4c633ff4624fc75ccbd7853b5b102209bd00858db44454ee2",
+    "results/figures/05_confusion_matrices.png": "c3c042a5989757193fc81de8645bbbdfcc1e33687f46bfef305df245e85b7a4e",
+    "results/figures/06_roc_pr_curves.png": "52a823d2eb4a22722c9d853e4f765bd207b910a518cc80246acd0cc93b1ecf34",
+    "results/figures/07_model_comparison.png": "c93a83e1d23761be5da3996ab3f63a679e311cff65bb2560f302eb6704209942",
+    "results/figures/08_feature_importance.png": "c8031b739af4b72960dd1542e31ccc780d22bae899c992ab2072fe3c5dca7f69",
+    "results/figures/09_learning_curves.png": "0c4c6c83923ce68f01d25e320816bb256c47d021cec83cc3b454e034eabb85ac",
+    "results/figures/10_decision_policy.png": "c3a56b5f5a1697246f63884bb94e83106ea68f906b2212b2a5b0106ba8c5a5e3",
+    "results/metrics.json": "722189016c4155a18765da1b30fd8a491e9b2a5b68bbcfb17ce4d8c7d312c865",
+    "results/test_predictions.json": "79df33b5e68cf66482a423d998b5b2c08eda613f84da5591d429c7a32806e167"
+  },
+  "excerpts": {
+    "datagen_score": {
+      "file": "data_gen.py",
+      "start": 27,
+      "end": 36,
+      "text": "df['credit_score'] = (\n    300\n    + (df['annual_income'] / 100) * 3\n    - (df['overdue_count_6m'] * 50)\n    - (df['debt_ratio'] * 100)\n    + np.random.normal(0, 30, N_SAMPLES) # 노이즈 추가\n)\n\n# 신용점수 범위 제한 (0 ~ 1000점)\ndf['credit_score'] = df['credit_score'].clip(0, 1000).round(0)"
+    },
+    "datagen_label": {
+      "file": "data_gen.py",
+      "start": 41,
+      "end": 46,
+      "text": "threshold = df['credit_score'].quantile(0.15) # 하위 15% 점수 기준\ndf['is_overdue'] = np.where(\n    (df['credit_score'] < threshold) & (np.random.rand(N_SAMPLES) > 0.2),\n    1, # 연체 (Positive)\n    0  # 정상 (Negative)\n)"
+    },
+    "features_const": {
+      "file": "src/config.py",
+      "start": 18,
+      "end": 29,
+      "text": "# 원본 6개 입력 변수. 두 타깃은 서로의 입력으로 쓰지 않는다.\n# is_overdue는 credit_score로 만들어졌으므로 credit_score를 분류 입력에 넣으면 정답 누수가 된다.\nFEATURES = [\n    \"age\",\n    \"annual_income\",\n    \"spending_score\",\n    \"debt_ratio\",\n    \"credit_card_count\",\n    \"overdue_count_6m\",\n]\nREGRESSION_TARGET = \"credit_score\"\nCLASSIFICATION_TARGET = \"is_overdue\""
+    },
+    "split": {
+      "file": "src/data.py",
+      "start": 45,
+      "end": 56,
+      "text": "def split_data(df: pd.DataFrame) -> Split:\n    \"\"\"8:2 층화 분할. 연체 비율을 Train/Test에 똑같이 유지한다.\"\"\"\n    X = df[FEATURES]\n    X_train, X_test, yr_train, yr_test, yc_train, yc_test = train_test_split(\n        X,\n        df[REGRESSION_TARGET],\n        df[CLASSIFICATION_TARGET],\n        test_size=TEST_SIZE,\n        stratify=df[CLASSIFICATION_TARGET],\n        random_state=RANDOM_STATE,\n    )\n    return Split(X_train, X_test, yr_train, yr_test, yc_train, yc_test)"
+    },
+    "rules": {
+      "file": "src/baseline.py",
+      "start": 15,
+      "end": 30,
+      "text": "RULES = [\n    {\"id\": \"R1\", \"label\": \"최근 6개월 연체 2회 이상\", \"conditions\": [(\"overdue_count_6m\", \">=\", 2)]},\n    {\"id\": \"R2\", \"label\": \"부채 비율 80% 초과\", \"conditions\": [(\"debt_ratio\", \">\", 0.8)]},\n    {\"id\": \"R3\", \"label\": \"연 소득 3,000만원 미만\", \"conditions\": [(\"annual_income\", \"<\", 3000)]},\n    {\n        \"id\": \"R4\",\n        \"label\": \"연체 이력이 있고 부채 비율 60% 초과\",\n        \"conditions\": [(\"overdue_count_6m\", \">=\", 1), (\"debt_ratio\", \">\", 0.6)],\n    },\n    {\n        \"id\": \"R5\",\n        \"label\": \"연 소득 4,000만원 미만이고 부채 비율 50% 초과\",\n        \"conditions\": [(\"annual_income\", \"<\", 4000), (\"debt_ratio\", \">\", 0.5)],\n    },\n    {\"id\": \"R6\", \"label\": \"신용카드 8장 이상 보유\", \"conditions\": [(\"credit_card_count\", \">=\", 8)]},\n]"
+    },
+    "rule_if": {
+      "file": "src/baseline.py",
+      "start": 44,
+      "end": 58,
+      "text": "def rule_based_predict(row: pd.Series) -> int:\n    \"\"\"원문 예시와 같은 if-else 형태. rule_hits와 같은 판정을 한 행 단위로 보여준다.\"\"\"\n    if row[\"overdue_count_6m\"] >= 2:\n        return 1  # R1 연체 반복\n    if row[\"debt_ratio\"] > 0.8:\n        return 1  # R2 과다 부채\n    if row[\"annual_income\"] < 3000:\n        return 1  # R3 저소득\n    if row[\"overdue_count_6m\"] >= 1 and row[\"debt_ratio\"] > 0.6:\n        return 1  # R4 연체 + 부채\n    if row[\"annual_income\"] < 4000 and row[\"debt_ratio\"] > 0.5:\n        return 1  # R5 중저소득 + 부채\n    if row[\"credit_card_count\"] >= 8:\n        return 1  # R6 카드 과다 보유\n    return 0"
+    },
+    "rule_score": {
+      "file": "src/baseline.py",
+      "start": 70,
+      "end": 79,
+      "text": "    def risk_score(self, X: pd.DataFrame) -> np.ndarray:\n        return rule_hits(X, self.rules).sum(axis=1).to_numpy()\n\n    def predict(self, X: pd.DataFrame) -> np.ndarray:\n        return (self.risk_score(X) > 0).astype(int)\n\n    def predict_proba(self, X: pd.DataFrame) -> np.ndarray:\n        # 확률이 아니라 순위를 매기는 점수다. AUC 계산에만 쓴다.\n        score = self.risk_score(X) / len(self.rules)\n        return np.column_stack([1 - score, score])"
+    },
+    "derived": {
+      "file": "src/features.py",
+      "start": 17,
+      "end": 55,
+      "text": "class DerivedFeatures(BaseEstimator, TransformerMixin):\n    \"\"\"원본 6개 변수에 파생 변수를 붙인다.\n\n    - age_group: 나이를 연령대 문자열(범주형)로 바꾼다. 원본에 범주형 변수가 없어서\n      범주형 인코딩 경로를 실제로 쓰기 위해 만든다.\n    - debt_amount: 연 소득 × 부채 비율(만원). 비율만으로는 보이지 않는 부채 규모다.\n\n    생성자에서는 인자를 저장만 하고(get_params/set_params 규약), 검사와 학습은 fit에서 한다.\n    fit은 입력 컬럼 이름만 기억하므로 Train에서 배운 정보가 Test로 새지 않는다.\n    \"\"\"\n\n    def __init__(self, age_bins=AGE_BINS, add_debt_amount=True):\n        self.age_bins = age_bins\n        self.add_debt_amount = add_debt_amount\n\n    def fit(self, X, y=None):\n        X = self._as_frame(X)\n        needed = {\"age\"} | ({\"annual_income\", \"debt_ratio\"} if self.add_debt_amount else set())\n        missing = needed - set(X.columns)\n        if missing:\n            raise ValueError(f\"파생 변수에 필요한 컬럼이 없습니다: {sorted(missing)}\")\n        bins = list(self.age_bins)\n        if len(bins) < 2 or bins != sorted(bins):\n            raise ValueError(\"age_bins는 오름차순 경계 2개 이상이어야 합니다.\")\n        self.feature_names_in_ = np.asarray(X.columns, dtype=object)\n        self.n_features_in_ = X.shape[1]\n        return self\n\n    def transform(self, X):\n        check_is_fitted(self, \"feature_names_in_\")\n        X = self._as_frame(X).copy()\n        bins = list(self.age_bins)\n        labels = [f\"{lo}-{hi - 1}\" for lo, hi in zip(bins[:-1], bins[1:])]\n        # 경계 밖 나이와 결측 나이는 NaN으로 두고, 뒤의 범주형 대치가 처리한다.\n        group = pd.cut(X[\"age\"], bins=bins, labels=labels, right=False)\n        X[\"age_group\"] = group.astype(object).where(group.notna(), np.nan)\n        if self.add_debt_amount:\n            X[\"debt_amount\"] = X[\"annual_income\"] * X[\"debt_ratio\"]\n        return X"
+    },
+    "preprocessor": {
+      "file": "src/features.py",
+      "start": 75,
+      "end": 103,
+      "text": "def build_preprocessor(add_debt_amount=True) -> Pipeline:\n    \"\"\"파생 → (수치: 중앙값 대치 → 표준화) + (범주: 최빈값 대치 → 원-핫).\n\n    이 객체 전체를 모델 Pipeline 안에 넣으므로, fit은 언제나 그 시점의 학습 데이터에서만 일어난다.\n    교차 검증에서도 각 fold의 학습 부분에서만 대치값·평균·표준편차·범주 목록을 배운다.\n    \"\"\"\n    numeric = Pipeline(\n        [\n            (\"impute\", SimpleImputer(strategy=\"median\")),\n            (\"scale\", StandardScaler()),\n        ]\n    )\n    categorical = Pipeline(\n        [\n            (\"impute\", SimpleImputer(strategy=\"most_frequent\")),\n            (\"onehot\", OneHotEncoder(handle_unknown=\"ignore\", sparse_output=False)),\n        ]\n    )\n    columns = ColumnTransformer(\n        [\n            (\"num\", numeric, numeric_columns(add_debt_amount)),\n            (\"cat\", categorical, [\"age_group\"]),\n        ],\n        verbose_feature_names_out=False,\n    )\n    return Pipeline(\n        [\n            (\"derive\", DerivedFeatures(add_debt_amount=add_debt_amount)),\n            (\"columns\", columns),"
+    },
+    "ridge_lasso": {
+      "file": "src/regression.py",
+      "start": 13,
+      "end": 16,
+      "text": "MODELS = {\n    \"Ridge\": lambda alpha: Ridge(alpha=alpha),\n    \"Lasso\": lambda alpha: Lasso(alpha=alpha, max_iter=50_000),\n}"
+    },
+    "tune_reg": {
+      "file": "src/regression.py",
+      "start": 88,
+      "end": 105,
+      "text": "    for name, factory in MODELS.items():\n        search = GridSearchCV(\n            make_pipeline(factory(1.0)),\n            {\"model__alpha\": ALPHAS},\n            scoring=\"neg_root_mean_squared_error\",\n            cv=cv,\n        )\n        search.fit(split.X_train, split.y_reg_train)\n        pred = search.predict(split.X_test)\n        results[name] = {\n            \"alpha\": float(search.best_params_[\"model__alpha\"]),\n            \"cv_rmse_by_alpha\": {\n                str(a): float(-s)\n                for a, s in zip(ALPHAS, search.cv_results_[\"mean_test_score\"])\n            },\n            \"test\": regression_metrics(split.y_reg_test, pred),\n        }\n        predictions[name] = pred"
+    },
+    "grids": {
+      "file": "src/classification.py",
+      "start": 27,
+      "end": 36,
+      "text": "RF_GRID = {\n    \"model__n_estimators\": [200, 400],\n    \"model__max_depth\": [4, 8, 12, 16, None],\n    \"model__min_samples_leaf\": [1, 5, 20],\n}  # 30개\nXGB_GRID = {\n    \"model__n_estimators\": [200, 400],\n    \"model__max_depth\": [2, 3, 4, 6],\n    \"model__learning_rate\": [0.03, 0.1],\n}  # 16개"
+    },
+    "imb_pipeline": {
+      "file": "src/classification.py",
+      "start": 46,
+      "end": 60,
+      "text": "def make_pipeline(estimator, imbalance=\"none\"):\n    \"\"\"imbalance: none | balanced | smote.\n\n    SMOTE는 imblearn Pipeline 안에서만 쓴다. 이 Pipeline은 fit할 때만 표본을 합성하고\n    predict에서는 건너뛰므로, 교차 검증의 검증 fold와 Test Set에는 합성 표본이 들어가지 않는다.\n    전처리 뒤에 두어 대치·표준화가 끝난 공간에서 이웃을 찾는다.\n    imblearn Pipeline은 중간 단계로 Pipeline을 받지 않으므로 전처리 단계(derive, columns)를 펼쳐 넣는다.\n    \"\"\"\n    steps = list(build_preprocessor().steps)\n    if imbalance == \"smote\":\n        steps.append((\"smote\", SMOTE(random_state=RANDOM_STATE)))\n        steps.append((\"model\", estimator))\n        return ImbPipeline(steps)\n    steps.append((\"model\", estimator))\n    return Pipeline(steps)"
+    },
+    "gridsearch": {
+      "file": "src/classification.py",
+      "start": 116,
+      "end": 129,
+      "text": "        if grid:\n            search = GridSearchCV(\n                pipe, grid, scoring={\"f1\": \"f1\", \"roc_auc\": \"roc_auc\"}, refit=\"f1\", cv=cv, n_jobs=1\n            )\n            search.fit(X_tr, y_tr)\n            best = search.best_estimator_\n            i = search.best_index_\n            cv_scores = {\n                \"f1_mean\": float(search.cv_results_[\"mean_test_f1\"][i]),\n                \"f1_std\": float(search.cv_results_[\"std_test_f1\"][i]),\n                \"roc_auc_mean\": float(search.cv_results_[\"mean_test_roc_auc\"][i]),\n            }\n            params = {k.replace(\"model__\", \"\"): v for k, v in search.best_params_.items()}\n            n_candidates = len(search.cv_results_[\"params\"])"
+    },
+    "select": {
+      "file": "src/classification.py",
+      "start": 162,
+      "end": 172,
+      "text": "def select_final(models: dict) -> dict:\n    \"\"\"Test가 아니라 Train 교차 검증 F1로 최종 모델을 고른다.\n\n    1-표준오차 규칙: CV F1 최고 모델의 (평균 − 표준오차) 이상인 후보는 최고 모델과 차이를 주장하기\n    어렵다고 보고, 그중 가장 단순한 모델을 고른다. 표준오차 = fold 간 표준편차 / √fold 수.\n    \"\"\"\n    ml = {k: v for k, v in models.items() if v[\"cv\"] is not None}\n    best = max(ml, key=lambda k: ml[k][\"cv\"][\"f1_mean\"])\n    cutoff = ml[best][\"cv\"][\"f1_mean\"] - ml[best][\"cv\"][\"f1_std\"] / np.sqrt(CV_FOLDS)\n    within = [k for k in SIMPLICITY_ORDER if k in ml and ml[k][\"cv\"][\"f1_mean\"] >= cutoff]\n    return {\"best_cv\": best, \"cutoff\": float(cutoff), \"within_one_std\": within, \"final\": within[0]}"
+    },
+    "policy": {
+      "file": "src/classification.py",
+      "start": 203,
+      "end": 218,
+      "text": "def decision_policy(estimator, split) -> dict:\n    \"\"\"Train의 교차 검증 예측(out-of-fold)으로 임계값을 정하고 Test에서 결과를 확인한다.\n\n    - 거절: OOF F1이 가장 높은 임계값 이상\n    - 보류: 재현율 HOLD_RECALL_TARGET를 지키는 가장 높은 임계값 이상\n    - 승인: 그 아래\n    \"\"\"\n    oof = cross_val_predict(\n        estimator, split.X_train, split.y_clf_train, cv=cv_splitter(), method=\"predict_proba\"\n    )[:, 1]\n    precision, recall, thresholds = precision_recall_curve(split.y_clf_train, oof)\n    f1 = 2 * precision[:-1] * recall[:-1] / np.clip(precision[:-1] + recall[:-1], 1e-12, None)\n    reject_t = float(thresholds[np.argmax(f1)])\n    ok = recall[:-1] >= HOLD_RECALL_TARGET\n    hold_t = float(thresholds[ok].max()) if ok.any() else float(thresholds.min())\n    hold_t = min(hold_t, reject_t)"
+    },
+    "permutation": {
+      "file": "src/diagnostics.py",
+      "start": 21,
+      "end": 26,
+      "text": "def permutation_on_test(pipe, X_test, y_test) -> dict:\n    \"\"\"원본 변수 하나를 Test에서 섞었을 때 PR-AUC가 얼마나 떨어지는지.\n\n    파생 변수(age_group, debt_amount)는 원본 변수에서 다시 계산되므로 원본 6개 기준으로 해석한다.\n    \"\"\"\n    result = permutation_importance("
+    },
+    "learning_curve": {
+      "file": "src/diagnostics.py",
+      "start": 42,
+      "end": 46,
+      "text": "def classification_learning_curve(pipe, X, y) -> dict:\n    sizes, train, valid = learning_curve(\n        clone(pipe), X, y, train_sizes=TRAIN_SIZES, cv=cv_splitter(), scoring=\"f1\", n_jobs=1\n    )\n    return _curve(sizes, train, valid, \"f1\")"
+    },
+    "test_leak": {
+      "file": "tests/test_pipeline.py",
+      "start": 124,
+      "end": 135,
+      "text": "    def test_fit_uses_train_only(self):\n        prep = build_preprocessor().fit(self.split.X_train)\n        num = prep.named_steps[\"columns\"].named_transformers_[\"num\"]\n        derived = DerivedFeatures().fit(self.split.X_train).transform(self.split.X_train)\n        cols = FEATURES + [\"debt_amount\"]\n        np.testing.assert_allclose(num.named_steps[\"scale\"].mean_, derived[cols].mean().to_numpy())\n        np.testing.assert_allclose(num.named_steps[\"impute\"].statistics_, derived[cols].median().to_numpy())\n        both = build_preprocessor().fit(pd.concat([self.split.X_train, self.split.X_test]))\n        self.assertFalse(np.allclose(\n            both.named_steps[\"columns\"].named_transformers_[\"num\"].named_steps[\"scale\"].mean_,\n            num.named_steps[\"scale\"].mean_,\n        ))"
+    },
+    "test_smote": {
+      "file": "tests/test_pipeline.py",
+      "start": 162,
+      "end": 168,
+      "text": "    def test_smote_lives_inside_imblearn_pipeline(self):\n        pipe = classification.make_pipeline(LogisticRegression(max_iter=500), \"smote\")\n        self.assertIsInstance(pipe, ImbPipeline)\n        self.assertEqual([n for n, _ in pipe.steps], [\"derive\", \"columns\", \"smote\", \"model\"])\n        X, y = self.split.X_train.head(1500), self.split.y_clf_train.head(1500)\n        pipe.fit(X, y)\n        self.assertEqual(len(pipe.predict_proba(self.split.X_test)), len(self.split.X_test))"
+    }
+  }
+}

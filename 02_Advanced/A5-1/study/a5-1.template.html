@@ -1,0 +1,521 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>A5-1 · 대출 심사 모델로 배우는 머신러닝 파이프라인</title>
+<style>
+:root{--bg:#f4f5f2;--surface:#fff;--ink:#17222b;--muted:#56636d;--line:#d6dde2;--accent:#1d5f8f;--soft:#e4eef5;--warn:#8a4a12;--warnsoft:#f8ecdf;--code:#16212a;--codeink:#e2ebf1;--pos:#c0392b;--neg:#2f7fb5;--hold:#d68910;--radius:14px}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#11181e;--surface:#18222a;--ink:#e3eaef;--muted:#a7b5bf;--line:#33424d;--accent:#8cc4ea;--soft:#20323f;--warn:#efbd84;--warnsoft:#3a2c1d;--code:#0d1418;--codeink:#e2ebf1;--pos:#f08a7e;--neg:#79b8e3;--hold:#f2b85b}}
+*{box-sizing:border-box}html{scroll-padding-top:20px}body{margin:0;background:var(--bg);color:var(--ink);font-family:"Malgun Gothic","Apple SD Gothic Neo","Noto Sans KR",system-ui,sans-serif;font-size:16px;line-height:1.8;word-break:keep-all;overflow-wrap:break-word}
+a{color:var(--accent);text-underline-offset:4px}button,input,select{font:inherit;color:inherit}button{cursor:pointer}
+button,select{border:1px solid var(--line);border-radius:8px;background:var(--surface);padding:8px 12px;min-height:44px}button:hover{background:var(--soft)}button[aria-pressed=true]{background:var(--accent);color:var(--bg);border-color:var(--accent)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px}input[type=range]{width:100%;accent-color:var(--accent);min-height:32px}input[type=checkbox]{width:20px;height:20px;accent-color:var(--accent);flex-shrink:0}
+p{margin:0 0 16px}h1,h2,h3{line-height:1.4;letter-spacing:-.03em}h1{font-size:clamp(28px,4.4vw,48px);margin:16px 0 20px}h2{font-size:27px;margin:8px 0 18px}h3{font-size:20px;margin:28px 0 10px}
+code{font-family:Consolas,ui-monospace,monospace;font-size:.9em}p code,li code,td code,dd code{background:var(--soft);padding:1px 5px;border-radius:4px;overflow-wrap:anywhere}
+.sub,small{font-size:14px;color:var(--muted)}.eyebrow{font-size:13px;letter-spacing:.12em;font-weight:700;color:var(--accent)}
+.shell{max-width:1320px;margin:auto;padding:0 32px}.masthead{display:flex;justify-content:space-between;gap:16px;padding:18px 0;border-bottom:1px solid var(--line);font-size:14px;align-items:center}.brand{font-weight:700}
+.hero{padding:44px 0 36px;max-width:960px}.hero p{font-size:18px;max-width:780px}.hero-meta{display:flex;flex-wrap:wrap;gap:8px 22px;font-size:14px;color:var(--muted)}
+.layout{display:grid;grid-template-columns:210px minmax(0,1fr);gap:40px}.sidebar{position:sticky;top:20px;align-self:start;max-height:calc(100vh - 40px);overflow:auto;padding-bottom:16px}.sidebar nav{display:grid;gap:3px}.sidebar a,.mobile-toc a{display:block;color:var(--muted);text-decoration:none;padding:6px 10px;border-radius:6px;font-size:14px}.sidebar a:hover,.sidebar a.active{background:var(--soft);color:var(--accent)}
+.progress-box{margin-top:18px;padding:10px;font-size:13px;color:var(--muted)}.progress-box progress{width:100%;accent-color:var(--accent)}
+.chapter{padding:8px 0 44px;margin-bottom:22px;border-bottom:1px solid var(--line);min-width:0}.chapter>p,.chapter>ul,.chapter>ol{max-width:860px}.lead{font-size:18px}
+.callout{border-left:4px solid var(--accent);padding:12px 18px;background:var(--soft);margin:20px 0;border-radius:0 8px 8px 0;max-width:860px}.callout p:last-child{margin:0}.callout.warn{border-left-color:var(--warn);background:var(--warnsoft)}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:22px;margin:20px 0;min-width:0}.panel h3{margin-top:0}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px}.controls{display:flex;flex-wrap:wrap;gap:14px;align-items:end;margin:12px 0}.field{display:flex;flex-direction:column;gap:4px;min-width:160px;flex:1}.field label{font-size:14px;font-weight:600}
+output,.num{font-variant-numeric:tabular-nums}
+.table-scroll{overflow-x:auto;max-width:100%;margin:16px 0}table{border-collapse:collapse;width:100%;font-size:14px}th,td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{color:var(--muted);font-weight:700}td.num,th.num{text-align:right;white-space:nowrap}tr.hl td{background:var(--soft);font-weight:700}
+.flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:18px 0;padding:0;list-style:none;counter-reset:f}.flow li{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px;font-size:14px;counter-increment:f}.flow li::before{content:counter(f);display:inline-block;width:22px;height:22px;border-radius:50%;background:var(--accent);color:var(--bg);text-align:center;line-height:22px;font-size:12px;font-weight:700;margin-right:6px}.flow b{display:block;margin:4px 0}
+.cm{display:grid;grid-template-columns:auto 1fr 1fr;gap:4px;max-width:360px;font-size:14px;margin:10px 0}.cm div{padding:10px;border-radius:6px;text-align:center}.cm .h{color:var(--muted);font-size:12px;padding:4px}.cm .tn,.cm .tp{background:var(--soft)}.cm .fp,.cm .fn{background:var(--warnsoft)}.cm b{display:block;font-size:22px;font-variant-numeric:tabular-nums}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin:12px 0}.metric{background:var(--soft);border-radius:8px;padding:10px 12px}.metric span{display:block;font-size:12px;color:var(--muted)}.metric b{font-size:21px;font-variant-numeric:tabular-nums}
+.rule-list{list-style:none;padding:0;margin:8px 0;display:grid;gap:6px}.rule-list label{display:flex;gap:10px;align-items:flex-start;padding:8px 10px;border:1px solid var(--line);border-radius:8px;font-size:14px;cursor:pointer}.rule-list small{display:block}
+.bars{display:grid;gap:6px;margin:12px 0}.bar-row{display:grid;grid-template-columns:150px 1fr 1fr;gap:8px;align-items:center;font-size:13px}.bar-row .name{font-family:Consolas,monospace;font-size:12px;overflow-wrap:anywhere}.track{position:relative;height:20px;background:var(--soft);border-radius:4px;overflow:hidden}.track::after{content:"";position:absolute;left:50%;top:0;bottom:0;width:1px;background:var(--muted)}.fill{position:absolute;top:0;bottom:0;transition:all .2s}.fill.p{left:50%;background:var(--neg)}.fill.n{right:50%;background:var(--pos)}.track .val{position:absolute;inset:0;font-size:11px;line-height:20px;text-align:center;z-index:1;font-variant-numeric:tabular-nums}.track .val b{font-weight:400;background:var(--surface);padding:0 4px;border-radius:3px}.bar-head{display:grid;grid-template-columns:150px 1fr 1fr;gap:8px;font-size:13px;font-weight:700;color:var(--muted)}
+.band-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}.band{border-radius:10px;padding:12px;border:2px solid var(--line)}.band.approve{border-color:var(--neg)}.band.hold{border-color:var(--hold)}.band.reject{border-color:var(--pos)}.band b{font-size:20px;display:block;font-variant-numeric:tabular-nums}.band span{font-size:13px;color:var(--muted);display:block}
+figure.chart{margin:20px 0 28px}figure.chart img{width:100%;height:auto;display:block;background:#fff;border-radius:8px;border:1px solid var(--line)}figure.chart figcaption{font-size:14px;color:var(--muted);margin-top:8px}
+.code-block{margin:18px 0;background:var(--code);color:var(--codeink);border-radius:10px;overflow:hidden;max-width:100%}.code-block figcaption{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;padding:8px 14px;font:12px Consolas,monospace;background:#ffffff0d}.code-block button{min-height:34px;padding:4px 10px;background:transparent;border-color:#ffffff40;color:var(--codeink);font-size:12px}.code-block pre{margin:0;padding:14px 12px;overflow:auto;font-size:13px;line-height:1.7;tab-size:4}.code-line{display:flex;min-width:max-content}.line-num{color:#8a9aa6;min-width:3.4em;text-align:right;padding-right:1.2em;user-select:none;flex-shrink:0}
+.terms{display:grid;grid-template-columns:1fr 1fr;gap:14px 26px;margin:16px 0;max-width:900px}.terms dt{font-weight:700}.terms dd{margin:2px 0 0;color:var(--muted);font-size:15px}
+.question{margin:22px 0 0;padding:16px 0 0;border-top:1px dashed var(--line);max-width:860px}.question .check{display:flex;gap:10px;align-items:flex-start;font-weight:600;cursor:pointer}.question input{margin-top:5px}.question details{margin:10px 0 0 30px}.question summary{cursor:pointer;color:var(--accent);font-size:14px}.question details p{margin:10px 0 0}
+.formula{font-family:Consolas,monospace;font-size:16px;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px 14px;overflow-x:auto;white-space:nowrap;max-width:860px}
+.source-window{height:460px;overflow:auto;background:var(--code);color:var(--codeink);border-radius:10px;font:13px/1.75 Consolas,monospace;padding:12px 6px}.srcrow{display:flex;white-space:pre;min-width:max-content}.srcrow.highlight{background:#4f8fc055;box-shadow:inset 3px 0 #8cc4ea}
+.mobile-toc{display:none}.footer{padding:20px 0 48px;font-size:13px;color:var(--muted)}.skip{position:absolute;left:-10000px}.skip:focus{left:12px;top:12px;background:var(--surface);padding:12px;z-index:9}[hidden]{display:none!important}
+@media(max-width:1000px){.shell{padding:0 22px}.layout{grid-template-columns:170px minmax(0,1fr);gap:24px}.two-col{grid-template-columns:1fr}}
+@media(max-width:760px){.shell{padding:0 16px}.layout{display:block}.sidebar{display:none}.mobile-toc{display:block;margin:0 0 24px;padding:12px;border:1px solid var(--line);border-radius:10px}.mobile-toc nav{display:grid;grid-template-columns:1fr 1fr;gap:2px}.mobile-toc a{font-size:13px;padding:6px}.hero{padding:26px 0}.hero p{font-size:16px}h2{font-size:23px}.panel{padding:16px}.terms{grid-template-columns:1fr}.bar-row,.bar-head{grid-template-columns:96px 1fr 1fr}.band-grid{grid-template-columns:1fr}.question details{margin-left:0}.source-window{height:360px}.cm{max-width:100%}.cm b{font-size:19px}}
+@media(prefers-reduced-motion:reduce){.fill{transition:none}}
+@media print{.sidebar,.mobile-toc,.controls,button{display:none!important}.layout{display:block}body{background:#fff;color:#000}.panel{break-inside:avoid}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">본문으로 건너뛰기</a>
+<div class="shell">
+<header class="masthead"><span class="brand">Codyssey 심화 · A5-1</span><span class="sub">합성 데이터 seed 42 · 오프라인 학습 자료</span></header>
+<section class="hero">
+<div class="eyebrow">머신러닝 파이프라인</div>
+<h1>대출 심사 모델로 배우는<br>회귀·분류·불균형·규제</h1>
+<p>같은 고객 데이터로 <b>신용 점수(회귀)</b>와 <b>연체 여부(분류)</b>를 예측합니다. 규칙 기반 판단과 머신러닝을 숫자로 비교하고, 그 숫자가 왜 그렇게 나왔는지 코드와 데이터 생성 방식까지 따라갑니다.</p>
+<div class="hero-meta"><span>데이터 @@NUM:rows@@행 · 연체 @@NUM:overdue_rate@@</span><span>Train @@NUM:train_rows@@ / Test @@NUM:test_rows@@</span><span>최종 분류 모델: @@NUM:final_model@@</span></div>
+</section>
+
+<div class="layout">
+<aside class="sidebar" aria-label="장 목차"><nav id="toc"></nav>
+<div class="progress-box"><span id="progress-text">점검 질문 0개 확인</span><progress id="progress" value="0" max="1"></progress></div></aside>
+<main id="main">
+<div class="mobile-toc"><strong>목차</strong><nav id="mtoc"></nav></div>
+
+<!-- 01 -->
+<section class="chapter" id="ch01" data-title="01 전체 흐름">
+<div class="eyebrow">01</div><h2>한눈에 보는 전체 흐름</h2>
+<p class="lead">이 미션은 데이터를 만들고, 나누고, 전처리한 뒤 두 종류의 문제를 풉니다. 모든 단계는 <code>python -m src.run_all</code> 하나로 실행됩니다.</p>
+<ol class="flow">
+<li><b>데이터 생성</b><code>data_gen.py</code> → <code>finance_data.csv</code></li>
+<li><b>분할</b>8:2 층화, seed 42</li>
+<li><b>규칙 베이스라인</b>if-else 6개</li>
+<li><b>전처리 파이프라인</b>파생 → 대치 → 표준화/원-핫</li>
+<li><b>회귀</b>Ridge·Lasso, Alpha 5개</li>
+<li><b>분류</b>불균형 처리 3종, 앙상블 튜닝</li>
+<li><b>선택·정책</b>1-표준오차 규칙, 승인·보류·거절</li>
+<li><b>진단</b>중요도, 학습 곡선</li>
+</ol>
+<h3>결과 요약 (Test @@NUM:test_rows@@명)</h3>
+<div class="table-scroll"><table>
+<thead><tr><th>모델</th><th class="num">Accuracy</th><th class="num">Precision</th><th class="num">Recall</th><th class="num">F1</th><th class="num">ROC-AUC</th></tr></thead>
+<tbody>
+<tr><td>규칙 기반 베이스라인</td><td class="num">@@NUM:rule_baseline.accuracy@@</td><td class="num">@@NUM:rule_baseline.precision@@</td><td class="num">@@NUM:rule_baseline.recall@@</td><td class="num">@@NUM:rule_baseline.f1@@</td><td class="num">@@NUM:rule_baseline.roc_auc@@</td></tr>
+<tr><td>로지스틱 (불균형 처리 없음)</td><td class="num">@@NUM:logreg_no_handling.accuracy@@</td><td class="num">@@NUM:logreg_no_handling.precision@@</td><td class="num">@@NUM:logreg_no_handling.recall@@</td><td class="num">@@NUM:logreg_no_handling.f1@@</td><td class="num">@@NUM:logreg_no_handling.roc_auc@@</td></tr>
+<tr><td>로지스틱 + class_weight</td><td class="num">@@NUM:logreg_class_weight.accuracy@@</td><td class="num">@@NUM:logreg_class_weight.precision@@</td><td class="num">@@NUM:logreg_class_weight.recall@@</td><td class="num">@@NUM:logreg_class_weight.f1@@</td><td class="num">@@NUM:logreg_class_weight.roc_auc@@</td></tr>
+<tr><td>로지스틱 + SMOTE</td><td class="num">@@NUM:logreg_smote.accuracy@@</td><td class="num">@@NUM:logreg_smote.precision@@</td><td class="num">@@NUM:logreg_smote.recall@@</td><td class="num">@@NUM:logreg_smote.f1@@</td><td class="num">@@NUM:logreg_smote.roc_auc@@</td></tr>
+<tr><td>Random Forest + class_weight (튜닝)</td><td class="num">@@NUM:rf_class_weight.accuracy@@</td><td class="num">@@NUM:rf_class_weight.precision@@</td><td class="num">@@NUM:rf_class_weight.recall@@</td><td class="num">@@NUM:rf_class_weight.f1@@</td><td class="num">@@NUM:rf_class_weight.roc_auc@@</td></tr>
+<tr><td>Random Forest + SMOTE (튜닝)</td><td class="num">@@NUM:rf_smote.accuracy@@</td><td class="num">@@NUM:rf_smote.precision@@</td><td class="num">@@NUM:rf_smote.recall@@</td><td class="num">@@NUM:rf_smote.f1@@</td><td class="num">@@NUM:rf_smote.roc_auc@@</td></tr>
+<tr><td>XGBoost + scale_pos_weight (튜닝)</td><td class="num">@@NUM:xgb_scale_pos_weight.accuracy@@</td><td class="num">@@NUM:xgb_scale_pos_weight.precision@@</td><td class="num">@@NUM:xgb_scale_pos_weight.recall@@</td><td class="num">@@NUM:xgb_scale_pos_weight.f1@@</td><td class="num">@@NUM:xgb_scale_pos_weight.roc_auc@@</td></tr>
+</tbody></table></div>
+<p class="sub">임계값 0.5 기준입니다. 회귀(신용 점수)는 Lasso α=@@NUM:lasso_alpha@@에서 RMSE @@NUM:lasso_rmse@@, MAE @@NUM:lasso_mae@@, R² @@NUM:lasso_r2@@입니다. 평균만 예측하면 RMSE는 @@NUM:mean_rmse@@입니다.</p>
+<div class="callout"><p><b>이 자료를 읽는 순서.</b> 02(데이터가 만들어진 방식)를 먼저 읽으면 이후 모든 숫자가 설명됩니다. 그다음 03→04에서 지표를 손으로 움직여 보고, 05에서 누수 방지 원리를 확인하세요. 보너스는 06(Custom Transformer), 11(학습 곡선), 12(모듈 구조)입니다.</p></div>
+<div class="question"><label class="check"><input type="checkbox"> 규칙 베이스라인은 Recall이 가장 높은데도 왜 가장 나쁜 모델로 평가할까?</label>
+<details><summary>설명 예시</summary><p>Recall만 높은 건 "거의 모두를 연체로 찍었기" 때문입니다. Precision이 @@NUM:rule_baseline.precision@@이라 연체로 찍은 고객 다섯 명 중 네 명은 정상 고객입니다. 정상 고객의 대출을 대량으로 거절하는 비용을 반영하는 F1이 가장 낮습니다.</p></details></div>
+</section>
+
+<!-- 02 -->
+<section class="chapter" id="ch02" data-title="02 데이터 생성 방식">
+<div class="eyebrow">02</div><h2>정답이 만들어진 방식을 먼저 본다</h2>
+<p class="lead">이 데이터는 합성 데이터라서 정답을 만든 공식을 그대로 볼 수 있습니다. 공식을 알면 "모델이 얼마나 잘할 수 있는가"의 상한을 계산할 수 있습니다.</p>
+@@CODE:datagen_score@@
+<p>신용 점수는 <b>소득·연체 횟수·부채 비율의 선형 결합</b>에 표준편차 30짜리 노이즈를 더한 값입니다. 따라서 선형 회귀가 아무리 잘해도 RMSE는 약 30 아래로 내려가기 어렵습니다. 실제 결과 RMSE @@NUM:lasso_rmse@@가 바로 그 지점입니다.</p>
+@@CODE:datagen_label@@
+<p>연체 라벨은 <b>점수 하위 15% 이면서, 난수가 0.2보다 큰 경우</b>에만 1입니다. 하위 15% 고객 중 약 20%는 같은 조건이어도 무작위로 0(정상)을 받습니다. 이건 어떤 모델도 맞힐 수 없는 노이즈입니다.</p>
+<figure class="chart"><img src="@@IMAGE:01_data_overview@@" alt="연체 클래스 비율과 신용 점수별 연체 분포 그래프" loading="lazy"><figcaption>왼쪽: 정상 88%, 연체 12%의 불균형. 오른쪽: 292점(하위 15%) 왼쪽에만 빨간 연체가 있고, 그 안에도 파란 정상이 섞여 있습니다.</figcaption></figure>
+<div class="panel"><h3>성능 상한 확인</h3>
+<p>생성 공식(실제 credit_score &lt; 292)을 그대로 쓰는 "반칙 예측기"로 Test를 예측해 봤습니다. 실제 입력에는 credit_score가 없으므로 모델 후보가 아니라 기준선입니다.</p>
+<div class="metrics"><div class="metric"><span>Precision</span><b>@@NUM:oracle_precision@@</b></div><div class="metric"><span>Recall</span><b>@@NUM:oracle_recall@@</b></div><div class="metric"><span>F1</span><b>@@NUM:oracle_f1@@</b></div></div>
+<p>정답 공식을 알아도 F1은 약 0.89가 한계입니다. 우리 모델은 여기에 노이즈 30까지 더해진 6개 입력만 보므로 F1 0.6대가 합리적인 수준입니다.</p></div>
+<dl class="terms">
+<dt>신호 변수</dt><dd><code>annual_income</code>, <code>debt_ratio</code>, <code>overdue_count_6m</code>. 공식에 들어갑니다.</dd>
+<dt>노이즈 변수</dt><dd><code>age</code>, <code>spending_score</code>, <code>credit_card_count</code>. 어떤 타깃에도 쓰이지 않았습니다. 규제가 이 변수들을 지우는지 보는 시험지가 됩니다.</dd>
+<dt>소득 하한</dt><dd>주석은 "음수면 0"이지만 실제 코드는 1,500 미만을 1,500으로 올립니다. @@NUM:income_floor_rows@@행이 정확히 1,500입니다. 원문 지시대로 데이터는 수정하지 않았습니다.</dd>
+<dt>두 타깃의 관계</dt><dd><code>is_overdue</code>는 <code>credit_score</code>로 만들어졌습니다. 그래서 분류 입력에 신용 점수를 넣으면 정답을 알려주는 셈(누수)이 됩니다.</dd>
+</dl>
+@@CODE:features_const@@
+<div class="question"><label class="check"><input type="checkbox"> 실제 업무 데이터에서는 이런 "상한"을 알 수 없다. 그럼 무엇으로 대신 판단할까?</label>
+<details><summary>설명 예시</summary><p>같은 고객을 두 심사역이 평가했을 때의 일치도, 라벨 재검토로 찾은 오류율, 학습 곡선이 데이터를 늘려도 평평한지 등으로 "줄일 수 없는 오차"를 추정합니다. 11장의 학습 곡선이 그 도구 중 하나입니다.</p></details></div>
+</section>
+
+<!-- 03 -->
+<section class="chapter" id="ch03" data-title="03 규칙 기반 베이스라인">
+<div class="eyebrow">03</div><h2>규칙 기반 베이스라인: 직관을 숫자로 재기</h2>
+<p class="lead">학습 없이 심사 담당자의 직관으로 규칙 6개를 정했습니다. 하나라도 걸리면 연체로 예측하고, 걸린 규칙 수를 위험 점수로 써서 AUC를 계산합니다.</p>
+@@CODE:rule_if@@
+<p>같은 규칙을 표 형태(<code>RULES</code>)로도 정의해서, 이 페이지가 그 정의를 읽어 아래 실험을 계산합니다. 테스트가 두 정의의 판정이 같은지 확인합니다.</p>
+@@CODE:rules@@
+<div class="panel" id="rule-lab"><h3>실험: 규칙을 켜고 끄기</h3>
+<p class="sub">Test @@NUM:test_rows@@명(실제 연체 @@NUM:test_overdue@@명)에 대해 바로 다시 계산합니다.</p>
+<div class="two-col"><div><ul class="rule-list" id="rule-list"></ul></div>
+<div><div class="cm" id="rule-cm"></div><div class="metrics" id="rule-metrics"></div><p class="sub" id="rule-note"></p></div></div></div>
+<div class="callout warn"><p><b>해 볼 것:</b> R6(카드 8장 이상)만 꺼 보세요. 찾은 연체자는 @@NUM:r6.tp_all@@명에서 @@NUM:r6.tp_off@@명으로 거의 그대로인데, 괜히 거절한 정상 고객은 @@NUM:r6.fp_all@@명에서 @@NUM:r6.fp_off@@명으로 줄어듭니다. 카드 수는 노이즈 변수라서 이 규칙은 정상 고객만 대량으로 걸러냅니다. 직관이 틀릴 수 있다는 것을 숫자로 확인하는 것이 베이스라인의 역할입니다.</p></div>
+@@CODE:rule_score@@
+<div class="question"><label class="check"><input type="checkbox"> 모든 고객을 "정상"으로 예측하면 Accuracy는 얼마일까? 규칙 베이스라인보다 높을까?</label>
+<details><summary>설명 예시</summary><p>연체 비율이 12%이므로 Accuracy 0.88입니다. 규칙 베이스라인(@@NUM:rule_baseline.accuracy@@)보다 높습니다. 하지만 연체자를 한 명도 찾지 못하므로 Recall 0, F1 0입니다. 불균형 데이터에서 Accuracy만 보면 안 되는 이유입니다.</p></details></div>
+</section>
+
+<!-- 04 -->
+<section class="chapter" id="ch04" data-title="04 분류 지표 읽기">
+<div class="eyebrow">04</div><h2>분류 지표: 혼동 행렬과 임계값</h2>
+<p class="lead">모델은 연체 확률을 내놓고, 확률이 임계값 이상이면 연체로 판정합니다. 임계값을 바꾸면 같은 모델에서도 지표가 크게 달라집니다.</p>
+<dl class="terms">
+<dt>Precision (정밀도)</dt><dd>연체라고 찍은 사람 중 진짜 연체자 비율. 낮으면 정상 고객을 많이 거절합니다.</dd>
+<dt>Recall (재현율)</dt><dd>진짜 연체자 중 찾아낸 비율. 낮으면 부실 대출이 늘어납니다.</dd>
+<dt>F1</dt><dd>Precision과 Recall의 조화평균. 둘 중 하나만 높으면 낮게 나옵니다.</dd>
+<dt>ROC-AUC</dt><dd>임계값과 무관하게, 무작위로 뽑은 연체자가 정상 고객보다 높은 점수를 받을 확률. 순위 매기기 능력입니다.</dd>
+<dt>PR-AUC</dt><dd>Precision-Recall 곡선 아래 넓이. 양성이 드물 때 ROC-AUC보다 모델 간 차이를 잘 드러냅니다. 무작위 기준선이 0.5가 아니라 연체 비율(0.12)입니다.</dd>
+</dl>
+<div class="panel" id="th-lab"><h3>실험: 임계값 움직이기</h3>
+<div class="controls"><div class="field"><label for="th-model">모델</label><select id="th-model"></select></div>
+<div class="field"><label for="th-range">임계값 <output id="th-out">0.50</output></label><input type="range" id="th-range" min="0.01" max="0.99" step="0.01" value="0.5"></div></div>
+<div class="two-col"><div class="cm" id="th-cm"></div><div><div class="metrics" id="th-metrics"></div><p class="sub" id="th-note"></p></div></div></div>
+<figure class="chart"><img src="@@IMAGE:06_roc_pr_curves@@" alt="모델별 ROC 곡선과 Precision-Recall 곡선" loading="lazy"><figcaption>ROC 곡선은 모델들이 거의 겹치지만, PR 곡선에서는 차이가 더 잘 보입니다. 규칙 베이스라인은 점수가 0~6의 정수뿐이라 계단 모양입니다.</figcaption></figure>
+<figure class="chart"><img src="@@IMAGE:05_confusion_matrices@@" alt="규칙 베이스라인과 최종 모델의 혼동 행렬" loading="lazy"><figcaption>혼동 행렬: 행은 실제, 열은 예측. 오른쪽 위(FP)는 괜히 거절한 정상 고객, 왼쪽 아래(FN)는 놓친 연체자입니다.</figcaption></figure>
+<div class="question"><label class="check"><input type="checkbox"> 은행이 "연체자 놓치기(FN)가 정상 고객 거절(FP)보다 5배 비싸다"고 하면 임계값을 어느 방향으로 옮길까?</label>
+<details><summary>설명 예시</summary><p>FN을 줄여야 하므로 임계값을 낮춥니다. Recall이 오르고 Precision이 내려갑니다. 위 실험에서 임계값을 내리면 FN 칸이 줄고 FP 칸이 늘어나는 것을 볼 수 있습니다. 비용 비율이 정해지면 "FN×5 + FP" 합이 최소가 되는 임계값을 고를 수 있습니다.</p></details></div>
+<div class="question"><label class="check"><input type="checkbox"> 임계값을 바꾸면 ROC-AUC도 바뀔까?</label>
+<details><summary>설명 예시</summary><p>바뀌지 않습니다. AUC는 모든 임계값을 한꺼번에 요약한 순위 지표입니다. 위 실험에서 슬라이더를 움직여도 ROC-AUC 칸은 그대로입니다.</p></details></div>
+</section>
+
+<!-- 05 -->
+<section class="chapter" id="ch05" data-title="05 누수와 파이프라인">
+<div class="eyebrow">05</div><h2>데이터 누수를 막는 파이프라인</h2>
+<p class="lead">데이터 누수는 "평가할 때 알 수 없어야 하는 정보가 학습에 섞이는 것"입니다. 누수가 있으면 Test 점수가 실제 운영 성능보다 좋게 나옵니다.</p>
+@@CODE:split@@
+<p>먼저 데이터를 나눕니다. <code>stratify</code>로 Train과 Test의 연체 비율을 똑같이 맞춥니다. 이후 Test는 마지막 평가에만 쓰고, 모델·임계값·Alpha는 모두 Train 안의 교차 검증으로 고릅니다.</p>
+@@CODE:preprocessor@@
+<p>전처리 객체를 모델과 함께 <code>Pipeline</code>으로 묶는 것이 핵심입니다. <code>pipe.fit(X_train)</code>을 호출하면 대치값(중앙값), 평균·표준편차, 범주 목록을 모두 Train에서만 배웁니다. 교차 검증에서도 각 fold의 학습 부분에서만 다시 배우므로, 검증 fold의 정보가 섞이지 않습니다.</p>
+<div class="table-scroll"><table><thead><tr><th>누수 유형</th><th>잘못된 예</th><th>이 프로젝트의 방지 방법</th></tr></thead><tbody>
+<tr><td>타깃 누수</td><td>분류 입력에 <code>credit_score</code> 포함</td><td><code>FEATURES</code>에 두 타깃을 넣지 않고 테스트로 확인</td></tr>
+<tr><td>전처리 누수</td><td>전체 데이터로 StandardScaler fit 후 분할</td><td>전처리를 Pipeline 안에 두어 Train에서만 fit</td></tr>
+<tr><td>리샘플링 누수</td><td>SMOTE로 합성한 뒤 분할하거나 교차 검증</td><td>imblearn Pipeline 안에 SMOTE를 두어 fit 단계에서만 합성</td></tr>
+<tr><td>선택 누수</td><td>Test 점수를 보고 모델·임계값을 고름</td><td>CV F1로 모델 선택, OOF 예측으로 임계값 결정</td></tr>
+</tbody></table></div>
+@@CODE:imb_pipeline@@
+<div class="callout warn"><p><b>SMOTE를 분할 전에 하면 왜 위험할까?</b> SMOTE는 연체자 두 명 사이에 가짜 연체자를 만듭니다. 분할 전에 하면 Test 안의 연체자와 거의 같은 합성 표본이 Train에 들어가서, 모델이 Test를 "미리 본" 상태가 됩니다.</p></div>
+<p>아래 테스트는 스케일러의 평균이 Train 평균과 같고, 전체 데이터 평균과는 다르다는 것을 확인합니다.</p>
+@@CODE:test_leak@@
+@@CODE:test_smote@@
+<div class="question"><label class="check"><input type="checkbox"> 결측치가 없는 데이터인데 왜 SimpleImputer를 넣었을까?</label>
+<details><summary>설명 예시</summary><p>운영에서 들어오는 새 고객 데이터에는 결측이 생길 수 있습니다. 파이프라인에 대치 단계를 두면 학습 때 배운 Train 중앙값으로 자동 처리됩니다. 테스트에서 결측치와 처음 보는 연령대(90세)를 넣어 실제로 동작하는지 확인했습니다.</p></details></div>
+</section>
+
+<!-- 06 -->
+<section class="chapter" id="ch06" data-title="06 Custom Transformer">
+<div class="eyebrow">06 · 보너스 1</div><h2>나만의 전처리 클래스 만들기</h2>
+<p class="lead">원본에는 범주형 변수가 없어서, 나이를 연령대 범주로 바꾸는 파생 변수 생성기를 만들었습니다. 이 클래스가 범주형 인코딩 경로를 실제로 쓰게 합니다.</p>
+@@CODE:derived@@
+<dl class="terms">
+<dt><code>BaseEstimator</code></dt><dd>생성자 인자를 그대로 속성에 저장하면 <code>get_params</code>/<code>set_params</code>가 자동으로 생깁니다. 그래서 GridSearchCV가 <code>derive__add_debt_amount</code> 같은 이름으로 탐색할 수 있고, <code>clone</code>으로 복제할 수 있습니다.</dd>
+<dt><code>TransformerMixin</code></dt><dd><code>fit</code>과 <code>transform</code>만 만들면 <code>fit_transform</code>을 붙여 줍니다.</dd>
+<dt>fit / transform 분리</dt><dd>fit은 "배우기", transform은 "적용하기"입니다. 이 클래스는 컬럼 이름만 배우지만, 같은 규약을 지켜야 Pipeline 안에서 누수 없이 동작합니다.</dd>
+<dt><code>get_feature_names_out</code></dt><dd>뒤 단계가 변수 이름을 알 수 있게 합니다. 회귀 계수 그래프의 변수 이름이 여기서 나옵니다.</dd>
+</dl>
+<p>파생 결과: 원본 6개 + <code>debt_amount</code>(소득×부채 비율) = 수치 7개, 연령대 원-핫 5개 → 모델 입력 12개.</p>
+<div class="question"><label class="check"><input type="checkbox"> 생성자에서 age_bins를 검사하지 않고 fit에서 검사하는 이유는?</label>
+<details><summary>설명 예시</summary><p>scikit-learn 규약상 생성자는 인자를 저장만 해야 합니다. GridSearchCV는 <code>set_params</code>로 값을 바꾼 뒤 fit을 부르는데, 생성자에서 검사·변환하면 바뀐 값이 반영되지 않거나 <code>clone</code>이 깨집니다.</p></details></div>
+</section>
+
+<!-- 07 -->
+<section class="chapter" id="ch07" data-title="07 회귀와 L1/L2 규제">
+<div class="eyebrow">07</div><h2>신용 점수 회귀: Ridge(L2)와 Lasso(L1)</h2>
+<p class="lead">규제는 계수가 커질수록 벌점을 줘서 모델을 단순하게 만듭니다. Ridge는 계수를 고르게 줄이고, Lasso는 덜 중요한 계수를 정확히 0으로 만듭니다.</p>
+<div class="formula">Ridge: ‖y − Xw‖² + α‖w‖²&nbsp;&nbsp;&nbsp;(오차 제곱의 합)<br>Lasso: (1/2n)‖y − Xw‖² + α‖w‖₁&nbsp;&nbsp;&nbsp;(오차 제곱의 평균의 1/2)</div>
+@@CODE:ridge_lasso@@
+<div class="panel" id="alpha-lab"><h3>실험: Alpha 바꾸기</h3>
+<p class="sub">계수는 표준화된 변수 1 표준편차당 점수 변화입니다. 막대 오른쪽(파랑)은 양수, 왼쪽(빨강)은 음수입니다.</p>
+<div class="controls" id="alpha-buttons" role="group" aria-label="Alpha 선택"></div>
+<div class="bar-head"><span>변수</span><span>Ridge</span><span>Lasso</span></div>
+<div class="bars" id="alpha-bars"></div>
+<p class="sub" id="alpha-note"></p></div>
+<figure class="chart"><img src="@@IMAGE:02_coefficient_paths@@" alt="Alpha에 따른 Ridge와 Lasso 계수 변화" loading="lazy"><figcaption>필수 그래프: Alpha 0.01~100의 계수 변화. 회색은 노이즈·파생·연령대 변수 9개입니다.</figcaption></figure>
+<p>Lasso는 α=1에서 <code>@@NUM:lasso1_zero@@</code>를 0으로 만들었습니다. 정확히 데이터 생성에 쓰이지 않은 변수들입니다. α=10에서는 신호 변수까지 줄어 RMSE가 @@NUM:lasso10_rmse@@로 나빠지고, α=100에서는 모든 계수가 0이 되어 평균만 예측합니다.</p>
+<p>반면 Ridge는 α=100에서도 거의 변하지 않습니다. 위 공식처럼 Ridge의 오차 항은 <b>합</b>이라 Train 8,000건만큼 커서, 같은 α라도 상대적인 규제가 훨씬 약합니다. α를 넓혀 보면 수천 이상에서야 줄어듭니다.</p>
+<figure class="chart"><img src="@@IMAGE:03_ridge_extended_alpha@@" alt="넓은 Alpha 범위에서 Ridge 계수 변화" loading="lazy"><figcaption>보충 그래프: Ridge는 α가 Train 크기(8,000) 근처가 되어서야 계수가 눈에 띄게 줄어듭니다.</figcaption></figure>
+@@CODE:tune_reg@@
+<p>Alpha는 Train 5-fold CV RMSE로 골랐습니다. Ridge α=@@NUM:ridge_alpha@@(RMSE @@NUM:ridge_rmse@@), Lasso α=@@NUM:lasso_alpha@@(RMSE @@NUM:lasso_rmse@@). 이 데이터는 노이즈 변수 계수가 원래 작아서 규제의 성능 이득은 거의 없고, Lasso의 <b>변수 선택</b> 효과가 핵심 관찰입니다.</p>
+<figure class="chart"><img src="@@IMAGE:04_regression_fit@@" alt="신용 점수 예측값과 실제값 산점도, 잔차 분포" loading="lazy"><figcaption>잔차 표준편차가 생성 노이즈 30과 거의 같습니다. 남은 오차는 대부분 줄일 수 없는 노이즈입니다.</figcaption></figure>
+<div class="question"><label class="check"><input type="checkbox"> 같은 데이터에서 회귀와 분류의 평가 지표가 다른 이유는?</label>
+<details><summary>설명 예시</summary><p>회귀는 "얼마나 가까운가"를 재므로 오차 크기(RMSE, MAE)와 설명력(R²)을 씁니다. 분류는 "맞았는가, 어떤 종류로 틀렸는가"를 재므로 혼동 행렬 기반 지표와 순위 지표(AUC)를 씁니다. 점수 30점 차이는 회귀에서 작은 오차지만, 292점 경계를 넘으면 분류에서는 정답이 바뀝니다.</p></details></div>
+<div class="question"><label class="check"><input type="checkbox"> RMSE와 MAE의 차이는 무엇을 알려줄까?</label>
+<details><summary>설명 예시</summary><p>RMSE는 오차를 제곱하므로 큰 오차에 더 민감합니다. RMSE(@@NUM:lasso_rmse@@)가 MAE(@@NUM:lasso_mae@@)보다 약 1.25배인데, 정규분포 오차에서 기대되는 비율(√(π/2)≈1.25)과 같아서 극단적인 이상 오차가 적다는 뜻입니다.</p></details></div>
+</section>
+
+<!-- 08 -->
+<section class="chapter" id="ch08" data-title="08 불균형 처리">
+<div class="eyebrow">08</div><h2>불균형 처리: class_weight vs SMOTE</h2>
+<p class="lead">연체가 12%뿐이라 아무 처리 없이 학습하면 모델은 "대부분 정상"이라고 말하는 쪽으로 기웁니다.</p>
+<dl class="terms">
+<dt><code>class_weight='balanced'</code></dt><dd>소수 클래스(연체)의 오차에 더 큰 가중치를 줍니다. 데이터는 그대로 두고 손실 함수만 바꿉니다. 가중치 = 전체 수 / (클래스 수 × 해당 클래스 수)라서 연체 약 4.2, 정상 약 0.57입니다. 연체 한 명의 오차가 정상 한 명보다 약 7.3배 무겁습니다.</dd>
+<dt>SMOTE</dt><dd>연체자와 그 이웃 연체자 사이에 가짜 연체자를 합성해 50:50을 만듭니다. 데이터를 바꾸므로 fit 단계에서만 해야 합니다.</dd>
+<dt><code>scale_pos_weight</code></dt><dd>XGBoost의 가중치 방식. 정상 수/연체 수(약 7.3)를 넣었습니다.</dd>
+</dl>
+<div class="table-scroll"><table><thead><tr><th>로지스틱 회귀</th><th class="num">CV F1</th><th class="num">Test Precision</th><th class="num">Test Recall</th><th class="num">Test F1</th><th class="num">ROC-AUC</th></tr></thead><tbody>
+<tr><td>처리 없음</td><td class="num">@@NUM:logreg_no_handling.cv_f1@@</td><td class="num">@@NUM:logreg_no_handling.precision@@</td><td class="num">@@NUM:logreg_no_handling.recall@@</td><td class="num">@@NUM:logreg_no_handling.f1@@</td><td class="num">@@NUM:logreg_no_handling.roc_auc@@</td></tr>
+<tr><td>class_weight</td><td class="num">@@NUM:logreg_class_weight.cv_f1@@</td><td class="num">@@NUM:logreg_class_weight.precision@@</td><td class="num">@@NUM:logreg_class_weight.recall@@</td><td class="num">@@NUM:logreg_class_weight.f1@@</td><td class="num">@@NUM:logreg_class_weight.roc_auc@@</td></tr>
+<tr><td>SMOTE</td><td class="num">@@NUM:logreg_smote.cv_f1@@</td><td class="num">@@NUM:logreg_smote.precision@@</td><td class="num">@@NUM:logreg_smote.recall@@</td><td class="num">@@NUM:logreg_smote.f1@@</td><td class="num">@@NUM:logreg_smote.roc_auc@@</td></tr>
+</tbody></table></div>
+<p>불균형 처리는 Recall을 크게 올리고 Precision을 내립니다. 그런데 <b>ROC-AUC는 세 방식이 거의 같습니다.</b> 순위 매기는 능력은 그대로이고, 판정 경계만 연체 쪽으로 옮겨진 것입니다.</p>
+<div class="callout"><p><b>4장 실험으로 확인하기:</b> 모델을 "LogReg (no handling)"으로 바꾸고 임계값을 0.5에서 낮춰 보세요. 어느 지점에서 class_weight 모델의 0.5 결과(Recall @@NUM:logreg_class_weight.recall@@)와 비슷해집니다. 이 데이터에서 불균형 처리의 효과는 대부분 "임계값 이동"으로 설명됩니다.</p></div>
+<figure class="chart"><img src="@@IMAGE:07_model_comparison@@" alt="모델별 Test 지표 막대 그래프" loading="lazy"><figcaption>임계값 0.5에서 모델별 지표. 처리 없는 로지스틱은 Accuracy가 높지만 Recall이 낮습니다.</figcaption></figure>
+<div class="question"><label class="check"><input type="checkbox"> class_weight와 SMOTE 중 무엇을 기본으로 고를까?</label>
+<details><summary>설명 예시</summary><p>성능이 비슷하면 class_weight가 단순합니다. 데이터를 바꾸지 않고, 의존성이 없으며, 학습이 빠르고, 합성 표본이 실제 분포와 다를 위험이 없습니다. SMOTE는 모델이 가중치를 지원하지 않거나, 소수 클래스 주변 경계를 더 채워야 할 때 시험해 볼 만합니다.</p></details></div>
+</section>
+
+<!-- 09 -->
+<section class="chapter" id="ch09" data-title="09 앙상블과 튜닝">
+<div class="eyebrow">09</div><h2>앙상블과 GridSearchCV</h2>
+<p class="lead">Random Forest는 서로 다른 나무 수백 그루의 투표, XGBoost는 앞 나무의 오차를 다음 나무가 고치는 방식입니다. 하이퍼파라미터는 Train 5-fold CV F1로 골랐습니다.</p>
+@@CODE:grids@@
+@@CODE:gridsearch@@
+<div class="table-scroll"><table><thead><tr><th>모델</th><th>최적 파라미터</th><th class="num">조합</th><th class="num">CV F1</th><th class="num">Test F1</th><th class="num">ROC-AUC</th></tr></thead><tbody>
+<tr><td>RF + class_weight</td><td><code>@@NUM:rf_class_weight.params@@</code></td><td class="num">@@NUM:rf_class_weight.grid@@</td><td class="num">@@NUM:rf_class_weight.cv_f1@@</td><td class="num">@@NUM:rf_class_weight.f1@@</td><td class="num">@@NUM:rf_class_weight.roc_auc@@</td></tr>
+<tr><td>RF + SMOTE</td><td><code>@@NUM:rf_smote.params@@</code></td><td class="num">@@NUM:rf_smote.grid@@</td><td class="num">@@NUM:rf_smote.cv_f1@@</td><td class="num">@@NUM:rf_smote.f1@@</td><td class="num">@@NUM:rf_smote.roc_auc@@</td></tr>
+<tr><td>XGB + scale_pos_weight</td><td><code>@@NUM:xgb_scale_pos_weight.params@@</code></td><td class="num">@@NUM:xgb_scale_pos_weight.grid@@</td><td class="num">@@NUM:xgb_scale_pos_weight.cv_f1@@</td><td class="num">@@NUM:xgb_scale_pos_weight.f1@@</td><td class="num">@@NUM:xgb_scale_pos_weight.roc_auc@@</td></tr>
+<tr><td>(비교) 로지스틱 + class_weight</td><td>튜닝 없음</td><td class="num">1</td><td class="num">@@NUM:logreg_class_weight.cv_f1@@</td><td class="num">@@NUM:logreg_class_weight.f1@@</td><td class="num">@@NUM:logreg_class_weight.roc_auc@@</td></tr>
+</tbody></table></div>
+<div class="callout warn"><p><b>지표에 따라 승자가 다릅니다.</b> 임계값 0.5의 F1은 Random Forest가 근소하게 높지만, 순위를 매기는 능력인 ROC-AUC와 PR-AUC는 로지스틱이 더 높습니다. 연체 라벨은 소득·부채·연체 횟수의 <b>선형 결합</b>에 경계를 그어 만들었기 때문에, 선형 경계를 찾는 로지스틱이 데이터 구조에 맞습니다.</p>
+<p>그럼 RF의 F1 우위는 어디서 왔을까요? 사후 확인으로 Test에서 임계값만 바꿔 보면 최고 F1은 @@NUM:final_model@@ @@NUM:tuned.final.f1@@(임계값 @@NUM:tuned.final.t@@), @@NUM:contrast_model@@ @@NUM:tuned.contrast.f1@@(임계값 @@NUM:tuned.contrast.t@@)입니다. 판정 지점까지 맞추면 순서가 뒤집힙니다. 0.5에서의 F1 차이는 모델의 실력보다 "임계값 0.5가 각 모델에 얼마나 잘 맞았는가"를 더 많이 반영합니다.</p>
+<p>이 값은 Test를 보고 고른 것이라 공정한 비교가 아니고, 모델 선택에도 쓰지 않았습니다. 공정하게 비교하려면 Train의 교차 검증 예측으로 모델마다 임계값을 정한 뒤 비교해야 합니다. 10장의 정책 임계값이 그 방식입니다. 4장 실험에서 모델을 바꿔 가며 직접 확인할 수 있습니다.</p>
+<p>앙상블은 비선형 관계나 변수 간 상호작용이 있을 때 강합니다. "복잡한 모델이 항상 낫다"가 아니라 "데이터 구조와 평가 기준에 맞는 모델이 낫다"입니다.</p></div>
+<h3>특징 중요도</h3>
+@@CODE:permutation@@
+<figure class="chart"><img src="@@IMAGE:08_feature_importance@@" alt="Random Forest 불순도 중요도와 Test permutation 중요도" loading="lazy"><figcaption>왼쪽: 학습 데이터 기준 불순도 중요도(원-핫 변수를 따로 셉니다). 오른쪽: Test에서 변수 하나를 섞었을 때 PR-AUC 감소량.</figcaption></figure>
+<div class="callout"><p><b>해석 3줄 요약</b><br>1. @@NUM:perm_first@@, @@NUM:perm_second@@, @@NUM:perm_third@@ 순으로 중요합니다. 데이터 생성 공식의 세 변수와 일치합니다.<br>2. 나이·소비 점수·카드 수는 섞어도 성능이 거의 그대로입니다. 연체 판단에 쓸 정보가 없습니다.<br>3. 불순도 중요도는 값 종류가 많은 연속 변수(부채액, 소득)를 부풀리는 경향이 있어서, Test permutation 중요도와 함께 봐야 합니다.</p></div>
+<div class="question"><label class="check"><input type="checkbox"> GridSearchCV를 Test로 하면 안 되는 이유는?</label>
+<details><summary>설명 예시</summary><p>Test로 파라미터를 고르면 Test 점수가 "선택에 쓴 점수"가 되어 낙관적으로 부풀려집니다. 새 고객에 대한 성능을 추정할 데이터가 남지 않습니다. 그래서 Train 안에서 교차 검증으로 고르고 Test는 한 번만 봅니다.</p></details></div>
+</section>
+
+<!-- 10 -->
+<section class="chapter" id="ch10" data-title="10 모델 선택과 정책">
+<div class="eyebrow">10</div><h2>최종 모델 선택과 승인·보류·거절</h2>
+<p class="lead">CV F1 차이가 fold 간 흔들림보다 작으면 "더 좋다"고 말할 수 없습니다. 그럴 때는 더 단순한 모델을 고릅니다.</p>
+@@CODE:select@@
+<p>CV F1 최고는 <b>@@NUM:best_cv_model@@</b>이었고, 1-표준오차 기준선 @@NUM:cutoff@@ 이상인 후보는 <b>@@NUM:within@@</b>입니다. 그중 가장 단순한 <b>@@NUM:final_model@@</b>을 최종 모델로 골랐습니다.</p>
+<h3>승인·보류·거절 정책</h3>
+<p>미션 소개의 "승인/거절/보류"를 확률 구간 두 개로 구현했습니다. 임계값은 Test가 아니라 Train의 교차 검증 예측(out-of-fold)으로 정합니다.</p>
+@@CODE:policy@@
+<ul><li><b>보류 ≥ @@NUM:hold_t@@</b>: 연체자의 95%를 보류 이상으로 보내는 가장 높은 임계값</li><li><b>거절 ≥ @@NUM:reject_t@@</b>: OOF F1이 가장 높은 임계값</li></ul>
+<div class="panel" id="policy-lab"><h3>실험: 정책 임계값 바꾸기</h3>
+<div class="controls"><div class="field"><label for="hold-range">보류 임계값 <output id="hold-out"></output></label><input type="range" id="hold-range" min="0.01" max="0.99" step="0.01"></div>
+<div class="field"><label for="reject-range">거절 임계값 <output id="reject-out"></output></label><input type="range" id="reject-range" min="0.01" max="0.99" step="0.01"></div>
+<button type="button" id="policy-reset">학습된 값으로</button></div>
+<div class="band-grid" id="bands"></div><p class="sub" id="policy-note"></p></div>
+<figure class="chart"><img src="@@IMAGE:10_decision_policy@@" alt="최종 모델의 예측 확률 분포와 승인 보류 거절 경계" loading="lazy"><figcaption>세로축은 로그 척도입니다. 승인 구간(@@NUM:band.approve.share@@)의 연체율은 @@NUM:band.approve.rate@@, 거절 구간(@@NUM:band.reject.share@@)은 @@NUM:band.reject.rate@@입니다.</figcaption></figure>
+<div class="question"><label class="check"><input type="checkbox"> 보류 구간이 있으면 무엇이 좋아질까? 비용은 무엇일까?</label>
+<details><summary>설명 예시</summary><p>모델이 확신하지 못하는 고객만 사람이 추가 서류로 심사하므로, 자동 승인의 연체율을 낮게 유지하면서 정상 고객을 바로 거절하지 않을 수 있습니다. 비용은 심사 인력과 대기 시간입니다. 보류 비중(@@NUM:band.hold.share@@)이 심사팀이 감당할 수 있는 양인지가 실제 결정 기준이 됩니다.</p></details></div>
+</section>
+
+<!-- 11 -->
+<section class="chapter" id="ch11" data-title="11 학습 곡선">
+<div class="eyebrow">11 · 보너스 3</div><h2>학습 곡선과 편향-분산</h2>
+<p class="lead">Train 크기를 늘려 가며 Train 점수와 Validation 점수를 같이 그립니다. 두 곡선의 간격은 분산(과대적합), 함께 머무는 높이는 편향을 보여줍니다.</p>
+@@CODE:learning_curve@@
+<figure class="chart"><img src="@@IMAGE:09_learning_curves@@" alt="최종 모델, Random Forest, Lasso의 학습 곡선" loading="lazy"><figcaption>음영은 fold 간 표준편차입니다.</figcaption></figure>
+<div class="table-scroll"><table><thead><tr><th>모델</th><th class="num">마지막 Train</th><th class="num">마지막 Validation</th><th class="num">간격</th><th>진단</th></tr></thead><tbody>
+<tr><td>@@NUM:final_model@@ (F1)</td><td class="num">@@NUM:lc_final.train@@</td><td class="num">@@NUM:lc_final.valid@@</td><td class="num">@@NUM:lc_final.gap@@</td><td>Train이 훨씬 높음 → 깊은 나무가 Train의 노이즈까지 외움(분산이 큼)</td></tr>
+<tr><td>@@NUM:contrast_model@@ (F1)</td><td class="num">@@NUM:lc_contrast.train@@</td><td class="num">@@NUM:lc_contrast.valid@@</td><td class="num">@@NUM:lc_contrast.gap@@</td><td>두 곡선이 붙어 있음 → 분산 작음. 한계는 모델의 단순함과 라벨 노이즈(편향 쪽)</td></tr>
+<tr><td>Lasso (RMSE)</td><td class="num">@@NUM:lc_lasso.train@@</td><td class="num">@@NUM:lc_lasso.valid@@</td><td class="num">@@NUM:lc_lasso.gap@@</td><td>두 곡선이 노이즈 30 근처에서 만남 → 줄일 수 없는 오차에 도달</td></tr>
+</tbody></table></div>
+<p>두 분류 모델의 Validation F1은 비슷한데 Train F1은 크게 다릅니다. 같은 성능이라도 RF는 "외워서 맞히는 부분"이 크다는 뜻이라, 데이터 분포가 조금 바뀌면 더 흔들릴 수 있습니다. 1-표준오차 규칙이 RF 두 종류 중 단순한 쪽을 고른 것도 같은 맥락입니다.</p>
+<div class="question"><label class="check"><input type="checkbox"> 데이터를 두 배로 모으면 F1이 크게 오를까?</label>
+<details><summary>설명 예시</summary><p>로지스틱의 Validation 곡선은 이미 평평해서 큰 개선을 기대하기 어렵습니다. RF는 간격이 커서 데이터가 늘면 Validation이 조금 오를 수 있지만, 라벨의 무작위성(20%)과 신용 점수 노이즈 때문에 상한(F1 약 0.89)보다 훨씬 아래에서 멈춥니다. 크게 개선하려면 그 노이즈를 설명할 새 정보(예: 상환 이력 상세)가 필요합니다.</p></details></div>
+</section>
+
+<!-- 12 -->
+<section class="chapter" id="ch12" data-title="12 코드 구조와 검증">
+<div class="eyebrow">12 · 보너스 2</div><h2>모듈 구조, 실행, 검증</h2>
+<p class="lead">노트북은 보고서 역할만 하고, 계산은 모두 <code>src/</code>의 .py 모듈에 있습니다. 같은 코드를 노트북, CLI, 테스트가 함께 씁니다.</p>
+<div class="table-scroll"><table><thead><tr><th>파일</th><th>역할</th></tr></thead><tbody>
+<tr><td><code>data_gen.py</code></td><td>제공 코드 그대로. <code>finance_data.csv</code> 생성(저장소 제외)</td></tr>
+<tr><td><code>src/config.py</code></td><td>경로, seed, 입력 변수, Alpha 목록</td></tr>
+<tr><td><code>src/data.py</code></td><td>적재·검증·층화 분할</td></tr>
+<tr><td><code>src/baseline.py</code></td><td>if-else 규칙 6개와 sklearn 형태 래퍼</td></tr>
+<tr><td><code>src/features.py</code></td><td><code>DerivedFeatures</code>(보너스 1), 전처리 Pipeline</td></tr>
+<tr><td><code>src/regression.py</code></td><td>Ridge·Lasso 계수 경로, Alpha 튜닝</td></tr>
+<tr><td><code>src/classification.py</code></td><td>불균형 처리 비교, 앙상블 GridSearchCV, 모델 선택, 정책</td></tr>
+<tr><td><code>src/diagnostics.py</code></td><td>특징 중요도, 학습 곡선(보너스 3)</td></tr>
+<tr><td><code>src/report.py</code></td><td>그래프 10종과 Markdown 보고서</td></tr>
+<tr><td><code>src/run_all.py</code></td><td>전체 실행 진입점</td></tr>
+<tr><td><code>tests/test_pipeline.py</code></td><td>재현성, 규칙, 누수 방지, 변환기 규약, 선택 규칙 테스트</td></tr>
+</tbody></table></div>
+<div class="panel"><h3>소스 탐색</h3>
+<div class="controls"><div class="field"><label for="src-file">파일</label><select id="src-file"></select></div><div class="field"><label for="src-symbol">함수·클래스</label><select id="src-symbol"></select></div></div>
+<div class="source-window" id="src-window" tabindex="0" aria-label="소스 코드"></div>
+<p class="sub">생성 시점의 소스 사본입니다. 소스를 바꾸면 <code>tools/build_study_guide.py</code>로 다시 만들어야 합니다.</p></div>
+<div class="question"><label class="check"><input type="checkbox"> 노트북 대신 .py 모듈에 로직을 두면 무엇이 좋아질까?</label>
+<details><summary>설명 예시</summary><p>테스트할 수 있고, 셀 실행 순서에 따라 결과가 달라지는 문제가 없고, Git diff가 읽기 쉽고, 다른 미션(A5-2)에서 <code>from src.features import build_preprocessor</code>로 재사용할 수 있습니다.</p></details></div>
+</section>
+</main></div>
+<footer class="footer">합성 데이터(seed 42) 결과이며 실제 금융 고객에 대한 결론이 아닙니다. 페이지의 실험은 Python 결과와 대조 검증한 JavaScript 계산입니다.</footer>
+</div>
+
+<script id="guide-data" type="application/json">@@DATA@@</script>
+<script id="math-engine">
+(function (root) {
+  const OPS = { '>': (a, b) => a > b, '>=': (a, b) => a >= b, '<': (a, b) => a < b, '<=': (a, b) => a <= b };
+  function confusion(y, pred) {
+    const c = { tn: 0, fp: 0, fn: 0, tp: 0 };
+    for (let i = 0; i < y.length; i++) {
+      if (y[i] === 1) pred[i] ? c.tp++ : c.fn++; else pred[i] ? c.fp++ : c.tn++;
+    }
+    return c;
+  }
+  function metrics(c) {
+    const n = c.tn + c.fp + c.fn + c.tp;
+    const precision = c.tp + c.fp ? c.tp / (c.tp + c.fp) : 0;
+    const recall = c.tp + c.fn ? c.tp / (c.tp + c.fn) : 0;
+    const f1 = precision + recall ? 2 * precision * recall / (precision + recall) : 0;
+    return { accuracy: (c.tp + c.tn) / n, precision, recall, f1 };
+  }
+  // 동점은 평균 순위로 처리한 Mann-Whitney 방식. scikit-learn roc_auc_score와 같은 값이다.
+  function auc(score, y) {
+    const idx = score.map((s, i) => i).sort((a, b) => score[a] - score[b]);
+    const ranks = new Array(score.length);
+    for (let i = 0; i < idx.length;) {
+      let j = i;
+      while (j + 1 < idx.length && score[idx[j + 1]] === score[idx[i]]) j++;
+      const r = (i + j) / 2 + 1;
+      for (let k = i; k <= j; k++) ranks[idx[k]] = r;
+      i = j + 1;
+    }
+    let pos = 0, sum = 0;
+    for (let i = 0; i < y.length; i++) if (y[i] === 1) { pos++; sum += ranks[i]; }
+    const neg = y.length - pos;
+    return (sum - pos * (pos + 1) / 2) / (pos * neg);
+  }
+  function ruleScore(rows, features, rules, ids) {
+    const col = Object.fromEntries(features.map((f, i) => [f, i]));
+    const active = rules.filter(r => ids.includes(r.id));
+    return rows.map(row => active.reduce((s, r) => s + (r.conditions.every(([f, op, v]) => OPS[op](row[col[f]], v)) ? 1 : 0), 0));
+  }
+  function evaluate(y, pred, score) {
+    const c = confusion(y, pred);
+    return Object.assign({ confusion: c, roc_auc: auc(score, y) }, metrics(c));
+  }
+  function ruleEval(data, ids) {
+    const score = ruleScore(data.rows, data.features, data.rules, ids);
+    return evaluate(data.y, score.map(s => s > 0 ? 1 : 0), score);
+  }
+  function thresholdEval(proba, y, t) {
+    return evaluate(y, proba.map(p => p >= t ? 1 : 0), proba);
+  }
+  function bands(proba, y, hold, reject) {
+    const out = { approve: { customers: 0, overdue: 0 }, hold: { customers: 0, overdue: 0 }, reject: { customers: 0, overdue: 0 } };
+    proba.forEach((p, i) => {
+      const k = p < hold ? 'approve' : (p < reject ? 'hold' : 'reject');
+      out[k].customers++; out[k].overdue += y[i];
+    });
+    return out;
+  }
+  root.a5Math = { confusion, metrics, auc, ruleScore, ruleEval, thresholdEval, bands };
+})(typeof window !== 'undefined' ? window : globalThis);
+</script>
+<script id="guide-ui">
+(function () {
+  const data = JSON.parse(document.getElementById('guide-data').textContent);
+  const M = window.a5Math;
+  const $ = id => document.getElementById(id);
+  const f3 = v => v.toFixed(3);
+  const pct = v => (v * 100).toFixed(1) + '%';
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+  // 목차
+  const chapters = [...document.querySelectorAll('.chapter')];
+  const links = chapters.map(c => `<a href="#${c.id}">${esc(c.dataset.title)}</a>`).join('');
+  $('toc').innerHTML = links; $('mtoc').innerHTML = links;
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver(entries => entries.forEach(e => {
+      if (e.isIntersecting) document.querySelectorAll('#toc a').forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id));
+    }), { rootMargin: '-20% 0px -70% 0px' });
+    chapters.forEach(c => io.observe(c));
+  }
+  // 점검 질문 진행
+  const checks = [...document.querySelectorAll('.question input[type=checkbox]')];
+  const updateProgress = () => { const n = checks.filter(c => c.checked).length; $('progress').max = checks.length; $('progress').value = n; $('progress-text').textContent = `점검 질문 ${n}/${checks.length}개 확인`; };
+  checks.forEach(c => c.addEventListener('change', updateProgress)); updateProgress();
+
+  function renderCM(el, c) {
+    el.innerHTML = `<div class="h"></div><div class="h">예측 정상</div><div class="h">예측 연체</div>
+      <div class="h">실제 정상</div><div class="tn"><b>${c.tn.toLocaleString()}</b>TN</div><div class="fp"><b>${c.fp.toLocaleString()}</b>FP 괜히 거절</div>
+      <div class="h">실제 연체</div><div class="fn"><b>${c.fn.toLocaleString()}</b>FN 놓친 연체</div><div class="tp"><b>${c.tp.toLocaleString()}</b>TP</div>`;
+  }
+  function renderMetrics(el, m) {
+    el.innerHTML = [['Accuracy', m.accuracy], ['Precision', m.precision], ['Recall', m.recall], ['F1', m.f1], ['ROC-AUC', m.roc_auc]]
+      .map(([k, v]) => `<div class="metric"><span>${k}</span><b>${f3(v)}</b></div>`).join('');
+  }
+
+  // 03 규칙 실험
+  const ruleIds = new Set(data.rules.map(r => r.id));
+  const allScore = M.ruleScore(data.rows, data.features, data.rules, [...ruleIds]);
+  $('rule-list').innerHTML = data.rules.map(r => {
+    const hits = M.ruleScore(data.rows, data.features, [r], [r.id]).filter(s => s > 0).length;
+    const cond = r.conditions.map(([f, op, v]) => `${f} ${op} ${v}`).join(' 그리고 ');
+    return `<li><label><input type="checkbox" value="${r.id}" checked><span><b>${r.id}</b> ${esc(r.label)}<small>${esc(cond)} · Test에서 ${hits.toLocaleString()}명 해당</small></span></label></li>`;
+  }).join('');
+  function updateRules() {
+    const ids = [...$('rule-list').querySelectorAll('input:checked')].map(i => i.value);
+    const m = M.ruleEval(data, ids);
+    renderCM($('rule-cm'), m.confusion); renderMetrics($('rule-metrics'), m);
+    const flagged = m.confusion.tp + m.confusion.fp;
+    $('rule-note').textContent = ids.length ? `규칙 ${ids.length}개 사용 · 연체로 찍은 고객 ${flagged.toLocaleString()}명(${pct(flagged / data.y.length)}). 참고: 모두 정상으로 예측하면 Accuracy ${f3(1 - data.y.reduce((a, b) => a + b, 0) / data.y.length)}.` : '규칙이 없으면 모두 정상으로 예측합니다.';
+  }
+  $('rule-list').addEventListener('change', updateRules); updateRules();
+
+  // 04 임계값 실험
+  const modelNames = Object.keys(data.proba);
+  $('th-model').innerHTML = modelNames.map(n => `<option value="${esc(n)}"${n === data.final ? ' selected' : ''}>${esc(n)}${n === data.final ? ' (최종)' : ''}</option>`).join('');
+  function updateThreshold() {
+    const t = Number($('th-range').value); $('th-out').textContent = t.toFixed(2);
+    const m = M.thresholdEval(data.proba[$('th-model').value], data.y, t);
+    renderCM($('th-cm'), m.confusion); renderMetrics($('th-metrics'), m);
+    $('th-note').textContent = `연체 확률 ${t.toFixed(2)} 이상이면 연체로 판정. 놓친 연체자 ${m.confusion.fn}명, 괜히 거절한 정상 고객 ${m.confusion.fp}명.`;
+  }
+  $('th-model').addEventListener('change', updateThreshold); $('th-range').addEventListener('input', updateThreshold); updateThreshold();
+
+  // 07 Alpha 실험
+  const alphas = data.paths.Ridge.map(r => r.alpha);
+  let alphaIdx = 2;
+  $('alpha-buttons').innerHTML = alphas.map((a, i) => `<button type="button" data-i="${i}" aria-pressed="${i === alphaIdx}">α = ${a}</button>`).join('');
+  const maxAbs = Math.max(...['Ridge', 'Lasso'].flatMap(m => data.paths[m].flatMap(r => Object.values(r.coefficients).map(Math.abs))));
+  function barCell(v) {
+    const w = Math.abs(v) / maxAbs * 50;
+    return `<div class="track"><div class="fill ${v >= 0 ? 'p' : 'n'}" style="width:${w}%"></div><span class="val"><b>${v === 0 ? '0' : v.toFixed(1)}</b></span></div>`;
+  }
+  function updateAlpha() {
+    const r = data.paths.Ridge[alphaIdx], l = data.paths.Lasso[alphaIdx];
+    $('alpha-bars').innerHTML = Object.keys(r.coefficients).map(f => `<div class="bar-row"><span class="name">${esc(f)}</span>${barCell(r.coefficients[f])}${barCell(l.coefficients[f])}</div>`).join('');
+    $('alpha-note').textContent = `Test RMSE: Ridge ${r.test.rmse.toFixed(2)}, Lasso ${l.test.rmse.toFixed(2)} · Lasso가 0으로 만든 변수 ${l.zero_coefficients.length}개`;
+    $('alpha-buttons').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(Number(b.dataset.i) === alphaIdx)));
+  }
+  $('alpha-buttons').addEventListener('click', e => { const b = e.target.closest('button'); if (b) { alphaIdx = Number(b.dataset.i); updateAlpha(); } });
+  updateAlpha();
+
+  // 10 정책 실험
+  const finalProba = data.proba[data.final];
+  // 슬라이더는 0.01 단위라 학습된 임계값(예: 0.557)을 반올림한다. 계산은 이 변수의 정확한 값으로 한다.
+  const policy = { hold: data.policy.hold, reject: data.policy.reject };
+  const setPolicy = (h, r) => { policy.hold = h; policy.reject = r; $('hold-range').value = h; $('reject-range').value = r; updatePolicy(); };
+  function updatePolicy() {
+    const h = policy.hold, r = policy.reject;
+    $('hold-out').textContent = h.toFixed(3); $('reject-out').textContent = r.toFixed(3);
+    const b = M.bands(finalProba, data.y, h, r);
+    const total = data.y.length, totalOverdue = data.y.reduce((a, c) => a + c, 0);
+    const name = { approve: '승인', hold: '보류(사람 심사)', reject: '거절' };
+    $('bands').innerHTML = Object.entries(b).map(([k, v]) => `<div class="band ${k}"><span>${name[k]}</span><b>${v.customers.toLocaleString()}명</b><span>전체의 ${pct(v.customers / total)} · 연체 ${v.overdue}명 · 연체율 ${v.customers ? pct(v.overdue / v.customers) : '-'}</span></div>`).join('');
+    $('policy-note').textContent = `자동 승인에 섞인 연체자 ${b.approve.overdue}명 / 전체 연체자 ${totalOverdue}명 (${pct(b.approve.overdue / totalOverdue)}).`;
+  }
+  $('hold-range').addEventListener('input', () => {
+    const h = Number($('hold-range').value);
+    setPolicy(h, Math.max(h, policy.reject));
+  });
+  $('reject-range').addEventListener('input', () => {
+    const r = Number($('reject-range').value);
+    setPolicy(Math.min(policy.hold, r), r);
+  });
+  $('policy-reset').addEventListener('click', () => setPolicy(data.policy.hold, data.policy.reject));
+  setPolicy(data.policy.hold, data.policy.reject);
+
+  // 12 소스 탐색
+  const files = Object.keys(data.sources);
+  $('src-file').innerHTML = files.map(f => `<option>${esc(f)}</option>`).join('');
+  function showSource(file, line) {
+    $('src-file').value = file;
+    const src = data.sources[file];
+    $('src-symbol').innerHTML = '<option value="1">처음부터</option>' + src.symbols.map(s => `<option value="${s.line}">${esc(s.name)} · L${s.line}</option>`).join('');
+    $('src-window').innerHTML = src.text.split('\n').map((t, i) => `<div class="srcrow${i + 1 === line ? ' highlight' : ''}" id="src-l${i + 1}"><span class="line-num">${i + 1}</span>${esc(t) || ' '}</div>`).join('');
+    const target = $('src-l' + line);
+    if (target) $('src-window').scrollTop = Math.max(0, target.offsetTop - $('src-window').offsetTop - 40);
+  }
+  $('src-file').addEventListener('change', () => showSource($('src-file').value, 1));
+  $('src-symbol').addEventListener('change', () => showSource($('src-file').value, Number($('src-symbol').value)));
+  document.addEventListener('click', e => {
+    const b = e.target.closest('.source-link'); if (!b) return;
+    showSource(b.dataset.file, Number(b.dataset.line));
+    document.getElementById('ch12').scrollIntoView();
+  });
+  showSource(files[0], 1);
+})();
+</script>
+</body>
+</html>
