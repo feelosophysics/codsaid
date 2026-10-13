@@ -1,0 +1,24 @@
+[project]
+name = "a5-2-clustering-xai"
+version = "1.0.0"
+description = "A5-2 고객 군집화와 SHAP 기반 모델 설명"
+requires-python = ">=3.12"
+dependencies = [
+    "numpy",
+    "pandas",
+    "scikit-learn",
+    "shap",
+    "matplotlib",
+    "seaborn",
+    "streamlit",
+]
+
+[dependency-groups]
+dev = [
+    "nbclient",
+    "nbformat",
+    "ipykernel",
+]
+
+[tool.uv]
+package = false
