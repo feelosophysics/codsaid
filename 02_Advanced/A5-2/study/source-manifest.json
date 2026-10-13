@@ -1,0 +1,146 @@
+{
+  "mission": "A5-2",
+  "hash_mode": "UTF-8 text: CRLF normalized to LF; binary: exact bytes",
+  "files": {
+    "data_gen.py": "07caffa013021e7a291ee2983b69413a11cbdf2be50f8254c7c0df89cf2cbca1",
+    "src/config.py": "c00b54e670188daf386c159fcf42485df496c2a32c376d176f65be07190f2c08",
+    "src/data.py": "ddf2c048893b923335c9942e8f1498eb45bf6abb0744130238d4321a11ea85e8",
+    "src/clustering.py": "d9be5e9a2dc602c9eace3df2fd8793524c85ead590c94cdbe275b2b6daa788cf",
+    "src/personas.py": "843fc363181e5ca1d68751939d3457d6104ef98ef1f99107c1f773b20c19919a",
+    "src/compare.py": "21f8a5c2be8bdd950b3240def722f96c83944ffcb41988ae6335aa8a96fe9897",
+    "src/model.py": "00ad05e6d5f67ce848fbc6cb7ce4070ef697bbb9853fd77a7d515b344a8f13af",
+    "src/explain.py": "35f185521aedc0f9e2d9788816e89e6b9be868eae589bcf1979a6db3f77d4f88",
+    "src/analysis_clustering.py": "725dd3344b354a23b30a071538363a0c1e55d32fad072d53acf4715da2323869",
+    "src/analysis_shap.py": "4afe5c065c450df7f3828c1e78e92f060ea000e883398cfe8addca5067582a5e",
+    "src/report.py": "dd54afa038514996d5812ef48148492730ca602178102af1a6d27012ba9ae794",
+    "src/run_all.py": "364b4041e831da97f881f822737cd17780ee8f317392650bfbfbf5b0576483ae",
+    "app.py": "12ff8f0fd8c2b7551f079372de1f549038035a1dc0a5588659b29e9bb00118d4",
+    "tests/test_pipeline.py": "1cecd06a2d1ac02435a43b16738c87f60f8353a2dbcb06adf920cac5f1976efd",
+    "results/figures/01_k_selection.png": "e499082b0929c0a91711b13cde58d862d10d589a8993f494ec6dd5b818eaba81",
+    "results/figures/02_pca_clusters.png": "fc2300dfec2806b56e1f6b24bcda3050586b4bbd033481324c89c02115490e14",
+    "results/figures/03_cluster_profiles.png": "e50ac79441c919f9c5adfecb0d3dc2fe2e2981c87f806a9332e23f7b673ae370",
+    "results/figures/04_shap_summary.png": "4693a9f76f83d4060b630b30bec082c2e2090a72b9bfac843cba66f6f6b840bb",
+    "results/figures/05_shap_importance_bar.png": "1a447a02c34466e19617fea7a654bf0cbedb4a54f8332a5e08795d4b1bebad23",
+    "results/figures/06_waterfall_reject.png": "56fb1e048c5b99d1ac76fe9e136b7044987f08b2d2d2ab5ff582236d1830b017",
+    "results/figures/07_waterfall_approve.png": "45148144776725fabbcc3fdda71b4f650af0ebc08663995eccf3219ae5c455c2",
+    "results/figures/08_dependence_annual_income.png": "f10ecfe3abe3b88bf9bd7be9856bf074d477345996de8d22f0fcda2cd050e46c",
+    "results/figures/09_dependence_overdue_count_6m.png": "8ee90392c8ebe5b86ec6482006073cd6fe3843aa6c1cf28b355d5fabcb57e433",
+    "results/figures/10_dependence_debt_ratio.png": "2c4cdcd2366f4de8eb790b983cfaca98c311c34811e39bac40d29a1f6d682576",
+    "results/figures/11_cluster_shap.png": "ed136f7762926914d1a830586f557b12432fd81cb12aaaf1673ae4c6bf436d51",
+    "results/figures/12_persona_cases.png": "929fdee4938406e306a0fc5512ac90cd97d2ce3d6c074ab7be4e48d3acb724f9",
+    "results/figures/13_clustering_comparison.png": "dc7c32724891a3fcd09374efbd88f8a338962651f5b0f17be06992b0b32589cf",
+    "results/clustering.json": "bcdc80c216e12425ad5625624a3435783491264070e686fbf927c3496aa3f914",
+    "results/shap.json": "275aa0ce35474224a7244754ffad8f6eed50e50d8bb2afb93817684c2d3fef5f",
+    "results/test_explanations.json": "75292f92d3e3e71a6971fae87da974a625c1c3496aa9d17e547a4d01795348cf"
+  },
+  "excerpts": {
+    "datagen_features": {
+      "file": "data_gen.py",
+      "start": 11,
+      "end": 18,
+      "text": "data = {\n    'age': np.random.randint(20, 70, N_SAMPLES),  # 나이\n    'annual_income': np.random.normal(5000, 2000, N_SAMPLES).round(0), # 연 소득 (단위: 만원)\n    'spending_score': np.random.randint(1, 100, N_SAMPLES), # 소비 점수\n    'debt_ratio': np.random.uniform(0, 1, N_SAMPLES).round(2), # 소득 대비 부채 비율\n    'credit_card_count': np.random.randint(1, 10, N_SAMPLES), # 보유 신용카드 수\n    'overdue_count_6m': np.random.poisson(0.5, N_SAMPLES) # 최근 6개월 연체 횟수 (Poisson 분포)\n}"
+    },
+    "features_only": {
+      "file": "src/data.py",
+      "start": 32,
+      "end": 34,
+      "text": "def features_only(df: pd.DataFrame) -> pd.DataFrame:\n    \"\"\"군집화 입력. 타깃(신용 점수, 연체 여부)은 넣지 않는다.\"\"\"\n    return df[FEATURES].copy()"
+    },
+    "scaler": {
+      "file": "src/clustering.py",
+      "start": 27,
+      "end": 29,
+      "text": "def fit_scaler(X: pd.DataFrame) -> StandardScaler:\n    \"\"\"K-Means는 유클리드 거리를 쓰므로 단위가 큰 변수(소득, 만원)가 거리를 독차지하지 않게 표준화한다.\"\"\"\n    return StandardScaler().fit(X[FEATURES])"
+    },
+    "scan_k": {
+      "file": "src/clustering.py",
+      "start": 43,
+      "end": 61,
+      "text": "    rows = []\n    for k in k_range:\n        labels, inertias, sils = [], [], []\n        for seed in seeds:\n            model = kmeans(k, seed).fit(Z)\n            labels.append(model.labels_)\n            inertias.append(model.inertia_)\n            idx = np.random.RandomState(seed).choice(len(Z), min(SILHOUETTE_SAMPLE, len(Z)), replace=False)\n            sils.append(silhouette_score(Z[idx], model.labels_[idx]))\n        aris = [adjusted_rand_score(a, b) for a, b in combinations(labels, 2)]\n        rows.append({\n            \"k\": k,\n            \"inertia\": float(np.mean(inertias)),\n            \"silhouette_mean\": float(np.mean(sils)),\n            \"silhouette_std\": float(np.std(sils)),\n            \"silhouette_se\": float(np.std(sils) / np.sqrt(len(sils))),\n            \"ari_mean\": float(np.mean(aris)) if aris else 1.0,\n        })\n    return rows"
+    },
+    "select_k": {
+      "file": "src/clustering.py",
+      "start": 80,
+      "end": 89,
+      "text": "    by_k = {r[\"k\"]: r for r in scan}\n    best = max(scan, key=lambda r: r[\"silhouette_mean\"])\n    cutoff = best[\"silhouette_mean\"] - best[\"silhouette_se\"]\n    within = [r[\"k\"] for r in scan if r[\"silhouette_mean\"] >= cutoff]\n    stable = [k for k in within if by_k[k][\"ari_mean\"] >= MIN_STABILITY_ARI]\n    axes = {}\n    for k in stable:\n        centers = kmeans(k).fit(Z).cluster_centers_\n        axes[k] = distinguishing_features(centers)\n    final = max(stable, key=lambda k: (len(axes[k]), -k)) if stable else best[\"k\"]"
+    },
+    "fit_final": {
+      "file": "src/clustering.py",
+      "start": 105,
+      "end": 111,
+      "text": "    model = kmeans(k).fit(Z)\n    rate = pd.Series(df[CLASSIFICATION_TARGET].to_numpy()).groupby(model.labels_).mean()\n    order = rate.sort_values(ascending=False).index.to_numpy()\n    remap = np.empty(k, dtype=int)\n    remap[order] = np.arange(k)\n    model.cluster_centers_ = model.cluster_centers_[order]\n    model.labels_ = remap[model.labels_]"
+    },
+    "pca": {
+      "file": "src/clustering.py",
+      "start": 134,
+      "end": 137,
+      "text": "def pca_summary(Z: np.ndarray) -> tuple[PCA, dict]:\n    \"\"\"PCA는 시각화용이다. 군집은 6차원 원래 공간에서 학습했고, 2차원 그림은 그 그림자다.\"\"\"\n    pca = PCA(random_state=RANDOM_STATE).fit(Z)\n    evr = pca.explained_variance_ratio_"
+    },
+    "persona_sig": {
+      "file": "src/personas.py",
+      "start": 75,
+      "end": 76,
+      "text": "def _matches(z: dict, signature: dict) -> bool:\n    return all(z[f] * sign >= DISTINGUISH_Z for f, sign in signature.items())"
+    },
+    "rf_params": {
+      "file": "src/config.py",
+      "start": 42,
+      "end": 49,
+      "text": "# A5-1 최종 모델(RF + class_weight)의 GridSearchCV 결과를 그대로 쓴다.\n# A5-1과 달리 파생 변수 없이 원본 6개 변수로 다시 학습한다.\nRF_PARAMS = {\n    \"n_estimators\": 400,\n    \"max_depth\": 12,\n    \"min_samples_leaf\": 1,\n    \"class_weight\": \"balanced\",\n}"
+    },
+    "a5_1_ref": {
+      "file": "src/model.py",
+      "start": 56,
+      "end": 61,
+      "text": "    expected = {k: v for k, v in RF_PARAMS.items() if k != \"class_weight\"}\n    return {\n        \"available\": True,\n        \"final_model\": final,\n        \"best_params\": info[\"best_params\"],\n        \"params_match\": final == \"RF + class_weight\" and info[\"best_params\"] == expected,"
+    },
+    "explain": {
+      "file": "src/explain.py",
+      "start": 14,
+      "end": 22,
+      "text": "def explain(model, X: pd.DataFrame) -> shap.Explanation:\n    \"\"\"TreeExplainer로 연체(클래스 1) 확률에 대한 SHAP 값을 계산한다.\n\n    배경 데이터를 넘기지 않으면 트리에 기록된 학습 표본 수로 기댓값을 계산한다(tree_path_dependent).\n    KernelExplainer와 달리 근사 없이 정확한 값을 트리 구조에서 바로 구한다.\n    \"\"\"\n    explanation = shap.TreeExplainer(model)(X)\n    # (고객, 변수, 클래스) → 연체 클래스만\n    return explanation[:, :, 1]"
+    },
+    "additivity": {
+      "file": "src/explain.py",
+      "start": 25,
+      "end": 27,
+      "text": "def additivity_error(explanation: shap.Explanation, proba: np.ndarray) -> float:\n    \"\"\"SHAP의 핵심 성질: 기준값 + 변수별 기여 합 = 그 고객의 예측 확률.\"\"\"\n    return float(np.abs(explanation.base_values + explanation.values.sum(axis=1) - proba).max())"
+    },
+    "representatives": {
+      "file": "src/explain.py",
+      "start": 123,
+      "end": 126,
+      "text": "    k = len(centers)\n    reps = {c: nearest(clusters == c) for c in range(k)}\n    reject = nearest((clusters == 0) & (proba >= REJECT_THRESHOLD))\n    approve = nearest((clusters == k - 1) & (proba < bands[\"hold\"]))"
+    },
+    "bands": {
+      "file": "src/model.py",
+      "start": 94,
+      "end": 98,
+      "text": "    oof = cross_val_predict(build_model(), split.X_train, split.y_train, cv=cv_splitter(), method=\"predict_proba\")[:, 1]\n    _, recall, thresholds = precision_recall_curve(split.y_train, oof)\n    ok = recall[:-1] >= HOLD_RECALL_TARGET\n    hold = float(thresholds[ok].max()) if ok.any() else float(thresholds.min())\n    return {\"hold\": min(hold, REJECT_THRESHOLD), \"reject\": REJECT_THRESHOLD, \"hold_recall_target\": HOLD_RECALL_TARGET}"
+    },
+    "dbscan": {
+      "file": "src/compare.py",
+      "start": 35,
+      "end": 39,
+      "text": "def run_dbscan(Z: np.ndarray, df: pd.DataFrame) -> dict:\n    ms = dbscan_min_samples(Z.shape[1])\n    curve = k_distance(Z, ms)\n    eps = knee(curve)\n    labels = DBSCAN(eps=eps, min_samples=ms).fit_predict(Z)"
+    },
+    "knee": {
+      "file": "src/compare.py",
+      "start": 28,
+      "end": 32,
+      "text": "def knee(curve: np.ndarray) -> float:\n    \"\"\"Kneedle 방식: 양 끝을 잇는 직선에서 가장 멀리 떨어진 지점을 꺾이는 점으로 본다.\"\"\"\n    x = np.linspace(0, 1, len(curve))\n    y = (curve - curve[0]) / (curve[-1] - curve[0])\n    return float(curve[int(np.argmax(x - y))])"
+    },
+    "app_core": {
+      "file": "app.py",
+      "start": 73,
+      "end": 81,
+      "text": "x = pd.DataFrame([values], columns=FEATURES)\nproba = float(model.predict_proba(x)[0, 1])\nband = str(clf.band_of([proba], bands)[0])\ncluster = int(assign_clusters(x, clustering[\"transform\"])[0])\npersona = personas[cluster]\nexplanation = explainer(x)[:, :, 1]\nsv = explanation[0]\n# 입력 고객은 실제 결과를 모르므로 actual 값(0)은 쓰지 않는다.\ncase = explain.case_detail(explanation, 0, np.array([proba]), np.array([0]))"
+    },
+    "test_rule": {
+      "file": "tests/test_pipeline.py",
+      "start": 78,
+      "end": 92,
+      "text": "    def test_select_k_rule(self):\n        \"\"\"1-표준오차 안 → 안정성 → 구별 변수 수. 표준오차 밖 K(4)는 구별 변수가 많아도 고르지 않는다.\"\"\"\n        Z, _ = blobs()\n        scan = [\n            {\"k\": 2, \"silhouette_mean\": 0.50, \"silhouette_se\": 0.02, \"ari_mean\": 0.9},\n            {\"k\": 3, \"silhouette_mean\": 0.49, \"silhouette_se\": 0.01, \"ari_mean\": 0.9},\n            {\"k\": 4, \"silhouette_mean\": 0.40, \"silhouette_se\": 0.01, \"ari_mean\": 0.9},\n            {\"k\": 5, \"silhouette_mean\": 0.49, \"silhouette_se\": 0.01, \"ari_mean\": 0.2},\n        ]\n        sel = clustering.select_k(scan, Z)\n        self.assertEqual(sel[\"within_one_se\"], [2, 3, 5])\n        self.assertEqual(sel[\"stable\"], [2, 3])\n        # 구별 변수가 가장 많은 K, 같으면 작은 K\n        counts = {int(k): len(v) for k, v in sel[\"distinguishing_features\"].items()}\n        self.assertEqual(sel[\"final_k\"], min(counts, key=lambda k: (-counts[k], k)))"
+    }
+  }
+}
