@@ -1,0 +1,772 @@
+{
+ "model": {
+  "params": {
+   "n_estimators": 400,
+   "max_depth": 12,
+   "min_samples_leaf": 1,
+   "class_weight": "balanced"
+  },
+  "cv": {
+   "f1_mean": 0.6643629429959651,
+   "f1_std": 0.02432073577750015,
+   "roc_auc_mean": 0.9447324019269849
+  },
+  "test": {
+   "accuracy": 0.895,
+   "precision": 0.5428571428571428,
+   "recall": 0.7916666666666666,
+   "f1": 0.6440677966101694,
+   "roc_auc": 0.9403527462121212,
+   "pr_auc": 0.6403420072239148,
+   "confusion": {
+    "tn": 1600,
+    "fp": 160,
+    "fn": 50,
+    "tp": 190
+   }
+  },
+  "a5_1": {
+   "available": true,
+   "final_model": "RF + class_weight",
+   "best_params": {
+    "max_depth": 12,
+    "min_samples_leaf": 1,
+    "n_estimators": 400
+   },
+   "params_match": true,
+   "cv": {
+    "f1_mean": 0.6598708647260506,
+    "f1_std": 0.017733818830042738,
+    "roc_auc_mean": 0.9450877025759888
+   },
+   "test": {
+    "accuracy": 0.896,
+    "precision": 0.5457142857142857,
+    "recall": 0.7958333333333333,
+    "f1": 0.6474576271186441,
+    "roc_auc": 0.9399313446969698,
+    "pr_auc": 0.6335759294708825
+   },
+   "input_features": "원본 6개 + 파생 2개(age_group 원-핫, debt_amount)"
+  }
+ },
+ "bands": {
+  "hold": 0.1777661263856251,
+  "reject": 0.5,
+  "hold_recall_target": 0.95
+ },
+ "base_value": 0.49979437500000023,
+ "additivity_error": 2.120525977034049e-14,
+ "global": [
+  {
+   "feature": "annual_income",
+   "mean_abs_shap": 0.24340900369045257,
+   "share": 0.43625866727831486,
+   "direction": -0.926199791308264
+  },
+  {
+   "feature": "overdue_count_6m",
+   "mean_abs_shap": 0.15132605296625565,
+   "share": 0.27121963933389137,
+   "direction": 0.8654988025465151
+  },
+  {
+   "feature": "debt_ratio",
+   "mean_abs_shap": 0.11952919012804356,
+   "share": 0.21423055185103634,
+   "direction": 0.904613133943234
+  },
+  {
+   "feature": "spending_score",
+   "mean_abs_shap": 0.018512901366369128,
+   "share": 0.033180422889442514,
+   "direction": 0.1731469862645767
+  },
+  {
+   "feature": "age",
+   "mean_abs_shap": 0.015685871632512918,
+   "share": 0.02811357570897951,
+   "direction": 0.07884288745438371
+  },
+  {
+   "feature": "credit_card_count",
+   "mean_abs_shap": 0.009483496692491041,
+   "share": 0.01699714293833547,
+   "direction": 0.23035574692252556
+  }
+ ],
+ "dependence": {
+  "features": [
+   "annual_income",
+   "overdue_count_6m",
+   "debt_ratio"
+  ],
+  "income_by_overdue": [
+   {
+    "bin": "(1499.999, 2741.5]",
+    "group": "overdue_count_6m=0",
+    "x_mean": 2001.3785714285714,
+    "shap_mean": 0.281030859331728,
+    "n": 140
+   },
+   {
+    "bin": "(1499.999, 2741.5]",
+    "group": "overdue_count_6m>=1",
+    "x_mean": 1935.8909090909092,
+    "shap_mean": 0.2890897979848806,
+    "n": 110
+   },
+   {
+    "bin": "(2741.5, 3654.75]",
+    "group": "overdue_count_6m=0",
+    "x_mean": 3251.294478527607,
+    "shap_mean": 0.041071526994432485,
+    "n": 163
+   },
+   {
+    "bin": "(2741.5, 3654.75]",
+    "group": "overdue_count_6m>=1",
+    "x_mean": 3267.137931034483,
+    "shap_mean": 0.11670928680200575,
+    "n": 87
+   },
+   {
+    "bin": "(3654.75, 4345.625]",
+    "group": "overdue_count_6m=0",
+    "x_mean": 4009.2258064516127,
+    "shap_mean": -0.09905884504221964,
+    "n": 155
+   },
+   {
+    "bin": "(3654.75, 4345.625]",
+    "group": "overdue_count_6m>=1",
+    "x_mean": 4005.547368421053,
+    "shap_mean": -0.043088393944482176,
+    "n": 95
+   },
+   {
+    "bin": "(4345.625, 4968.0]",
+    "group": "overdue_count_6m=0",
+    "x_mean": 4660.852564102564,
+    "shap_mean": -0.1597123312785584,
+    "n": 156
+   },
+   {
+    "bin": "(4345.625, 4968.0]",
+    "group": "overdue_count_6m>=1",
+    "x_mean": 4678.6,
+    "shap_mean": -0.14498954179708667,
+    "n": 95
+   },
+   {
+    "bin": "(4968.0, 5611.125]",
+    "group": "overdue_count_6m=0",
+    "x_mean": 5296.744966442953,
+    "shap_mean": -0.2330091603879884,
+    "n": 149
+   },
+   {
+    "bin": "(4968.0, 5611.125]",
+    "group": "overdue_count_6m>=1",
+    "x_mean": 5284.66,
+    "shap_mean": -0.28892858646508307,
+    "n": 100
+   },
+   {
+    "bin": "(5611.125, 6375.25]",
+    "group": "overdue_count_6m=0",
+    "x_mean": 5983.986111111111,
+    "shap_mean": -0.27348047115706575,
+    "n": 144
+   },
+   {
+    "bin": "(5611.125, 6375.25]",
+    "group": "overdue_count_6m>=1",
+    "x_mean": 5963.094339622641,
+    "shap_mean": -0.3716907415074279,
+    "n": 106
+   },
+   {
+    "bin": "(6375.25, 7267.875]",
+    "group": "overdue_count_6m=0",
+    "x_mean": 6776.670807453416,
+    "shap_mean": -0.3188740676785256,
+    "n": 161
+   },
+   {
+    "bin": "(6375.25, 7267.875]",
+    "group": "overdue_count_6m>=1",
+    "x_mean": 6762.426966292135,
+    "shap_mean": -0.460346652369523,
+    "n": 89
+   },
+   {
+    "bin": "(7267.875, 11316.0]",
+    "group": "overdue_count_6m=0",
+    "x_mean": 8226.242857142857,
+    "shap_mean": -0.3197130331563596,
+    "n": 140
+   },
+   {
+    "bin": "(7267.875, 11316.0]",
+    "group": "overdue_count_6m>=1",
+    "x_mean": 8240.736363636364,
+    "shap_mean": -0.47512255210774906,
+    "n": 110
+   }
+  ],
+  "overdue_levels": [
+   {
+    "bin": "0.0",
+    "x_mean": 0.0,
+    "shap_mean": -0.18364773216928112,
+    "n": 1208
+   },
+   {
+    "bin": "1.0",
+    "x_mean": 1.0,
+    "shap_mean": 0.05704809446762948,
+    "n": 604
+   },
+   {
+    "bin": "2.0",
+    "x_mean": 2.0,
+    "shap_mean": 0.2347967164562861,
+    "n": 162
+   },
+   {
+    "bin": "3.0",
+    "x_mean": 3.0,
+    "shap_mean": 0.28605775449343457,
+    "n": 21
+   },
+   {
+    "bin": "4.0",
+    "x_mean": 4.0,
+    "shap_mean": 0.39353465461113407,
+    "n": 5
+   }
+  ],
+  "debt_ratio": [
+   {
+    "bin": "(-0.001, 0.129]",
+    "x_mean": 0.06556000000000001,
+    "shap_mean": -0.19271902356122295,
+    "n": 250
+   },
+   {
+    "bin": "(0.129, 0.25]",
+    "x_mean": 0.18845238095238093,
+    "shap_mean": -0.17668245644882685,
+    "n": 252
+   },
+   {
+    "bin": "(0.25, 0.38]",
+    "x_mean": 0.3230384615384615,
+    "shap_mean": -0.15033417686727774,
+    "n": 260
+   },
+   {
+    "bin": "(0.38, 0.5]",
+    "x_mean": 0.4464876033057852,
+    "shap_mean": -0.11950055638892733,
+    "n": 242
+   },
+   {
+    "bin": "(0.5, 0.62]",
+    "x_mean": 0.5587044534412956,
+    "shap_mean": -0.045271275333657185,
+    "n": 247
+   },
+   {
+    "bin": "(0.62, 0.76]",
+    "x_mean": 0.6935249042145594,
+    "shap_mean": 0.039521794204198435,
+    "n": 261
+   },
+   {
+    "bin": "(0.76, 0.88]",
+    "x_mean": 0.8272509960159362,
+    "shap_mean": 0.09354608184036282,
+    "n": 251
+   },
+   {
+    "bin": "(0.88, 1.0]",
+    "x_mean": 0.9412236286919833,
+    "shap_mean": 0.1324531291977298,
+    "n": 237
+   }
+  ],
+  "income_crossing": {
+   "0": 3425.0,
+   "1": 3757.0,
+   "2": 4000.0
+  },
+  "theoretical_income_boundary": {
+   "1": 3066.666666666667,
+   "2": 4733.333333333334
+  }
+ },
+ "cluster_shap": [
+  {
+   "cluster": 0,
+   "n_test": 188,
+   "mean_shap": {
+    "age": -0.021336378418188234,
+    "annual_income": -0.1541382826740875,
+    "spending_score": -0.01998675599273937,
+    "debt_ratio": -0.06046232924237801,
+    "credit_card_count": -0.010609390263024784,
+    "overdue_count_6m": 0.24474443714540503
+   },
+   "mean_proba": 0.4780056755549875
+  },
+  {
+   "cluster": 1,
+   "n_test": 351,
+   "mean_shap": {
+    "age": -0.015837499850932198,
+    "annual_income": -0.12826891437933524,
+    "spending_score": -0.017649619600536782,
+    "debt_ratio": 0.04030461299500349,
+    "credit_card_count": -0.007369992865045361,
+    "overdue_count_6m": -0.10302196660755285
+   },
+   "mean_proba": 0.2679509946916015
+  },
+  {
+   "cluster": 2,
+   "n_test": 358,
+   "mean_shap": {
+    "age": -0.016138538986348535,
+    "annual_income": -0.1947540588444875,
+    "spending_score": -0.013182912384284503,
+    "debt_ratio": 0.042564535220548386,
+    "credit_card_count": -0.012460986601852811,
+    "overdue_count_6m": -0.10037896998253888
+   },
+   "mean_proba": 0.2054434434210365
+  },
+  {
+   "cluster": 3,
+   "n_test": 386,
+   "mean_shap": {
+    "age": -0.016616893857508586,
+    "annual_income": -0.16731104417856454,
+    "spending_score": -0.017416534962022376,
+    "debt_ratio": -0.07075956774829555,
+    "credit_card_count": -0.005847872607878845,
+    "overdue_count_6m": -0.0967385489877353
+   },
+   "mean_proba": 0.1251039126579952
+  },
+  {
+   "cluster": 4,
+   "n_test": 339,
+   "mean_shap": {
+    "age": -0.011317834650538657,
+    "annual_income": -0.12630299902131562,
+    "spending_score": -0.017374379249678978,
+    "debt_ratio": -0.105296761088698,
+    "credit_card_count": -0.009940591686892415,
+    "overdue_count_6m": -0.11116296260450644
+   },
+   "mean_proba": 0.1183988466983702
+  },
+  {
+   "cluster": 5,
+   "n_test": 378,
+   "mean_shap": {
+    "age": -0.010925532581084,
+    "annual_income": -0.13425258482551636,
+    "spending_score": -0.01540790150862485,
+    "debt_ratio": -0.16326567147638094,
+    "credit_card_count": -0.00588995027193812,
+    "overdue_count_6m": -0.10652832179060816
+   },
+   "mean_proba": 0.06352441254584795
+  }
+ ],
+ "cluster_band_crosstab": {
+  "0": {
+   "approve": 59,
+   "review": 31,
+   "reject": 98
+  },
+  "1": {
+   "approve": 202,
+   "review": 58,
+   "reject": 91
+  },
+  "2": {
+   "approve": 241,
+   "review": 50,
+   "reject": 67
+  },
+  "3": {
+   "approve": 311,
+   "review": 33,
+   "reject": 42
+  },
+  "4": {
+   "approve": 280,
+   "review": 22,
+   "reject": 37
+  },
+  "5": {
+   "approve": 338,
+   "review": 25,
+   "reject": 15
+  }
+ },
+ "cases": {
+  "reject_case": {
+   "row": 1190,
+   "base_value": 0.49979437500000023,
+   "proba": 0.866486668849911,
+   "actual_overdue": 0,
+   "contributions": [
+    {
+     "feature": "overdue_count_6m",
+     "value": 2.0,
+     "shap": 0.38637764630275195
+    },
+    {
+     "feature": "debt_ratio",
+     "value": 0.43,
+     "shap": -0.07971428088877314
+    },
+    {
+     "feature": "annual_income",
+     "value": 3873.0,
+     "shap": 0.0662210710689306
+    },
+    {
+     "feature": "age",
+     "value": 40.0,
+     "shap": -0.00418268516006233
+    },
+    {
+     "feature": "credit_card_count",
+     "value": 5.0,
+     "shap": -0.0034422314207107566
+    },
+    {
+     "feature": "spending_score",
+     "value": 56.0,
+     "shap": 0.0014327739477804368
+    }
+   ],
+   "cluster": 0,
+   "band": "reject",
+   "test_index": 6945,
+   "credit_score": 288.0
+  },
+  "approve_case": {
+   "row": 722,
+   "base_value": 0.49979437500000023,
+   "proba": 0.0004980441350980895,
+   "actual_overdue": 0,
+   "contributions": [
+    {
+     "feature": "overdue_count_6m",
+     "value": 0.0,
+     "shap": -0.17243910646717128
+    },
+    {
+     "feature": "debt_ratio",
+     "value": 0.17,
+     "shap": -0.16846494827038264
+    },
+    {
+     "feature": "annual_income",
+     "value": 4699.0,
+     "shap": -0.1414680329721846
+    },
+    {
+     "feature": "age",
+     "value": 48.0,
+     "shap": -0.009981345238867106
+    },
+    {
+     "feature": "credit_card_count",
+     "value": 5.0,
+     "shap": -0.005188802480516827
+    },
+    {
+     "feature": "spending_score",
+     "value": 82.0,
+     "shap": -0.0017540954357657327
+    }
+   ],
+   "cluster": 5,
+   "band": "approve",
+   "test_index": 8586,
+   "credit_score": 444.0
+  },
+  "cluster_representatives": [
+   {
+    "row": 1882,
+    "base_value": 0.49979437500000023,
+    "proba": 0.4984805898999096,
+    "actual_overdue": 1,
+    "contributions": [
+     {
+      "feature": "overdue_count_6m",
+      "value": 2.0,
+      "shap": 0.31481291679292395
+     },
+     {
+      "feature": "debt_ratio",
+      "value": 0.49,
+      "shap": -0.13905529151592597
+     },
+     {
+      "feature": "annual_income",
+      "value": 4632.0,
+      "shap": -0.12299680969389637
+     },
+     {
+      "feature": "credit_card_count",
+      "value": 4.0,
+      "shap": -0.032483458540949306
+     },
+     {
+      "feature": "spending_score",
+      "value": 36.0,
+      "shap": -0.012093446989536677
+     },
+     {
+      "feature": "age",
+      "value": 46.0,
+      "shap": -0.00949769515269262
+     }
+    ],
+    "cluster": 0,
+    "band": "review",
+    "test_index": 861,
+    "credit_score": 252.0
+   },
+   {
+    "row": 1448,
+    "base_value": 0.49979437500000023,
+    "proba": 0.04227867268301197,
+    "actual_overdue": 0,
+    "contributions": [
+     {
+      "feature": "overdue_count_6m",
+      "value": 0.0,
+      "shap": -0.27389645671803925
+     },
+     {
+      "feature": "annual_income",
+      "value": 4880.0,
+      "shap": -0.22482653175151987
+     },
+     {
+      "feature": "debt_ratio",
+      "value": 0.77,
+      "shap": 0.059813040284995046
+     },
+     {
+      "feature": "credit_card_count",
+      "value": 7.0,
+      "shap": -0.010139551030920109
+     },
+     {
+      "feature": "age",
+      "value": 60.0,
+      "shap": -0.008771244660721957
+     },
+     {
+      "feature": "spending_score",
+      "value": 62.0,
+      "shap": 0.00030504155922849856
+     }
+    ],
+    "cluster": 1,
+    "band": "approve",
+    "test_index": 8169,
+    "credit_score": 351.0
+   },
+   {
+    "row": 1621,
+    "base_value": 0.49979437500000023,
+    "proba": 0.005739201884181393,
+    "actual_overdue": 0,
+    "contributions": [
+     {
+      "feature": "annual_income",
+      "value": 5346.0,
+      "shap": -0.3117113058510594
+     },
+     {
+      "feature": "overdue_count_6m",
+      "value": 0.0,
+      "shap": -0.18555760739826044
+     },
+     {
+      "feature": "debt_ratio",
+      "value": 0.7,
+      "shap": 0.01541911872738177
+     },
+     {
+      "feature": "credit_card_count",
+      "value": 3.0,
+      "shap": -0.006669225703003718
+     },
+     {
+      "feature": "age",
+      "value": 40.0,
+      "shap": -0.005245647188831066
+     },
+     {
+      "feature": "spending_score",
+      "value": 75.0,
+      "shap": -0.0002905057020398322
+     }
+    ],
+    "cluster": 2,
+    "band": "approve",
+    "test_index": 1205,
+    "credit_score": 377.0
+   },
+   {
+    "row": 1381,
+    "base_value": 0.49979437500000023,
+    "proba": 0.008293350168350167,
+    "actual_overdue": 0,
+    "contributions": [
+     {
+      "feature": "overdue_count_6m",
+      "value": 0.0,
+      "shap": -0.2162653494611372
+     },
+     {
+      "feature": "annual_income",
+      "value": 4898.0,
+      "shap": -0.14905453473314023
+     },
+     {
+      "feature": "debt_ratio",
+      "value": 0.49,
+      "shap": -0.09793606338653411
+     },
+     {
+      "feature": "spending_score",
+      "value": 24.0,
+      "shap": -0.019982471545997905
+     },
+     {
+      "feature": "credit_card_count",
+      "value": 7.0,
+      "shap": -0.004330437037744693
+     },
+     {
+      "feature": "age",
+      "value": 34.0,
+      "shap": -0.003932168667087632
+     }
+    ],
+    "cluster": 3,
+    "band": "approve",
+    "test_index": 1217,
+    "credit_score": 417.0
+   },
+   {
+    "row": 1094,
+    "base_value": 0.49979437500000023,
+    "proba": 0.007851424462170154,
+    "actual_overdue": 0,
+    "contributions": [
+     {
+      "feature": "overdue_count_6m",
+      "value": 0.0,
+      "shap": -0.21095404564349765
+     },
+     {
+      "feature": "annual_income",
+      "value": 4331.0,
+      "shap": -0.12957551796141853
+     },
+     {
+      "feature": "debt_ratio",
+      "value": 0.4,
+      "shap": -0.12048868862225047
+     },
+     {
+      "feature": "spending_score",
+      "value": 22.0,
+      "shap": -0.02185052161913155
+     },
+     {
+      "feature": "credit_card_count",
+      "value": 2.0,
+      "shap": -0.006471303268264504
+     },
+     {
+      "feature": "age",
+      "value": 55.0,
+      "shap": -0.002602873423259918
+     }
+    ],
+    "cluster": 4,
+    "band": "approve",
+    "test_index": 2973,
+    "credit_score": 358.0
+   },
+   {
+    "row": 722,
+    "base_value": 0.49979437500000023,
+    "proba": 0.0004980441350980895,
+    "actual_overdue": 0,
+    "contributions": [
+     {
+      "feature": "overdue_count_6m",
+      "value": 0.0,
+      "shap": -0.17243910646717128
+     },
+     {
+      "feature": "debt_ratio",
+      "value": 0.17,
+      "shap": -0.16846494827038264
+     },
+     {
+      "feature": "annual_income",
+      "value": 4699.0,
+      "shap": -0.1414680329721846
+     },
+     {
+      "feature": "age",
+      "value": 48.0,
+      "shap": -0.009981345238867106
+     },
+     {
+      "feature": "credit_card_count",
+      "value": 5.0,
+      "shap": -0.005188802480516827
+     },
+     {
+      "feature": "spending_score",
+      "value": 82.0,
+      "shap": -0.0017540954357657327
+     }
+    ],
+    "cluster": 5,
+    "band": "approve",
+    "test_index": 8586,
+    "credit_score": 444.0
+   }
+  ]
+ },
+ "test_band_counts": {
+  "approve": 1431,
+  "review": 219,
+  "reject": 350
+ },
+ "test_overdue_by_band": {
+  "approve": 14,
+  "review": 36,
+  "reject": 190
+ }
+}
