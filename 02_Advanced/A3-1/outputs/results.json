@@ -1,0 +1,1870 @@
+{
+ "environment": {
+  "python": "3.12.13",
+  "opencv": "5.0.0",
+  "numpy": "2.5.4",
+  "matplotlib": "3.11.2",
+  "platform": "Windows-11-10.0.26200-SP0"
+ },
+ "data": "data/synthetic",
+ "params": {
+  "blur": 5,
+  "canny_low": 50,
+  "canny_high": 150,
+  "close_kernel": 3,
+  "min_area_ratio": 0.05,
+  "max_area_ratio": 0.98,
+  "approx_epsilon": 0.02,
+  "work_size": 960,
+  "aspect": "zhang",
+  "block_size": 0,
+  "thresh_c": 10,
+  "color_edges": false,
+  "auto_canny": false,
+  "clahe": false
+ },
+ "criteria": {
+  "success_max_corner_error_ratio": 0.02,
+  "partial_max_corner_error_ratio": 0.05
+ },
+ "summary": [
+  {
+   "condition": "easy",
+   "name": "단순 배경 + 정면",
+   "n": 5,
+   "success": 4,
+   "partial": 1,
+   "fail": 0,
+   "success_rate": 0.8
+  },
+  {
+   "condition": "shadow",
+   "name": "그림자 있음",
+   "n": 5,
+   "success": 3,
+   "partial": 0,
+   "fail": 2,
+   "success_rate": 0.6
+  },
+  {
+   "condition": "tilt",
+   "name": "45도 이상 기울어짐",
+   "n": 5,
+   "success": 4,
+   "partial": 1,
+   "fail": 0,
+   "success_rate": 0.8
+  },
+  {
+   "condition": "complex",
+   "name": "복잡한 배경",
+   "n": 5,
+   "success": 1,
+   "partial": 0,
+   "fail": 4,
+   "success_rate": 0.2
+  },
+  {
+   "condition": "all",
+   "name": "전체",
+   "n": 20,
+   "success": 12,
+   "partial": 2,
+   "fail": 6,
+   "success_rate": 0.6
+  }
+ ],
+ "rows": [
+  {
+   "id": "E01",
+   "condition": "easy",
+   "condition_name": "단순 배경 + 정면",
+   "found": true,
+   "reason": "",
+   "n_contours": 374,
+   "n_candidates": 3,
+   "candidate_vertices": [
+    4,
+    4,
+    4
+   ],
+   "quad": [
+    [
+     185.33,
+     176.0
+    ],
+    [
+     826.67,
+     204.0
+    ],
+    [
+     744.0,
+     1057.33
+    ],
+    [
+     177.33,
+     1018.67
+    ]
+   ],
+   "aspect_method": "zhang",
+   "aspect_estimated": 0.7057986345372645,
+   "distance_aspect": 0.7491248541423571,
+   "max_error_px": 1.9808107206674834,
+   "mean_error_px": 1.292401403092458,
+   "error_ratio": 0.0018945098118909516,
+   "rotation_shift": 0,
+   "status": "success",
+   "aspect_true": 0.707071,
+   "aspect_error": 0.0017994875517953056,
+   "distance_aspect_error": 0.05947614050407536
+  },
+  {
+   "id": "E02",
+   "condition": "easy",
+   "condition_name": "단순 배경 + 정면",
+   "found": true,
+   "reason": "",
+   "n_contours": 215,
+   "n_candidates": 2,
+   "candidate_vertices": [
+    4,
+    4
+   ],
+   "quad": [
+    [
+     265.33,
+     218.67
+    ],
+    [
+     598.67,
+     188.0
+    ],
+    [
+     672.0,
+     1017.33
+    ],
+    [
+     369.33,
+     1056.0
+    ]
+   ],
+   "aspect_method": "zhang",
+   "aspect_estimated": 0.37980340812445706,
+   "distance_aspect": 0.39691943127962087,
+   "max_error_px": 2.4246534689403463,
+   "mean_error_px": 1.5953397386342745,
+   "error_ratio": 0.002692478040153055,
+   "rotation_shift": 0,
+   "status": "success",
+   "aspect_true": 0.380952,
+   "aspect_error": 0.003015056688356927,
+   "distance_aspect_error": 0.04191454902355377
+  },
+  {
+   "id": "E03",
+   "condition": "easy",
+   "condition_name": "단순 배경 + 정면",
+   "found": true,
+   "reason": "",
+   "n_contours": 83,
+   "n_candidates": 2,
+   "candidate_vertices": [
+    4,
+    4
+   ],
+   "quad": [
+    [
+     184.0,
+     417.33
+    ],
+    [
+     830.67,
+     508.0
+    ],
+    [
+     768.0,
+     829.33
+    ],
+    [
+     160.0,
+     736.0
+    ]
+   ],
+   "aspect_method": "zhang",
+   "aspect_estimated": 1.9133238923024307,
+   "distance_aspect": 1.996941896024465,
+   "max_error_px": 26.346544576302726,
+   "mean_error_px": 13.88148622916644,
+   "error_ratio": 0.03625532808233402,
+   "rotation_shift": 0,
+   "status": "partial",
+   "aspect_true": 1.8,
+   "aspect_error": 0.06295771794579481,
+   "distance_aspect_error": 0.10941216445803605
+  },
+  {
+   "id": "E04",
+   "condition": "easy",
+   "condition_name": "단순 배경 + 정면",
+   "found": true,
+   "reason": "",
+   "n_contours": 171,
+   "n_candidates": 2,
+   "candidate_vertices": [
+    4,
+    4
+   ],
+   "quad": [
+    [
+     157.33,
+     225.33
+    ],
+    [
+     765.33,
+     206.67
+    ],
+    [
+     748.0,
+     984.0
+    ],
+    [
+     233.33,
+     1010.67
+    ]
+   ],
+   "aspect_method": "zhang",
+   "aspect_estimated": 0.703404411607474,
+   "distance_aspect": 0.770595690747782,
+   "max_error_px": 2.62058941631247,
+   "mean_error_px": 1.855064702495003,
+   "error_ratio": 0.0027094643765266206,
+   "rotation_shift": 0,
+   "status": "success",
+   "aspect_true": 0.704762,
+   "aspect_error": 0.001926307593947995,
+   "distance_aspect_error": 0.09341265668095329
+  },
+  {
+   "id": "E05",
+   "condition": "easy",
+   "condition_name": "단순 배경 + 정면",
+   "found": true,
+   "reason": "",
+   "n_contours": 295,
+   "n_candidates": 3,
+   "candidate_vertices": [
+    4,
+    4,
+    4
+   ],
+   "quad": [
+    [
+     253.33,
+     170.67
+    ],
+    [
+     885.33,
+     301.33
+    ],
+    [
+     690.67,
+     1076.0
+    ],
+    [
+     116.0,
+     945.33
+    ]
+   ],
+   "aspect_method": "zhang",
+   "aspect_estimated": 0.7729696126316168,
+   "distance_aspect": 0.8072590738423029,
+   "max_error_px": 2.198436312978377,
+   "mean_error_px": 1.325732362762857,
+   "error_ratio": 0.002181574033347702,
+   "rotation_shift": 0,
+   "status": "success",
+   "aspect_true": 0.774194,
+   "aspect_error": 0.0015814994282870466,
+   "distance_aspect_error": 0.04270902879937436
+  },
+  {
+   "id": "S01",
+   "condition": "shadow",
+   "condition_name": "그림자 있음",
+   "found": true,
+   "reason": "",
+   "n_contours": 361,
+   "n_candidates": 2,
+   "candidate_vertices": [
+    4,
+    4
+   ],
+   "quad": [
+    [
+     132.0,
+     218.67
+    ],
+    [
+     782.67,
+     157.33
+    ],
+    [
+     781.33,
+     1006.67
+    ],
+    [
+     245.33,
+     1012.0
+    ]
+   ],
+   "aspect_method": "zhang",
+   "aspect_estimated": 0.7053290092738848,
+   "distance_aspect": 0.7703180212014135,
+   "max_error_px": 2.213343373471237,
+   "mean_error_px": 1.3779833042178782,
+   "error_ratio": 0.0021633259325974925,
+   "rotation_shift": 0,
+   "status": "success",
+   "aspect_true": 0.707071,
+   "aspect_error": 0.002463671577699057,
+   "distance_aspect_error": 0.0894493214987087
+  },
+  {
+   "id": "S02",
+   "condition": "shadow",
+   "condition_name": "그림자 있음",
+   "found": true,
+   "reason": "",
+   "n_contours": 249,
+   "n_candidates": 2,
+   "candidate_vertices": [
+    4,
+    4
+   ],
+   "quad": [
+    [
+     357.33,
+     138.67
+    ],
+    [
+     713.33,
+     196.0
+    ],
+    [
+     581.33,
+     1042.67
+    ],
+    [
+     273.33,
+     1026.67
+    ]
+   ],
+   "aspect_method": "zhang",
+   "aspect_estimated": 0.37894555242871525,
+   "distance_aspect": 0.4047085201793722,
+   "max_error_px": 3.6703799379476663,
+   "mean_error_px": 2.468691896221096,
+   "error_ratio": 0.003895336765810737,
+   "rotation_shift": 0,
+   "status": "success",
+   "aspect_true": 0.380952,
+   "aspect_error": 0.005266930141552647,
+   "distance_aspect_error": 0.06236092783177982
+  },
+  {
+   "id": "S03",
+   "condition": "shadow",
+   "condition_name": "그림자 있음",
+   "found": true,
+   "reason": "",
+   "n_contours": 172,
+   "n_candidates": 3,
+   "candidate_vertices": [
+    4,
+    14,
+    9
+   ],
+   "quad": [
+    [
+     170.67,
+     136.0
+    ],
+    [
+     850.67,
+     209.33
+    ],
+    [
+     710.67,
+     1016.0
+    ],
+    [
+     168.0,
+     1000.0
+    ]
+   ],
+   "aspect_method": "zhang",
+   "aspect_estimated": 0.7070575510539973,
+   "distance_aspect": 0.7916666666666666,
+   "max_error_px": 2.274117655511902,
+   "mean_error_px": 1.3983312921992108,
+   "error_ratio": 0.002172626721683314,
+   "rotation_shift": 0,
+   "status": "success",
+   "aspect_true": 0.707071,
+   "aspect_error": 1.9020644323904666e-05,
+   "distance_aspect_error": 0.11964239329100844
+  },
+  {
+   "id": "S04",
+   "condition": "shadow",
+   "condition_name": "그림자 있음",
+   "found": false,
+   "reason": "면적 조건을 만족하는 닫힌 윤곽선 없음",
+   "n_contours": 31,
+   "n_candidates": 0,
+   "candidate_vertices": [],
+   "status": "fail"
+  },
+  {
+   "id": "S05",
+   "condition": "shadow",
+   "condition_name": "그림자 있음",
+   "found": false,
+   "reason": "면적 조건을 만족하는 닫힌 윤곽선 없음",
+   "n_contours": 83,
+   "n_candidates": 0,
+   "candidate_vertices": [],
+   "status": "fail"
+  },
+  {
+   "id": "T01",
+   "condition": "tilt",
+   "condition_name": "45도 이상 기울어짐",
+   "found": true,
+   "reason": "",
+   "n_contours": 340,
+   "n_candidates": 2,
+   "candidate_vertices": [
+    4,
+    4
+   ],
+   "quad": [
+    [
+     80.0,
+     246.67
+    ],
+    [
+     910.67,
+     273.33
+    ],
+    [
+     688.0,
+     840.0
+    ],
+    [
+     248.0,
+     834.67
+    ]
+   ],
+   "aspect_method": "zhang",
+   "aspect_estimated": 0.7434134557313758,
+   "distance_aspect": 1.357843137254902,
+   "max_error_px": 3.0680612770933453,
+   "mean_error_px": 1.927947289197919,
+   "error_ratio": 0.003527836455388954,
+   "rotation_shift": 0,
+   "status": "success",
+   "aspect_true": 0.707071,
+   "aspect_error": 0.051398594669242334,
+   "distance_aspect_error": 0.9203773556755998
+  },
+  {
+   "id": "T02",
+   "condition": "tilt",
+   "condition_name": "45도 이상 기울어짐",
+   "found": true,
+   "reason": "",
+   "n_contours": 147,
+   "n_candidates": 2,
+   "candidate_vertices": [
+    4,
+    4
+   ],
+   "quad": [
+    [
+     370.67,
+     270.67
+    ],
+    [
+     929.33,
+     565.33
+    ],
+    [
+     534.67,
+     826.67
+    ],
+    [
+     188.0,
+     686.67
+    ]
+   ],
+   "aspect_method": "zhang",
+   "aspect_estimated": 0.7002751881433547,
+   "distance_aspect": 1.3361522198731501,
+   "max_error_px": 3.2813344169034675,
+   "mean_error_px": 1.67083717729471,
+   "error_ratio": 0.004348924547544641,
+   "rotation_shift": 0,
+   "status": "success",
+   "aspect_true": 0.707071,
+   "aspect_error": 0.009611215644037658,
+   "distance_aspect_error": 0.8897002138019381
+  },
+  {
+   "id": "T03",
+   "condition": "tilt",
+   "condition_name": "45도 이상 기울어짐",
+   "found": true,
+   "reason": "",
+   "n_contours": 145,
+   "n_candidates": 2,
+   "candidate_vertices": [
+    4,
+    4
+   ],
+   "quad": [
+    [
+     697.33,
+     276.0
+    ],
+    [
+     930.67,
+     448.0
+    ],
+    [
+     376.0,
+     816.0
+    ],
+    [
+     149.33,
+     776.0
+    ]
+   ],
+   "aspect_method": "zhang",
+   "aspect_estimated": 0.38681059928682054,
+   "distance_aspect": 0.3908355795148248,
+   "max_error_px": 3.7077276658951774,
+   "mean_error_px": 3.0386857509896315,
+   "error_ratio": 0.004358414315416384,
+   "rotation_shift": 0,
+   "status": "success",
+   "aspect_true": 0.380952,
+   "aspect_error": 0.015378838506742402,
+   "distance_aspect_error": 0.02594442217083719
+  },
+  {
+   "id": "T04",
+   "condition": "tilt",
+   "condition_name": "45도 이상 기울어짐",
+   "found": true,
+   "reason": "",
+   "n_contours": 68,
+   "n_candidates": 2,
+   "candidate_vertices": [
+    4,
+    4
+   ],
+   "quad": [
+    [
+     136.0,
+     426.67
+    ],
+    [
+     338.67,
+     221.33
+    ],
+    [
+     854.67,
+     849.33
+    ],
+    [
+     577.33,
+     878.67
+    ]
+   ],
+   "aspect_method": "zhang",
+   "aspect_estimated": 0.5178132628719099,
+   "distance_aspect": 0.35547355473554737,
+   "max_error_px": 19.219337773306453,
+   "mean_error_px": 9.815535153721104,
+   "error_ratio": 0.022871172369016382,
+   "rotation_shift": 1,
+   "status": "partial",
+   "aspect_true": 0.5555555555555556,
+   "aspect_error": 0.06793612683056227,
+   "distance_aspect_error": 0.36014760147601477
+  },
+  {
+   "id": "T05",
+   "condition": "tilt",
+   "condition_name": "45도 이상 기울어짐",
+   "found": true,
+   "reason": "",
+   "n_contours": 123,
+   "n_candidates": 2,
+   "candidate_vertices": [
+    4,
+    4
+   ],
+   "quad": [
+    [
+     29.33,
+     522.67
+    ],
+    [
+     766.67,
+     362.67
+    ],
+    [
+     730.67,
+     710.67
+    ],
+    [
+     341.33,
+     776.0
+    ]
+   ],
+   "aspect_method": "zhang",
+   "aspect_estimated": 0.771726197521673,
+   "distance_aspect": 1.8756218905472637,
+   "max_error_px": 9.578965961359742,
+   "mean_error_px": 4.132513152016349,
+   "error_ratio": 0.0130086144635051,
+   "rotation_shift": 0,
+   "status": "success",
+   "aspect_true": 0.774194,
+   "aspect_error": 0.0031875763417528527,
+   "distance_aspect_error": 1.422676862062046
+  },
+  {
+   "id": "C01",
+   "condition": "complex",
+   "condition_name": "복잡한 배경",
+   "found": true,
+   "reason": "",
+   "n_contours": 352,
+   "n_candidates": 3,
+   "candidate_vertices": [
+    7,
+    4,
+    4
+   ],
+   "quad": [
+    [
+     104.0,
+     233.33
+    ],
+    [
+     768.0,
+     132.0
+    ],
+    [
+     797.33,
+     982.67
+    ],
+    [
+     272.0,
+     1002.67
+    ]
+   ],
+   "aspect_method": "zhang",
+   "aspect_estimated": 0.7083981734581531,
+   "distance_aspect": 0.7896592244418331,
+   "max_error_px": 3.0994927900473463,
+   "mean_error_px": 2.429547636788523,
+   "error_ratio": 0.0030223332583857614,
+   "rotation_shift": 0,
+   "status": "success",
+   "aspect_true": 0.707071,
+   "aspect_error": 0.0018770016846301734,
+   "distance_aspect_error": 0.11680329760636925
+  },
+  {
+   "id": "C02",
+   "condition": "complex",
+   "condition_name": "복잡한 배경",
+   "found": true,
+   "reason": "",
+   "n_contours": 998,
+   "n_candidates": 2,
+   "candidate_vertices": [
+    4,
+    4
+   ],
+   "quad": [
+    [
+     38.67,
+     0.0
+    ],
+    [
+     958.67,
+     4.0
+    ],
+    [
+     958.67,
+     1270.67
+    ],
+    [
+     2.67,
+     1278.67
+    ]
+   ],
+   "aspect_method": "distance",
+   "aspect_estimated": 0.7474589523064894,
+   "distance_aspect": 0.7474589523064894,
+   "max_error_px": 457.7938014239842,
+   "mean_error_px": 370.28990196488667,
+   "error_ratio": 0.48731041739310427,
+   "rotation_shift": 0,
+   "status": "fail",
+   "aspect_true": 0.380952,
+   "aspect_error": 0.9620817118862465,
+   "distance_aspect_error": 0.9620817118862465
+  },
+  {
+   "id": "C03",
+   "condition": "complex",
+   "condition_name": "복잡한 배경",
+   "found": false,
+   "reason": "면적 조건을 만족하는 닫힌 윤곽선 없음",
+   "n_contours": 356,
+   "n_candidates": 0,
+   "candidate_vertices": [],
+   "status": "fail"
+  },
+  {
+   "id": "C04",
+   "condition": "complex",
+   "condition_name": "복잡한 배경",
+   "found": true,
+   "reason": "",
+   "n_contours": 158,
+   "n_candidates": 2,
+   "candidate_vertices": [
+    12,
+    4
+   ],
+   "quad": [
+    [
+     102.67,
+     284.0
+    ],
+    [
+     696.0,
+     180.0
+    ],
+    [
+     773.33,
+     865.33
+    ],
+    [
+     296.0,
+     1028.0
+    ]
+   ],
+   "aspect_method": "zhang",
+   "aspect_estimated": 0.7534647424659298,
+   "distance_aspect": 0.7828348504551366,
+   "max_error_px": 58.562992201180705,
+   "mean_error_px": 16.27256566329015,
+   "error_ratio": 0.06223758153108882,
+   "rotation_shift": 0,
+   "status": "fail",
+   "aspect_true": 0.704762,
+   "aspect_error": 0.06910523334959853,
+   "distance_aspect_error": 0.11077902959458166
+  },
+  {
+   "id": "C05",
+   "condition": "complex",
+   "condition_name": "복잡한 배경",
+   "found": false,
+   "reason": "큰 윤곽선은 있으나 볼록 사각형이 아님 (꼭짓점 수 [7, 9])",
+   "n_contours": 427,
+   "n_candidates": 2,
+   "candidate_vertices": [
+    9,
+    7
+   ],
+   "status": "fail"
+  }
+ ],
+ "eda": {
+  "E01": {
+   "mean": 135.25302815755208,
+   "std": 80.5532766169331,
+   "p5": 65.0,
+   "median": 73.0,
+   "p95": 244.0,
+   "dynamic_range": 179.0,
+   "dark_fraction": 0.027125651041666667,
+   "saturated_fraction": 0.000419921875,
+   "doc_mean": 225.2304115492767,
+   "bg_mean": 69.80498478277677,
+   "doc_bg_contrast": 155.42542676649992,
+   "boundary_step_median": 171.0,
+   "boundary_step_p10": 166.0,
+   "boundary_gradient_median": 374.0,
+   "boundary_edge_recall": 1.0,
+   "edge_density": 0.024210611979166668,
+   "bg_edge_density": 0.00040344970584720925
+  },
+  "E02": {
+   "mean": 99.6163525390625,
+   "std": 69.67691426636951,
+   "p5": 59.0,
+   "median": 65.0,
+   "p95": 241.0,
+   "dynamic_range": 182.0,
+   "dark_fraction": 0.33492838541666664,
+   "saturated_fraction": 1.5462239583333335e-05,
+   "doc_mean": 225.38166415884817,
+   "bg_mean": 64.00669661504018,
+   "doc_bg_contrast": 161.374967543808,
+   "boundary_step_median": 177.0,
+   "boundary_step_p10": 171.0,
+   "boundary_gradient_median": 394.0,
+   "boundary_edge_recall": 1.0,
+   "edge_density": 0.010983072916666666,
+   "bg_edge_density": 0.0003853190316274873
+  },
+  "E03": {
+   "mean": 115.14656575520833,
+   "std": 54.302457667944275,
+   "p5": 85.0,
+   "median": 93.0,
+   "p95": 246.0,
+   "dynamic_range": 161.0,
+   "dark_fraction": 0.0023828125,
+   "saturated_fraction": 0.005398763020833333,
+   "doc_mean": 217.12280117090745,
+   "bg_mean": 92.65456369505836,
+   "doc_bg_contrast": 124.4682374758491,
+   "boundary_step_median": 150.0,
+   "boundary_step_p10": 8.0,
+   "boundary_gradient_median": 314.0,
+   "boundary_edge_recall": 0.6877551020408164,
+   "edge_density": 0.0062548828125,
+   "bg_edge_density": 0.0003575862925254532
+  },
+  "E04": {
+   "mean": 163.97977132161458,
+   "std": 55.17825809282714,
+   "p5": 117.0,
+   "median": 127.0,
+   "p95": 244.0,
+   "dynamic_range": 127.0,
+   "dark_fraction": 0.0014078776041666667,
+   "saturated_fraction": 0.00020182291666666667,
+   "doc_mean": 234.8457229293189,
+   "bg_mean": 123.94422072282038,
+   "doc_bg_contrast": 110.90150220649852,
+   "boundary_step_median": 121.0,
+   "boundary_step_p10": 113.0,
+   "boundary_gradient_median": 278.0,
+   "boundary_edge_recall": 1.0,
+   "edge_density": 0.01593017578125,
+   "bg_edge_density": 0.0005259793021413598
+  },
+  "E05": {
+   "mean": 133.96324625651042,
+   "std": 78.7905223696075,
+   "p5": 68.0,
+   "median": 76.0,
+   "p95": 244.0,
+   "dynamic_range": 176.0,
+   "dark_fraction": 0.0032991536458333334,
+   "saturated_fraction": 0.0003556315104166667,
+   "doc_mean": 225.86040866692105,
+   "bg_mean": 72.44794423401932,
+   "doc_bg_contrast": 153.41246443290174,
+   "boundary_step_median": 169.0,
+   "boundary_step_p10": 164.0,
+   "boundary_gradient_median": 419.0,
+   "boundary_edge_recall": 1.0,
+   "edge_density": 0.022854817708333332,
+   "bg_edge_density": 0.00022280308011672707
+  },
+  "S01": {
+   "mean": 101.96827962239583,
+   "std": 61.31398410221697,
+   "p5": 43.0,
+   "median": 63.0,
+   "p95": 197.0,
+   "dynamic_range": 154.0,
+   "dark_fraction": 0.5210001627604167,
+   "saturated_fraction": 0.0,
+   "doc_mean": 172.94841166884228,
+   "bg_mean": 54.35415091671516,
+   "doc_bg_contrast": 118.59426075212713,
+   "boundary_step_median": 132.0,
+   "boundary_step_p10": 115.0,
+   "boundary_gradient_median": 292.0,
+   "boundary_edge_recall": 1.0,
+   "edge_density": 0.022982584635416668,
+   "bg_edge_density": 0.00023658919956706895
+  },
+  "S02": {
+   "mean": 82.99064453125,
+   "std": 60.573080877510556,
+   "p5": 28.0,
+   "median": 64.0,
+   "p95": 236.0,
+   "dynamic_range": 208.0,
+   "dark_fraction": 0.49742513020833334,
+   "saturated_fraction": 0.0,
+   "doc_mean": 174.20252112761688,
+   "bg_mean": 54.03943855857246,
+   "doc_bg_contrast": 120.1630825690444,
+   "boundary_step_median": 173.0,
+   "boundary_step_p10": 79.0,
+   "boundary_gradient_median": 378.0,
+   "boundary_edge_recall": 1.0,
+   "edge_density": 0.011366373697916666,
+   "bg_edge_density": 0.00043527577829667797
+  },
+  "S03": {
+   "mean": 138.64464274088542,
+   "std": 56.57359142255562,
+   "p5": 60.0,
+   "median": 123.0,
+   "p95": 242.0,
+   "dynamic_range": 182.0,
+   "dark_fraction": 0.1100732421875,
+   "saturated_fraction": 0.00036783854166666665,
+   "doc_mean": 175.8560529032208,
+   "bg_mean": 111.58789449568363,
+   "doc_bg_contrast": 64.26815840753719,
+   "boundary_step_median": 114.0,
+   "boundary_step_p10": 58.0,
+   "boundary_gradient_median": 268.0,
+   "boundary_edge_recall": 1.0,
+   "edge_density": 0.01657470703125,
+   "bg_edge_density": 0.00024596684648014414
+  },
+  "S04": {
+   "mean": 37.36482177734375,
+   "std": 19.087052322617776,
+   "p5": 15.0,
+   "median": 30.0,
+   "p95": 74.0,
+   "dynamic_range": 59.0,
+   "dark_fraction": 0.82103515625,
+   "saturated_fraction": 0.0,
+   "doc_mean": 59.0751144501322,
+   "bg_mean": 25.09769638429002,
+   "doc_bg_contrast": 33.97741806584217,
+   "boundary_step_median": 40.0,
+   "boundary_step_p10": 24.0,
+   "boundary_gradient_median": 100.0,
+   "boundary_edge_recall": 0.0,
+   "edge_density": 0.0011140950520833334,
+   "bg_edge_density": 0.0
+  },
+  "S05": {
+   "mean": 86.57805338541667,
+   "std": 60.371744769579024,
+   "p5": 37.0,
+   "median": 69.0,
+   "p95": 244.0,
+   "dynamic_range": 207.0,
+   "dark_fraction": 0.30252766927083335,
+   "saturated_fraction": 0.010895182291666666,
+   "doc_mean": 184.98292975655644,
+   "bg_mean": 61.86812696757798,
+   "doc_bg_contrast": 123.11480278897847,
+   "boundary_step_median": 99.0,
+   "boundary_step_p10": 8.0,
+   "boundary_gradient_median": 230.0,
+   "boundary_edge_recall": 0.6866537717601547,
+   "edge_density": 0.006607259114583333,
+   "bg_edge_density": 0.0008745922302814578
+  },
+  "T01": {
+   "mean": 117.28019449869792,
+   "std": 74.6900855723651,
+   "p5": 64.0,
+   "median": 72.0,
+   "p95": 243.0,
+   "dynamic_range": 179.0,
+   "dark_fraction": 0.03614990234375,
+   "saturated_fraction": 0.00032877604166666667,
+   "doc_mean": 227.19484408901778,
+   "bg_mean": 69.99225295228163,
+   "doc_bg_contrast": 157.20259113673615,
+   "boundary_step_median": 173.0,
+   "boundary_step_p10": 167.0,
+   "boundary_gradient_median": 398.0,
+   "boundary_edge_recall": 1.0,
+   "edge_density": 0.017312825520833332,
+   "bg_edge_density": 0.0004667316909654246
+  },
+  "T02": {
+   "mean": 143.11121826171876,
+   "std": 42.062298412216045,
+   "p5": 115.0,
+   "median": 127.0,
+   "p95": 243.0,
+   "dynamic_range": 128.0,
+   "dark_fraction": 0.00072265625,
+   "saturated_fraction": 0.0007023111979166666,
+   "doc_mean": 227.16785018164515,
+   "bg_mean": 124.9262196582601,
+   "doc_bg_contrast": 102.24163052338506,
+   "boundary_step_median": 119.0,
+   "boundary_step_p10": 113.0,
+   "boundary_gradient_median": 358.0,
+   "boundary_edge_recall": 1.0,
+   "edge_density": 0.01582763671875,
+   "bg_edge_density": 0.00014946913709784388
+  },
+  "T03": {
+   "mean": 85.25738525390625,
+   "std": 56.20392139354745,
+   "p5": 59.0,
+   "median": 65.0,
+   "p95": 240.0,
+   "dynamic_range": 181.0,
+   "dark_fraction": 0.3490478515625,
+   "saturated_fraction": 1.953125e-05,
+   "doc_mean": 226.3966749553287,
+   "bg_mean": 64.11994288612219,
+   "doc_bg_contrast": 162.2767320692065,
+   "boundary_step_median": 177.0,
+   "boundary_step_p10": 172.0,
+   "boundary_gradient_median": 518.0,
+   "boundary_edge_recall": 1.0,
+   "edge_density": 0.0081982421875,
+   "bg_edge_density": 0.0007382511401254933
+  },
+  "T04": {
+   "mean": 113.08903889973958,
+   "std": 51.548353434745586,
+   "p5": 85.0,
+   "median": 94.0,
+   "p95": 246.0,
+   "dynamic_range": 161.0,
+   "dark_fraction": 0.002201334635416667,
+   "saturated_fraction": 0.003675130208333333,
+   "doc_mean": 217.1353188208801,
+   "bg_mean": 93.20394305743498,
+   "doc_bg_contrast": 123.9313757634451,
+   "boundary_step_median": 153.0,
+   "boundary_step_p10": 10.0,
+   "boundary_gradient_median": 396.0,
+   "boundary_edge_recall": 0.6954813359528488,
+   "edge_density": 0.006739095052083333,
+   "bg_edge_density": 0.0009644874742641785
+  },
+  "T05": {
+   "mean": 96.99685709635416,
+   "std": 57.640156656561835,
+   "p5": 69.0,
+   "median": 73.0,
+   "p95": 242.0,
+   "dynamic_range": 173.0,
+   "dark_fraction": 0.0017464192708333333,
+   "saturated_fraction": 0.00037841796875,
+   "doc_mean": 228.11134878819811,
+   "bg_mean": 73.04543214629452,
+   "doc_bg_contrast": 155.06591664190358,
+   "boundary_step_median": 172.0,
+   "boundary_step_p10": 164.0,
+   "boundary_gradient_median": 436.0,
+   "boundary_edge_recall": 1.0,
+   "edge_density": 0.01108642578125,
+   "bg_edge_density": 0.00020500481231953803
+  },
+  "C01": {
+   "mean": 150.20928955078125,
+   "std": 67.37843176556812,
+   "p5": 78.0,
+   "median": 112.0,
+   "p95": 244.0,
+   "dynamic_range": 166.0,
+   "dark_fraction": 0.00771728515625,
+   "saturated_fraction": 0.0006070963541666667,
+   "doc_mean": 226.44026503381838,
+   "bg_mean": 99.06886320773317,
+   "doc_bg_contrast": 127.3714018260852,
+   "boundary_step_median": 147.0,
+   "boundary_step_p10": 129.0,
+   "boundary_gradient_median": 348.0,
+   "boundary_edge_recall": 1.0,
+   "edge_density": 0.024464518229166666,
+   "bg_edge_density": 0.00261887959272751
+  },
+  "C02": {
+   "mean": 178.247890625,
+   "std": 50.741324613625615,
+   "p5": 89.0,
+   "median": 170.0,
+   "p95": 242.0,
+   "dynamic_range": 153.0,
+   "dark_fraction": 0.0046044921875,
+   "saturated_fraction": 0.0015250651041666668,
+   "doc_mean": 225.9164673444187,
+   "bg_mean": 163.14942323044528,
+   "doc_bg_contrast": 62.76704411397341,
+   "boundary_step_median": 82.0,
+   "boundary_step_p10": 17.0,
+   "boundary_gradient_median": 202.0,
+   "boundary_edge_recall": 1.0,
+   "edge_density": 0.04831136067708333,
+   "bg_edge_density": 0.048476503270950426
+  },
+  "C03": {
+   "mean": 219.1242928059896,
+   "std": 23.933472375811746,
+   "p5": 194.0,
+   "median": 222.0,
+   "p95": 244.0,
+   "dynamic_range": 50.0,
+   "dark_fraction": 0.0012434895833333334,
+   "saturated_fraction": 0.00098876953125,
+   "doc_mean": 227.6484787512175,
+   "bg_mean": 213.87766751858982,
+   "doc_bg_contrast": 13.770811232627693,
+   "boundary_step_median": 25.0,
+   "boundary_step_p10": 2.0,
+   "boundary_gradient_median": 104.0,
+   "boundary_edge_recall": 0.8219971056439942,
+   "edge_density": 0.022251790364583333,
+   "bg_edge_density": 5.521724040008835e-05
+  },
+  "C04": {
+   "mean": 143.8146142578125,
+   "std": 73.34903345391805,
+   "p5": 63.0,
+   "median": 98.0,
+   "p95": 244.0,
+   "dynamic_range": 181.0,
+   "dark_fraction": 0.051422526041666666,
+   "saturated_fraction": 0.0005721028645833333,
+   "doc_mean": 234.57933973583698,
+   "bg_mean": 96.95758876239786,
+   "doc_bg_contrast": 137.62175097343913,
+   "boundary_step_median": 158.0,
+   "boundary_step_p10": 143.0,
+   "boundary_gradient_median": 384.0,
+   "boundary_edge_recall": 0.9954128440366973,
+   "edge_density": 0.018175455729166668,
+   "bg_edge_density": 0.005062794445363033
+  },
+  "C05": {
+   "mean": 135.07226806640625,
+   "std": 51.61145754529972,
+   "p5": 77.0,
+   "median": 111.0,
+   "p95": 219.0,
+   "dynamic_range": 142.0,
+   "dark_fraction": 0.00969970703125,
+   "saturated_fraction": 0.00284912109375,
+   "doc_mean": 189.45093765221628,
+   "bg_mean": 98.6720696119987,
+   "doc_bg_contrast": 90.77886804021759,
+   "boundary_step_median": 100.0,
+   "boundary_step_p10": 7.900000000000006,
+   "boundary_gradient_median": 184.0,
+   "boundary_edge_recall": 0.5915492957746479,
+   "edge_density": 0.027035319010416666,
+   "bg_edge_density": 0.003298554504945115
+  }
+ },
+ "darkening": [
+  {
+   "factor": 1.0,
+   "mean": 135.25541259765626,
+   "std": 80.60901072628819,
+   "boundary_gradient_median": 374.0,
+   "boundary_edge_recall": 1.0,
+   "bg_edge_density": 0.0004343761641351486,
+   "found": "success"
+  },
+  {
+   "factor": 0.7,
+   "mean": 94.677109375,
+   "std": 56.46956638905353,
+   "boundary_gradient_median": 262.0,
+   "boundary_edge_recall": 1.0,
+   "bg_edge_density": 0.0005946314479908345,
+   "found": "success"
+  },
+  {
+   "factor": 0.5,
+   "mean": 67.62065266927084,
+   "std": 40.38922739237121,
+   "boundary_gradient_median": 188.0,
+   "boundary_edge_recall": 1.0,
+   "bg_edge_density": 0.0005763567226388704,
+   "found": "success"
+  },
+  {
+   "factor": 0.35,
+   "mean": 47.34101318359375,
+   "std": 28.353102323083636,
+   "boundary_gradient_median": 132.0,
+   "boundary_edge_recall": 1.0,
+   "bg_edge_density": 0.0006283694024867683,
+   "found": "success"
+  },
+  {
+   "factor": 0.25,
+   "mean": 33.81186848958333,
+   "std": 20.362150826653664,
+   "boundary_gradient_median": 94.0,
+   "boundary_edge_recall": 0.0,
+   "bg_edge_density": 0.0,
+   "found": "fail"
+  },
+  {
+   "factor": 0.15,
+   "mean": 20.285275065104166,
+   "std": 12.451614490646913,
+   "boundary_gradient_median": 58.0,
+   "boundary_edge_recall": 0.0,
+   "bg_edge_density": 0.0,
+   "found": "fail"
+  },
+  {
+   "factor": 0.1,
+   "mean": 13.527185872395833,
+   "std": 8.585836025937112,
+   "boundary_gradient_median": 38.0,
+   "boundary_edge_recall": 0.0,
+   "bg_edge_density": 0.0,
+   "found": "fail"
+  }
+ ],
+ "sweep": {
+  "n_configs": 266,
+  "default": {
+   "config": [
+    5,
+    50,
+    150
+   ],
+   "success": 12
+  },
+  "best": {
+   "success": 14,
+   "configs": [
+    [
+     3,
+     10,
+     250
+    ],
+    [
+     3,
+     10,
+     300
+    ],
+    [
+     3,
+     25,
+     250
+    ],
+    [
+     3,
+     25,
+     300
+    ],
+    [
+     3,
+     50,
+     250
+    ],
+    [
+     3,
+     50,
+     300
+    ]
+   ]
+  },
+  "oracle_success": 16,
+  "never_success": [
+   "E03",
+   "S05",
+   "C03",
+   "C04"
+  ],
+  "per_image_success_rate": {
+   "E01": 0.7781954887218046,
+   "E02": 0.7781954887218046,
+   "E03": 0.0,
+   "E04": 0.6842105263157895,
+   "E05": 0.8947368421052632,
+   "S01": 0.8007518796992481,
+   "S02": 0.7030075187969925,
+   "S03": 0.34210526315789475,
+   "S04": 0.12406015037593984,
+   "S05": 0.0,
+   "T01": 0.868421052631579,
+   "T02": 0.8082706766917294,
+   "T03": 0.9473684210526315,
+   "T04": 0.007518796992481203,
+   "T05": 0.9398496240601504,
+   "C01": 0.8796992481203008,
+   "C02": 0.09022556390977443,
+   "C03": 0.0,
+   "C04": 0.0,
+   "C05": 0.45864661654135336
+  },
+  "disjoint_pairs": [
+   [
+    "S03",
+    "T04"
+   ],
+   [
+    "S04",
+    "C02"
+   ],
+   [
+    "T04",
+    "C02"
+   ],
+   [
+    "T04",
+    "C05"
+   ]
+  ],
+  "per_config_success": [
+   11,
+   12,
+   13,
+   13,
+   13,
+   13,
+   13,
+   13,
+   12,
+   13,
+   13,
+   13,
+   13,
+   13,
+   12,
+   13,
+   13,
+   13,
+   13,
+   13,
+   11,
+   12,
+   12,
+   13,
+   13,
+   13,
+   12,
+   12,
+   13,
+   13,
+   13,
+   12,
+   12,
+   13,
+   13,
+   12,
+   12,
+   12,
+   12,
+   12,
+   13,
+   13,
+   14,
+   14,
+   13,
+   12,
+   12,
+   13,
+   13,
+   14,
+   14,
+   13,
+   12,
+   13,
+   13,
+   14,
+   14,
+   13,
+   11,
+   12,
+   12,
+   13,
+   13,
+   13,
+   12,
+   13,
+   13,
+   13,
+   13,
+   12,
+   12,
+   12,
+   12,
+   11,
+   11,
+   11,
+   12,
+   12,
+   12,
+   13,
+   13,
+   13,
+   11,
+   12,
+   12,
+   12,
+   13,
+   13,
+   13,
+   11,
+   12,
+   12,
+   13,
+   13,
+   13,
+   11,
+   11,
+   12,
+   13,
+   13,
+   13,
+   11,
+   13,
+   13,
+   13,
+   13,
+   11,
+   12,
+   12,
+   12,
+   11,
+   10,
+   10,
+   9,
+   12,
+   12,
+   13,
+   13,
+   13,
+   12,
+   6,
+   12,
+   12,
+   13,
+   13,
+   13,
+   12,
+   6,
+   11,
+   13,
+   13,
+   13,
+   12,
+   6,
+   12,
+   13,
+   13,
+   13,
+   12,
+   6,
+   12,
+   12,
+   12,
+   11,
+   6,
+   11,
+   11,
+   10,
+   6,
+   10,
+   9,
+   6,
+   13,
+   12,
+   12,
+   12,
+   12,
+   11,
+   2,
+   13,
+   12,
+   12,
+   12,
+   12,
+   11,
+   2,
+   12,
+   12,
+   12,
+   12,
+   11,
+   2,
+   12,
+   12,
+   12,
+   12,
+   11,
+   2,
+   12,
+   12,
+   12,
+   11,
+   2,
+   10,
+   10,
+   9,
+   2,
+   8,
+   7,
+   1,
+   11,
+   10,
+   10,
+   10,
+   9,
+   7,
+   0,
+   11,
+   10,
+   10,
+   10,
+   9,
+   7,
+   0,
+   10,
+   10,
+   10,
+   9,
+   7,
+   0,
+   10,
+   10,
+   10,
+   9,
+   7,
+   0,
+   10,
+   10,
+   9,
+   7,
+   0,
+   9,
+   8,
+   6,
+   0,
+   5,
+   5,
+   0,
+   11,
+   10,
+   10,
+   9,
+   6,
+   2,
+   0,
+   11,
+   10,
+   10,
+   9,
+   6,
+   2,
+   0,
+   10,
+   10,
+   9,
+   6,
+   2,
+   0,
+   10,
+   10,
+   9,
+   6,
+   2,
+   0,
+   10,
+   9,
+   6,
+   2,
+   0,
+   7,
+   5,
+   2,
+   0,
+   4,
+   1,
+   0
+  ]
+ },
+ "rules": [
+  {
+   "name": "V0 기본 규칙",
+   "change": {},
+   "status": {
+    "E01": "success",
+    "E02": "success",
+    "E03": "partial",
+    "E04": "success",
+    "E05": "success",
+    "S01": "success",
+    "S02": "success",
+    "S03": "success",
+    "S04": "fail",
+    "S05": "fail",
+    "T01": "success",
+    "T02": "success",
+    "T03": "success",
+    "T04": "partial",
+    "T05": "success",
+    "C01": "success",
+    "C02": "fail",
+    "C03": "fail",
+    "C04": "fail",
+    "C05": "fail"
+   },
+   "success": 12
+  },
+  {
+   "name": "V1 닫힘 연산 제거",
+   "change": {
+    "close_kernel": 0
+   },
+   "status": {
+    "E01": "success",
+    "E02": "success",
+    "E03": "fail",
+    "E04": "success",
+    "E05": "success",
+    "S01": "success",
+    "S02": "success",
+    "S03": "success",
+    "S04": "fail",
+    "S05": "fail",
+    "T01": "success",
+    "T02": "success",
+    "T03": "success",
+    "T04": "fail",
+    "T05": "success",
+    "C01": "success",
+    "C02": "fail",
+    "C03": "fail",
+    "C04": "fail",
+    "C05": "success"
+   },
+   "success": 13,
+   "fixed": [
+    "C05"
+   ],
+   "broken": []
+  },
+  {
+   "name": "V2 + 색 채널별 엣지",
+   "change": {
+    "color_edges": true
+   },
+   "status": {
+    "E01": "success",
+    "E02": "success",
+    "E03": "success",
+    "E04": "success",
+    "E05": "success",
+    "S01": "success",
+    "S02": "success",
+    "S03": "success",
+    "S04": "success",
+    "S05": "fail",
+    "T01": "success",
+    "T02": "success",
+    "T03": "success",
+    "T04": "success",
+    "T05": "success",
+    "C01": "success",
+    "C02": "fail",
+    "C03": "fail",
+    "C04": "fail",
+    "C05": "fail"
+   },
+   "success": 15,
+   "fixed": [
+    "E03",
+    "S04",
+    "T04"
+   ],
+   "broken": []
+  },
+  {
+   "name": "V3 + 자동 Canny 임계값",
+   "change": {
+    "auto_canny": true
+   },
+   "status": {
+    "E01": "success",
+    "E02": "success",
+    "E03": "partial",
+    "E04": "success",
+    "E05": "success",
+    "S01": "success",
+    "S02": "success",
+    "S03": "success",
+    "S04": "success",
+    "S05": "fail",
+    "T01": "success",
+    "T02": "success",
+    "T03": "success",
+    "T04": "partial",
+    "T05": "success",
+    "C01": "success",
+    "C02": "fail",
+    "C03": "fail",
+    "C04": "fail",
+    "C05": "fail"
+   },
+   "success": 13,
+   "fixed": [
+    "S04"
+   ],
+   "broken": []
+  },
+  {
+   "name": "V4 + CLAHE 대비 향상",
+   "change": {
+    "clahe": true
+   },
+   "status": {
+    "E01": "success",
+    "E02": "success",
+    "E03": "partial",
+    "E04": "success",
+    "E05": "success",
+    "S01": "success",
+    "S02": "success",
+    "S03": "success",
+    "S04": "success",
+    "S05": "fail",
+    "T01": "success",
+    "T02": "success",
+    "T03": "success",
+    "T04": "partial",
+    "T05": "success",
+    "C01": "success",
+    "C02": "fail",
+    "C03": "fail",
+    "C04": "fail",
+    "C05": "fail"
+   },
+   "success": 13,
+   "fixed": [
+    "S04"
+   ],
+   "broken": []
+  },
+  {
+   "name": "V5 + 근사 허용 오차 2배",
+   "change": {
+    "approx_epsilon": 0.04
+   },
+   "status": {
+    "E01": "success",
+    "E02": "success",
+    "E03": "partial",
+    "E04": "success",
+    "E05": "success",
+    "S01": "success",
+    "S02": "success",
+    "S03": "success",
+    "S04": "fail",
+    "S05": "fail",
+    "T01": "success",
+    "T02": "success",
+    "T03": "success",
+    "T04": "partial",
+    "T05": "success",
+    "C01": "success",
+    "C02": "fail",
+    "C03": "fail",
+    "C04": "fail",
+    "C05": "fail"
+   },
+   "success": 12,
+   "fixed": [],
+   "broken": []
+  },
+  {
+   "name": "V6 V2~V5 모두",
+   "change": {
+    "color_edges": true,
+    "auto_canny": true,
+    "clahe": true,
+    "approx_epsilon": 0.04
+   },
+   "status": {
+    "E01": "success",
+    "E02": "success",
+    "E03": "success",
+    "E04": "success",
+    "E05": "success",
+    "S01": "success",
+    "S02": "success",
+    "S03": "success",
+    "S04": "success",
+    "S05": "fail",
+    "T01": "success",
+    "T02": "success",
+    "T03": "success",
+    "T04": "success",
+    "T05": "success",
+    "C01": "success",
+    "C02": "fail",
+    "C03": "fail",
+    "C04": "fail",
+    "C05": "fail"
+   },
+   "success": 15,
+   "fixed": [
+    "E03",
+    "S04",
+    "T04"
+   ],
+   "broken": []
+  }
+ ],
+ "convolution": {
+  "ksize": 5,
+  "shape": [
+   480,
+   360
+  ],
+  "times": {
+   "NumPy double for-loop": 0.5730741000006674,
+   "NumPy shifted sum (k^2 loops)": 0.01576059999933932,
+   "NumPy sliding window + einsum": 0.005928800004767254,
+   "NumPy separable 1D x 2": 0.008683600011863746,
+   "cv2.GaussianBlur": 0.0008274599997093901
+  },
+  "max_abs_diff_vs_opencv": {
+   "NumPy double for-loop": 0.0,
+   "NumPy shifted sum (k^2 loops)": 0.0,
+   "NumPy sliding window + einsum": 0.0,
+   "NumPy separable 1D x 2": 0.0,
+   "cv2.GaussianBlur": 0.0
+  },
+  "speedup_vs_loops": {
+   "NumPy double for-loop": 1.0,
+   "NumPy shifted sum (k^2 loops)": 36.361185489428735,
+   "NumPy sliding window + einsum": 96.6593745007198,
+   "NumPy separable 1D x 2": 65.99499046682477,
+   "cv2.GaussianBlur": 692.5701546925956
+  }
+ }
+}

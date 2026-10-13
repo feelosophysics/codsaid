@@ -1,0 +1,6 @@
+.venv/
+__pycache__/
+# 앱·웹캠에서 사용자가 저장한 결과 (실험 결과 outputs/*.png 등은 커밋한다)
+outputs/app/
+outputs/webcam/
+outputs/cli/

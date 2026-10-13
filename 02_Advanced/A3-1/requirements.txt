@@ -1,0 +1,6 @@
+# 필수: OpenCV, NumPy / 시각화: Matplotlib / 보너스 3 PDF: Pillow
+# 실행 검증 조합: Python 3.12.13, opencv-python 5.0.0.93, numpy 2.5.4, matplotlib 3.11.2, pillow 12.3.0
+opencv-python>=4.5
+numpy>=1.20
+matplotlib>=3.3
+pillow>=8.0

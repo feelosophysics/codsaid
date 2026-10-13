@@ -1,0 +1,1010 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A3-1 문서 스캐너</title>
+<style>
+:root {
+  --bg: #f7f7f4; --card: #ffffff; --fg: #1d2125; --muted: #5d656e; --line: #dfe2e5;
+  --accent: #2563c9; --accent-soft: #e6eefb; --red: #c8402f; --red-soft: #fbe9e6;
+  --green: #23824a; --green-soft: #e3f3e9; --amber: #a86400; --amber-soft: #fbf0dc;
+  --purple: #7b3fb5; --code-bg: #f1f2f0; --plot-bg: #ffffff; --grid: #e4e7ea; --cyan: #0f8fa0;
+  --radius: 12px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #15181b; --card: #1d2125; --fg: #e7e9eb; --muted: #9ba3ab; --line: #343a40;
+    --accent: #6ea2f5; --accent-soft: #1f2d45; --red: #f07b6a; --red-soft: #3d2420;
+    --green: #5cc58a; --green-soft: #1b3326; --amber: #e4a74a; --amber-soft: #3a2e17;
+    --purple: #b58be6; --code-bg: #24292e; --plot-bg: #1d2125; --grid: #2f353b; --cyan: #4cc9d9;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #15181b; --card: #1d2125; --fg: #e7e9eb; --muted: #9ba3ab; --line: #343a40;
+  --accent: #6ea2f5; --accent-soft: #1f2d45; --red: #f07b6a; --red-soft: #3d2420;
+  --green: #5cc58a; --green-soft: #1b3326; --amber: #e4a74a; --amber-soft: #3a2e17;
+  --purple: #b58be6; --code-bg: #24292e; --plot-bg: #1d2125; --grid: #2f353b; --cyan: #4cc9d9;
+}
+* { box-sizing: border-box; }
+html { scroll-padding-top: 64px; -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--fg);
+  font: 16px/1.7 "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", system-ui, sans-serif;
+  word-break: keep-all; overflow-wrap: anywhere;
+}
+header.top { padding: 28px 16px 8px; max-width: 880px; margin: 0 auto; }
+header.top h1 { font-size: 1.6rem; line-height: 1.3; margin: 0 0 6px; }
+header.top p { margin: 0; color: var(--muted); }
+nav.chips { position: sticky; top: 0; z-index: 10; background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: blur(6px); border-bottom: 1px solid var(--line); }
+nav.chips .inner { max-width: 880px; margin: 0 auto; display: flex; gap: 6px; overflow-x: auto; padding: 8px 16px; scrollbar-width: thin; }
+nav.chips a { flex: none; font-size: .85rem; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--line); color: var(--fg); text-decoration: none; background: var(--card); }
+nav.chips a.on { background: var(--accent); color: #fff; border-color: var(--accent); }
+#themeBtn { flex: none; font-size: .85rem; border-radius: 999px; border: 1px solid var(--line); background: var(--card); color: var(--fg); padding: 4px 10px; cursor: pointer; }
+main { max-width: 880px; margin: 0 auto; padding: 8px 16px 80px; }
+section { margin: 28px 0 44px; }
+section > h2 { font-size: 1.35rem; line-height: 1.35; margin: 0 0 4px; }
+section > .lead { color: var(--muted); margin: 0 0 14px; }
+h3 { font-size: 1.08rem; margin: 22px 0 6px; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 16px; margin: 12px 0; }
+.widget { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; margin: 14px 0; }
+.widget > .wtitle { font-weight: 700; margin-bottom: 8px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.tag { font-size: .72rem; font-weight: 700; padding: 1px 8px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); }
+.tag.bonus { background: var(--amber-soft); color: var(--amber); }
+.tag.req { background: var(--green-soft); color: var(--green); }
+.note { border-left: 4px solid var(--accent); background: var(--accent-soft); padding: 10px 12px; border-radius: 0 8px 8px 0; margin: 12px 0; }
+.note.warn { border-color: var(--amber); background: var(--amber-soft); }
+.note.key { border-color: var(--green); background: var(--green-soft); }
+.note.red { border-color: var(--red); background: var(--red-soft); }
+.predict { border: 1px dashed var(--accent); border-radius: 8px; padding: 8px 12px; margin: 10px 0; font-size: .95rem; }
+.predict b { color: var(--accent); }
+.eq { font-family: "Cambria Math", "STIX Two Math", "Times New Roman", serif; font-size: 1.05rem; background: var(--code-bg); border-radius: 8px; padding: 10px 12px; margin: 10px 0; overflow-x: auto; white-space: nowrap; line-height: 1.9; }
+.eq .c { font-family: inherit; color: var(--muted); font-style: normal; font-size: .85rem; margin-left: 10px; }
+code, pre, .mono { font-family: "Cascadia Code", "D2Coding", Consolas, "SFMono-Regular", monospace; font-size: .86rem; }
+code { background: var(--code-bg); padding: 1px 5px; border-radius: 4px; }
+pre { background: var(--code-bg); border-radius: 8px; padding: 10px 12px; overflow-x: auto; line-height: 1.5; margin: 8px 0; }
+pre .ln { color: var(--muted); user-select: none; display: inline-block; min-width: 2.6em; }
+table { border-collapse: collapse; width: 100%; font-size: .9rem; margin: 8px 0; }
+.tablewrap { overflow-x: auto; }
+th, td { border-bottom: 1px solid var(--line); padding: 6px 8px; text-align: left; vertical-align: top; }
+th { color: var(--muted); font-weight: 600; white-space: nowrap; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+canvas { display: block; width: 100%; background: var(--plot-bg); border: 1px solid var(--line); border-radius: 8px; touch-action: none; image-rendering: auto; }
+canvas.px { image-rendering: pixelated; }
+.controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px 14px; margin: 10px 0; }
+.controls label { font-size: .85rem; color: var(--muted); display: flex; flex-direction: column; gap: 2px; }
+.controls label .val { color: var(--fg); font-weight: 600; font-family: Consolas, monospace; }
+input[type=range] { width: 100%; accent-color: var(--accent); }
+select { width: 100%; font: inherit; font-size: .95rem; padding: 5px 8px; border-radius: 6px; border: 1px solid var(--line); background: var(--bg); color: var(--fg); }
+.btns { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+button.b { font: inherit; font-size: .88rem; padding: 6px 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--fg); cursor: pointer; min-height: 36px; }
+button.b.primary, button.b.on { background: var(--accent); color: #fff; border-color: var(--accent); }
+.readout { font-family: Consolas, monospace; font-size: .85rem; background: var(--code-bg); border-radius: 8px; padding: 8px 10px; margin: 8px 0; white-space: pre; overflow-x: auto; line-height: 1.55; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.grid2 > *, .grid3 > * { min-width: 0; }
+@media (max-width: 560px) { .patch td { font-size: .62rem; padding: 2px 1px; } .kernel td { font-size: .6rem; padding: 2px 1px; } }
+@media (max-width: 560px) { .grid2, .grid3 { grid-template-columns: 1fr; } .readout { font-size: .78rem; } table { font-size: .82rem; } }
+.ok { color: var(--green); font-weight: 700; }
+.bad { color: var(--red); font-weight: 700; }
+.mid { color: var(--amber); font-weight: 700; }
+.muted { color: var(--muted); }
+details { border: 1px solid var(--line); border-radius: 8px; padding: 6px 12px; margin: 8px 0; background: var(--card); }
+details > summary { cursor: pointer; font-weight: 600; }
+details[open] > summary { margin-bottom: 6px; }
+figure { margin: 14px 0; }
+figure img { width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--line); background: #fff; }
+figcaption { font-size: .88rem; color: var(--muted); margin-top: 4px; }
+a { color: var(--accent); }
+.flow { width: 100%; height: auto; }
+.flow .stage { cursor: pointer; }
+.flow .stage rect { fill: var(--card); stroke: var(--line); stroke-width: 1.5; }
+.flow .stage.on rect, .flow .stage:hover rect { stroke: var(--accent); stroke-width: 2.5; }
+.flow text { fill: var(--fg); font-size: 13px; }
+.flow .sub { fill: var(--muted); font-size: 11px; }
+.flow .arrow { stroke: var(--muted); stroke-width: 1.6; fill: none; marker-end: url(#ah); }
+.steps { counter-reset: s; list-style: none; padding: 0; }
+.steps > li { counter-increment: s; position: relative; padding: 10px 12px 10px 46px; border: 1px solid var(--line); border-radius: 10px; margin: 8px 0; background: var(--card); }
+.steps > li::before { content: counter(s); position: absolute; left: 12px; top: 10px; width: 24px; height: 24px; border-radius: 50%; background: var(--accent); color: #fff; font-weight: 700; font-size: .8rem; display: grid; place-items: center; }
+.patch td { text-align: center; font-family: Consolas, monospace; font-size: .78rem; padding: 3px; cursor: pointer; border: 1px solid var(--line); }
+.patch td.sel { outline: 2px solid var(--red); outline-offset: -2px; }
+.patch td.win { box-shadow: inset 0 0 0 2px var(--accent); }
+.kernel td { text-align: center; font-family: Consolas, monospace; font-size: .74rem; padding: 3px; border: 1px solid var(--line); }
+.status-success { color: var(--green); font-weight: 700; }
+.status-partial { color: var(--amber); font-weight: 700; }
+.status-fail { color: var(--red); font-weight: 700; }
+.stageimg { width: 100%; max-height: 420px; object-fit: contain; border-radius: 8px; border: 1px solid var(--line); background: #000; }
+.legend { font-size: .82rem; color: var(--muted); }
+.legend span { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin: 0 4px 0 10px; vertical-align: middle; }
+</style>
+</head>
+<body>
+<header class="top">
+  <h1>A3-1 · 비스듬히 찍은 종이를 반듯하게 펴기</h1>
+  <p>완성된 스캐너를 먼저 돌려 보고, 각 단계의 원리로 내려가는 탑다운 학습 자료. 모든 위젯은 이 파일 안에서 계산한다(인터넷 불필요).</p>
+</header>
+<nav class="chips"><div class="inner">
+  <a href="#s0">0 학습법</a><a href="#s1">1 큰 그림</a><a href="#s2">2 이미지=배열</a><a href="#s3">3 블러=내적</a>
+  <a href="#s4">4 엣지</a><a href="#s5">5 윤곽선</a><a href="#s6">6 꼭짓점 정렬</a><a href="#s7">7 투시 변환</a>
+  <a href="#s8">8 종횡비</a><a href="#s9">9 이진화</a><a href="#s10">10 평가</a><a href="#s11">11 한계</a>
+  <a href="#s12">12 코드 지도</a><a href="#s13">13 자기 점검</a><a href="#s14">14 주의점</a>
+  <button id="themeBtn" type="button" aria-label="밝기 테마 전환">테마</button>
+</div></nav>
+<main>
+
+<section id="s0">
+  <h2>0. 이 자료를 쓰는 법 — 탑다운 학습 전략</h2>
+  <p class="lead">"전체가 돌아가는 모습 → 각 부품의 역할 → 부품 안의 수학 → 한계" 순서로 내려간다. 세부를 다 이해하지 않아도 다음으로 넘어갈 수 있게 각 절은 위에서 아래로 깊어진다.</p>
+  <ol class="steps">
+    <li><b>먼저 돌려 본다 (20분).</b> <code>uv run python -m src.app data/synthetic/E01.jpg</code>로 창 5개를 띄우고 트랙바를 끝까지 움직여 본다. 다음으로 S04(어두움), C02(체크무늬)를 열고 같은 값으로 되는지 본다. 이 자료의 1절이 같은 화면이다.</li>
+    <li><b>파이프라인을 말로 설명한다.</b> 1절 그림을 보지 않고 "회색 → 블러 → 엣지 → 윤곽선 → 사각형 → 정렬 → 변환 → 이진화"를 각 단계가 <i>왜</i> 필요한지 한 문장씩 말해 본다. 막히는 단계가 다음에 내려갈 곳이다.</li>
+    <li><b>단계마다 "예측 → 조작 → 확인".</b> 2~9절의 위젯마다 점선 상자의 질문에 먼저 답을 적고 슬라이더를 움직인다. 예측이 틀린 곳이 실제로 배운 곳이다.</li>
+    <li><b>코드로 연결한다.</b> 각 절 끝의 코드 링크(12절)에서 그 단계의 Python 함수를 읽는다. 한 함수는 보통 10~30줄이다.</li>
+    <li><b>실패에서 결론으로.</b> 10~11절의 실패 사례를 보고 "이 실패를 규칙 하나로 고칠 수 있는가"를 스스로 판단한 뒤 보고서(REPORT.md)의 답과 비교한다. 이 미션의 진짜 목표는 이 판단이다.</li>
+    <li><b>자기 점검.</b> 13절 질문에 답을 써 보고 펼쳐서 확인한다. 미션의 "과제 목표" 4개와 같다.</li>
+  </ol>
+  <div class="note key">이 미션의 핵심 메시지: 사람이 정한 규칙(임계값·사각형 모양)은 만든 사람이 본 사진에서는 잘 되지만, 새로운 조명·배경에서 깨진다. 이걸 <b>숫자로</b> 보여 주는 것이 보고서의 역할이다.</div>
+</section>
+
+<section id="s1">
+  <h2>1. 큰 그림 — 사진 한 장이 스캔본이 되기까지</h2>
+  <p class="lead">E01(회색 책상 위 A4)을 기본 파라미터로 처리한 실제 단계별 결과다. 단계를 누르면 그 단계의 출력과 역할이 보인다.</p>
+  <svg class="flow" viewBox="0 0 860 120" role="img" aria-label="파이프라인 다섯 단계">
+    <defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="currentColor" style="color: var(--muted)"/></marker></defs>
+    <g class="stage" data-i="0"><rect x="5" y="20" width="150" height="70" rx="10"/><text x="80" y="50" text-anchor="middle">1 Original</text><text class="sub" x="80" y="70" text-anchor="middle">H×W×3 배열</text></g>
+    <path class="arrow" d="M157,55 L175,55"/>
+    <g class="stage" data-i="1"><rect x="177" y="20" width="150" height="70" rx="10"/><text x="252" y="50" text-anchor="middle">2 Preprocessed</text><text class="sub" x="252" y="70" text-anchor="middle">회색 + 가우시안 블러</text></g>
+    <path class="arrow" d="M329,55 L347,55"/>
+    <g class="stage" data-i="2"><rect x="349" y="20" width="150" height="70" rx="10"/><text x="424" y="50" text-anchor="middle">3 Edges</text><text class="sub" x="424" y="70" text-anchor="middle">Canny + 닫힘 연산</text></g>
+    <path class="arrow" d="M501,55 L519,55"/>
+    <g class="stage" data-i="3"><rect x="521" y="20" width="150" height="70" rx="10"/><text x="596" y="50" text-anchor="middle">4 Contours</text><text class="sub" x="596" y="70" text-anchor="middle">윤곽선 → 4점 → 정렬</text></g>
+    <path class="arrow" d="M673,55 L691,55"/>
+    <g class="stage" data-i="4"><rect x="693" y="20" width="160" height="70" rx="10"/><text x="773" y="50" text-anchor="middle">5 Result</text><text class="sub" x="773" y="70" text-anchor="middle">투시 변환 + 이진화</text></g>
+  </svg>
+  <div class="grid2">
+    <img id="stageImg" class="stageimg" alt="선택한 단계의 출력">
+    <div class="card" id="stageText" style="margin:0"></div>
+  </div>
+  <div class="note">처리는 긴 변 960px 축소본에서 하고, 찾은 꼭짓점만 원래 크기로 되돌려 원본 해상도로 편다. 그래야 사진 해상도가 4000px든 1000px든 "블러 5"가 같은 의미를 갖는다.</div>
+</section>
+
+<section id="s2">
+  <h2>2. 이미지는 숫자 배열이다 — 히스토그램과 어두운 사진</h2>
+  <p class="lead">컬러 사진은 <code>(H, W, 3)</code> uint8 배열이다. OpenCV는 채널 순서가 B, G, R이다. 회색 변환은 채널의 가중합이다.</p>
+  <div class="eq">Gray = 0.299·R + 0.587·G + 0.114·B <span class="c">사람 눈이 초록에 가장 민감하다는 가중치</span></div>
+  <p>NumPy로 배운 조작이 그대로 이미지 조작이다. <code>img[y, x]</code>는 픽셀, <code>img[:, :, 0]</code>은 B 채널, <code>img * 0.3</code>은 노출을 30%로 줄인 사진, <code>np.bincount(gray.ravel(), minlength=256)</code>은 히스토그램이다.</p>
+  <div class="note warn">회색 변환은 정보를 버린다. 파란색(B=160, G=90, R=30)과 갈색(B=60, G=90, R=125)은 눈에는 전혀 다르지만 회색값은 80과 97로 비슷하다. E03 명함의 파란 띠가 잘린 이유다(10절).</div>
+  <div class="widget">
+    <div class="wtitle">밝기를 줄이면 무엇이 사라지나 <span class="tag req">기능 2 EDA</span></div>
+    <div class="predict"><b>예측:</b> E01의 밝기를 30%로 줄이면 Canny(50, 150)는 문서 경계를 몇 %나 찾을까? 히스토그램은 어떻게 변할까?</div>
+    <div class="controls">
+      <label>이미지 <select id="hImg" aria-label="히스토그램 이미지"></select></label>
+      <label>밝기 배율 <span class="val" id="hFv"></span><input type="range" id="hF" min="0.05" max="1" step="0.05" value="1" aria-label="밝기 배율"></label>
+    </div>
+    <div class="grid3">
+      <canvas id="hCan" width="240" height="320" aria-label="어둡게 한 이미지"></canvas>
+      <canvas id="hEdge" width="240" height="320" aria-label="Canny 엣지"></canvas>
+      <canvas id="hHist" width="320" height="320" aria-label="히스토그램"></canvas>
+    </div>
+    <div class="legend">히스토그램: <span style="background:var(--muted)"></span>전체 <span style="background:var(--accent)"></span>문서 안 <span style="background:var(--amber)"></span>문서 밖 · 엣지 위 청록 선 = 정답 경계</div>
+    <div class="readout" id="hOut"></div>
+  </div>
+  <p>밝기를 k배로 줄이면 히스토그램이 왼쪽으로 몰리며 폭이 k배로 좁아진다. 종이 봉우리와 배경 봉우리 사이의 거리, 곧 경계의 밝기 차도 k배가 된다. Canny는 그 차이(기울기)를 <b>절대값 임계값</b>과 비교하므로, 어느 순간 경계가 통째로 사라진다. 서서히 줄지 않고 갑자기 사라지는 이유는 4절의 이력 임계값에 있다.</p>
+  <div id="darkTable"></div>
+  <figure><img data-fig="04_darkening.png" alt=""><figcaption></figcaption></figure>
+</section>
+
+<section id="s3">
+  <h2>3. 블러 = 컨볼루션 = 내적</h2>
+  <p class="lead">가우시안 블러의 출력 픽셀 하나는 "주변 k×k 조각"과 "가중치 커널"의 내적(원소곱의 합)이다. 커널이 이미지 위를 미끄러지며 모든 위치에서 내적을 계산한다.</p>
+  <div class="eq">out[y, x] = Σ<sub>i</sub> Σ<sub>j</sub> K[i, j] · img[y + i − r, x + j − r] <span class="c">r = (k−1)/2, 가중치 합 = 1</span></div>
+  <div class="widget">
+    <div class="wtitle">한 픽셀의 내적을 직접 계산 <span class="tag bonus">보너스 1</span></div>
+    <div class="predict"><b>예측:</b> 종이 경계 바로 옆 픽셀(어두운 쪽)은 블러 뒤 밝아질까 어두워질까? 커널을 키우면?</div>
+    <div class="controls">
+      <label>커널 크기 <select id="cK" aria-label="커널 크기"><option>3</option><option selected>5</option><option>7</option><option>9</option></select></label>
+    </div>
+    <div class="grid2">
+      <div><div class="muted" style="font-size:.85rem">E01 문서 왼쪽 경계 부근 11×11 픽셀 (클릭해 위치 선택)</div><div class="tablewrap"><table class="patch" id="cPatch"></table></div></div>
+      <div><div class="muted" style="font-size:.85rem">커널 K (OpenCV 규칙, 합 = 1)</div><div class="tablewrap"><table class="kernel" id="cKernel"></table></div><div class="readout" id="cOut"></div></div>
+    </div>
+  </div>
+  <h3>이중 for문 vs 벡터화</h3>
+  <p>같은 내적을 두 가지 순서로 묶을 수 있다.</p>
+  <ul>
+    <li><b>픽셀마다</b>: <code>for y: for x: out[y,x] = sum(patch * K)</code>. 반복이 H·W번이다. 매번 작은 배열 연산을 부르는 비용이 쌓인다.</li>
+    <li><b>커널 칸마다</b>: <code>for i: for j: out += K[i,j] * shifted(img, i, j)</code>. 반복은 k²번뿐이고, 각 반복이 이미지 전체에 대한 한 번의 배열 연산이다.</li>
+    <li><b>분리</b>: 2차원 가우시안은 1차원 두 개의 외적이다(K = k kᵀ). 가로로 한 번, 세로로 한 번 하면 연산량이 k²에서 2k로 준다.</li>
+  </ul>
+  <div id="convTable"></div>
+  <figure><img data-fig="12_convolution.png" alt=""><figcaption></figcaption></figure>
+  <div class="note">OpenCV는 sigma를 주지 않으면 커널 9 이하에서 공식 대신 정수비 표(예: 5 → [1,4,6,4,1]/16)를 쓴다. 공식 σ = 0.3((k−1)/2 − 1) + 0.8만 쓰면 결과가 최대 5 밝기 단계 다르다. 구현에서 이 표를 맞춰 OpenCV와 1e-12 이내로 일치시켰다.</div>
+</section>
+
+<section id="s4">
+  <h2>4. 엣지 — 기울기와 Canny</h2>
+  <p class="lead">엣지는 밝기가 급하게 변하는 곳이다. Sobel 커널(이것도 컨볼루션)로 가로·세로 기울기 g<sub>x</sub>, g<sub>y</sub>를 구한다.</p>
+  <div class="eq">G<sub>x</sub> = [[−1, 0, 1], [−2, 0, 2], [−1, 0, 1]] ⊛ img, &nbsp; |∇| ≈ |g<sub>x</sub>| + |g<sub>y</sub>| <span class="c">OpenCV Canny 기본은 L1 노름</span></div>
+  <ol class="steps">
+    <li><b>블러</b>: 잡음의 작은 기울기를 줄인다. 너무 세면 문서 경계도 뭉개진다.</li>
+    <li><b>기울기</b>: Sobel로 크기와 방향을 구한다.</li>
+    <li><b>비최대 억제(NMS)</b>: 기울기 방향으로 양옆보다 큰 픽셀만 남겨 엣지를 1픽셀 두께로 만든다.</li>
+    <li><b>이력 임계값</b>: high를 넘는 픽셀은 강한 엣지(씨앗). low~high 사이는 강한 엣지와 이어져 있을 때만 엣지. low 아래는 버린다.</li>
+  </ol>
+  <div class="note warn">4단계 때문에 어두운 사진에서 경계가 <b>갑자기</b> 사라진다. 경계 기울기가 high 아래로 내려가면 씨앗이 없으니, low를 넘는 약한 엣지도 이어 붙일 곳이 없다.</div>
+  <div class="widget">
+    <div class="wtitle">트랙바 시뮬레이터 <span class="tag req">기능 3</span></div>
+    <div class="predict"><b>예측:</b> S04(어두움)와 C02(체크무늬)를 둘 다 만족시키는 low·high가 있을까? 두 이미지를 번갈아 보며 찾아본다.</div>
+    <div class="controls">
+      <label>이미지 <select id="tImg" aria-label="트랙바 이미지"></select></label>
+      <label>Blur Kernel <span class="val" id="tBv"></span><input type="range" id="tB" min="1" max="13" step="2" value="5" aria-label="블러 커널"></label>
+      <label>Canny Low <span class="val" id="tLv"></span><input type="range" id="tL" min="0" max="300" step="5" value="50" aria-label="Canny low"></label>
+      <label>Canny High <span class="val" id="tHv"></span><input type="range" id="tH" min="0" max="400" step="5" value="150" aria-label="Canny high"></label>
+    </div>
+    <div class="grid2">
+      <canvas id="tCan" width="240" height="320" aria-label="원본"></canvas>
+      <canvas id="tEdge" width="240" height="320" aria-label="엣지"></canvas>
+    </div>
+    <div class="readout" id="tOut"></div>
+    <div class="muted" style="font-size:.85rem">이 위젯은 240×320 축소본에서 계산하므로 같은 값이라도 앱(960px)과 결과가 조금 다르다. 경계 검출률 = 정답 경계 위 점 중 2픽셀 안에 엣지가 있는 비율.</div>
+  </div>
+</section>
+
+<section id="s5">
+  <h2>5. 윤곽선에서 사각형으로 — approxPolyDP와 규칙들</h2>
+  <p class="lead"><code>findContours</code>는 엣지 맵에서 닫힌 경계를 점 목록으로 만든다. 문서 후보는 수백 개 점으로 된 구불구불한 선이다. 이걸 꼭짓점 몇 개짜리 다각형으로 줄이는 것이 Douglas–Peucker 알고리즘(<code>approxPolyDP</code>)이다.</p>
+  <ol class="steps">
+    <li>양 끝점을 잇는 선분을 긋는다.</li>
+    <li>그 선분에서 가장 먼 점을 찾는다. 거리가 ε보다 작으면 사이의 점을 모두 버린다.</li>
+    <li>ε보다 크면 그 점을 꼭짓점으로 남기고, 양쪽 구간에 같은 과정을 반복한다.</li>
+  </ol>
+  <div class="widget">
+    <div class="wtitle">ε에 따라 꼭짓점 수가 변한다 <span class="tag req">기능 4</span></div>
+    <div class="predict"><b>예측:</b> 구겨진 C05의 윤곽을 4점으로 만들려면 ε를 얼마나 키워야 할까? 그때 모서리는 정확할까?</div>
+    <div class="controls">
+      <label>윤곽선 <select id="dImg" aria-label="윤곽선 선택"></select></label>
+      <label>ε (둘레 대비) <span class="val" id="dEv"></span><input type="range" id="dE" min="0.002" max="0.1" step="0.002" value="0.02" aria-label="허용 오차"></label>
+    </div>
+    <canvas id="dCan" width="480" height="640" aria-label="윤곽선과 근사 다각형" style="max-width:420px;margin:0 auto"></canvas>
+    <div class="readout" id="dOut"></div>
+  </div>
+  <p>근사된 다각형이 문서로 뽑히려면 규칙을 모두 통과해야 한다.</p>
+  <div class="tablewrap"><table>
+    <tr><th>규칙</th><th>내용</th><th>왜</th></tr>
+    <tr><td>면적</td><td>화면의 5% ~ 98%</td><td>글자·잡음 윤곽은 작고, 화면 테두리 전체는 문서가 아니다</td></tr>
+    <tr><td>꼭짓점 4개</td><td>approxPolyDP(ε = 둘레의 2%) 결과가 4점</td><td>종이는 사각형</td></tr>
+    <tr><td>볼록</td><td>연속한 두 변의 외적 부호가 모두 같음</td><td>투시 투영된 직사각형은 항상 볼록하다</td></tr>
+    <tr><td>최대 면적</td><td>통과한 후보 중 가장 큰 것</td><td>문서 안의 표·상자도 사각형이다</td></tr>
+  </table></div>
+  <div class="note">각 규칙은 "문서란 이런 것"이라는 사람의 가정이다. 11절에서 각 가정이 깨지는 사진을 본다.</div>
+</section>
+
+<section id="s6">
+  <h2>6. 꼭짓점 정렬 — 라이브러리 없이 기하로</h2>
+  <p class="lead">투시 변환에는 네 점이 TL, TR, BR, BL 순서로 들어가야 한다. <code>approxPolyDP</code>가 주는 순서는 윤곽선을 따라간 순서일 뿐이라 시작점과 방향이 제각각이다.</p>
+  <div class="grid2">
+    <div class="card"><b>흔한 규칙 (합·차)</b><br>TL = x+y 최소, BR = x+y 최대<br>TR = y−x 최소, BL = y−x 최대<br><span class="bad">45°로 돌아가면 두 점의 x+y가 같아져 같은 점이 두 번 뽑힌다.</span></div>
+    <div class="card"><b>이 구현 (각도)</b><br>① 무게중심 기준 atan2로 정렬 → 시계 방향으로 이웃한 순서<br>② 네 변 중 방향이 +x에 가장 가까운 변 = 윗변, 그 시작점 = TL<br><span class="ok">네 점을 항상 한 번씩 쓴다.</span></div>
+  </div>
+  <div class="widget">
+    <div class="wtitle">돌려 보며 두 방법 비교 <span class="tag req">기능 5 직접 구현</span></div>
+    <div class="predict"><b>예측:</b> 몇 도에서 합·차 규칙이 처음 틀릴까? 각도 방법은 몇 도에서 "윗변"을 바꿀까?</div>
+    <div class="controls">
+      <label>평면 회전 <span class="val" id="oRv"></span><input type="range" id="oR" min="-90" max="90" step="1" value="20" aria-label="회전 각도"></label>
+      <label>원근 (위쪽 좁아짐) <span class="val" id="oPv"></span><input type="range" id="oP" min="0" max="0.6" step="0.02" value="0.2" aria-label="원근 정도"></label>
+    </div>
+    <div class="grid2">
+      <canvas id="oSum" width="300" height="300" aria-label="합차 규칙 결과"></canvas>
+      <canvas id="oAng" width="300" height="300" aria-label="각도 방법 결과"></canvas>
+    </div>
+    <div class="readout" id="oOut"></div>
+  </div>
+  <div class="note warn">정확히 45° 근처에서는 어느 변이 위인지 기하만으로는 정할 수 없다(T04). 결과가 90° 돌아간 방향으로 나올 수 있지만 사각형은 올바르다. 진짜 위쪽은 글자 방향을 봐야 안다. 그건 OCR이나 학습 모델의 몫이다.</div>
+</section>
+
+<section id="s7">
+  <h2>7. 투시 변환 = 3×3 행렬 곱</h2>
+  <p class="lead">회전·확대는 2×2 행렬 곱이다. 원근(먼 곳이 작아짐)은 2×2로 표현할 수 없다. 좌표에 1을 붙인 동차 좌표 (x, y, 1)와 3×3 행렬 H를 쓰고, 마지막에 셋째 값으로 나눈다.</p>
+  <div class="eq">[u′, v′, w′]ᵀ = H · [x, y, 1]ᵀ, &nbsp; (u, v) = (u′/w′, v′/w′) <span class="c">w′로 나누는 것이 "멀면 작게"</span></div>
+  <p>H는 9개 값이지만 전체 배율은 의미가 없어 h<sub>33</sub> = 1로 두면 미지수 8개다. 대응점 한 쌍이 식 2개를 주므로 네 쌍이면 8×8 연립방정식이 된다. <code>getPerspectiveTransform</code>이 푸는 것이 이 식이다. <code>warpPerspective</code>는 결과 이미지의 각 픽셀에 H⁻¹을 곱해 원본에서 가져올 위치를 찾고 보간한다.</p>
+  <div class="eq">u = (h₁₁x + h₁₂y + h₁₃) / (h₃₁x + h₃₂y + 1), &nbsp; v = (h₂₁x + h₂₂y + h₂₃) / (h₃₁x + h₃₂y + 1)</div>
+  <div class="widget">
+    <div class="wtitle">꼭짓점을 끌어 H를 바꿔 보기 <span class="tag req">기능 5 변환</span></div>
+    <div class="predict"><b>예측:</b> 꼭짓점 하나를 종이 안쪽으로 끌면 결과의 어느 부분이 늘어날까? H의 셋째 행(h₃₁, h₃₂)이 0이 되는 건 언제일까?</div>
+    <div class="btns"><button class="b" id="hReset" type="button">정답 꼭짓점으로</button><button class="b" id="hRect" type="button">화면 전체 직사각형</button></div>
+    <div class="grid2">
+      <canvas id="hSrc" width="240" height="320" aria-label="원본 위 네 꼭짓점 (끌기)"></canvas>
+      <canvas id="hDst" width="180" height="240" aria-label="펴진 결과"></canvas>
+    </div>
+    <div class="readout" id="hMat"></div>
+  </div>
+  <div class="note">h₃₁ = h₃₂ = 0이면 w′ = 1이라 나눗셈이 없다. 이것이 아핀 변환(회전·확대·전단·이동)이다. 투시 변환은 아핀에 "평행선이 한 점(소실점)에서 만나는 효과"를 더한 것이다.</div>
+</section>
+
+<section id="s8">
+  <h2>8. 결과 크기와 종횡비 <span class="tag bonus">보너스 2</span></h2>
+  <p class="lead">투시 변환에는 목적지 사각형의 크기가 필요하다. 원본 좌표만으로 실제 종이의 가로/세로 비율을 알아낼 수 있을까?</p>
+  <ul>
+    <li><b>변 길이 방법</b>: 위·아래 변 중 긴 쪽 = 가로, 왼·오른 변 중 긴 쪽 = 세로. 정면이면 정확하지만, 기울어지면 먼 변이 짧게 찍혀 비율이 틀어진다.</li>
+    <li><b>원근 보정(Zhang &amp; He)</b>: 직사각형의 마주 보는 변은 3차원에서 평행하다. 사진에서 만나는 점(소실점)의 위치가 카메라 초점거리 f와 종이의 기울기를 알려 준다. 주점이 이미지 중심이라고 가정하면 네 점으로 f를 구하고, 그 카메라로 두 변의 실제 길이 비를 계산할 수 있다.</li>
+  </ul>
+  <div class="widget">
+    <div class="wtitle">기울여 찍고 비율 추정하기</div>
+    <div class="predict"><b>예측:</b> A4(0.707)를 60° 기울여 찍으면 변 길이 방법은 비율을 얼마로 추정할까?</div>
+    <div class="controls">
+      <label>종이 <select id="aPaper" aria-label="종이 종류"><option value="210,297">A4 (0.707)</option><option value="80,210">영수증 (0.381)</option><option value="90,50">명함 (1.8)</option></select></label>
+      <label>앞뒤 기울기 <span class="val" id="aXv"></span><input type="range" id="aX" min="0" max="70" step="1" value="50" aria-label="앞뒤 기울기"></label>
+      <label>좌우 기울기 <span class="val" id="aYv"></span><input type="range" id="aY" min="-40" max="40" step="1" value="0" aria-label="좌우 기울기"></label>
+      <label>평면 회전 <span class="val" id="aZv"></span><input type="range" id="aZ" min="-40" max="40" step="1" value="5" aria-label="평면 회전"></label>
+      <label>꼭짓점 잡음(px) <span class="val" id="aNv"></span><input type="range" id="aN" min="0" max="6" step="0.5" value="0" aria-label="꼭짓점 잡음"></label>
+    </div>
+    <canvas id="aCan" width="360" height="480" aria-label="투영된 종이" style="max-width:300px;margin:0 auto"></canvas>
+    <div class="readout" id="aOut"></div>
+  </div>
+  <figure><img data-fig="11_aspect_ratio.png" alt=""><figcaption></figcaption></figure>
+  <div class="note warn">원근 보정은 "실제 카메라로 찍은 사진, 자르지 않음"을 가정한다. 사진을 잘라 주점이 중심에서 벗어나거나, 꼭짓점 오차가 크면(잡음 슬라이더) 오히려 틀릴 수 있다. 정면에 가까우면 f를 구할 수 없어 변 길이 방법으로 돌아간다.</div>
+</section>
+
+<section id="s9">
+  <h2>9. 적응형 이진화 — 그림자 속 글자 살리기</h2>
+  <p class="lead">전역 임계값은 화면 전체에 하나의 기준을 쓴다. 그림자가 있으면 그림자 속 종이가 기준보다 어두워 통째로 검게 된다. 적응형 이진화는 픽셀마다 주변 블록의 가우시안 가중 평균을 구해 기준으로 쓴다.</p>
+  <div class="eq">dst(x, y) = 255 if src(x, y) &gt; mean<sub>block</sub>(x, y) − C else 0</div>
+  <div class="widget">
+    <div class="wtitle">전역 vs 적응형 <span class="tag req">기능 6</span></div>
+    <div class="predict"><b>예측:</b> 블록을 글자보다 작게(3~7) 만들면 글자는 어떻게 될까? C를 0으로 하면 종이 바탕은?</div>
+    <div class="btns" id="thMode"><button class="b on" data-m="adaptive" type="button">적응형</button><button class="b" data-m="otsu" type="button">전역 Otsu</button><button class="b" data-m="fixed" type="button">전역 고정값</button></div>
+    <div class="controls">
+      <label>Block <span class="val" id="thBv"></span><input type="range" id="thB" min="3" max="81" step="2" value="15" aria-label="블록 크기"></label>
+      <label>C <span class="val" id="thCv"></span><input type="range" id="thC" min="0" max="30" step="1" value="10" aria-label="상수 C"></label>
+      <label>고정 임계값 <span class="val" id="thTv"></span><input type="range" id="thT" min="0" max="255" step="1" value="128" aria-label="고정 임계값"></label>
+    </div>
+    <div class="grid2">
+      <canvas id="thSrc" class="px" width="180" height="480" aria-label="펴진 S02 회색본" style="max-width:220px;margin:0 auto"></canvas>
+      <canvas id="thDst" class="px" width="180" height="480" aria-label="이진화 결과" style="max-width:220px;margin:0 auto"></canvas>
+    </div>
+    <div class="readout" id="thOut"></div>
+  </div>
+  <figure><img data-fig="14_threshold.png" alt=""><figcaption></figcaption></figure>
+  <figure><img data-fig="05_pipeline_S03.png" alt=""><figcaption></figcaption></figure>
+  <p>S03처럼 그림자 경계가 블록보다 선명하면, 경계에 걸친 블록의 평균이 밝은 쪽에 끌려 어두운 쪽 픽셀이 검게 된다. 그래서 그림자 경계가 선으로 남는다. 블록보다 큰 검은 면(막대그래프)은 속이 빈다.</p>
+</section>
+
+<section id="s10">
+  <h2>10. 평가 — 20장, 무엇이 성공이고 왜 실패했나</h2>
+  <p class="lead">합성 사진은 정답 꼭짓점을 알기 때문에 "반듯하게 펴졌는가"를 픽셀 오차로 판정한다. 성공 = 최대 꼭짓점 오차 ≤ 정답 대각선의 2%, 부분 성공 ≤ 5%.</p>
+  <figure><img data-fig="01_dataset.png" alt=""><figcaption></figcaption></figure>
+  <div id="summaryTable"></div>
+  <div id="rowsTable" class="tablewrap"></div>
+  <figure><img data-fig="06_detection.png" alt=""><figcaption></figcaption></figure>
+  <h3>실패 원인 한 줄 요약</h3>
+  <div class="tablewrap"><table>
+    <tr><th>ID</th><th>무엇이 깨졌나</th><th>파라미터로 고쳐지나</th></tr>
+    <tr><td>E03·T04</td><td>파란 띠와 갈색 책상이 회색에서 같은 밝기 → 띠 위 경계를 문서 아랫변으로 잡음</td><td>E03 불가, T04 극단적 2개 조합만. 색 채널 엣지 규칙으로 해결</td></tr>
+    <tr><td>S04</td><td>저조도: 경계 기울기 &lt; high → 씨앗 없음</td><td>낮은 임계값에서 가능 (그 값에서 C02 실패)</td></tr>
+    <tr><td>S05</td><td>반사광 포화로 경계 구간이 사라져 윤곽이 열림</td><td>불가</td></tr>
+    <tr><td>C02</td><td>체크무늬 직선이 더 큰 사각형을 만듦 (최대 면적 규칙이 무늬를 고름)</td><td>높은 임계값에서 가능 (그 값에서 S04 실패)</td></tr>
+    <tr><td>C03</td><td>흰 책상 + 겹친 종이: 경계 대비 ≈ 잡음</td><td>불가</td></tr>
+    <tr><td>C04</td><td>손가락이 모서리를 가려 사각형이 손끝으로 휨</td><td>불가</td></tr>
+    <tr><td>C05</td><td>구김 골이 경계에 이어져 7~9각형</td><td>절반 정도의 조합에서 가능</td></tr>
+  </table></div>
+  <figure><img data-fig="07_failures.png" alt=""><figcaption></figcaption></figure>
+</section>
+
+<section id="s11">
+  <h2>11. 규칙 기반의 한계 — 그래서 왜 학습인가</h2>
+  <p class="lead">"파라미터를 잘 고르면 되지 않나?"와 "규칙을 더 넣으면 되지 않나?"에 데이터로 답한다.</p>
+  <h3>파라미터 딜레마</h3>
+  <div class="readout" id="sweepOut"></div>
+  <figure><img data-fig="08_parameter_sweep.png" alt=""><figcaption></figcaption></figure>
+  <figure><img data-fig="09_dilemma.png" alt=""><figcaption></figcaption></figure>
+  <p>저조도 사진은 경계가 약해 <b>낮은</b> 임계값이 필요하고, 체크무늬 사진은 무늬를 끊기 위해 <b>높은</b> 임계값이 필요하다. 한 숫자에 "문서 경계는 살리고 배경 무늬는 죽인다"는 두 역할을 맡겼는데, 둘의 크기 순서가 사진마다 뒤바뀐다.</p>
+  <h3>규칙을 더하면?</h3>
+  <div id="rulesTable"></div>
+  <figure><img data-fig="10_rule_variants.png" alt=""><figcaption></figcaption></figure>
+  <div class="note red">규칙은 겨냥한 실패만 고친다. 다 합쳐도 남는 실패(반사·흰 배경·가림·체크무늬)는 "이 엣지가 문서 경계인가"를 판단해야 풀리는데, 그 판단을 규칙으로 쓰면 장면 종류마다 규칙이 늘어난다. 새 규칙은 또 새 파라미터를 들여온다.</div>
+  <h3>학습 기반 가설</h3>
+  <ul>
+    <li>이미지 → 네 꼭짓점(또는 문서 마스크)을 직접 예측하는 모델을 (사진, 정답 꼭짓점) 쌍으로 학습시키면, 밝기 기울기 외에 질감·글자·색·맥락까지 쓰는 특징을 스스로 만든다.</li>
+    <li>가림 사례를 학습하면 보이는 변의 방향에서 숨은 모서리를 추론하는 법을 배운다.</li>
+    <li>이 미션의 합성 생성기(밝기·그림자·반사·잡음)는 그대로 데이터 증강이 된다. "어두우면 깨지는" 절대 임계값 대신 다양한 밝기에서 같은 답을 내도록 학습시킨다.</li>
+    <li>평가는 같은 방식(최대 꼭짓점 오차 2%)으로, 학습에 쓰지 않은 사진으로 한다. 규칙 기반 이미지별 최적값 16/20이 넘어야 할 기준이다.</li>
+  </ul>
+</section>
+
+<section id="s12">
+  <h2>12. 코드 지도 — 요구사항 → 함수 → 검증</h2>
+  <p class="lead">함수 이름을 누르면 현재 소스의 해당 부분(줄 번호 포함)이 아래에 나타난다.</p>
+  <div class="tablewrap"><table id="codeMap"></table></div>
+  <div id="codeView"></div>
+</section>
+
+<section id="s13">
+  <h2>13. 자기 점검 — 미션의 과제 목표</h2>
+  <details><summary>1. 이미지가 (H, W, C) 배열이라는 것을 NumPy 조작으로 보여라.</summary>
+    <p><code>img.shape</code> → (1280, 960, 3). <code>img[..., ::-1]</code>은 BGR→RGB, <code>img[100:200, 50:150]</code>은 잘라내기, <code>img.astype(float) * 0.3</code>은 노출 감소, <code>np.bincount(gray.ravel(), minlength=256)</code>은 히스토그램, <code>gray[mask].mean()</code>은 문서 영역 평균 밝기다. 이 미션의 EDA(<code>src/eda.py</code>)가 전부 이런 배열 연산이다.</p></details>
+  <details><summary>2. 컨볼루션이 필터와 이미지의 내적인 이유, 행렬 곱이 회전·투영을 하는 원리는?</summary>
+    <p>출력 픽셀 = 커널과 같은 크기 조각과 커널의 원소곱 합 = 두 벡터(펼친 조각, 펼친 커널)의 내적이다(3절 위젯). 회전은 2×2 직교행렬 곱, 투영은 동차 좌표 (x, y, 1)에 3×3 H를 곱한 뒤 셋째 성분으로 나누는 것이다. 나눗셈이 "멀수록 작게"를 만든다(7절).</p></details>
+  <details><summary>3. 하나의 고정 파라미터가 왜 실패하는지 정량 데이터로 설명하라.</summary>
+    <p>266개 조합 전수 탐색에서 최고 단일 조합 14/20, 이미지별 최적 16/20, 어떤 조합으로도 안 되는 4장. S04와 C02는 성공하는 조합이 하나도 겹치지 않는다. 어두운 사진의 경계 기울기는 밝기에 정비례해 줄어 고정 임계값 아래로 떨어지고(2절), 체크무늬는 강한 무늬 엣지를 끊기 위해 높은 임계값이 필요하다(11절).</p></details>
+  <details><summary>4. 규칙 기반이 일반화되지 못하는 이유와, 학습이 필요한 이유는?</summary>
+    <p>규칙은 만든 사람이 본 실패에 대한 대책이라 겨냥한 실패만 고친다(색 채널 엣지는 E03·T04만, 자동 임계값은 S04만). 규칙끼리 충돌하고(닫힘 연산 제거 → C05 해결, E03·T04 악화), 새 규칙은 새 파라미터를 낳는다. 남은 실패는 "어느 엣지가 문서인가"라는 판단 문제이고, 이 판단 기준을 데이터에서 배우는 것이 학습 기반이다.</p></details>
+  <details><summary>5. (추가) 합·차 정렬이 45°에서 왜 깨지는가? 각도 정렬은 무엇을 보장하나?</summary>
+    <p>45° 돌아간 정사각형은 위·왼쪽 두 꼭짓점의 x+y가 같아 argmin이 같은 점을 두 번 고를 수 있다. 각도 정렬은 네 점을 각도순으로 한 번씩만 배치하므로 항상 이웃한 순서의 사각형을 만든다. 다만 "어느 변이 위인가"는 45° 근처에서 기하만으로 결정할 수 없다.</p></details>
+  <details><summary>6. (추가) Canny 검출률이 밝기 ×0.35와 ×0.25 사이에서 100% → 0%로 급락하는 이유는?</summary>
+    <p>이력 임계값은 high를 넘는 씨앗에서 시작해 약한 엣지를 잇는다. 경계 기울기 중앙값이 high(150) 아래로 내려가면 씨앗이 사라지고, low(50)를 넘는 약한 엣지도 이어 붙일 곳이 없어 통째로 버려진다.</p></details>
+</section>
+
+<section id="s14">
+  <h2>14. 해석 결정과 주의점</h2>
+  <ul>
+    <li><b>합성 데이터</b>: 직접 찍은 사진이 없어 3차원 카메라 모델로 합성한 20장을 썼다. 성공률은 실제 사진의 성공률이 아니라 "어떤 조건이 어떤 규칙을 깨는가"의 통제 실험이다. <code>data/real/</code> + <code>tools/annotate_corners.py</code>로 같은 평가를 실제 사진에 할 수 있다.</li>
+    <li><b>성공 기준 2%</b>는 이 구현이 정한 값이다. 3%로 늘리면 T04가 성공으로 바뀐다.</li>
+    <li><b>같은 20장으로 고르고 평가</b>했다. 파라미터 최적값·규칙 효과는 과적합된 추정이다.</li>
+    <li><b>45° 근처 회전의 방향</b>은 판정에서 제외하고 따로 기록했다(결과가 90° 돌아감).</li>
+    <li><b>종횡비 원근 보정</b>은 주점 = 이미지 중심을 가정한다. 자른 사진에서는 변 길이 방법보다 나쁠 수 있다.</li>
+    <li>이 페이지의 위젯은 축소 이미지(240×320)에서 JavaScript로 같은 알고리즘을 계산한다. 검증 스크립트(<code>tools/verify_study_guide.py</code>)가 Python·OpenCV 결과와 비교한다.</li>
+  </ul>
+  <p class="muted" id="envLine"></p>
+</section>
+
+</main>
+
+<script id="mathlib">
+const M = (() => {
+  const SMALL = {
+    1: [1], 3: [0.25, 0.5, 0.25], 5: [0.0625, 0.25, 0.375, 0.25, 0.0625],
+    7: [0.03125, 0.109375, 0.21875, 0.28125, 0.21875, 0.109375, 0.03125],
+    9: [4, 13, 30, 51, 60, 51, 30, 13, 4].map(v => v / 256),
+  };
+  function gaussianKernel1d(k, sigma = 0) {
+    if (sigma <= 0 && SMALL[k]) return SMALL[k].slice();
+    if (sigma <= 0) sigma = 0.3 * ((k - 1) * 0.5 - 1) + 0.8;
+    const out = []; let s = 0;
+    for (let i = 0; i < k; i++) { const x = i - (k - 1) / 2; const v = Math.exp(-x * x / (2 * sigma * sigma)); out.push(v); s += v; }
+    return out.map(v => v / s);
+  }
+  const reflect101 = (i, n) => { if (n === 1) return 0; while (i < 0 || i >= n) { if (i < 0) i = -i; if (i >= n) i = 2 * n - 2 - i; } return i; };
+  const replicate = (i, n) => (i < 0 ? 0 : i >= n ? n - 1 : i);
+  function sepFilter(src, w, h, k, border) {
+    const r = (k.length - 1) / 2, tmp = new Float64Array(w * h), out = new Float64Array(w * h);
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+      let s = 0; for (let j = 0; j < k.length; j++) s += k[j] * src[y * w + border(x + j - r, w)]; tmp[y * w + x] = s;
+    }
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+      let s = 0; for (let j = 0; j < k.length; j++) s += k[j] * tmp[border(y + j - r, h) * w + x]; out[y * w + x] = s;
+    }
+    return out;
+  }
+  function gaussianBlur(src, w, h, ksize, opts = {}) {
+    const border = opts.border === 'replicate' ? replicate : reflect101;
+    const f = ksize > 1 ? sepFilter(src, w, h, gaussianKernel1d(ksize), border) : Float64Array.from(src);
+    if (opts.float) return f;
+    const out = new Uint8ClampedArray(w * h); for (let i = 0; i < f.length; i++) out[i] = Math.round(f[i]); return out;
+  }
+  function convolveAt(src, w, h, kernel2d, y, x) {
+    const k = kernel2d.length, r = (k - 1) / 2; let s = 0;
+    for (let i = 0; i < k; i++) for (let j = 0; j < k; j++) s += kernel2d[i][j] * src[reflect101(y + i - r, h) * w + reflect101(x + j - r, w)];
+    return s;
+  }
+  function kernel2d(k) { const a = gaussianKernel1d(k); return a.map(u => a.map(v => u * v)); }
+  function sobel(src, w, h) {
+    const gx = new Float64Array(w * h), gy = new Float64Array(w * h);
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+      const p = (yy, xx) => src[replicate(yy, h) * w + replicate(xx, w)];
+      gx[y * w + x] = (p(y - 1, x + 1) + 2 * p(y, x + 1) + p(y + 1, x + 1)) - (p(y - 1, x - 1) + 2 * p(y, x - 1) + p(y + 1, x - 1));
+      gy[y * w + x] = (p(y + 1, x - 1) + 2 * p(y + 1, x) + p(y + 1, x + 1)) - (p(y - 1, x - 1) + 2 * p(y - 1, x) + p(y - 1, x + 1));
+    }
+    return { gx, gy };
+  }
+  function canny(src, w, h, low, high) {
+    if (low > high) [low, high] = [high, low];
+    const { gx, gy } = sobel(src, w, h), mag = new Float64Array(w * h);
+    for (let i = 0; i < mag.length; i++) mag[i] = Math.abs(gx[i]) + Math.abs(gy[i]);
+    const TG22 = 0.4142135623730950488;
+    const state = new Uint8Array(w * h); // 0 없음, 1 약함, 2 강함
+    const m = (y, x) => (y < 0 || y >= h || x < 0 || x >= w ? 0 : mag[y * w + x]);
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+      const i = y * w + x, v = mag[i];
+      if (v <= low) continue;
+      const xs = Math.abs(gx[i]), ys = Math.abs(gy[i]);
+      const tg22x = xs * TG22, tg67x = tg22x + 2 * xs;
+      let keep;
+      if (ys < tg22x) keep = v > m(y, x - 1) && v >= m(y, x + 1);
+      else if (ys > tg67x) keep = v > m(y - 1, x) && v >= m(y + 1, x);
+      else { const s = (gx[i] < 0) !== (gy[i] < 0) ? -1 : 1; keep = v > m(y - 1, x - s) && v > m(y + 1, x + s); }
+      if (keep) state[i] = v > high ? 2 : 1;
+    }
+    const stack = []; for (let i = 0; i < state.length; i++) if (state[i] === 2) stack.push(i);
+    while (stack.length) {
+      const i = stack.pop(), y = (i / w) | 0, x = i % w;
+      for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
+        const yy = y + dy, xx = x + dx; if (yy < 0 || yy >= h || xx < 0 || xx >= w) continue;
+        const j = yy * w + xx; if (state[j] === 1) { state[j] = 2; stack.push(j); }
+      }
+    }
+    const out = new Uint8Array(w * h); for (let i = 0; i < out.length; i++) out[i] = state[i] === 2 ? 255 : 0;
+    return out;
+  }
+  function segDist(p, a, b) {
+    const dx = b[0] - a[0], dy = b[1] - a[1], L = Math.hypot(dx, dy);
+    if (L === 0) return Math.hypot(p[0] - a[0], p[1] - a[1]);
+    return Math.abs(dy * (p[0] - a[0]) - dx * (p[1] - a[1])) / L;
+  }
+  function dpOpen(pts, eps) {
+    const keep = new Uint8Array(pts.length); keep[0] = keep[pts.length - 1] = 1;
+    const stack = [[0, pts.length - 1]];
+    while (stack.length) {
+      const [s, e] = stack.pop(); let best = -1, bi = -1;
+      for (let i = s + 1; i < e; i++) { const d = segDist(pts[i], pts[s], pts[e]); if (d > best) { best = d; bi = i; } }
+      if (best > eps) { keep[bi] = 1; stack.push([s, bi], [bi, e]); }
+    }
+    return pts.filter((_, i) => keep[i]);
+  }
+  function approxClosed(pts, eps) {
+    // 닫힌 곡선: 서로 가장 먼 두 점으로 나눠 두 열린 곡선에 Douglas–Peucker를 적용한다
+    const n = pts.length; if (n < 3) return pts.slice();
+    const farthest = from => { let far = from, fd = -1; for (let i = 0; i < n; i++) { const d = Math.hypot(pts[i][0] - pts[from][0], pts[i][1] - pts[from][1]); if (d > fd) { fd = d; far = i; } } return far; };
+    const a = farthest(0), b = farthest(a);
+    const i0 = Math.min(a, b), i1 = Math.max(a, b);
+    const c1 = pts.slice(i0, i1 + 1), c2 = pts.slice(i1).concat(pts.slice(0, i0 + 1));
+    const r1 = dpOpen(c1, eps), r2 = dpOpen(c2, eps);
+    return r1.slice(0, -1).concat(r2.slice(0, -1));
+  }
+  function arcLength(pts) { let s = 0; for (let i = 0; i < pts.length; i++) { const a = pts[i], b = pts[(i + 1) % pts.length]; s += Math.hypot(b[0] - a[0], b[1] - a[1]); } return s; }
+  function polygonArea(pts) { let s = 0; for (let i = 0; i < pts.length; i++) { const a = pts[i], b = pts[(i + 1) % pts.length]; s += a[0] * b[1] - a[1] * b[0]; } return Math.abs(s) / 2; }
+  function isConvex(pts) {
+    const n = pts.length; let pos = 0, neg = 0;
+    for (let i = 0; i < n; i++) {
+      const p = pts[i], q = pts[(i + 1) % n], r = pts[(i + 2) % n];
+      const c = (q[0] - p[0]) * (r[1] - q[1]) - (q[1] - p[1]) * (r[0] - q[0]);
+      if (c > 0) pos++; else if (c < 0) neg++; else return false;
+    }
+    return pos === n || neg === n;
+  }
+  function orderSumDiff(pts) {
+    const s = pts.map(p => p[0] + p[1]), d = pts.map(p => p[1] - p[0]);
+    const amin = a => a.indexOf(Math.min(...a)), amax = a => a.indexOf(Math.max(...a));
+    return [pts[amin(s)], pts[amin(d)], pts[amax(s)], pts[amax(d)]];
+  }
+  function orderPoints(pts) {
+    const cx = pts.reduce((a, p) => a + p[0], 0) / pts.length, cy = pts.reduce((a, p) => a + p[1], 0) / pts.length;
+    const idx = pts.map((p, i) => [Math.atan2(p[1] - cy, p[0] - cx), i]).sort((u, v) => u[0] - v[0] || u[1] - v[1]).map(t => t[1]);
+    const cw = idx.map(i => pts[i]);
+    let start = 0, best = -Infinity;
+    for (let i = 0; i < 4; i++) {
+      const a = cw[i], b = cw[(i + 1) % 4]; let L = Math.hypot(b[0] - a[0], b[1] - a[1]); if (L === 0) L = 1;
+      const al = Math.round(((b[0] - a[0]) / L) * 1e12) / 1e12;
+      if (al > best) { best = al; start = i; }
+    }
+    return [0, 1, 2, 3].map(k => cw[(start + k) % 4]);
+  }
+  function solve(A, b) {
+    const n = b.length, M2 = A.map((r, i) => r.concat([b[i]]));
+    for (let c = 0; c < n; c++) {
+      let p = c; for (let r = c + 1; r < n; r++) if (Math.abs(M2[r][c]) > Math.abs(M2[p][c])) p = r;
+      [M2[c], M2[p]] = [M2[p], M2[c]];
+      for (let r = 0; r < n; r++) if (r !== c) { const f = M2[r][c] / M2[c][c]; for (let k = c; k <= n; k++) M2[r][k] -= f * M2[c][k]; }
+    }
+    return M2.map((r, i) => r[n] / r[i]);
+  }
+  function homography(src, dst) {
+    const A = [], b = [];
+    for (let i = 0; i < 4; i++) {
+      const [x, y] = src[i], [u, v] = dst[i];
+      A.push([x, y, 1, 0, 0, 0, -u * x, -u * y]); b.push(u);
+      A.push([0, 0, 0, x, y, 1, -v * x, -v * y]); b.push(v);
+    }
+    const h = solve(A, b);
+    return [[h[0], h[1], h[2]], [h[3], h[4], h[5]], [h[6], h[7], 1]];
+  }
+  function applyH(H, x, y) { const w = H[2][0] * x + H[2][1] * y + H[2][2]; return [(H[0][0] * x + H[0][1] * y + H[0][2]) / w, (H[1][0] * x + H[1][1] * y + H[1][2]) / w]; }
+  function invert3(m) {
+    const [a, b, c] = m[0], [d, e, f] = m[1], [g, h, i] = m[2];
+    const A = e * i - f * h, B = -(d * i - f * g), C = d * h - e * g, det = a * A + b * B + c * C;
+    return [[A / det, -(b * i - c * h) / det, (b * f - c * e) / det], [B / det, (a * i - c * g) / det, -(a * f - c * d) / det], [C / det, -(a * h - b * g) / det, (a * e - b * d) / det]];
+  }
+  function pyRound(x) { const f = Math.floor(x), d = x - f; if (d > 0.5) return f + 1; if (d < 0.5) return f; return f % 2 === 0 ? f : f + 1; }
+  function distanceSize(q) {
+    const L = (a, b) => Math.hypot(b[0] - a[0], b[1] - a[1]);
+    const [tl, tr, br, bl] = q;
+    return [Math.max(1, pyRound(Math.max(L(tl, tr), L(bl, br)))), Math.max(1, pyRound(Math.max(L(tl, bl), L(tr, br))))];
+  }
+  const cross = (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
+  const dot = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+  function zhangAspect(q, w, h) {
+    const [tl, tr, br, bl] = q, u0 = w / 2, v0 = h / 2;
+    const m1 = [tl[0] - u0, tl[1] - v0, 1], m2 = [tr[0] - u0, tr[1] - v0, 1], m3 = [bl[0] - u0, bl[1] - v0, 1], m4 = [br[0] - u0, br[1] - v0, 1];
+    const k2 = dot(cross(m1, m4), m3) / dot(cross(m2, m4), m3), k3 = dot(cross(m1, m4), m2) / dot(cross(m3, m4), m2);
+    const n2 = m2.map((v, i) => k2 * v - m1[i]), n3 = m3.map((v, i) => k3 * v - m1[i]);
+    const [dw, dh] = distanceSize(q), fallback = { aspect: dw / dh, focal: null, method: 'distance' };
+    const denom = n2[2] * n3[2];
+    if (Math.abs(denom) < 1e-9) return fallback;
+    const f2 = -(n2[0] * n3[0] + n2[1] * n3[1]) / denom;
+    if (!isFinite(f2) || f2 <= 0) return fallback;
+    const f = Math.sqrt(f2), big = Math.max(w, h);
+    if (!(0.2 * big < f && f < 20 * big)) return fallback;
+    const r2 = [n2[0] / f, n2[1] / f, n2[2]], r3 = [n3[0] / f, n3[1] / f, n3[2]];
+    return { aspect: Math.sqrt(dot(r2, r2) / dot(r3, r3)), focal: f, method: 'zhang' };
+  }
+  function rotation(pitch, yaw, roll) {
+    const [ax, ay, az] = [pitch, yaw, roll].map(d => d * Math.PI / 180);
+    const Rx = [[1, 0, 0], [0, Math.cos(ax), -Math.sin(ax)], [0, Math.sin(ax), Math.cos(ax)]];
+    const Ry = [[Math.cos(ay), 0, Math.sin(ay)], [0, 1, 0], [-Math.sin(ay), 0, Math.cos(ay)]];
+    const Rz = [[Math.cos(az), -Math.sin(az), 0], [Math.sin(az), Math.cos(az), 0], [0, 0, 1]];
+    const mul = (A, B) => A.map(r => B[0].map((_, j) => r.reduce((s, v, k) => s + v * B[k][j], 0)));
+    return mul(mul(Rx, Ry), Rz);
+  }
+  function projectPaper(wmm, hmm, pitch, yaw, roll, W, H, f, dist) {
+    const R = rotation(pitch, yaw, roll);
+    return [[-wmm / 2, -hmm / 2], [wmm / 2, -hmm / 2], [wmm / 2, hmm / 2], [-wmm / 2, hmm / 2]].map(([x, y]) => {
+      const c = [0, 1, 2].map(i => R[i][0] * x + R[i][1] * y + (i === 2 ? dist : 0));
+      return [c[0] / c[2] * f + W / 2, c[1] / c[2] * f + H / 2];
+    });
+  }
+  function adaptiveThreshold(src, w, h, block, C) {
+    const mean = gaussianBlur(src, w, h, block, { border: 'replicate' }), out = new Uint8Array(w * h);
+    for (let i = 0; i < out.length; i++) out[i] = src[i] > mean[i] - C ? 255 : 0;
+    return out;
+  }
+  function otsu(src) {
+    const hist = new Float64Array(256); for (const v of src) hist[v]++;
+    const total = src.length; let sum = 0; for (let i = 0; i < 256; i++) sum += i * hist[i];
+    let sumB = 0, wB = 0, best = -1, t = 0;
+    for (let i = 0; i < 256; i++) {
+      wB += hist[i]; if (!wB) continue; const wF = total - wB; if (!wF) break;
+      sumB += i * hist[i]; const mB = sumB / wB, mF = (sum - sumB) / wF, between = wB * wF * (mB - mF) ** 2;
+      if (between > best) { best = between; t = i; }
+    }
+    return t;
+  }
+  function histogram(src, mask) {
+    const hist = new Float64Array(256); let n = 0;
+    for (let i = 0; i < src.length; i++) if (!mask || mask[i]) { hist[src[i]]++; n++; }
+    return { hist, n };
+  }
+  function insidePoly(x, y, poly) {
+    let c = false;
+    for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+      const [xi, yi] = poly[i], [xj, yj] = poly[j];
+      if ((yi > y) !== (yj > y) && x < (xj - xi) * (y - yi) / (yj - yi) + xi) c = !c;
+    }
+    return c;
+  }
+  return { gaussianKernel1d, kernel2d, gaussianBlur, convolveAt, sobel, canny, dpOpen, approxClosed, arcLength, polygonArea,
+           isConvex, orderSumDiff, orderPoints, homography, applyH, invert3, distanceSize, zhangAspect, rotation, projectPaper,
+           adaptiveThreshold, otsu, histogram, insidePoly, pyRound };
+})();
+</script>
+
+<script>const DATA = /*__DATA__*/null;</script>
+
+<script>
+(() => {
+  const $ = s => document.querySelector(s), $$ = s => Array.from(document.querySelectorAll(s));
+  const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+  const R = DATA.results;
+  const decode = b64 => Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+  const GRAY = {}; for (const [k, v] of Object.entries(DATA.gray)) GRAY[k] = { ...v, px: decode(v.data) };
+  const PAGE = { ...DATA.shadowPage, px: decode(DATA.shadowPage.data) };
+  const STATUS_KO = { success: '성공', partial: '부분 성공', fail: '실패', unknown: '정답 없음' };
+  const pct = (v, d = 0) => (v * 100).toFixed(d) + '%';
+
+  // 테마
+  const themeBtn = $('#themeBtn');
+  themeBtn.addEventListener('click', () => {
+    const cur = document.documentElement.getAttribute('data-theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', cur === 'dark' ? 'light' : 'dark');
+    try { localStorage.setItem('a31-theme', document.documentElement.getAttribute('data-theme')); } catch (e) {}
+    redrawAll();
+  });
+  try { const t = localStorage.getItem('a31-theme'); if (t) document.documentElement.setAttribute('data-theme', t); } catch (e) {}
+
+  // 목차 강조
+  const navLinks = $$('nav.chips a');
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) navLinks.forEach(a => a.classList.toggle('on', a.getAttribute('href') === '#' + e.target.id));
+  }), { rootMargin: '-40% 0px -55% 0px' });
+  $$('main > section').forEach(s => io.observe(s));
+
+  // 그림
+  const FIG = {}; DATA.images.forEach(f => FIG[f.file] = f);
+  $$('img[data-fig]').forEach(img => {
+    const f = FIG[img.dataset.fig]; if (!f) return;
+    img.src = f.src; img.alt = f.caption; img.loading = 'lazy';
+    const cap = img.parentElement.querySelector('figcaption'); if (cap) cap.textContent = f.caption;
+  });
+
+  // 캔버스 도우미
+  function putGray(canvas, px, w, h, colorize) {
+    canvas.width = w; canvas.height = h;
+    const ctx = canvas.getContext('2d'), im = ctx.createImageData(w, h);
+    for (let i = 0; i < w * h; i++) {
+      const c = colorize ? colorize(px[i], i) : [px[i], px[i], px[i]];
+      im.data[4 * i] = c[0]; im.data[4 * i + 1] = c[1]; im.data[4 * i + 2] = c[2]; im.data[4 * i + 3] = 255;
+    }
+    ctx.putImageData(im, 0, 0); return ctx;
+  }
+  function poly(ctx, pts, color, width = 1.5, close = true, dash) {
+    ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = width; if (dash) ctx.setLineDash(dash);
+    ctx.beginPath(); pts.forEach((p, i) => (i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1]))); if (close) ctx.closePath(); ctx.stroke(); ctx.restore();
+  }
+  function fillOpts(sel, ids, labeler) { sel.innerHTML = ids.map(i => `<option value="${i}">${labeler(i)}</option>`).join(''); }
+  function boundaryPoints(corners, step = 2) {
+    const q = M.orderPoints(corners), cx = q.reduce((s, p) => s + p[0], 0) / 4, cy = q.reduce((s, p) => s + p[1], 0) / 4, out = [];
+    for (let i = 0; i < 4; i++) {
+      const a = q[i], b = q[(i + 1) % 4], L = Math.hypot(b[0] - a[0], b[1] - a[1]), n = Math.max(2, Math.floor(L / step));
+      for (let k = 0; k < n; k++) { const t = 0.08 + 0.84 * k / (n - 1); out.push([a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t]); }
+    }
+    return out;
+  }
+  function recall(edges, w, h, pts, r = 2) {
+    let hit = 0;
+    for (const [x, y] of pts) {
+      let f = false; const xi = Math.round(x), yi = Math.round(y);
+      for (let dy = -r; dy <= r && !f; dy++) for (let dx = -r; dx <= r && !f; dx++) {
+        const xx = xi + dx, yy = yi + dy; if (xx >= 0 && yy >= 0 && xx < w && yy < h && edges[yy * w + xx]) f = true;
+      }
+      if (f) hit++;
+    }
+    return hit / pts.length;
+  }
+
+  // 1. 단계 보기
+  const STAGE_TEXT = [
+    '<b>1 Original</b><br>입력 사진. 처리용으로 긴 변 960px 축소본을 만든다. 배열 모양은 (H, W, 3), 값은 0~255 정수, 채널 순서 BGR.',
+    '<b>2 Preprocessed</b><br>회색 변환으로 채널을 하나로 줄이고, 5×5 가우시안 블러로 종이 질감·잡음의 작은 기울기를 없앤다. 블러가 약하면 글자·잡음이 엣지가 되고, 세면 문서 경계가 뭉개진다.',
+    '<b>3 Edges</b><br>Canny(50, 150) 결과. 문서 외곽, 표, 글자 윤곽이 1픽셀 선으로 남는다. 이후 3×3 닫힘 연산으로 1~2픽셀 틈을 잇는다.',
+    '<b>4 Contours</b><br>닫힌 윤곽선 중 면적 5% 이상인 후보(초록)를 approxPolyDP로 근사하고, 꼭짓점 4개·볼록인 것 중 가장 큰 것(빨강)을 고른다. TL·TR·BR·BL은 각도 정렬 결과.',
+    '<b>5 Result</b><br>네 점을 직사각형으로 보내는 3×3 행렬 H로 원본 해상도에서 펴고(크기는 원근 보정 종횡비), 적응형 이진화로 흑백 스캔본을 만든다.',
+  ];
+  function showStage(i) {
+    $('#stageImg').src = DATA.stages[i].src; $('#stageText').innerHTML = STAGE_TEXT[i];
+    $$('.flow .stage').forEach(g => g.classList.toggle('on', +g.dataset.i === i));
+  }
+  $$('.flow .stage').forEach(g => g.addEventListener('click', () => showStage(+g.dataset.i)));
+  showStage(0);
+
+  // 2. 히스토그램·밝기
+  const hIds = Object.keys(GRAY);
+  fillOpts($('#hImg'), hIds, i => `${i} · ${GRAY[i].condition}`);
+  function drawHist() {
+    const g = GRAY[$('#hImg').value], f = +$('#hF').value; $('#hFv').textContent = '×' + f.toFixed(2);
+    const { w, h } = g, dark = new Uint8ClampedArray(w * h);
+    for (let i = 0; i < dark.length; i++) dark[i] = Math.round(g.px[i] * f);
+    putGray($('#hCan'), dark, w, h);
+    const blurred = M.gaussianBlur(dark, w, h, 5), edges = M.canny(blurred, w, h, 50, 150);
+    const ctxE = putGray($('#hEdge'), edges, w, h); poly(ctxE, g.corners, css('--cyan'), 1, true, [3, 3]);
+    const mask = new Uint8Array(w * h);
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) mask[y * w + x] = M.insidePoly(x + 0.5, y + 0.5, g.corners) ? 1 : 0;
+    const all = M.histogram(dark), doc = M.histogram(dark, mask), bg = M.histogram(dark, mask.map(v => 1 - v));
+    const c = $('#hHist'), ctx = c.getContext('2d'), W = c.width, H = c.height;
+    ctx.fillStyle = css('--plot-bg'); ctx.fillRect(0, 0, W, H);
+    const sm = a => a.map((_, i) => (a[Math.max(0, i - 1)] + a[i] + a[Math.min(255, i + 1)]) / 3);
+    const curves = [[sm(all.hist.map(v => v / all.n)), css('--muted')], [sm(doc.hist.map(v => v / all.n)), css('--accent')], [sm(bg.hist.map(v => v / all.n)), css('--amber')]];
+    const ymax = Math.max(...curves[0][0]) * 1.1 || 1;
+    ctx.strokeStyle = css('--grid'); ctx.beginPath(); for (let v = 0; v <= 256; v += 64) { const x = 10 + v / 256 * (W - 20); ctx.moveTo(x, 10); ctx.lineTo(x, H - 24); } ctx.stroke();
+    ctx.fillStyle = css('--muted'); ctx.font = '11px sans-serif'; for (let v = 0; v <= 256; v += 64) ctx.fillText(String(Math.min(v, 255)), 6 + v / 256 * (W - 20), H - 8);
+    curves.forEach(([arr, col]) => { ctx.strokeStyle = col; ctx.lineWidth = 1.6; ctx.beginPath(); arr.forEach((v, i) => { const x = 10 + i / 256 * (W - 20), y = H - 24 - v / ymax * (H - 40); i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }); ctx.stroke(); });
+    let sum = 0, sq = 0; for (const v of dark) { sum += v; sq += v * v; } const mean = sum / dark.length, std = Math.sqrt(sq / dark.length - mean * mean);
+    let dsum = 0, dn = 0, bsum = 0, bn = 0; for (let i = 0; i < dark.length; i++) if (mask[i]) { dsum += dark[i]; dn++; } else { bsum += dark[i]; bn++; }
+    const { gx, gy } = M.sobel(blurred, w, h), bpts = boundaryPoints(g.corners);
+    const gvals = bpts.map(([x, y]) => { const i = Math.round(y) * w + Math.round(x); return Math.abs(gx[i]) + Math.abs(gy[i]); }).sort((a, b) => a - b);
+    const rc = recall(edges, w, h, bpts);
+    $('#hOut').textContent = `평균 ${mean.toFixed(1)}  표준편차 ${std.toFixed(1)}  문서−배경 평균 차 ${(dsum / dn - bsum / bn).toFixed(1)}\n` +
+      `경계 기울기 중앙값 ${gvals[gvals.length >> 1].toFixed(0)}  (Canny low 50 / high 150)\n` +
+      `Canny 경계 검출률 ${pct(rc)}  ${rc > 0.9 ? '→ 경계가 닫힐 가능성 높음' : rc < 0.3 ? '→ 경계가 거의 사라짐' : '→ 경계가 끊김'}`;
+  }
+  ['#hImg', '#hF'].forEach(s => $(s).addEventListener('input', drawHist));
+
+  // 표들
+  function table(head, rows, numCols = []) {
+    return '<div class="tablewrap"><table><tr>' + head.map((h, i) => `<th class="${numCols.includes(i) ? 'num' : ''}">${h}</th>`).join('') + '</tr>' +
+      rows.map(r => '<tr>' + r.map((c, i) => `<td class="${numCols.includes(i) ? 'num' : ''}">${c}</td>`).join('') + '</tr>').join('') + '</table></div>';
+  }
+  $('#darkTable').innerHTML = table(['밝기 배율', '평균', '경계 기울기 중앙값', 'Canny 경계 검출률', '문서 검출'],
+    R.darkening.map(r => ['×' + r.factor.toFixed(2), r.mean.toFixed(0), r.boundary_gradient_median.toFixed(0), pct(r.boundary_edge_recall), `<span class="status-${r.found}">${STATUS_KO[r.found]}</span>`]), [1, 2, 3]) +
+    '<p class="muted" style="font-size:.85rem">원본 해상도(960×1280) E01 기준, 잡음 σ=3. run_all이 계산한 값.</p>';
+  const C = R.convolution;
+  $('#convTable').innerHTML = table(['방법', '시간', '이중 for문 대비', 'OpenCV와 최대 차이'],
+    Object.keys(C.times).map(k => [k, (C.times[k] * 1000).toFixed(2) + ' ms', C.speedup_vs_loops[k].toFixed(0) + '배', C.max_abs_diff_vs_opencv[k].toExponential(1)]), [1, 2, 3]) +
+    `<p class="muted" style="font-size:.85rem">${C.shape[1]}×${C.shape[0]} 회색 이미지, ${C.ksize}×${C.ksize} 커널.</p>`;
+  $('#summaryTable').innerHTML = table(['조건', '테스트 수', '성공', '부분 성공', '실패', '성공률'],
+    R.summary.map(s => [s.condition === 'all' ? `<b>${s.name}</b>` : s.name, s.n, s.success, s.partial, s.fail, pct(s.success_rate)]), [1, 2, 3, 4, 5]);
+  $('#rowsTable').innerHTML = '<details><summary>이미지별 결과 20행</summary>' + table(['ID', '판정', '최대 꼭짓점 오차', '종횡비 오차 (원근 / 변 길이)', '비고'],
+    R.rows.map(r => [r.id, `<span class="status-${r.status}">${STATUS_KO[r.status]}</span>`, r.error_ratio != null ? pct(r.error_ratio, 2) : '-',
+      r.aspect_error != null && r.status !== 'fail' ? `${pct(r.aspect_error, 1)} / ${pct(r.distance_aspect_error, 1)}` : '-', r.reason || (r.rotation_shift ? '결과가 90° 돌아감' : '')]), [2, 3]) + '</details>';
+  const S = R.sweep;
+  $('#sweepOut').textContent = `조합 ${S.n_configs}개 × 20장\n기본값 ${JSON.stringify(S.default.config)} → ${S.default.success}/20\n최고 단일 조합 → ${S.best.success}/20  (${S.best.configs.map(c => '(' + c.join(',') + ')').join(' ')})\n` +
+    `이미지마다 최적 조합 → ${S.oracle_success}/20\n어떤 조합으로도 실패 → ${S.never_success.join(', ')}\n성공 조합이 겹치지 않는 쌍 → ${S.disjoint_pairs.map(p => p.join('–')).join(', ')}`;
+  const base = R.rules[0].status, rank = s => ({ fail: 0, partial: 1, success: 2 }[s]);
+  $('#rulesTable').innerHTML = table(['변형', '성공', '좋아진 이미지', '나빠진 이미지'], R.rules.map((v, i) => {
+    if (!i) return [v.name, v.success + '/20', '(기준)', '(기준)'];
+    const ids = Object.keys(v.status);
+    return [v.name, v.success + '/20', ids.filter(k => rank(v.status[k]) > rank(base[k])).join(', ') || '-', ids.filter(k => rank(v.status[k]) < rank(base[k])).join(', ') || '-'];
+  }), [1]);
+  const E = R.environment; $('#envLine').textContent = `결과 생성 환경: Python ${E.python}, OpenCV ${E.opencv}, NumPy ${E.numpy}, Matplotlib ${E.matplotlib}`;
+
+  // 3. 컨볼루션
+  const PATCH = 11, E01 = GRAY.E01;
+  const left = M.orderPoints(E01.corners)[0], px0 = Math.round(left[0]) - 5, py0 = Math.round((M.orderPoints(E01.corners)[0][1] + M.orderPoints(E01.corners)[3][1]) / 2) - 5;
+  let sel = [5, 5];
+  function drawConv() {
+    const k = +$('#cK').value, K = M.kernel2d(k), r = (k - 1) / 2;
+    let html = '';
+    for (let y = 0; y < PATCH; y++) {
+      html += '<tr>';
+      for (let x = 0; x < PATCH; x++) {
+        const v = E01.px[(py0 + y) * E01.w + px0 + x], inWin = Math.abs(y - sel[1]) <= r && Math.abs(x - sel[0]) <= r;
+        html += `<td data-x="${x}" data-y="${y}" class="${x === sel[0] && y === sel[1] ? 'sel' : ''} ${inWin ? 'win' : ''}" style="background:rgb(${v},${v},${v});color:${v > 128 ? '#000' : '#fff'}">${v}</td>`;
+      }
+      html += '</tr>';
+    }
+    $('#cPatch').innerHTML = html;
+    $('#cKernel').innerHTML = K.map(row => '<tr>' + row.map(v => `<td>${v.toFixed(4)}</td>`).join('') + '</tr>').join('');
+    const yy = py0 + sel[1], xx = px0 + sel[0], out = M.convolveAt(E01.px, E01.w, E01.h, K, yy, xx), center = E01.px[yy * E01.w + xx];
+    const terms = []; for (let i = 0; i < Math.min(k, 3); i++) for (let j = 0; j < Math.min(k, 3); j++) terms.push(`${K[i][j].toFixed(4)}×${E01.px[(yy + i - r) * E01.w + xx + j - r]}`);
+    $('#cOut').textContent = `선택 픽셀 원래 값 ${center}\n내적 = ${terms.slice(0, 4).join(' + ')} + … (${k * k}항)\n      = ${out.toFixed(3)} → 반올림 ${Math.round(out)}\n변화 ${Math.round(out) - center >= 0 ? '+' : ''}${Math.round(out) - center}`;
+    $$('#cPatch td').forEach(td => td.addEventListener('click', () => { sel = [+td.dataset.x, +td.dataset.y]; drawConv(); }));
+  }
+  $('#cK').addEventListener('input', drawConv);
+
+  // 4. 트랙바 시뮬레이터
+  fillOpts($('#tImg'), hIds, i => `${i} · ${GRAY[i].note}`);
+  $('#tImg').value = 'S04';
+  function drawTrack() {
+    const g = GRAY[$('#tImg').value], b = +$('#tB').value, lo = +$('#tL').value, hi = +$('#tH').value;
+    $('#tBv').textContent = b; $('#tLv').textContent = lo; $('#tHv').textContent = hi;
+    putGray($('#tCan'), g.px, g.w, g.h);
+    const blurred = M.gaussianBlur(g.px, g.w, g.h, b), edges = M.canny(blurred, g.w, g.h, lo, hi);
+    const ctx = putGray($('#tEdge'), edges, g.w, g.h); poly(ctx, g.corners, css('--cyan'), 1, true, [3, 3]);
+    const bpts = boundaryPoints(g.corners), rc = recall(edges, g.w, g.h, bpts);
+    let bgEdge = 0, bgN = 0; for (let y = 0; y < g.h; y++) for (let x = 0; x < g.w; x++) if (!M.insidePoly(x + 0.5, y + 0.5, g.corners)) { bgN++; if (edges[y * g.w + x]) bgEdge++; }
+    $('#tOut').textContent = `경계 검출률 ${pct(rc)}   배경 엣지 밀도 ${pct(bgEdge / bgN, 2)}\n` +
+      (rc > 0.95 && bgEdge / bgN < 0.01 ? '→ 문서 경계는 살고 배경은 조용함 (성공 가능성 높음)' : rc < 0.8 ? '→ 문서 경계가 끊김 (윤곽선이 닫히지 않음)' : '→ 배경 엣지가 많음 (문서보다 큰 사각형이 생길 위험)');
+  }
+  ['#tImg', '#tB', '#tL', '#tH'].forEach(s => $(s).addEventListener('input', drawTrack));
+
+  // 5. Douglas–Peucker
+  fillOpts($('#dImg'), Object.keys(DATA.contours), i => `${i} · ${DATA.contours[i].note}`);
+  function drawDP() {
+    const c = DATA.contours[$('#dImg').value], e = +$('#dE').value; $('#dEv').textContent = (e * 100).toFixed(1) + '%';
+    const cv = $('#dCan'), ctx = cv.getContext('2d'), s = Math.min(cv.width / c.w, cv.height / c.h);
+    ctx.fillStyle = css('--plot-bg'); ctx.fillRect(0, 0, cv.width, cv.height);
+    const pts = c.points, eps = e * M.arcLength(pts), ap = M.approxClosed(pts, eps);
+    poly(ctx, pts.map(p => [p[0] * s, p[1] * s]), css('--muted'), 1);
+    poly(ctx, ap.map(p => [p[0] * s, p[1] * s]), css('--red'), 2.2);
+    ctx.fillStyle = css('--red'); ap.forEach(p => { ctx.beginPath(); ctx.arc(p[0] * s, p[1] * s, 4, 0, 7); ctx.fill(); });
+    const convex = M.isConvex(ap), pass = ap.length === 4 && convex;
+    $('#dOut').textContent = `원래 점 ${pts.length}개 → 근사 꼭짓점 ${ap.length}개 (ε = ${eps.toFixed(1)}px)\n볼록: ${convex ? '예' : '아니오'}   →  문서 후보 규칙 ${pass ? '통과' : '불통과'}`;
+  }
+  ['#dImg', '#dE'].forEach(s => $(s).addEventListener('input', drawDP));
+
+  // 6. 꼭짓점 정렬
+  function drawOrder() {
+    const rot = +$('#oR').value, p = +$('#oP').value; $('#oRv').textContent = rot + '°'; $('#oPv').textContent = p.toFixed(2);
+    const base = [[-1 + p, -1], [1 - p, -1], [1, 1], [-1, 1]].map(([x, y]) => [x * 90, y * 70]);
+    const t = rot * Math.PI / 180, q = base.map(([x, y]) => [150 + x * Math.cos(t) - y * Math.sin(t), 150 + x * Math.sin(t) + y * Math.cos(t)]);
+    const shuffled = [q[2], q[0], q[3], q[1]];
+    const res = [['#oSum', M.orderSumDiff(shuffled), '합·차 규칙'], ['#oAng', M.orderPoints(shuffled), '각도 정렬']];
+    const names = ['TL', 'TR', 'BR', 'BL'], cols = [css('--red'), css('--accent'), css('--green'), css('--amber')];
+    const report = [];
+    res.forEach(([id, ord, title]) => {
+      const cv = $(id), ctx = cv.getContext('2d'); ctx.fillStyle = css('--plot-bg'); ctx.fillRect(0, 0, 300, 300);
+      poly(ctx, q, css('--line'), 1, true);
+      poly(ctx, ord, css('--fg'), 1.5, true, [5, 4]);
+      const uniq = new Set(ord.map(pt => pt.map(v => v.toFixed(6)).join(','))).size;
+      ord.forEach((pt, i) => { ctx.fillStyle = cols[i]; ctx.beginPath(); ctx.arc(pt[0], pt[1], 7 - i, 0, 7); ctx.fill(); ctx.font = 'bold 13px sans-serif'; ctx.fillText(names[i], pt[0] + 8, pt[1] - 6 - i * 12); });
+      ctx.fillStyle = css('--fg'); ctx.font = '13px sans-serif'; ctx.fillText(title + (uniq < 4 ? ' — 중복!' : ''), 8, 18);
+      report.push(`${title}: 서로 다른 점 ${uniq}개 ${uniq < 4 ? '(사각형이 무너짐)' : ''}`);
+    });
+    $('#oOut').textContent = report.join('\n') + '\n점선 = 정렬된 순서로 이은 선. 4개 점이 TL→TR→BR→BL로 한 바퀴 돌면 올바르다.';
+  }
+  ['#oR', '#oP'].forEach(s => $(s).addEventListener('input', drawOrder));
+
+  // 7. 호모그래피
+  const HS = GRAY.E01; let handles = HS.corners.map(p => p.slice()), drag = -1;
+  const DW = 180, DH = 240;
+  function drawH() {
+    const ctx = putGray($('#hSrc'), HS.px, HS.w, HS.h);
+    poly(ctx, handles, css('--red'), 1.5);
+    handles.forEach((p, i) => { ctx.fillStyle = css('--red'); ctx.beginPath(); ctx.arc(p[0], p[1], 6, 0, 7); ctx.fill(); ctx.fillStyle = '#fff'; ctx.font = 'bold 9px sans-serif'; ctx.fillText(['TL', 'TR', 'BR', 'BL'][i], p[0] - 6, p[1] + 3); });
+    const dst = [[0, 0], [DW - 1, 0], [DW - 1, DH - 1], [0, DH - 1]];
+    const H = M.homography(handles, dst), Hi = M.invert3(H), out = new Uint8ClampedArray(DW * DH);
+    for (let y = 0; y < DH; y++) for (let x = 0; x < DW; x++) {
+      const [sx, sy] = M.applyH(Hi, x, y), x0 = Math.floor(sx), y0 = Math.floor(sy), fx = sx - x0, fy = sy - y0;
+      if (x0 < 0 || y0 < 0 || x0 + 1 >= HS.w || y0 + 1 >= HS.h) { out[y * DW + x] = 0; continue; }
+      const P = (yy, xx) => HS.px[yy * HS.w + xx];
+      out[y * DW + x] = (1 - fy) * ((1 - fx) * P(y0, x0) + fx * P(y0, x0 + 1)) + fy * ((1 - fx) * P(y0 + 1, x0) + fx * P(y0 + 1, x0 + 1));
+    }
+    putGray($('#hDst'), out, DW, DH);
+    const f = v => (v >= 0 ? ' ' : '') + v.toExponential(3);
+    $('#hMat').textContent = 'H (원본 → 결과, h33 = 1)\n' + H.map(r => '[ ' + r.map(f).join('  ') + ' ]').join('\n') + `\n셋째 행 h31, h32 = ${H[2][0].toExponential(2)}, ${H[2][1].toExponential(2)}  (0이면 아핀)`;
+  }
+  const hCan = $('#hSrc');
+  const toLocal = ev => { const r = hCan.getBoundingClientRect(); return [(ev.clientX - r.left) * HS.w / r.width, (ev.clientY - r.top) * HS.h / r.height]; };
+  hCan.addEventListener('pointerdown', ev => { const p = toLocal(ev); let best = 1e9; handles.forEach((h, i) => { const d = Math.hypot(h[0] - p[0], h[1] - p[1]); if (d < best) { best = d; drag = i; } }); if (best > 25) drag = -1; else hCan.setPointerCapture(ev.pointerId); });
+  hCan.addEventListener('pointermove', ev => { if (drag < 0) return; const p = toLocal(ev); handles[drag] = [Math.max(0, Math.min(HS.w - 1, p[0])), Math.max(0, Math.min(HS.h - 1, p[1]))]; drawH(); });
+  hCan.addEventListener('pointerup', () => { drag = -1; });
+  $('#hReset').addEventListener('click', () => { handles = HS.corners.map(p => p.slice()); drawH(); });
+  $('#hRect').addEventListener('click', () => { handles = [[0, 0], [HS.w - 1, 0], [HS.w - 1, HS.h - 1], [0, HS.h - 1]]; drawH(); });
+
+  // 8. 종횡비
+  function drawAspect() {
+    const [wmm, hmm] = $('#aPaper').value.split(',').map(Number), ax = +$('#aX').value, ay = +$('#aY').value, az = +$('#aZ').value, noise = +$('#aN').value;
+    $('#aXv').textContent = ax + '°'; $('#aYv').textContent = ay + '°'; $('#aZv').textContent = az + '°'; $('#aNv').textContent = noise;
+    const W = 960, H = 1280, f = 1000; let q = M.projectPaper(wmm, hmm, ax, ay, az, W, H, f, 650);
+    let seed = 7; const rnd = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647 - 0.5; };
+    q = q.map(p => [p[0] + noise * 2 * rnd(), p[1] + noise * 2 * rnd()]);
+    const o = M.orderPoints(q), [dw, dh] = M.distanceSize(o), z = M.zhangAspect(o, W, H), truth = wmm / hmm;
+    const t = (o[0][0] < o[1][0] && Math.abs(o[1][1] - o[0][1]) < Math.abs(o[1][0] - o[0][0])) ? truth : 1 / truth;
+    const cv = $('#aCan'), ctx = cv.getContext('2d'), s = cv.width / W; ctx.fillStyle = css('--plot-bg'); ctx.fillRect(0, 0, cv.width, cv.height);
+    ctx.strokeStyle = css('--grid'); ctx.strokeRect(0.5, 0.5, cv.width - 1, cv.height - 1);
+    poly(ctx, o.map(p => [p[0] * s, p[1] * s]), css('--accent'), 2);
+    ctx.fillStyle = css('--accent'); ctx.font = '12px sans-serif'; o.forEach((p, i) => ctx.fillText(['TL', 'TR', 'BR', 'BL'][i], p[0] * s + 4, p[1] * s - 4));
+    const err = v => pct(Math.abs(v - t) / t, 1);
+    $('#aOut').textContent = `실제 비율        ${t.toFixed(3)}\n변 길이 방법     ${(dw / dh).toFixed(3)}  (오차 ${err(dw / dh)})\n원근 보정 (${z.method})  ${z.aspect.toFixed(3)}  (오차 ${err(z.aspect)})` +
+      (z.focal ? `\n추정 초점거리 ${z.focal.toFixed(0)}px (실제 1000px)` : '\n초점거리를 구할 수 없음 → 변 길이 방법 사용');
+  }
+  ['#aPaper', '#aX', '#aY', '#aZ', '#aN'].forEach(s => $(s).addEventListener('input', drawAspect));
+
+  // 9. 이진화
+  let thMode = 'adaptive';
+  $$('#thMode button').forEach(b => b.addEventListener('click', () => { thMode = b.dataset.m; $$('#thMode button').forEach(x => x.classList.toggle('on', x === b)); drawTh(); }));
+  function drawTh() {
+    const { w, h, px } = PAGE, B = +$('#thB').value, Cc = +$('#thC').value, T = +$('#thT').value;
+    $('#thBv').textContent = B; $('#thCv').textContent = Cc; $('#thTv').textContent = T;
+    putGray($('#thSrc'), px, w, h);
+    let out, info;
+    if (thMode === 'adaptive') { out = M.adaptiveThreshold(px, w, h, B, Cc); info = `적응형: 픽셀마다 ${B}×${B} 가우시안 평균 − ${Cc}`; }
+    else { const t = thMode === 'otsu' ? M.otsu(px) : T; out = new Uint8Array(px.length); for (let i = 0; i < px.length; i++) out[i] = px[i] > t ? 255 : 0; info = `전역: 모든 픽셀에 같은 임계값 ${t}` + (thMode === 'otsu' ? ' (Otsu 자동)' : ''); }
+    putGray($('#thDst'), out, w, h);
+    let black = 0; for (const v of out) if (!v) black++;
+    $('#thOut').textContent = `${info}\n검은 픽셀 비율 ${pct(black / out.length, 1)}  (글자만 검으면 대략 5~10%)`;
+  }
+  ['#thB', '#thC', '#thT'].forEach(s => $(s).addEventListener('input', drawTh));
+
+  // 12. 코드 지도
+  const MAP = [
+    ['단계별 윈도우·트랙바·s/q 키', 'src/app.py', 'run_gui', 'GUI (수동 실행)'],
+    ['회색 변환·가우시안 블러', 'src/scanner.py', 'preprocess', 'TestPipeline'],
+    ['Canny·닫힘 연산', 'src/scanner.py', 'detect_edges', 'TestPipeline'],
+    ['윤곽선·면적·approxPolyDP·볼록', 'src/scanner.py', 'find_document_quad', 'TestPipeline'],
+    ['좌표 정렬 직접 구현', 'src/geometry.py', 'order_points', 'TestCoordinateOrdering'],
+    ['(비교) 합·차 규칙', 'src/geometry.py', 'order_points_sum_diff', 'test_sum_diff_rule_breaks_at_45_degrees'],
+    ['볼록 판정 (외적)', 'src/geometry.py', 'is_convex', 'TestGeometryHelpers'],
+    ['투시 변환', 'src/scanner.py', 'warp_document', 'test_warp_is_upright_rectangle'],
+    ['적응형 이진화', 'src/scanner.py', 'enhance', 'test_adaptive_beats_global_threshold_under_shadow'],
+    ['전체 파이프라인', 'src/scanner.py', 'scan', 'TestPipeline'],
+    ['웹캠 프레임 처리', 'src/webcam.py', 'process_frame', 'TestWebcamFrame'],
+    ['EDA 밝기 감소 실험', 'src/eda.py', 'darkening_experiment', 'TestEda'],
+    ['성공 판정', 'src/evaluate.py', 'judge', 'test_judge_thresholds'],
+    ['파라미터 딜레마 요약', 'src/evaluate.py', 'sweep_summary', 'run_all'],
+    ['보너스 1 커널', 'src/convolution.py', 'gaussian_kernel_1d', 'test_kernel_matches_opencv'],
+    ['보너스 1 이중 for문', 'src/convolution.py', 'convolve_loops', 'test_all_methods_match_opencv'],
+    ['보너스 1 벡터화', 'src/convolution.py', 'convolve_vectorized', 'test_all_methods_match_opencv'],
+    ['보너스 1 sliding window', 'src/convolution.py', 'convolve_strided', 'test_all_methods_match_opencv'],
+    ['보너스 1 분리형', 'src/convolution.py', 'blur_separable', 'test_all_methods_match_opencv'],
+    ['보너스 2 변 길이', 'src/geometry.py', 'output_size_by_distance', 'test_distance_size_uses_longer_side'],
+    ['보너스 2 원근 보정', 'src/geometry.py', 'estimate_aspect_ratio', 'test_zhang_recovers_true_ratio'],
+    ['꼭짓점 오차', 'src/geometry.py', 'corner_error', 'test_corner_error_ignores_start_vertex'],
+    ['보너스 3 PDF', 'src/pdf_export.py', 'save_pdf', 'TestPdfBonus'],
+  ];
+  const CODE = {}; DATA.code.forEach(c => CODE[c.file + ':' + c.name] = c);
+  $('#codeMap').innerHTML = '<tr><th>요구사항</th><th>함수</th><th>검증</th></tr>' + MAP.map(([req, file, name, test]) => {
+    const c = CODE[file + ':' + name];
+    return `<tr><td>${req}</td><td><a href="#codeView" data-code="${file}:${name}">${file.replace('src/', '')} · ${name}</a> <span class="muted">${c ? c.start + '–' + c.end : ''}</span></td><td><code>${test}</code></td></tr>`;
+  }).join('');
+  const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  function showCode(key) {
+    const c = CODE[key]; if (!c) return;
+    $('#codeView').innerHTML = `<div class="muted" style="font-size:.85rem">${c.file} : ${c.start}–${c.end}</div><pre>${c.text.split('\n').map((l, i) => `<span class="ln">${c.start + i}</span>${esc(l)}`).join('\n')}</pre>`;
+  }
+  $$('#codeMap a[data-code]').forEach(a => a.addEventListener('click', () => showCode(a.dataset.code)));
+  showCode('src/scanner.py:scan');
+
+  function redrawAll() { drawHist(); drawConv(); drawTrack(); drawDP(); drawOrder(); drawH(); drawAspect(); drawTh(); }
+  redrawAll();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,926 @@
+{
+  "description": "합성 문서 사진 20장. corners는 문서 내용 기준 좌상·우상·우하·좌하 픽셀 좌표다.",
+  "image_size": [
+    960,
+    1280
+  ],
+  "seed": 20261013,
+  "images": [
+    {
+      "id": "E01",
+      "file": "E01.jpg",
+      "condition": "easy",
+      "condition_name": "단순 배경 + 정면",
+      "paper": "a4",
+      "paper_size_mm": [
+        210,
+        297
+      ],
+      "true_aspect": 0.707071,
+      "angle": {
+        "tilt_deg": 8.2,
+        "pitch": 8,
+        "yaw": 2,
+        "roll": 3
+      },
+      "lighting": "균일한 실내 조명",
+      "background": "plain_dark",
+      "background_complexity": "낮음",
+      "extras": {},
+      "note": "회색 책상 위 A4 보고서",
+      "corners": [
+        [
+          185.15,
+          175.76
+        ],
+        [
+          828.1,
+          204.36
+        ],
+        [
+          745.7,
+          1058.35
+        ],
+        [
+          176.51,
+          1019.81
+        ]
+      ],
+      "camera": {
+        "focal_px": 1000.0,
+        "distance_mm": 347.1
+      }
+    },
+    {
+      "id": "E02",
+      "file": "E02.jpg",
+      "condition": "easy",
+      "condition_name": "단순 배경 + 정면",
+      "paper": "receipt",
+      "paper_size_mm": [
+        80,
+        210
+      ],
+      "true_aspect": 0.380952,
+      "angle": {
+        "tilt_deg": 6.7,
+        "pitch": 6,
+        "yaw": -3,
+        "roll": -6
+      },
+      "lighting": "균일한 실내 조명",
+      "background": "plain_blue",
+      "background_complexity": "낮음",
+      "extras": {},
+      "note": "파란 매트 위 영수증",
+      "corners": [
+        [
+          265.09,
+          218.48
+        ],
+        [
+          600.3,
+          187.64
+        ],
+        [
+          673.39,
+          1019.32
+        ],
+        [
+          368.86,
+          1057.92
+        ]
+      ],
+      "camera": {
+        "focal_px": 1000.0,
+        "distance_mm": 249.0
+      }
+    },
+    {
+      "id": "E03",
+      "file": "E03.jpg",
+      "condition": "easy",
+      "condition_name": "단순 배경 + 정면",
+      "paper": "card",
+      "paper_size_mm": [
+        90,
+        50
+      ],
+      "true_aspect": 1.8,
+      "angle": {
+        "tilt_deg": 10.8,
+        "pitch": 10,
+        "yaw": 4,
+        "roll": 8
+      },
+      "lighting": "균일한 실내 조명",
+      "background": "plain_brown",
+      "background_complexity": "낮음",
+      "extras": {},
+      "note": "갈색 책상 위 명함",
+      "corners": [
+        [
+          185.13,
+          416.62
+        ],
+        [
+          834.9,
+          509.44
+        ],
+        [
+          764.38,
+          855.43
+        ],
+        [
+          156.32,
+          759.08
+        ]
+      ],
+      "camera": {
+        "focal_px": 1000.0,
+        "distance_mm": 141.5
+      }
+    },
+    {
+      "id": "E04",
+      "file": "E04.jpg",
+      "condition": "easy",
+      "condition_name": "단순 배경 + 정면",
+      "paper": "a5_form",
+      "paper_size_mm": [
+        148,
+        210
+      ],
+      "true_aspect": 0.704762,
+      "angle": {
+        "tilt_deg": 12.2,
+        "pitch": 12,
+        "yaw": -2,
+        "roll": -2
+      },
+      "lighting": "균일한 실내 조명",
+      "background": "plain_gray",
+      "background_complexity": "낮음",
+      "extras": {},
+      "note": "회색 책상 위 A5 신청서",
+      "corners": [
+        [
+          156.76,
+          225.16
+        ],
+        [
+          767.95,
+          206.81
+        ],
+        [
+          749.5,
+          985.86
+        ],
+        [
+          232.53,
+          1012.29
+        ]
+      ],
+      "camera": {
+        "focal_px": 1000.0,
+        "distance_mm": 263.9
+      }
+    },
+    {
+      "id": "E05",
+      "file": "E05.jpg",
+      "condition": "easy",
+      "condition_name": "단순 배경 + 정면",
+      "paper": "letter",
+      "paper_size_mm": [
+        216,
+        279
+      ],
+      "true_aspect": 0.774194,
+      "angle": {
+        "tilt_deg": 6.7,
+        "pitch": 6,
+        "yaw": 3,
+        "roll": 12
+      },
+      "lighting": "균일한 실내 조명",
+      "background": "plain_green",
+      "background_complexity": "낮음",
+      "extras": {},
+      "note": "초록 커팅 매트 위 레터 용지",
+      "corners": [
+        [
+          252.95,
+          169.91
+        ],
+        [
+          886.5,
+          299.47
+        ],
+        [
+          691.23,
+          1077.34
+        ],
+        [
+          115.23,
+          945.56
+        ]
+      ],
+      "camera": {
+        "focal_px": 1000.0,
+        "distance_mm": 349.7
+      }
+    },
+    {
+      "id": "S01",
+      "file": "S01.jpg",
+      "condition": "shadow",
+      "condition_name": "그림자 있음",
+      "paper": "a4",
+      "paper_size_mm": [
+        210,
+        297
+      ],
+      "true_aspect": 0.707071,
+      "angle": {
+        "tilt_deg": 14.8,
+        "pitch": 14,
+        "yaw": 5,
+        "roll": -4
+      },
+      "lighting": "창가 측광, 한쪽이 45%까지 어두움",
+      "background": "plain_dark",
+      "background_complexity": "낮음",
+      "extras": {
+        "shadow": "gradient"
+      },
+      "note": "밝기 그라데이션",
+      "corners": [
+        [
+          132.18,
+          218.19
+        ],
+        [
+          784.88,
+          157.34
+        ],
+        [
+          783.08,
+          1007.56
+        ],
+        [
+          244.69,
+          1012.52
+        ]
+      ],
+      "camera": {
+        "focal_px": 1000.0,
+        "distance_mm": 354.0
+      }
+    },
+    {
+      "id": "S02",
+      "file": "S02.jpg",
+      "condition": "shadow",
+      "condition_name": "그림자 있음",
+      "paper": "receipt",
+      "paper_size_mm": [
+        80,
+        210
+      ],
+      "true_aspect": 0.380952,
+      "angle": {
+        "tilt_deg": 13.4,
+        "pitch": 12,
+        "yaw": -6,
+        "roll": 7
+      },
+      "lighting": "손·휴대폰의 부드러운 그림자",
+      "background": "plain_blue",
+      "background_complexity": "낮음",
+      "extras": {
+        "shadow": "soft"
+      },
+      "note": "경계가 흐린 그림자가 영수증 절반을 덮음",
+      "corners": [
+        [
+          353.68,
+          139.02
+        ],
+        [
+          715.21,
+          197.1
+        ],
+        [
+          581.86,
+          1043.98
+        ],
+        [
+          273.27,
+          1029.28
+        ]
+      ],
+      "camera": {
+        "focal_px": 1000.0,
+        "distance_mm": 237.3
+      }
+    },
+    {
+      "id": "S03",
+      "file": "S03.jpg",
+      "condition": "shadow",
+      "condition_name": "그림자 있음",
+      "paper": "a4",
+      "paper_size_mm": [
+        210,
+        297
+      ],
+      "true_aspect": 0.707071,
+      "angle": {
+        "tilt_deg": 16.5,
+        "pitch": 16,
+        "yaw": -4,
+        "roll": 5
+      },
+      "lighting": "천장 조명 아래 강한 그림자, 경계 선명",
+      "background": "plain_gray",
+      "background_complexity": "낮음",
+      "extras": {
+        "shadow": "hard"
+      },
+      "note": "선명한 그림자 경계가 문서를 가로지름",
+      "corners": [
+        [
+          170.95,
+          135.57
+        ],
+        [
+          852.33,
+          209.21
+        ],
+        [
+          711.63,
+          1018.06
+        ],
+        [
+          167.88,
+          1001.13
+        ]
+      ],
+      "camera": {
+        "focal_px": 1000.0,
+        "distance_mm": 345.3
+      }
+    },
+    {
+      "id": "S04",
+      "file": "S04.jpg",
+      "condition": "shadow",
+      "condition_name": "그림자 있음",
+      "paper": "a5_form",
+      "paper_size_mm": [
+        148,
+        210
+      ],
+      "true_aspect": 0.704762,
+      "angle": {
+        "tilt_deg": 11.6,
+        "pitch": 10,
+        "yaw": 6,
+        "roll": -8
+      },
+      "lighting": "어두운 방 (노출 30%) + 부드러운 그림자, 잡음 큼",
+      "background": "plain_brown",
+      "background_complexity": "낮음",
+      "extras": {
+        "shadow": "soft",
+        "low_light": true
+      },
+      "note": "저조도",
+      "corners": [
+        [
+          139.18,
+          274.07
+        ],
+        [
+          725.35,
+          171.24
+        ],
+        [
+          802.66,
+          986.43
+        ],
+        [
+          278.51,
+          1024.96
+        ]
+      ],
+      "camera": {
+        "focal_px": 1000.0,
+        "distance_mm": 263.7
+      }
+    },
+    {
+      "id": "S05",
+      "file": "S05.jpg",
+      "condition": "shadow",
+      "condition_name": "그림자 있음",
+      "paper": "card",
+      "paper_size_mm": [
+        90,
+        50
+      ],
+      "true_aspect": 1.8,
+      "angle": {
+        "tilt_deg": 15.8,
+        "pitch": 15,
+        "yaw": -5,
+        "roll": 10
+      },
+      "lighting": "그림자 + 모서리 근처 빛 반사(포화)",
+      "background": "plain_dark",
+      "background_complexity": "낮음",
+      "extras": {
+        "shadow": "soft",
+        "glare": true
+      },
+      "note": "코팅 명함의 빛 반사",
+      "corners": [
+        [
+          152.23,
+          389.56
+        ],
+        [
+          844.44,
+          509.7
+        ],
+        [
+          754.61,
+          849.82
+        ],
+        [
+          116.94,
+          769.81
+        ]
+      ],
+      "camera": {
+        "focal_px": 1000.0,
+        "distance_mm": 133.3
+      }
+    },
+    {
+      "id": "T01",
+      "file": "T01.jpg",
+      "condition": "tilt",
+      "condition_name": "45도 이상 기울어짐",
+      "paper": "a4",
+      "paper_size_mm": [
+        210,
+        297
+      ],
+      "true_aspect": 0.707071,
+      "angle": {
+        "tilt_deg": 50.0,
+        "pitch": 50,
+        "yaw": 0,
+        "roll": 2
+      },
+      "lighting": "균일한 실내 조명",
+      "background": "plain_dark",
+      "background_complexity": "낮음",
+      "extras": {},
+      "note": "세로 방향으로 50° 기울여 촬영",
+      "corners": [
+        [
+          78.9,
+          246.95
+        ],
+        [
+          913.0,
+          274.15
+        ],
+        [
+          687.09,
+          842.93
+        ],
+        [
+          248.7,
+          835.43
+        ]
+      ],
+      "camera": {
+        "focal_px": 1000.0,
+        "distance_mm": 365.2
+      }
+    },
+    {
+      "id": "T02",
+      "file": "T02.jpg",
+      "condition": "tilt",
+      "condition_name": "45도 이상 기울어짐",
+      "paper": "a4",
+      "paper_size_mm": [
+        210,
+        297
+      ],
+      "true_aspect": 0.707071,
+      "angle": {
+        "tilt_deg": 55.9,
+        "pitch": 55,
+        "yaw": 12,
+        "roll": 25
+      },
+      "lighting": "균일한 실내 조명",
+      "background": "plain_gray",
+      "background_complexity": "낮음",
+      "extras": {},
+      "note": "55° 기울기 + 평면 회전 25°",
+      "corners": [
+        [
+          371.37,
+          269.28
+        ],
+        [
+          931.96,
+          567.3
+        ],
+        [
+          534.91,
+          827.39
+        ],
+        [
+          187.02,
+          687.13
+        ]
+      ],
+      "camera": {
+        "focal_px": 1000.0,
+        "distance_mm": 434.5
+      }
+    },
+    {
+      "id": "T03",
+      "file": "T03.jpg",
+      "condition": "tilt",
+      "condition_name": "45도 이상 기울어짐",
+      "paper": "receipt",
+      "paper_size_mm": [
+        80,
+        210
+      ],
+      "true_aspect": 0.380952,
+      "angle": {
+        "tilt_deg": 58.3,
+        "pitch": 58,
+        "yaw": -8,
+        "roll": 40
+      },
+      "lighting": "균일한 실내 조명",
+      "background": "plain_blue",
+      "background_complexity": "낮음",
+      "extras": {},
+      "note": "58° 기울기 + 평면 회전 40°",
+      "corners": [
+        [
+          699.39,
+          275.69
+        ],
+        [
+          933.12,
+          450.78
+        ],
+        [
+          372.96,
+          817.74
+        ],
+        [
+          148.11,
+          778.59
+        ]
+      ],
+      "camera": {
+        "focal_px": 1000.0,
+        "distance_mm": 253.6
+      }
+    },
+    {
+      "id": "T04",
+      "file": "T04.jpg",
+      "condition": "tilt",
+      "condition_name": "45도 이상 기울어짐",
+      "paper": "card",
+      "paper_size_mm": [
+        90,
+        50
+      ],
+      "true_aspect": 1.8,
+      "angle": {
+        "tilt_deg": 52.7,
+        "pitch": 48,
+        "yaw": 25,
+        "roll": 45
+      },
+      "lighting": "균일한 실내 조명",
+      "background": "plain_brown",
+      "background_complexity": "낮음",
+      "extras": {},
+      "note": "48° 기울기, 좌우 25°, 평면 회전 45°",
+      "corners": [
+        [
+          336.88,
+          220.56
+        ],
+        [
+          857.45,
+          850.42
+        ],
+        [
+          562.63,
+          882.14
+        ],
+        [
+          123.47,
+          441.24
+        ]
+      ],
+      "camera": {
+        "focal_px": 1000.0,
+        "distance_mm": 122.3
+      }
+    },
+    {
+      "id": "T05",
+      "file": "T05.jpg",
+      "condition": "tilt",
+      "condition_name": "45도 이상 기울어짐",
+      "paper": "letter",
+      "paper_size_mm": [
+        216,
+        279
+      ],
+      "true_aspect": 0.774194,
+      "angle": {
+        "tilt_deg": 65.1,
+        "pitch": 65,
+        "yaw": -6,
+        "roll": -12
+      },
+      "lighting": "균일한 실내 조명",
+      "background": "plain_green",
+      "background_complexity": "낮음",
+      "extras": {},
+      "note": "65° 기울기 (먼 변이 크게 줄어듦)",
+      "corners": [
+        [
+          28.19,
+          520.48
+        ],
+        [
+          767.6,
+          359.19
+        ],
+        [
+          740.06,
+          708.79
+        ],
+        [
+          340.48,
+          776.23
+        ]
+      ],
+      "camera": {
+        "focal_px": 1000.0,
+        "distance_mm": 405.6
+      }
+    },
+    {
+      "id": "C01",
+      "file": "C01.jpg",
+      "condition": "complex",
+      "condition_name": "복잡한 배경",
+      "paper": "a4",
+      "paper_size_mm": [
+        210,
+        297
+      ],
+      "true_aspect": 0.707071,
+      "angle": {
+        "tilt_deg": 18.9,
+        "pitch": 18,
+        "yaw": 6,
+        "roll": -7
+      },
+      "lighting": "균일한 실내 조명",
+      "background": "wood",
+      "background_complexity": "높음",
+      "extras": {},
+      "note": "나뭇결 책상",
+      "corners": [
+        [
+          103.43,
+          231.5
+        ],
+        [
+          770.92,
+          131.97
+        ],
+        [
+          798.52,
+          985.53
+        ],
+        [
+          271.37,
+          1004.33
+        ]
+      ],
+      "camera": {
+        "focal_px": 1000.0,
+        "distance_mm": 352.5
+      }
+    },
+    {
+      "id": "C02",
+      "file": "C02.jpg",
+      "condition": "complex",
+      "condition_name": "복잡한 배경",
+      "paper": "receipt",
+      "paper_size_mm": [
+        80,
+        210
+      ],
+      "true_aspect": 0.380952,
+      "angle": {
+        "tilt_deg": 15.8,
+        "pitch": 15,
+        "yaw": -5,
+        "roll": 9
+      },
+      "lighting": "균일한 실내 조명",
+      "background": "plaid",
+      "background_complexity": "높음",
+      "extras": {},
+      "note": "체크무늬 식탁보",
+      "corners": [
+        [
+          368.68,
+          128.31
+        ],
+        [
+          737.42,
+          199.3
+        ],
+        [
+          566.0,
+          1035.32
+        ],
+        [
+          263.59,
+          1010.48
+        ]
+      ],
+      "camera": {
+        "focal_px": 1000.0,
+        "distance_mm": 237.0
+      }
+    },
+    {
+      "id": "C03",
+      "file": "C03.jpg",
+      "condition": "complex",
+      "condition_name": "복잡한 배경",
+      "paper": "a4",
+      "paper_size_mm": [
+        210,
+        297
+      ],
+      "true_aspect": 0.707071,
+      "angle": {
+        "tilt_deg": 15.5,
+        "pitch": 15,
+        "yaw": 4,
+        "roll": 4
+      },
+      "lighting": "균일한 실내 조명",
+      "background": "white_clutter",
+      "background_complexity": "높음",
+      "extras": {},
+      "note": "흰 책상 위 다른 종이와 겹침 (배경 대비 낮음)",
+      "corners": [
+        [
+          193.94,
+          178.6
+        ],
+        [
+          840.14,
+          219.91
+        ],
+        [
+          717.22,
+          1022.63
+        ],
+        [
+          198.04,
+          968.9
+        ]
+      ],
+      "camera": {
+        "focal_px": 1000.0,
+        "distance_mm": 363.0
+      }
+    },
+    {
+      "id": "C04",
+      "file": "C04.jpg",
+      "condition": "complex",
+      "condition_name": "복잡한 배경",
+      "paper": "a5_form",
+      "paper_size_mm": [
+        148,
+        210
+      ],
+      "true_aspect": 0.704762,
+      "angle": {
+        "tilt_deg": 15.2,
+        "pitch": 14,
+        "yaw": -6,
+        "roll": -10
+      },
+      "lighting": "균일한 실내 조명",
+      "background": "desk_clutter",
+      "background_complexity": "높음",
+      "extras": {
+        "occlusion": "hand"
+      },
+      "note": "잡동사니 책상, 손가락이 모서리를 가림",
+      "corners": [
+        [
+          101.7,
+          282.78
+        ],
+        [
+          699.05,
+          179.74
+        ],
+        [
+          780.22,
+          923.49
+        ],
+        [
+          294.68,
+          1029.38
+        ]
+      ],
+      "camera": {
+        "focal_px": 1000.0,
+        "distance_mm": 270.7
+      }
+    },
+    {
+      "id": "C05",
+      "file": "C05.jpg",
+      "condition": "complex",
+      "condition_name": "복잡한 배경",
+      "paper": "a4",
+      "paper_size_mm": [
+        210,
+        297
+      ],
+      "true_aspect": 0.707071,
+      "angle": {
+        "tilt_deg": 16.5,
+        "pitch": 16,
+        "yaw": -4,
+        "roll": 6
+      },
+      "lighting": "균일한 실내 조명",
+      "background": "wood",
+      "background_complexity": "높음",
+      "extras": {
+        "crumple": true
+      },
+      "note": "구겨진 A4, 나뭇결 책상",
+      "corners": [
+        [
+          188.15,
+          143.72
+        ],
+        [
+          849.39,
+          227.19
+        ],
+        [
+          699.92,
+          1013.97
+        ],
+        [
+          167.75,
+          988.95
+        ]
+      ],
+      "camera": {
+        "focal_px": 1000.0,
+        "distance_mm": 353.6
+      }
+    }
+  ]
+}
