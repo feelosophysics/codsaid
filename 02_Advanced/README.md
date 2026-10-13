@@ -1,6 +1,6 @@
 # 심화 과정
 
-[전체 과정](../README.md) · [프리코스](../pre_course/README.md) · [기초 과정](../01_Basic/README.md)
+[전체 과정](../README.md) · [프리코스](../00_pre_course/README.md) · [기초 과정](../01_Basic/README.md)
 
 A1-1부터 A6-2 범위에 해당하는 10개 미션의 학습 자료입니다.
 

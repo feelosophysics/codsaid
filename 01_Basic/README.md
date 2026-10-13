@@ -1,6 +1,6 @@
 # 기초 과정
 
-[전체 과정](../README.md) · [프리코스](../pre_course/README.md) · [심화 과정](../02_Advanced/README.md)
+[전체 과정](../README.md) · [프리코스](../00_pre_course/README.md) · [심화 과정](../02_Advanced/README.md)
 
 | 미션 | 자료 |
 | --- | --- |
