@@ -1,0 +1,4807 @@
+[
+  {
+    "doc_id": 400,
+    "actual": "comp.windows.x",
+    "predicted": "sci.space",
+    "confidence": 0.6663273436342391,
+    "n_tokens": 82,
+    "n_known_terms": 52,
+    "toward_predicted": [
+      [
+        "project",
+        0.9671
+      ],
+      [
+        "space",
+        0.7696
+      ],
+      [
+        "months",
+        0.3812
+      ],
+      [
+        "level",
+        0.3434
+      ],
+      [
+        "stuff",
+        0.3222
+      ],
+      [
+        "engineering",
+        0.2703
+      ]
+    ],
+    "toward_actual": [
+      [
+        "programming",
+        0.7228
+      ],
+      [
+        "windows",
+        0.4101
+      ],
+      [
+        "operating",
+        0.1438
+      ],
+      [
+        "covered",
+        0.1027
+      ],
+      [
+        "taught",
+        0.0969
+      ],
+      [
+        "option",
+        0.076
+      ]
+    ],
+    "text": "\n\n\n\nTry the 'M.Sc. Computing Science' course at the REAL Newcastle University.\nIt's a conversion course, but at least they teach REAL programming.\n\nIn the space of 9 months we were taught PASCAL, Simula, Prolog, Miranda.\nAlso, some basic low level stuff (68000) was covered as well.\n\nThey also did concurrent programming and operating systems, some software\nengineering, plus quite a few optional units, including database theory,\nand some stuff about comms.   \n\nThe PASCAL is to be replaced by C/C++ I think next year - I learn't this (and \nX Windows programming as well)\nanyway via a good selection of project over the final three months - depending\non your tastes, the selection of skills learn't can be quite wide reaching.\n\nThe one critiscism I would level at the course, which I would have thought\ninvaluable, is the lack of an option to do the project period in industry -\nthis would probably need a slightly longer project period (say six months), but\nwould enhance the prestige and usefulness of an already excellent and thorough\ncourse.\n\nYes, I know this sounds like a plug for the course, why not!"
+  },
+  {
+    "doc_id": 1628,
+    "actual": "sci.space",
+    "predicted": "comp.graphics",
+    "confidence": 0.9575875152882236,
+    "n_tokens": 22,
+    "n_known_terms": 20,
+    "toward_predicted": [
+      [
+        "jpeg",
+        1.2221
+      ],
+      [
+        "maps",
+        0.8198
+      ],
+      [
+        "files",
+        0.578
+      ],
+      [
+        "colors",
+        0.5488
+      ],
+      [
+        "color",
+        0.546
+      ],
+      [
+        "peter",
+        0.3519
+      ]
+    ],
+    "toward_actual": [
+      [
+        "data",
+        0.267
+      ],
+      [
+        "smaller",
+        0.1884
+      ],
+      [
+        "compressed",
+        0.1843
+      ],
+      [
+        "advice",
+        0.173
+      ],
+      [
+        "reduced",
+        0.1599
+      ],
+      [
+        "ad",
+        0.0996
+      ]
+    ],
+    "text": "Thanks Ron and Peter for some very nice maps.\n\nI have an advice though.  You wrote that the maps were reduced to 256\ncolors.  As far ad I understand JPEG pictures gets much better (and\nthe compressed files smaller) if you use the original 3 color 24 bit\ndata when converting to JPEG.\n\nThanks again,\n"
+  },
+  {
+    "doc_id": 2994,
+    "actual": "comp.windows.x",
+    "predicted": "sci.space",
+    "confidence": 0.29850238158387987,
+    "n_tokens": 7,
+    "n_known_terms": 7,
+    "toward_predicted": [
+      [
+        "years",
+        0.5926
+      ],
+      [
+        "happened",
+        0.3712
+      ],
+      [
+        "available",
+        0.2263
+      ],
+      [
+        "talk",
+        0.2246
+      ]
+    ],
+    "toward_actual": [
+      [
+        "uwm",
+        0.603
+      ],
+      [
+        "form",
+        0.2177
+      ],
+      [
+        "heard",
+        0.05
+      ]
+    ],
+    "text": "\nWhatever happened to uwm? Is it still available in some form? It's\nbeen years since I used it or heard anyone talk about it.\n-- "
+  },
+  {
+    "doc_id": 2716,
+    "actual": "rec.sport.hockey",
+    "predicted": "sci.space",
+    "confidence": 0.32006991322489453,
+    "n_tokens": 8,
+    "n_known_terms": 5,
+    "toward_predicted": [
+      [
+        "thread",
+        0.9477
+      ],
+      [
+        "problems",
+        0.803
+      ],
+      [
+        "ask",
+        0.272
+      ]
+    ],
+    "toward_actual": [
+      [
+        "poster",
+        1.0654
+      ],
+      [
+        "following",
+        0.0569
+      ]
+    ],
+    "text": "\n\nIf anybody is having problems following the thread be sure to ask the\norigonal poster to rectify your misunderstanding."
+  },
+  {
+    "doc_id": 3000,
+    "actual": "comp.graphics",
+    "predicted": "comp.windows.x",
+    "confidence": 0.7650067028851664,
+    "n_tokens": 28,
+    "n_known_terms": 21,
+    "toward_predicted": [
+      [
+        "vms",
+        1.1491
+      ],
+      [
+        "tar",
+        0.4672
+      ],
+      [
+        "build",
+        0.4088
+      ],
+      [
+        "distribution",
+        0.3245
+      ],
+      [
+        "find",
+        0.1309
+      ],
+      [
+        "pc",
+        0.1142
+      ]
+    ],
+    "toward_actual": [
+      [
+        "ibm",
+        0.4279
+      ],
+      [
+        "ones",
+        0.1721
+      ],
+      [
+        "imho",
+        0.1605
+      ],
+      [
+        "version",
+        0.1368
+      ],
+      [
+        "comes",
+        0.097
+      ],
+      [
+        "file",
+        0.086
+      ]
+    ],
+    "text": "Get the generic version (for Unix and VMS) and build it. IMHO a\nVMS .com file to build it is supplied.\nAs the distribution comes as .tar.Z you should either have uncompress\nand tar on VMS or a UNIX flavoured machine handy.\nUsually you won't find this on IBM-PC specific archives, but on the better\nones :)\n"
+  },
+  {
+    "doc_id": 3125,
+    "actual": "rec.sport.hockey",
+    "predicted": "rec.sport.baseball",
+    "confidence": 0.44429598026015,
+    "n_tokens": 27,
+    "n_known_terms": 20,
+    "toward_predicted": [
+      [
+        "bigger",
+        0.7883
+      ],
+      [
+        "watch",
+        0.2559
+      ],
+      [
+        "glove",
+        0.176
+      ],
+      [
+        "jerseys",
+        0.1664
+      ],
+      [
+        "ten",
+        0.1629
+      ],
+      [
+        "difference",
+        0.0865
+      ]
+    ],
+    "toward_actual": [
+      [
+        "goalies",
+        0.835
+      ],
+      [
+        "let",
+        0.3163
+      ],
+      [
+        "wearing",
+        0.1602
+      ],
+      [
+        "equipment",
+        0.1367
+      ],
+      [
+        "years",
+        0.0604
+      ],
+      [
+        "pads",
+        0.0278
+      ]
+    ],
+    "text": "Have the rules for goalies' equipment changed? It seems that e.g. glove\nhas become bigger and bigger all the time (and pads too), and the goalies are\nwearing \"over size\" jerseys. Am I dreaming? If you watch old photos or\nfilms let say about ten years back, I think the difference is quite obvious.\nWho is an expert on this, please let me know. (Or have the goalies become\nbigger?)"
+  },
+  {
+    "doc_id": 420,
+    "actual": "comp.graphics",
+    "predicted": "comp.windows.x",
+    "confidence": 0.336478184147133,
+    "n_tokens": 6,
+    "n_known_terms": 5,
+    "toward_predicted": [
+      [
+        "doug",
+        0.6155
+      ],
+      [
+        "package",
+        0.5856
+      ],
+      [
+        "excellent",
+        0.4207
+      ],
+      [
+        "try",
+        0.065
+      ]
+    ],
+    "toward_actual": [
+      [
+        "ibm",
+        1.2816
+      ]
+    ],
+    "text": "\n\n\n   Try graPHIGS from IBM... It is an excellent package! :^)\n\nDoug\n "
+  },
+  {
+    "doc_id": 1880,
+    "actual": "rec.sport.baseball",
+    "predicted": "rec.sport.hockey",
+    "confidence": 0.49949087982130175,
+    "n_tokens": 7,
+    "n_known_terms": 2,
+    "toward_predicted": [
+      [
+        "later",
+        1.2505
+      ],
+      [
+        "steve",
+        0.7015
+      ]
+    ],
+    "toward_actual": [],
+    "text": "Bunker & McNally were later.\n\nPappas, Estrada, Steve Barber, and . . . ?"
+  },
+  {
+    "doc_id": 221,
+    "actual": "comp.graphics",
+    "predicted": "sci.space",
+    "confidence": 0.5452432362451096,
+    "n_tokens": 22,
+    "n_known_terms": 17,
+    "toward_predicted": [
+      [
+        "space",
+        2.905
+      ],
+      [
+        "require",
+        0.1458
+      ],
+      [
+        "possibly",
+        0.1325
+      ],
+      [
+        "exists",
+        0.0999
+      ],
+      [
+        "prove",
+        0.0928
+      ],
+      [
+        "unless",
+        0.0692
+      ]
+    ],
+    "toward_actual": [
+      [
+        "points",
+        1.1238
+      ],
+      [
+        "sphere",
+        0.9938
+      ],
+      [
+        "point",
+        0.5095
+      ],
+      [
+        "steve",
+        0.2201
+      ],
+      [
+        "correct",
+        0.188
+      ],
+      [
+        "necessarily",
+        0.1804
+      ]
+    ],
+    "text": "\nWouldn't this require a hyper-sphere.  In 3-space, 4 points over specifies\na sphere as far as I can see.  Unless that is you can prove that a point\nexists in 3-space that is equi-distant from the 4 points, and this may not\nnecessarily happen.\n\nCorrect me if I'm wrong (which I quite possibly am!)\n\nsteve\n---\n\n\n"
+  },
+  {
+    "doc_id": 780,
+    "actual": "sci.space",
+    "predicted": "comp.windows.x",
+    "confidence": 0.8799011263054142,
+    "n_tokens": 10,
+    "n_known_terms": 7,
+    "toward_predicted": [
+      [
+        "mit",
+        1.3247
+      ],
+      [
+        "export",
+        0.8826
+      ],
+      [
+        "lcs",
+        0.6865
+      ],
+      [
+        "written",
+        0.5199
+      ],
+      [
+        "edu",
+        0.4007
+      ]
+    ],
+    "toward_actual": [
+      [
+        "compute",
+        0.2934
+      ],
+      [
+        "astronomical",
+        0.2478
+      ]
+    ],
+    "text": "\nTo compute this, and many other astronomical things, go and get (x)ephem written\nby Elwood C. Downey. It is e.g. on export.lcs.mit.edu"
+  },
+  {
+    "doc_id": 3372,
+    "actual": "comp.windows.x",
+    "predicted": "comp.graphics",
+    "confidence": 0.4902728082654152,
+    "n_tokens": 37,
+    "n_known_terms": 24,
+    "toward_predicted": [
+      [
+        "interested",
+        0.4958
+      ],
+      [
+        "files",
+        0.4193
+      ],
+      [
+        "newsgroups",
+        0.3373
+      ],
+      [
+        "viewing",
+        0.3149
+      ],
+      [
+        "understand",
+        0.2964
+      ],
+      [
+        "looking",
+        0.215
+      ]
+    ],
+    "toward_actual": [
+      [
+        "x11",
+        0.9976
+      ],
+      [
+        "text",
+        0.7163
+      ],
+      [
+        "distribution",
+        0.3126
+      ],
+      [
+        "remove",
+        0.1627
+      ],
+      [
+        "leo",
+        0.1611
+      ],
+      [
+        "group",
+        0.1543
+      ]
+    ],
+    "text": "This discussion on viewing .ps files undex X11 seems rather interesting\nbut I fail to understand the reason it is not contained in 2 at most\nnewsgroups.\n\nI am subscribed to comp.text.interleaf and I could care less about\n.ps viewing under X11. I am sure that members of this group interested in\nthe topic can followup by looking at other newsgroups.\n\nCould you please remove the comp.text.interleaf from your distribution?\nJust as a nettish sort of courtesy.\n\nBest regards.\n\n-- \nLeo J Irakliotis               [email]"
+  },
+  {
+    "doc_id": 4343,
+    "actual": "comp.windows.x",
+    "predicted": "comp.graphics",
+    "confidence": 0.5072567855991981,
+    "n_tokens": 292,
+    "n_known_terms": 64,
+    "toward_predicted": [
+      [
+        "image",
+        0.8816
+      ],
+      [
+        "green",
+        0.329
+      ],
+      [
+        "red",
+        0.241
+      ],
+      [
+        "blue",
+        0.2399
+      ],
+      [
+        "double",
+        0.1498
+      ],
+      [
+        "short",
+        0.0936
+      ]
+    ],
+    "toward_actual": [
+      [
+        "dpy",
+        0.2389
+      ],
+      [
+        "start",
+        0.1849
+      ],
+      [
+        "int",
+        0.1458
+      ],
+      [
+        "index",
+        0.1375
+      ],
+      [
+        "gc",
+        0.1324
+      ],
+      [
+        "color",
+        0.0945
+      ]
+    ],
+    "text": "Hello,\n\nBelow I have the copy of some source I am using to setup a user-specified color-\nmap for X R11 V4. I am attempting to create user defined colors in terms of\nRGB color ranges. The calls to XAllocColor prove ineffective. \n\nVariables are defined are as follows:\n\n    int                 i, j, k, lut_index\n    color_type          min_image, max_image;\n    color_type          image Pixel_Value_Range, last_image, start, end, jump,\n                        lut [ 512 ];\n    unsigned long       pixel;\n    double              red, green, blue;\n\n/*\n * Data structure used by color operations\n *\ntypedef struct {\n        unsigned long pixel;\n        unsigned short red, green, blue;\n        char flags;  /-* do_red, do_green, do_blue *-/\n        char pad;\n} XColor;\n***************/\n    XColor              rgbcolor, hardwarecolor;\n\n\nWith color_type defined as { double red, double green, double blue }.\n\nWhat I need to know is how to set [is it possible] the values in hardwarecolor\nto work within the call to XAllocColor:\n\n    start.red = (int) 255 * min_image.red;\t/* 0..255 */\n    end.red   = (int) 255 * max_image.red;\t/* 0..255 */\n    jump.red  = (int) (( end.red - start.red ) / 7);\n\n    start.green = (int) 255 * min_image.green;  /* 0..255 */\n    end.green   = (int) 255 * max_image.green;  /* 0..255 */\n    jump.green  = (int) (( end.green - start.green ) / 7);\n\n    start.blue = (int) 255 * min_image.blue;    /* 0..255 */\n    end.blue   = (int) 255 * max_image.blue;    /* 0..255 */\n    j"
+  },
+  {
+    "doc_id": 2150,
+    "actual": "comp.graphics",
+    "predicted": "comp.windows.x",
+    "confidence": 0.8660884140933626,
+    "n_tokens": 33,
+    "n_known_terms": 26,
+    "toward_predicted": [
+      [
+        "nodes",
+        0.9344
+      ],
+      [
+        "graph",
+        0.4843
+      ],
+      [
+        "x11",
+        0.4717
+      ],
+      [
+        "delete",
+        0.4544
+      ],
+      [
+        "mouse",
+        0.4426
+      ],
+      [
+        "interactively",
+        0.3391
+      ]
+    ],
+    "toward_actual": [
+      [
+        "program",
+        0.3574
+      ],
+      [
+        "available",
+        0.2214
+      ],
+      [
+        "manipulate",
+        0.2147
+      ],
+      [
+        "looking",
+        0.2033
+      ],
+      [
+        "simple",
+        0.1585
+      ],
+      [
+        "need",
+        0.1549
+      ]
+    ],
+    "text": "I am looking for a program that is capable of displaying a graph\nwith nodes and links and with the possibility to edit interactively\nthe graph : add one node, change one link etc...\n\nActually, a very _simple_ X11 program would be ok; all I need is to\nput some \"boxes\" (i.e. the nodes ) on a pane and be able to\nmanipulate them with the mouse (move, add or delete boxes).\n\nDoes anyone know if such program is available ?\nThanks for any help !!\n"
+  },
+  {
+    "doc_id": 1962,
+    "actual": "sci.space",
+    "predicted": "rec.sport.baseball",
+    "confidence": 0.5081863080598439,
+    "n_tokens": 41,
+    "n_known_terms": 29,
+    "toward_predicted": [
+      [
+        "era",
+        0.5749
+      ],
+      [
+        "speculation",
+        0.365
+      ],
+      [
+        "worked",
+        0.3025
+      ],
+      [
+        "great",
+        0.2701
+      ],
+      [
+        "hmm",
+        0.2046
+      ],
+      [
+        "fact",
+        0.1852
+      ]
+    ],
+    "toward_actual": [
+      [
+        "sorry",
+        0.2472
+      ],
+      [
+        "program",
+        0.2025
+      ],
+      [
+        "seriously",
+        0.1762
+      ],
+      [
+        "war",
+        0.176
+      ],
+      [
+        "taken",
+        0.175
+      ],
+      [
+        "remember",
+        0.1448
+      ]
+    ],
+    "text": "\nGreat speculation - I remember being proud on behalf of all the free\nworld (you think that way when you are seven years old) that we had\ngot there first. Now I'm almost sorry that it worked out that way.\n\nI guess the soviets would have taken the victory seriously too, and\nwould almost certainly not have fallen victim to the complacency that\novertook the US program. Perhaps stretching to match US efforts would\nhave destabilized them sooner than it did in fact - and in the tradition\nof Marvel Comics 'What If', this destabilization in the Brezhnev era might\nhave triggered the third world war. Hmm, maybe it was a giant leap after all.\n"
+  },
+  {
+    "doc_id": 948,
+    "actual": "sci.space",
+    "predicted": "comp.graphics",
+    "confidence": 0.8675822336453479,
+    "n_tokens": 80,
+    "n_known_terms": 34,
+    "toward_predicted": [
+      [
+        "inc",
+        0.8939
+      ],
+      [
+        "file",
+        0.6342
+      ],
+      [
+        "advance",
+        0.4494
+      ],
+      [
+        "pascal",
+        0.3879
+      ],
+      [
+        "point",
+        0.3569
+      ],
+      [
+        "code",
+        0.339
+      ]
+    ],
+    "toward_actual": [
+      [
+        "orbit",
+        0.7971
+      ],
+      [
+        "earth",
+        0.3996
+      ],
+      [
+        "elements",
+        0.2279
+      ],
+      [
+        "true",
+        0.1626
+      ],
+      [
+        "semi",
+        0.095
+      ],
+      [
+        "system",
+        0.0711
+      ]
+    ],
+    "text": "I have the \"osculating elements at perigee\" of an orbit, which I need\nto convert to something useful, preferably distance from the earth\nin evenly spaced time intervals. A GSM coordinate system is preferable,\nbut I convert from other systems. C, pascal, or fortran code, or\nif you can point me to a book or something that'd be great.\n\nhere's the first few lines of the file.\n\n0  ()\n1  (2X, A3, 7X, A30)\n2  (2X, I5, 2X, A3, 2X, E24.18)\n3  (4X, A3, 7X, E24.18)\n1  SMA       SEMI-MAJOR AXIS\n1  ECC       ECCENTRICITY\n1  INC       INCLINATION\n1  OMG       RA OF ASCENDING NODE\n1  POM       ARGUMENT OF PERICENTRE\n1  TRA       TRUE ANOMALY\n1  HAP       APOCENTRE HEIGHT\n1  HPE       PERICENTRE HEIGHT\n2      3  BEG  0.167290000000000000E+05\n3    SMA       0.829159999999995925E+05\n3    ECC       0.692307999999998591E+00\n3    INC       0.899999999999999858E+02\n3    OMG       0.184369999999999994E+03\n3    POM       0.336549999999999955E+03\n3    TRA       0.359999999999999943E+03\n3    HAP       0.133941270127999174E+06\n3    HPE       0.191344498719999910E+05\n2      1  REF  0.167317532658774153E+05\n3    SMA       0.829125167527418671E+05\n3    ECC       0.691472268118590319E+00\n3    INC       0.899596754214342091E+02\n3    OMG       0.184377521828175002E+03\n3    POM       0.336683788851850579E+03\n3    TRA       0.153847166458030088E-05\n3    HAP       0.133866082767180880E+06\n3    HPE       0.192026707383028306E+05\n\nThanks in advance,"
+  },
+  {
+    "doc_id": 1670,
+    "actual": "comp.windows.x",
+    "predicted": "comp.graphics",
+    "confidence": 0.4956827933009919,
+    "n_tokens": 67,
+    "n_known_terms": 52,
+    "toward_predicted": [
+      [
+        "computer",
+        0.4412
+      ],
+      [
+        "chip",
+        0.36
+      ],
+      [
+        "project",
+        0.2701
+      ],
+      [
+        "speed",
+        0.2398
+      ],
+      [
+        "bit",
+        0.2225
+      ],
+      [
+        "design",
+        0.212
+      ]
+    ],
+    "toward_actual": [
+      [
+        "server",
+        1.2962
+      ],
+      [
+        "rectangle",
+        0.3397
+      ],
+      [
+        "operations",
+        0.3329
+      ],
+      [
+        "taught",
+        0.2284
+      ],
+      [
+        "windows",
+        0.1963
+      ],
+      [
+        "copy",
+        0.1924
+      ]
+    ],
+    "text": "Hello--  I'm currently designing the architecture of a chip which is\nintended to help speed up common operations on a windowing system such as\nX.  A friend and I are designing the chip as the final course project for\nan advanced computer architecture course taught by Dr. Fred Brooks at\nUNC-Chapel Hill.  While we feel that we've got a pretty solid design\ncurrently, we'd really like to get ahold of some frequency data from an\nX-Windows server so that we can make the most effective use of our bit\nbudget.  \n\nUnfortunately, I've been unable to find anything of this sort in the\nvarious X FAQs, or X manuals that I've seen.  Does anyone have some type of\nfrequency data, like how many Copy-rectangle operations vs draw-lines, and\nthings of that sort?  Or, barring that, a program that records requests to\nthe server into a logfile that I can munge on myself?\n\nAny and all help would be very appreciated.\n\nMany thanks,\n    ---Mark"
+  },
+  {
+    "doc_id": 223,
+    "actual": "comp.windows.x",
+    "predicted": "comp.graphics",
+    "confidence": 0.5291402062233079,
+    "n_tokens": 127,
+    "n_known_terms": 85,
+    "toward_predicted": [
+      [
+        "computer",
+        1.3147
+      ],
+      [
+        "project",
+        0.4025
+      ],
+      [
+        "pascal",
+        0.3023
+      ],
+      [
+        "company",
+        0.2579
+      ],
+      [
+        "split",
+        0.196
+      ],
+      [
+        "software",
+        0.161
+      ]
+    ],
+    "toward_actual": [
+      [
+        "operating",
+        0.206
+      ],
+      [
+        "group",
+        0.1575
+      ],
+      [
+        "crash",
+        0.1479
+      ],
+      [
+        "interviews",
+        0.1424
+      ],
+      [
+        "programming",
+        0.1402
+      ],
+      [
+        "working",
+        0.1272
+      ]
+    ],
+    "text": "\nAt Robert Gordon University, programming was the main (most time-consuming) \nstart of the course. The first two years consisted of five subjects:\nSoftware Engineering (Pascal/C/UNIX), Computer Engineering (6502/6809/68000 \nassembler), Computer Theory (LISP/Prolog), Mathematics/Statistics and \nCommunication Skills (How to pass interviews/intelligence tests and group\ndiscussions e.g. How to survive a helicopter crash in the North Sea).\nThe third year (Industrial placement) was spent working for a computer company \nfor a year. The company could be anywhere in Europe (there was a special \nTravel Allowance Scheme to cover the visiting costs of professors).  \nThe fourth year included Operating Systems(C/Modula-2), Software Engineering \n(C/8086 assembler), Real Time Laboratory (C/68000 assembler) and Computing \nTheory (LISP).  There were also Group Projects in 2nd and 4th Years, where \nstudents worked in teams to select their own project or decide to work for an \noutside company (the only disadvantage being that specifications would change \nsuddenly).\n \nIn the first four years, there was a 50%:50% weighting between courseworks and \nexams for most subjects. However in the Honours year, this was reduced to a \n30%:70% split between an Individual Project and final exams (no coursework \nassessment) - are all Computer Science courses like this?\n\nBTW - we started off with 22 students in our first year and were left with 8 by\nHonours year. Also, every course is tutored separately. Not easy"
+  },
+  {
+    "doc_id": 4139,
+    "actual": "rec.sport.hockey",
+    "predicted": "sci.space",
+    "confidence": 0.2870705281282309,
+    "n_tokens": 22,
+    "n_known_terms": 15,
+    "toward_predicted": [
+      [
+        "mind",
+        0.2685
+      ],
+      [
+        "real",
+        0.203
+      ],
+      [
+        "presence",
+        0.1229
+      ],
+      [
+        "sense",
+        0.0857
+      ],
+      [
+        "short",
+        0.0817
+      ],
+      [
+        "artist",
+        0.0612
+      ]
+    ],
+    "toward_actual": [
+      [
+        "injury",
+        0.5112
+      ],
+      [
+        "meant",
+        0.4098
+      ],
+      [
+        "cheap",
+        0.1232
+      ],
+      [
+        "mistake",
+        0.0803
+      ],
+      [
+        "physical",
+        0.0491
+      ],
+      [
+        "puts",
+        0.0375
+      ]
+    ],
+    "text": ": \n: Speaking of Paddock--what's he doing slagging Sandlak?  If Sandlak puts  \n: his mind to it, he can be a physical presence and waking him up might be a  \n: real mistake.\n\n\tIsn't Sandbag out with an injury now anyways?  Perhaps Paddock\nmeant to say that Momesso was the cheap short artist.  After all, that\nwould make more sense.\n"
+  },
+  {
+    "doc_id": 3895,
+    "actual": "comp.graphics",
+    "predicted": "comp.windows.x",
+    "confidence": 0.5795519364852804,
+    "n_tokens": 37,
+    "n_known_terms": 32,
+    "toward_predicted": [
+      [
+        "server",
+        1.8198
+      ],
+      [
+        "window",
+        0.9763
+      ],
+      [
+        "client",
+        0.722
+      ],
+      [
+        "gcc",
+        0.3294
+      ],
+      [
+        "cursor",
+        0.3001
+      ],
+      [
+        "fix",
+        0.2553
+      ]
+    ],
+    "toward_actual": [
+      [
+        "plus",
+        1.1604
+      ],
+      [
+        "cross",
+        0.4134
+      ],
+      [
+        "week",
+        0.3781
+      ],
+      [
+        "bugs",
+        0.3456
+      ],
+      [
+        "black",
+        0.2675
+      ],
+      [
+        "word",
+        0.2276
+      ]
+    ],
+    "text": "\n\nI've tried compiling it on several SPARCstations with gcc 2.22.  After\nfixing up a few bugs (3 missing constant definitions plus a couple of\nother things) I got it to compile & link, but after starting client\n& server I just get a black window; sometimes the client core dumps,\nsometimes the server, sometimes I get a broken pipe, sometimes it\njust sits there doing nothing although I occassionally get the\ncursor to become a cross-hair in dog-fight, but that's it.  I've\nsent word to the author plus what I did to fix it last week, but\nno reply as yet."
+  },
+  {
+    "doc_id": 997,
+    "actual": "comp.graphics",
+    "predicted": "sci.space",
+    "confidence": 0.41483351399562685,
+    "n_tokens": 13,
+    "n_known_terms": 8,
+    "toward_predicted": [
+      [
+        "european",
+        0.3931
+      ],
+      [
+        "years",
+        0.3703
+      ],
+      [
+        "ago",
+        0.3538
+      ],
+      [
+        "integrated",
+        0.242
+      ],
+      [
+        "partners",
+        0.0073
+      ]
+    ],
+    "toward_actual": [
+      [
+        "motorola",
+        0.9216
+      ],
+      [
+        "half",
+        0.0183
+      ],
+      [
+        "controllers",
+        0.0074
+      ]
+    ],
+    "text": "\nThe 68070 is a variation of the 68010 that was done a few years ago by\nthe European partners of Motorola. It has some integrated I/O controllers\nand half a MMU, but otherwise it's a 68010. Think of it the same as\nthe 8086 and 80186 were.\n\n\t\tBurkhard Neidecker-Lutz"
+  },
+  {
+    "doc_id": 278,
+    "actual": "comp.graphics",
+    "predicted": "comp.windows.x",
+    "confidence": 0.566634561145077,
+    "n_tokens": 51,
+    "n_known_terms": 31,
+    "toward_predicted": [
+      [
+        "monitor",
+        0.8864
+      ],
+      [
+        "display",
+        0.8076
+      ],
+      [
+        "response",
+        0.3265
+      ],
+      [
+        "pc",
+        0.2291
+      ],
+      [
+        "correct",
+        0.1876
+      ],
+      [
+        "certain",
+        0.1537
+      ]
+    ],
+    "toward_actual": [
+      [
+        "gamma",
+        0.5345
+      ],
+      [
+        "video",
+        0.3627
+      ],
+      [
+        "ntsc",
+        0.2717
+      ],
+      [
+        "linear",
+        0.254
+      ],
+      [
+        "coded",
+        0.1969
+      ],
+      [
+        "levels",
+        0.0989
+      ]
+    ],
+    "text": "Hi:\n\nI am digitizing a NTSC signal and displaying on a PC video monitor.\nIt is known that the display response of tubes is non-linear and is\nsometimes said to follow Gamma-Law. I am not certain if these\nnon-linearities are \"Gamma-corrected\" before encoding NTSC signals\nor if the TV display is supposed to correct this.\n \nAlso, if  256 grey levels, for example, are coded in a C program do\nthese intensity levels appear with linear brightness on a PC\nmonitor? In other words does PC monitor display circuitry\ncorrect for \"gamma errrors\"?\n \nYour response is much appreciated.\n \nAmjad."
+  },
+  {
+    "doc_id": 4704,
+    "actual": "comp.windows.x",
+    "predicted": "comp.graphics",
+    "confidence": 0.9302386166105261,
+    "n_tokens": 29,
+    "n_known_terms": 24,
+    "toward_predicted": [
+      [
+        "graphics",
+        1.276
+      ],
+      [
+        "works",
+        0.6045
+      ],
+      [
+        "formats",
+        0.4304
+      ],
+      [
+        "ftp",
+        0.3509
+      ],
+      [
+        "available",
+        0.323
+      ],
+      [
+        "libraries",
+        0.251
+      ]
+    ],
+    "toward_actual": [
+      [
+        "display",
+        0.5349
+      ],
+      [
+        "analysis",
+        0.2092
+      ],
+      [
+        "tried",
+        0.1962
+      ],
+      [
+        "time",
+        0.1681
+      ],
+      [
+        "including",
+        0.149
+      ],
+      [
+        "producing",
+        0.1391
+      ]
+    ],
+    "text": "\n\n\n\nCheck into the vopl and vogle libraries.  I beleive that I still have\nthem available on ftp.c-mols.siu.edu but I'm not sure.  I haven't seen\nany new announcements for the software but I'm sure it's still around.\n\nI have used it to do real-time data display and analysis as well as\njust for producing graphs after the fact.  It works well and supports\nnumerous graphics output formats (including X.)  I tried it and liked\nit.  YOu may as well.\n"
+  },
+  {
+    "doc_id": 3111,
+    "actual": "rec.sport.hockey",
+    "predicted": "rec.sport.baseball",
+    "confidence": 0.6501600668083122,
+    "n_tokens": 9,
+    "n_known_terms": 7,
+    "toward_predicted": [
+      [
+        "baseball",
+        1.9586
+      ],
+      [
+        "expect",
+        0.1567
+      ],
+      [
+        "guess",
+        0.0538
+      ]
+    ],
+    "toward_actual": [
+      [
+        "roger",
+        0.7937
+      ],
+      [
+        "afraid",
+        0.2664
+      ],
+      [
+        "expertise",
+        0.1618
+      ],
+      [
+        "unfortunately",
+        0.1607
+      ]
+    ],
+    "text": "\n\nUnfortunately, Roger is now over at r.s.baseball spewing his expertise\n(i.e. being a dickhead).  I guess he is afraid of posting anything\nhere, because he knows what to expect."
+  },
+  {
+    "doc_id": 2475,
+    "actual": "comp.graphics",
+    "predicted": "comp.windows.x",
+    "confidence": 0.5568385412700396,
+    "n_tokens": 27,
+    "n_known_terms": 23,
+    "toward_predicted": [
+      [
+        "client",
+        0.4846
+      ],
+      [
+        "sun",
+        0.4555
+      ],
+      [
+        "static",
+        0.4161
+      ],
+      [
+        "core",
+        0.3281
+      ],
+      [
+        "setting",
+        0.3063
+      ],
+      [
+        "mips",
+        0.2401
+      ]
+    ],
+    "toward_actual": [
+      [
+        "bugs",
+        0.4639
+      ],
+      [
+        "built",
+        0.3585
+      ],
+      [
+        "variable",
+        0.2241
+      ],
+      [
+        "simply",
+        0.1649
+      ],
+      [
+        "two",
+        0.1521
+      ],
+      [
+        "fixing",
+        0.1339
+      ]
+    ],
+    "text": "Has anyone got multiverse to work ?\n\nI have built it on 486 svr4, mips svr4s and Sun SparcStation.\n\nThere seems to be many bugs in it.  The 'dogfight' and 'dactyl' simply do nothing\n(After fixing a bug where a variable is defined twice in two different modules - One needed\nsetting to static - else the client core-dumped)\n\nSteve\n-- "
+  },
+  {
+    "doc_id": 552,
+    "actual": "comp.graphics",
+    "predicted": "comp.windows.x",
+    "confidence": 0.9340527070729773,
+    "n_tokens": 424,
+    "n_known_terms": 226,
+    "toward_predicted": [
+      [
+        "server",
+        1.7141
+      ],
+      [
+        "client",
+        0.9823
+      ],
+      [
+        "clients",
+        0.4039
+      ],
+      [
+        "users",
+        0.3647
+      ],
+      [
+        "function",
+        0.3637
+      ],
+      [
+        "extension",
+        0.3632
+      ]
+    ],
+    "toward_actual": [
+      [
+        "objects",
+        0.8338
+      ],
+      [
+        "software",
+        0.2858
+      ],
+      [
+        "virtual",
+        0.264
+      ],
+      [
+        "object",
+        0.2258
+      ],
+      [
+        "provide",
+        0.1701
+      ],
+      [
+        "point",
+        0.1642
+      ]
+    ],
+    "text": "Hi everyone,\n\nI thought that some people may be interested in my VR\nsoftware on these groups:\n\n*******Announcing the release of Multiverse-1.0.2*******\n\nMultiverse is a multi-user, non-immersive, X-Windows based Virtual Reality\nsystem, primarily focused on entertainment/research.\n\nFeatures:\n\n   Client-Server based model, using Berkeley Sockets.\n   No limit to the number of users (apart from performance).\n   Generic clients.\n   Customizable servers.\n   Hierachical Objects (allowing attachment of cameras and light sources).\n   Multiple light sources (ambient, point and spot).\n   Objects can have extension code, to handle unique functionality, easily\n        attached.\n\nFunctionality:\n\n  Client:\n   The client is built around a 'fast' render loop. Basically it changes things\n   when told to by the server and then renders an image from the user's\n   viewpoint. It also provides the server with information about the user's\n   actions - which can then be communicated to other clients and therefore to\n   other users.\n\n   The client is designed to be generic - in other words you don't need to\n   develop a new client when you want to enter a new world. This means that\n   resources can be spent on enhancing the client software rather than adapting\n   it. The adaptations, as will be explained in a moment, occur in the servers.\n\n   This release of the client software supports the following functionality:\n\n    o Hierarchical Objects (with associated addressing)\n\n    o Multiple Light Sources "
+  },
+  {
+    "doc_id": 4885,
+    "actual": "comp.graphics",
+    "predicted": "rec.sport.baseball",
+    "confidence": 0.541984443031626,
+    "n_tokens": 27,
+    "n_known_terms": 18,
+    "toward_predicted": [
+      [
+        "mailing",
+        1.0551
+      ],
+      [
+        "day",
+        0.5808
+      ],
+      [
+        "list",
+        0.3148
+      ],
+      [
+        "time",
+        0.2572
+      ],
+      [
+        "frank",
+        0.1651
+      ],
+      [
+        "beck",
+        0.1424
+      ]
+    ],
+    "toward_actual": [
+      [
+        "told",
+        0.4463
+      ],
+      [
+        "povray",
+        0.3926
+      ],
+      [
+        "groups",
+        0.2283
+      ],
+      [
+        "regular",
+        0.124
+      ],
+      [
+        "tried",
+        0.0111
+      ]
+    ],
+    "text": "Hello,\n \nI've been on the DKBtrace/PoVray mailing list out of trearn.bitnet\nfor some time now, but when I tried to post the other day the\nlistserv told me that the list doesn't exist!  So I got a global\nlist of groups from the listserv and - - NOTHING!  I grepped every\nstring I could think of.  If Frank, Ville Saari, Andre Beck, or anyone\nelse who's a regular on DKB-L can tell me what is going on, please do!\n \nRegards,"
+  },
+  {
+    "doc_id": 1987,
+    "actual": "rec.sport.baseball",
+    "predicted": "rec.sport.hockey",
+    "confidence": 0.4933674040461824,
+    "n_tokens": 24,
+    "n_known_terms": 17,
+    "toward_predicted": [
+      [
+        "predictions",
+        0.5037
+      ],
+      [
+        "teams",
+        0.3153
+      ],
+      [
+        "college",
+        0.3063
+      ],
+      [
+        "plays",
+        0.2231
+      ],
+      [
+        "analyst",
+        0.2078
+      ],
+      [
+        "especially",
+        0.1918
+      ]
+    ],
+    "toward_actual": [
+      [
+        "day",
+        0.5548
+      ],
+      [
+        "hmm",
+        0.2787
+      ],
+      [
+        "past",
+        0.2211
+      ],
+      [
+        "compared",
+        0.1764
+      ],
+      [
+        "predicting",
+        0.0574
+      ],
+      [
+        "future",
+        0.0141
+      ]
+    ],
+    "text": "hmm - i thought francesca's predictions ALWAYS hovered at or below\n .500, especially in the nfl.  (not counting college football\n bowl day).\n\nhe's a nice analyst for explaining past tense, and for mapping out\n what plays teams might do - but for predicting the future, he only\n looks good whne compared to russo."
+  },
+  {
+    "doc_id": 4893,
+    "actual": "comp.windows.x",
+    "predicted": "sci.space",
+    "confidence": 0.4752266064386865,
+    "n_tokens": 21,
+    "n_known_terms": 17,
+    "toward_predicted": [
+      [
+        "space",
+        1.8585
+      ],
+      [
+        "stuff",
+        0.389
+      ],
+      [
+        "viewer",
+        0.341
+      ],
+      [
+        "ii",
+        0.2272
+      ],
+      [
+        "available",
+        0.1333
+      ],
+      [
+        "tracking",
+        0.0865
+      ]
+    ],
+    "toward_actual": [
+      [
+        "binaries",
+        0.6602
+      ],
+      [
+        "help",
+        0.4838
+      ],
+      [
+        "installed",
+        0.2318
+      ],
+      [
+        "libraries",
+        0.1864
+      ],
+      [
+        "trying",
+        0.1799
+      ],
+      [
+        "need",
+        0.1398
+      ]
+    ],
+    "text": "I need some help in tracking down a dvi viewer for X. I have xdvi but we\nhave not got the X libraries and includes installed- so \n\t\ti) is there a way around this, as we are trying to avoid\n\t\t   installing the stuff (space is at a premium).\n\t\tii)would someone be prepared to make the binaries\n\t\t   available. We have a HP700 and a HP382."
+  },
+  {
+    "doc_id": 4024,
+    "actual": "comp.graphics",
+    "predicted": "comp.windows.x",
+    "confidence": 0.7219703140311966,
+    "n_tokens": 73,
+    "n_known_terms": 53,
+    "toward_predicted": [
+      [
+        "xv",
+        0.705
+      ],
+      [
+        "users",
+        0.3055
+      ],
+      [
+        "include",
+        0.2795
+      ],
+      [
+        "text",
+        0.2415
+      ],
+      [
+        "personal",
+        0.2211
+      ],
+      [
+        "view",
+        0.1999
+      ]
+    ],
+    "toward_actual": [
+      [
+        "jpeg",
+        0.4097
+      ],
+      [
+        "understand",
+        0.3998
+      ],
+      [
+        "line",
+        0.1725
+      ],
+      [
+        "reading",
+        0.1535
+      ],
+      [
+        "ideas",
+        0.1398
+      ],
+      [
+        "material",
+        0.1326
+      ]
+    ],
+    "text": "[ ..see previous article on this debate for the rests.. ]\n\nI can see XV-3.00 agree with my view in cases you don't -- even I say\nmy personal opinion (as above), it doesn't mean that it is not most\nobvious thing.\nPlease, if you use my previous writings as contradicting argument,\nplease do read them -- you have not saw them at all; you just\nrefered to text from which I wrote 'something' -- and you make\nhard decisions from that, without reading what exactly I have written.\n\nIt is really hard read when one writes a reply line by line method\nand don't understand include previously written material with the new\nsentences to give them meaning. You seem to be one such.\n\nYou also start replying to my articles, even you don't understand what\nis going on; you ask me repeatedly to decsribe my views what were\nwrong with XV 2.21 even I posted them within the article you did reply\nto. Believe me, it is not nice to get flamed specially when I know\nthat you have not read my article carefully in the first place.\n\nXV-3.00 and JPEG FAQ and users I have written to agree me with the\nplaces you didn't; I'm sure you just didn't undertand what about I\nwrote. We can blame my writing skills (in English?) for that, or?\n\nBetter stop the discussion and check what new ideas XV-3.00 gives;\nI allready mailed one to Bradley...\n"
+  },
+  {
+    "doc_id": 4205,
+    "actual": "comp.graphics",
+    "predicted": "rec.sport.baseball",
+    "confidence": 0.44226229755299507,
+    "n_tokens": 5,
+    "n_known_terms": 4,
+    "toward_predicted": [
+      [
+        "left",
+        1.7326
+      ],
+      [
+        "right",
+        0.677
+      ],
+      [
+        "legs",
+        0.0406
+      ]
+    ],
+    "toward_actual": [
+      [
+        "number",
+        1.0338
+      ]
+    ],
+    "text": "\n\nIs that the number of \"left\" legs, or both left and right?"
+  },
+  {
+    "doc_id": 554,
+    "actual": "rec.sport.baseball",
+    "predicted": "sci.space",
+    "confidence": 0.5617070433728527,
+    "n_tokens": 5,
+    "n_known_terms": 2,
+    "toward_predicted": [
+      [
+        "factor",
+        0.71
+      ],
+      [
+        "account",
+        0.4454
+      ]
+    ],
+    "toward_actual": [],
+    "text": "\n\nMake sure to take the Sutcliff, Fisk, ect. factor into account.\n"
+  },
+  {
+    "doc_id": 2930,
+    "actual": "comp.graphics",
+    "predicted": "sci.space",
+    "confidence": 0.5602385557010257,
+    "n_tokens": 17,
+    "n_known_terms": 10,
+    "toward_predicted": [
+      [
+        "globe",
+        1.2915
+      ],
+      [
+        "cut",
+        0.4956
+      ],
+      [
+        "object",
+        0.1528
+      ],
+      [
+        "calculate",
+        0.1351
+      ],
+      [
+        "able",
+        0.056
+      ]
+    ],
+    "toward_actual": [
+      [
+        "parametric",
+        0.7103
+      ],
+      [
+        "algorithm",
+        0.4854
+      ],
+      [
+        "surface",
+        0.4107
+      ],
+      [
+        "sheet",
+        0.2639
+      ],
+      [
+        "paper",
+        0.0081
+      ]
+    ],
+    "text": "Does anybody have an algorithm for \"flattening\" out a globe, or any other\nparametric surface, that is definied parametrically. \nThat is, I would like to take a sheet of paper and a knife and to be\nable to calculate how I must cut in the paper so I can fold it to a\nglobe (or any other object).\n"
+  },
+  {
+    "doc_id": 3538,
+    "actual": "comp.windows.x",
+    "predicted": "comp.graphics",
+    "confidence": 0.3474242186201696,
+    "n_tokens": 14,
+    "n_known_terms": 11,
+    "toward_predicted": [
+      [
+        "parsing",
+        0.4813
+      ],
+      [
+        "solve",
+        0.3501
+      ],
+      [
+        "far",
+        0.2751
+      ],
+      [
+        "able",
+        0.1585
+      ],
+      [
+        "adding",
+        0.131
+      ],
+      [
+        "back",
+        0.0861
+      ]
+    ],
+    "toward_actual": [
+      [
+        "welcome",
+        0.6149
+      ],
+      [
+        "looked",
+        0.2755
+      ],
+      [
+        "expressions",
+        0.2325
+      ],
+      [
+        "problem",
+        0.1033
+      ],
+      [
+        "versions",
+        0.0223
+      ]
+    ],
+    "text": "\nI'm most of the way through adding a grammar for parsing the #if expressions.\nI don't know when I'll be able to get back to it; you're welcome to what I \nhave so far. I haven't looked at other versions of makedepend, which may solve\nthe problem more elegantly.\n"
+  },
+  {
+    "doc_id": 3595,
+    "actual": "rec.sport.hockey",
+    "predicted": "comp.windows.x",
+    "confidence": 0.5804295467003736,
+    "n_tokens": 28,
+    "n_known_terms": 22,
+    "toward_predicted": [
+      [
+        "group",
+        0.6507
+      ],
+      [
+        "read",
+        0.485
+      ],
+      [
+        "system",
+        0.369
+      ],
+      [
+        "advance",
+        0.3577
+      ],
+      [
+        "help",
+        0.3377
+      ],
+      [
+        "appreciate",
+        0.2445
+      ]
+    ],
+    "toward_actual": [
+      [
+        "regular",
+        0.3087
+      ],
+      [
+        "respond",
+        0.1513
+      ],
+      [
+        "tell",
+        0.1242
+      ],
+      [
+        "give",
+        0.101
+      ],
+      [
+        "hours",
+        0.1006
+      ],
+      [
+        "access",
+        0.0828
+      ]
+    ],
+    "text": "Could someone please tell me how I can access the FAQ for this\ngroup?  I'm relatively new, and would like to read it, but\nalthough I've seen it mentioned, I've yet to see it posted.  Is\nit archived somewhere or does someone post it to the group on a\nregular basis?  or, is it distributed on-demand?  I'd appreciate\nany help anyone can give me.  \n\nThanks in advance.\n\n\t\t\t- Mary\n\np.s.  Please respond via email as the articles expire within 24\nhours on my mail system, and I don't always get a chance to read\neverything.  Thanks.\n\n\n===============================================================\nMary Blumenstock               [email]"
+  },
+  {
+    "doc_id": 1019,
+    "actual": "rec.sport.baseball",
+    "predicted": "rec.sport.hockey",
+    "confidence": 0.626729993780102,
+    "n_tokens": 24,
+    "n_known_terms": 16,
+    "toward_predicted": [
+      [
+        "sports",
+        0.4607
+      ],
+      [
+        "poster",
+        0.4188
+      ],
+      [
+        "summaries",
+        0.3684
+      ],
+      [
+        "game",
+        0.2147
+      ],
+      [
+        "chicago",
+        0.1767
+      ],
+      [
+        "extremely",
+        0.1241
+      ]
+    ],
+    "toward_actual": [
+      [
+        "section",
+        0.2077
+      ],
+      [
+        "printed",
+        0.1299
+      ],
+      [
+        "chances",
+        0.0746
+      ],
+      [
+        "sunday",
+        0.0694
+      ],
+      [
+        "monday",
+        0.0523
+      ],
+      [
+        "stories",
+        0.0153
+      ]
+    ],
+    "text": "boxscores.\n\nBeware.  The original poster looks to be from Louisville, and chances are  \nLouisville gets the edition of the NYTimes that is printed in Chicago for the  \nMidWest.  This edition has boxscores only on Monday (and Sunday) and an  \nextremely skimpy sports section (few game summaries, mostly just color  \nstories)."
+  },
+  {
+    "doc_id": 871,
+    "actual": "rec.sport.hockey",
+    "predicted": "rec.sport.baseball",
+    "confidence": 0.8145271175508041,
+    "n_tokens": 22,
+    "n_known_terms": 16,
+    "toward_predicted": [
+      [
+        "mlb",
+        1.8603
+      ],
+      [
+        "talent",
+        0.4173
+      ],
+      [
+        "perfectly",
+        0.4061
+      ],
+      [
+        "sign",
+        0.1724
+      ],
+      [
+        "reasonable",
+        0.1298
+      ],
+      [
+        "long",
+        0.1289
+      ]
+    ],
+    "toward_actual": [
+      [
+        "pool",
+        0.6765
+      ],
+      [
+        "teams",
+        0.5293
+      ],
+      [
+        "let",
+        0.1989
+      ],
+      [
+        "player",
+        0.0875
+      ],
+      [
+        "accessible",
+        0.0317
+      ],
+      [
+        "surprise",
+        0.0246
+      ]
+    ],
+    "text": "\nLinares has not defected; as I pointed out, MLB requires that the player\ndefect first.\n\n\nWhat a surprise.  As long as the pool of talent is not accessible to all\nteams, MLB won't let a few teams sign it.  Seems perfectly reasonable to\nme.  \n\n\nExcept that MLB won't allow it, which is all I ever said."
+  },
+  {
+    "doc_id": 3714,
+    "actual": "comp.windows.x",
+    "predicted": "comp.graphics",
+    "confidence": 0.5754896637477406,
+    "n_tokens": 42,
+    "n_known_terms": 23,
+    "toward_predicted": [
+      [
+        "objects",
+        0.9691
+      ],
+      [
+        "mode",
+        0.335
+      ],
+      [
+        "draw",
+        0.2633
+      ],
+      [
+        "colors",
+        0.212
+      ],
+      [
+        "object",
+        0.1531
+      ],
+      [
+        "need",
+        0.1341
+      ]
+    ],
+    "toward_actual": [
+      [
+        "color",
+        0.3933
+      ],
+      [
+        "foreground",
+        0.3869
+      ],
+      [
+        "redraw",
+        0.364
+      ],
+      [
+        "drawn",
+        0.335
+      ],
+      [
+        "underlying",
+        0.1106
+      ],
+      [
+        "requested",
+        0.0931
+      ]
+    ],
+    "text": "How can I draw an object of a specified color over objects of varying colors\n  and then erase it without having to redraw everything else?\n\n  What's happening is this,\n\n      If I draw it using GXcopy, it is drawn in the specified color.  If I erase\n      it using GXcopy with foreground and background reversed, it erases \n      whatever it overlayed.  I then need to redraw\n      all of the items it crossed.  Yuch.\n\n      If I draw it using GXinvert it is drawn in a random color - nothing \n      resembling what I requested.  It properly restores the color of \n      underlying objects in erase mode.\n\n  What's the solution?\n     \n"
+  },
+  {
+    "doc_id": 3376,
+    "actual": "comp.graphics",
+    "predicted": "comp.windows.x",
+    "confidence": 0.5231191345504552,
+    "n_tokens": 59,
+    "n_known_terms": 33,
+    "toward_predicted": [
+      [
+        "rectangle",
+        1.7058
+      ],
+      [
+        "general",
+        0.1408
+      ],
+      [
+        "help",
+        0.1359
+      ],
+      [
+        "rectangles",
+        0.1304
+      ],
+      [
+        "known",
+        0.1056
+      ],
+      [
+        "described",
+        0.1041
+      ]
+    ],
+    "toward_actual": [
+      [
+        "algorithm",
+        0.359
+      ],
+      [
+        "hope",
+        0.3022
+      ],
+      [
+        "intersection",
+        0.2203
+      ],
+      [
+        "inside",
+        0.1808
+      ],
+      [
+        "parallel",
+        0.173
+      ],
+      [
+        "two",
+        0.1621
+      ]
+    ],
+    "text": "I hope someone can help me with the following problem - I'm sure there\nmust be a known solution.\n\nGiven a rectangle defined by\n\n-X <= x <= X  and -Y <= y <= Y  where X and Y are constant\n\nand a parallelogram defined by\n\n-C1 <= a*x + b*y <= C1  and -C2 <= c*x + d*y <= C2\n\nwhere C1, C2, a, b, c, d are constants and b/a != d/c (i.e. not\nparallel lines)                                ^^\n                                          not equal to\n\nwhat is the area of their intersection?\n\n   What I'm after is some general algorithm suitable for ALL rectangles\nand parallelograms that can be described by the above equations.  At the \nmoment it looks like I'm going to have to look at all possible cases \nand examine each seperately e.g.\n\n1) rectangle encloses parallelogram. \n\n2) parallelogram encloses rectangle.\n\n3) two corners of parallelogram inside rectangle\n\n                          ^\n                         / \\\n                        /   \\\n                       /     \\\n           Y -------------------------------  Y\n             |       /         \\           |\n             |       \\          \\          |\n             |        \\     .    \\         |       . origin\n             |         \\          \\        |\n             |          \\         /        |\n          -Y ------------------------------- -Y\n            -X            \\     /           X\n                           \\   /\n                            \\ /\n                             \"\n\n4) two corners of parallelogram outside rec"
+  },
+  {
+    "doc_id": 4039,
+    "actual": "sci.space",
+    "predicted": "rec.sport.baseball",
+    "confidence": 0.44826150678865173,
+    "n_tokens": 29,
+    "n_known_terms": 19,
+    "toward_predicted": [
+      [
+        "year",
+        1.0557
+      ],
+      [
+        "winning",
+        0.308
+      ],
+      [
+        "expect",
+        0.2187
+      ],
+      [
+        "keep",
+        0.2053
+      ],
+      [
+        "october",
+        0.2011
+      ],
+      [
+        "faith",
+        0.1537
+      ]
+    ],
+    "toward_actual": [
+      [
+        "australia",
+        0.4481
+      ],
+      [
+        "system",
+        0.3495
+      ],
+      [
+        "political",
+        0.2556
+      ],
+      [
+        "corp",
+        0.2305
+      ],
+      [
+        "talking",
+        0.1969
+      ],
+      [
+        "promise",
+        0.1191
+      ]
+    ],
+    "text": "\n   ...  So how about this?  Give the winning group\n   (I can't see one company or corp doing it) a 10, 20, or 50 year\n   moratorium on taxes.\n\nYou are talking about the bozos who can't even manage in November to\nkeep promises about taxes made in October, and you expect them to make\n(and keep!) a 50-year promise like that?  Your faith in the political\nsystem is much higher than mine.  I wouldn't even begin to expect that\nin Australia, and we don't have institutionalised corruption like you\ndo."
+  },
+  {
+    "doc_id": 1697,
+    "actual": "comp.windows.x",
+    "predicted": "comp.graphics",
+    "confidence": 0.5619633042990024,
+    "n_tokens": 14,
+    "n_known_terms": 12,
+    "toward_predicted": [
+      [
+        "viewer",
+        1.0637
+      ],
+      [
+        "files",
+        0.6949
+      ],
+      [
+        "printing",
+        0.4439
+      ],
+      [
+        "showing",
+        0.3907
+      ],
+      [
+        "printer",
+        0.0037
+      ],
+      [
+        "feeling",
+        0.0004
+      ]
+    ],
+    "toward_actual": [
+      [
+        "script",
+        0.5481
+      ],
+      [
+        "windows",
+        0.4752
+      ],
+      [
+        "laser",
+        0.4404
+      ],
+      [
+        "help",
+        0.3276
+      ],
+      [
+        "schools",
+        0.2669
+      ],
+      [
+        "recently",
+        0.1884
+      ]
+    ],
+    "text": "Hello, recently I have been printing out a lot of files on school's laser printer and feeling guilty about it.  Please help me by showing me where to get a post script viewer for X-windows.  Thank you for your help.\n\n\n\n"
+  },
+  {
+    "doc_id": 111,
+    "actual": "comp.windows.x",
+    "predicted": "comp.graphics",
+    "confidence": 0.6760917855698283,
+    "n_tokens": 31,
+    "n_known_terms": 20,
+    "toward_predicted": [
+      [
+        "files",
+        0.5173
+      ],
+      [
+        "wuarchive",
+        0.509
+      ],
+      [
+        "msdos",
+        0.4234
+      ],
+      [
+        "zip",
+        0.326
+      ],
+      [
+        "pub",
+        0.2953
+      ],
+      [
+        "drivers",
+        0.2303
+      ]
+    ],
+    "toward_actual": [
+      [
+        "fi",
+        0.3647
+      ],
+      [
+        "appeal",
+        0.2875
+      ],
+      [
+        "josh",
+        0.2815
+      ],
+      [
+        "dir",
+        0.2415
+      ],
+      [
+        "co",
+        0.1977
+      ],
+      [
+        "find",
+        0.1556
+      ]
+    ],
+    "text": "For those of you who couldn't find X-Appeal, it is availible at\nthe following sitex:\n\n\tascwide.ascii.co.jp in the /pub/MSDOS/xappeal dir\n\twuarchive.wustl.edu in the /mirrors4/garbo.uwasa.fi/demo\n\tdirectory\n\n\tThe three files are xap13exe.aip, xap10fon.zip and\n   drivers.zip.\n\nJosh"
+  },
+  {
+    "doc_id": 4733,
+    "actual": "comp.windows.x",
+    "predicted": "comp.graphics",
+    "confidence": 0.526435015974665,
+    "n_tokens": 38,
+    "n_known_terms": 18,
+    "toward_predicted": [
+      [
+        "graphics",
+        0.773
+      ],
+      [
+        "split",
+        0.3211
+      ],
+      [
+        "x1",
+        0.3062
+      ],
+      [
+        "designers",
+        0.1725
+      ],
+      [
+        "object",
+        0.1563
+      ],
+      [
+        "two",
+        0.0986
+      ]
+    ],
+    "toward_actual": [
+      [
+        "color",
+        0.6024
+      ],
+      [
+        "drawn",
+        0.3421
+      ],
+      [
+        "display",
+        0.324
+      ],
+      [
+        "specify",
+        0.2477
+      ],
+      [
+        "functions",
+        0.2317
+      ],
+      [
+        "drawing",
+        0.2008
+      ]
+    ],
+    "text": "Most graphics systems I have seen have drawing routines that also specify\na color for drawing, like\n\nDrawpoint(x,y,color) or Drawline(x1,y1,x2,y2,color) or\nFillrectangle(x1,y1,x2,y2,color) \n\nWith X, I have to do something like \nXSetForeground(current_color)\nXDrawPoint(d,w,x,y)\n\nWhy split this into two functions? Why did X designers decide to not associate\nthe color with the object being drawn, and instead associate it with the\ndisplay it is being drawn on?"
+  },
+  {
+    "doc_id": 3897,
+    "actual": "comp.windows.x",
+    "predicted": "comp.graphics",
+    "confidence": 0.9157276541246716,
+    "n_tokens": 19,
+    "n_known_terms": 18,
+    "toward_predicted": [
+      [
+        "images",
+        1.3162
+      ],
+      [
+        "cross",
+        0.6865
+      ],
+      [
+        "pd",
+        0.3762
+      ],
+      [
+        "looking",
+        0.3432
+      ],
+      [
+        "pointers",
+        0.2526
+      ],
+      [
+        "displaying",
+        0.2216
+      ]
+    ],
+    "toward_actual": [
+      [
+        "application",
+        0.5183
+      ],
+      [
+        "system",
+        0.3338
+      ],
+      [
+        "section",
+        0.1249
+      ],
+      [
+        "advance",
+        0.1126
+      ],
+      [
+        "code",
+        0.0241
+      ],
+      [
+        "keith",
+        0.0016
+      ]
+    ],
+    "text": "The subject line says it all really, I'm looking for a PD application\nwhich will just handle the displaying of 3D data sets (images) in\ncross section, or any pointers to code which will aid in the development\nof such a system.\n\n  Thanks in advance\n\n\tKeith Marlow\n\n"
+  },
+  {
+    "doc_id": 4877,
+    "actual": "sci.space",
+    "predicted": "comp.graphics",
+    "confidence": 0.3588025951552493,
+    "n_tokens": 8,
+    "n_known_terms": 4,
+    "toward_predicted": [
+      [
+        "french",
+        0.7923
+      ],
+      [
+        "corporate",
+        0.1132
+      ]
+    ],
+    "toward_actual": [
+      [
+        "documents",
+        0.1505
+      ],
+      [
+        "steal",
+        0.0044
+      ]
+    ],
+    "text": "You mena in the same way french intelliegence agents steal\ndocuments from US corporate executives?"
+  },
+  {
+    "doc_id": 2831,
+    "actual": "comp.windows.x",
+    "predicted": "comp.graphics",
+    "confidence": 0.5732822290536244,
+    "n_tokens": 32,
+    "n_known_terms": 27,
+    "toward_predicted": [
+      [
+        "graphics",
+        1.0411
+      ],
+      [
+        "video",
+        0.588
+      ],
+      [
+        "number",
+        0.3932
+      ],
+      [
+        "useful",
+        0.2722
+      ],
+      [
+        "parallax",
+        0.1109
+      ],
+      [
+        "steve",
+        0.0797
+      ]
+    ],
+    "toward_actual": [
+      [
+        "window",
+        1.1434
+      ],
+      [
+        "fax",
+        0.3989
+      ],
+      [
+        "office",
+        0.1549
+      ],
+      [
+        "including",
+        0.1216
+      ],
+      [
+        "read",
+        0.1104
+      ],
+      [
+        "mention",
+        0.0909
+      ]
+    ],
+    "text": "The product you mention is XVideo from Parallax Graphics in Santa Clara, \nCalifornia, US. You can read our product review in the Jan/Feb '93 issue\nof The X Journal. That issues focuses on Multimedia and X, in which there\nare also a number of other useful items, including an article on Video in\nan X Window. Fax our New York office at 212.274.0646 for information on \nobtaining back issues.\n\nSteve"
+  },
+  {
+    "doc_id": 1446,
+    "actual": "sci.space",
+    "predicted": "comp.graphics",
+    "confidence": 0.545843403465614,
+    "n_tokens": 8,
+    "n_known_terms": 7,
+    "toward_predicted": [
+      [
+        "files",
+        1.0961
+      ],
+      [
+        "faq",
+        0.6361
+      ],
+      [
+        "wondering",
+        0.5879
+      ],
+      [
+        "monthly",
+        0.1849
+      ],
+      [
+        "quarterly",
+        0.1717
+      ]
+    ],
+    "toward_actual": [
+      [
+        "feeling",
+        0.2795
+      ],
+      [
+        "days",
+        0.101
+      ]
+    ],
+    "text": "I was wondering if the FAQ files could be posted quarterly rather than monthly.  Every 28-30 days, I get this bloated feeling.\n \n\n"
+  },
+  {
+    "doc_id": 1041,
+    "actual": "comp.windows.x",
+    "predicted": "comp.graphics",
+    "confidence": 0.4295793732139011,
+    "n_tokens": 13,
+    "n_known_terms": 9,
+    "toward_predicted": [
+      [
+        "works",
+        0.7252
+      ],
+      [
+        "visuals",
+        0.5147
+      ],
+      [
+        "colors",
+        0.4287
+      ],
+      [
+        "truecolor",
+        0.3117
+      ],
+      [
+        "great",
+        0.2867
+      ],
+      [
+        "background",
+        0.2448
+      ]
+    ],
+    "toward_actual": [
+      [
+        "foreground",
+        1.565
+      ],
+      [
+        "set",
+        0.7908
+      ],
+      [
+        "bg",
+        0.2418
+      ]
+    ],
+    "text": "You can also set the Foreground to the XOR of the foreground and background\ncolors:  XSetForeground(..., fg ^ bg);    This works great for me (at least\nwith TrueColor visuals).\n"
+  },
+  {
+    "doc_id": 4129,
+    "actual": "rec.sport.baseball",
+    "predicted": "sci.space",
+    "confidence": 0.5362745732936023,
+    "n_tokens": 56,
+    "n_known_terms": 38,
+    "toward_predicted": [
+      [
+        "military",
+        0.4062
+      ],
+      [
+        "put",
+        0.2636
+      ],
+      [
+        "evidence",
+        0.207
+      ],
+      [
+        "discussing",
+        0.2018
+      ],
+      [
+        "legal",
+        0.1837
+      ],
+      [
+        "worth",
+        0.182
+      ]
+    ],
+    "toward_actual": [
+      [
+        "effect",
+        0.2888
+      ],
+      [
+        "black",
+        0.2494
+      ],
+      [
+        "back",
+        0.2214
+      ],
+      [
+        "ballplayers",
+        0.1808
+      ],
+      [
+        "list",
+        0.1729
+      ],
+      [
+        "length",
+        0.1486
+      ]
+    ],
+    "text": "\n\n\nGood question.  It's my impression, not backed by evidence, that general\nsouth-of-the-borderness seems to exempt one from the hiring-firing effect\nI was talking about.  \n\nBack in the 20's there were some attempts to hire black Cuban ballplayers; \nthey were rejected by the commissioner and others.\n\n\n\n\nWell, what *did* I mean to say?  Aside from some short-lived exceptions\nsuch as Japanese internment in WW II, only blacks were affected by laws\nregarding: slavery, Jim Crow, miscegenation, military service, etc.  If\nmy claim of exclusivity is not 100% airtight, that is, if you can come\nup with this or that exception, fine -- have a cookie.  But compared to\nthis list, no other racial group put up with a legal onslaught worth\ndiscussing at length."
+  },
+  {
+    "doc_id": 1230,
+    "actual": "comp.windows.x",
+    "predicted": "rec.sport.baseball",
+    "confidence": 0.5147107589645649,
+    "n_tokens": 8,
+    "n_known_terms": 5,
+    "toward_predicted": [
+      [
+        "mailing",
+        1.5434
+      ],
+      [
+        "list",
+        0.1875
+      ]
+    ],
+    "toward_actual": [
+      [
+        "user",
+        0.9352
+      ],
+      [
+        "wish",
+        0.3226
+      ],
+      [
+        "participation",
+        0.0559
+      ]
+    ],
+    "text": "Please unsubscribe [email]  This user has become inactive and I\nwish to discontinue his participation in this mailing list."
+  },
+  {
+    "doc_id": 4835,
+    "actual": "comp.graphics",
+    "predicted": "comp.windows.x",
+    "confidence": 0.7898667234974605,
+    "n_tokens": 18,
+    "n_known_terms": 13,
+    "toward_predicted": [
+      [
+        "widget",
+        3.0967
+      ],
+      [
+        "set",
+        0.8006
+      ],
+      [
+        "different",
+        0.2481
+      ],
+      [
+        "people",
+        0.0903
+      ],
+      [
+        "realize",
+        0.0433
+      ],
+      [
+        "pat",
+        0.0292
+      ]
+    ],
+    "toward_actual": [
+      [
+        "showing",
+        0.3951
+      ],
+      [
+        "need",
+        0.2745
+      ],
+      [
+        "dimensional",
+        0.2306
+      ],
+      [
+        "stuff",
+        0.0824
+      ],
+      [
+        "generic",
+        0.0753
+      ]
+    ],
+    "text": "What I'd like to see is the more generic N-dimensional widget set.\nI realize, that there wouldn't be a whole shitload of people\nwho'd want more than 3, but why stop?\n\nAll I need is a Widget with up to N viewports showing me different\n3-D or 2-D slices of my stuff.\n\nalter,\npat\n"
+  },
+  {
+    "doc_id": 422,
+    "actual": "sci.space",
+    "predicted": "rec.sport.baseball",
+    "confidence": 0.33569102988537836,
+    "n_tokens": 10,
+    "n_known_terms": 9,
+    "toward_predicted": [
+      [
+        "hitting",
+        0.705
+      ],
+      [
+        "block",
+        0.4447
+      ],
+      [
+        "expect",
+        0.1523
+      ],
+      [
+        "close",
+        0.0807
+      ]
+    ],
+    "toward_actual": [
+      [
+        "missing",
+        0.2616
+      ],
+      [
+        "sunlight",
+        0.2582
+      ],
+      [
+        "shadow",
+        0.2357
+      ],
+      [
+        "view",
+        0.118
+      ],
+      [
+        "come",
+        0.0368
+      ]
+    ],
+    "text": "\nWhere does the shadow come from?  There's nothing close enough to block\nsunlight from hitting them.  I wouldn't expect there to be anything block\nour view of them either.  What am I missing?"
+  },
+  {
+    "doc_id": 2298,
+    "actual": "rec.sport.hockey",
+    "predicted": "sci.space",
+    "confidence": 0.3504040566125288,
+    "n_tokens": 8,
+    "n_known_terms": 5,
+    "toward_predicted": [
+      [
+        "small",
+        0.8491
+      ],
+      [
+        "longer",
+        0.4304
+      ],
+      [
+        "moment",
+        0.0784
+      ]
+    ],
+    "toward_actual": [
+      [
+        "guess",
+        0.3984
+      ],
+      [
+        "heard",
+        0.3827
+      ]
+    ],
+    "text": "\n\n\n\nSaku isn't that small any longer I guess I heard he is 177cm tall at the\nmoment and will still grow 6-8cm."
+  },
+  {
+    "doc_id": 3059,
+    "actual": "comp.graphics",
+    "predicted": "comp.windows.x",
+    "confidence": 0.6279522961043051,
+    "n_tokens": 21,
+    "n_known_terms": 16,
+    "toward_predicted": [
+      [
+        "fonts",
+        1.5157
+      ],
+      [
+        "install",
+        0.8539
+      ],
+      [
+        "manager",
+        0.4798
+      ],
+      [
+        "ftped",
+        0.199
+      ],
+      [
+        "find",
+        0.1821
+      ],
+      [
+        "convert",
+        0.1085
+      ]
+    ],
+    "toward_actual": [
+      [
+        "adobe",
+        0.8538
+      ],
+      [
+        "useful",
+        0.3489
+      ],
+      [
+        "bought",
+        0.2696
+      ],
+      [
+        "program",
+        0.1818
+      ],
+      [
+        "useless",
+        0.1669
+      ],
+      [
+        "type",
+        0.1285
+      ]
+    ],
+    "text": "The subject says it all. I bought Adobe Type Manager and find it completely\nuseless. I ftped some atm fonts and couldn't install them. What's the use?\nAre you supposed to be able to convert ATM fonts to Truetype?\n\nIf there's anyone out there who has this program and actually finds it \nuseful, enlighten me!"
+  },
+  {
+    "doc_id": 1886,
+    "actual": "comp.graphics",
+    "predicted": "sci.space",
+    "confidence": 0.5173684024268957,
+    "n_tokens": 15,
+    "n_known_terms": 12,
+    "toward_predicted": [
+      [
+        "phase",
+        0.7329
+      ],
+      [
+        "complex",
+        0.6014
+      ],
+      [
+        "data",
+        0.3639
+      ],
+      [
+        "magnitude",
+        0.1108
+      ],
+      [
+        "bio",
+        0.0473
+      ]
+    ],
+    "toward_actual": [
+      [
+        "point",
+        0.6499
+      ],
+      [
+        "images",
+        0.5584
+      ],
+      [
+        "available",
+        0.2469
+      ],
+      [
+        "medical",
+        0.1519
+      ],
+      [
+        "information",
+        0.1037
+      ],
+      [
+        "mean",
+        0.0921
+      ]
+    ],
+    "text": "Are  complex  bio-medical  images  available  anywhere on the net for \nexperimentation?  By complex I mean that every sampled data point has \na magnitude and phase information both. "
+  },
+  {
+    "doc_id": 4665,
+    "actual": "comp.windows.x",
+    "predicted": "comp.graphics",
+    "confidence": 0.7155373055278416,
+    "n_tokens": 10,
+    "n_known_terms": 10,
+    "toward_predicted": [
+      [
+        "gifs",
+        1.0535
+      ],
+      [
+        "format",
+        0.6067
+      ],
+      [
+        "looking",
+        0.4174
+      ],
+      [
+        "jpegs",
+        0.2761
+      ],
+      [
+        "ps",
+        0.0777
+      ],
+      [
+        "information",
+        0.0052
+      ]
+    ],
+    "toward_actual": [
+      [
+        "xpm",
+        0.4627
+      ],
+      [
+        "converting",
+        0.4155
+      ],
+      [
+        "utilities",
+        0.2139
+      ],
+      [
+        "appreciated",
+        0.0252
+      ]
+    ],
+    "text": "I am looking for utilities for converting GIFs/JPEGs/PS etc to xpm format? Any \ninformation appreciated.\n\nThanks,"
+  },
+  {
+    "doc_id": 779,
+    "actual": "rec.sport.baseball",
+    "predicted": "rec.sport.hockey",
+    "confidence": 0.5735652283033787,
+    "n_tokens": 9,
+    "n_known_terms": 9,
+    "toward_predicted": [
+      [
+        "pick",
+        0.9255
+      ],
+      [
+        "comment",
+        0.8332
+      ],
+      [
+        "lost",
+        0.5921
+      ],
+      [
+        "teams",
+        0.4715
+      ],
+      [
+        "team",
+        0.1735
+      ]
+    ],
+    "toward_actual": [
+      [
+        "yankees",
+        1.4692
+      ],
+      [
+        "responding",
+        0.5879
+      ],
+      [
+        "part",
+        0.1734
+      ],
+      [
+        "unreasonable",
+        0.1441
+      ]
+    ],
+    "text": "\n\nPerhaps so. I was only responding to the \"Yankees of the 20's and 30's\" \npart of the comment. If those teams were a 'sure thing' and lost, \nthen it's probably not so unreasonable for someone to pick another \nteam (not that I did)."
+  },
+  {
+    "doc_id": 591,
+    "actual": "comp.windows.x",
+    "predicted": "rec.sport.baseball",
+    "confidence": 0.7800384259022743,
+    "n_tokens": 12,
+    "n_known_terms": 9,
+    "toward_predicted": [
+      [
+        "mailing",
+        2.1456
+      ],
+      [
+        "wondering",
+        0.3009
+      ],
+      [
+        "appreciate",
+        0.1691
+      ],
+      [
+        "list",
+        0.1304
+      ]
+    ],
+    "toward_actual": [
+      [
+        "xt",
+        0.426
+      ],
+      [
+        "advance",
+        0.4117
+      ],
+      [
+        "related",
+        0.2746
+      ],
+      [
+        "lists",
+        0.2219
+      ],
+      [
+        "info",
+        0.1286
+      ]
+    ],
+    "text": "As we don't get a newsfeed I was wondering whether there was such a\nthing as a Xt mailing list (other than [email]  I\nwould appreciate any info on this, (or X related mailing lists.)\n\n        Thanks in advance,\n\n        Leon"
+  },
+  {
+    "doc_id": 1152,
+    "actual": "comp.graphics",
+    "predicted": "sci.space",
+    "confidence": 0.5559696751556739,
+    "n_tokens": 33,
+    "n_known_terms": 24,
+    "toward_predicted": [
+      [
+        "earth",
+        0.5856
+      ],
+      [
+        "requested",
+        0.5196
+      ],
+      [
+        "stupid",
+        0.4022
+      ],
+      [
+        "news",
+        0.2704
+      ],
+      [
+        "falling",
+        0.2399
+      ],
+      [
+        "send",
+        0.2051
+      ]
+    ],
+    "toward_actual": [
+      [
+        "mail",
+        0.6681
+      ],
+      [
+        "programmer",
+        0.3908
+      ],
+      [
+        "group",
+        0.3693
+      ],
+      [
+        "art",
+        0.3243
+      ],
+      [
+        "info",
+        0.2077
+      ],
+      [
+        "john",
+        0.1513
+      ]
+    ],
+    "text": "Sorry to clog up the news group with this message.\n\nWayne Rigby, I have the info you requested, but for some\nreason I can not mail it to you.  Please contact me!\nSend email address.\nj\n-- \n-------------------------------------------------------------------------------\n\"No Real Programmer can function without caffeine\" - Zen + Art of Internet\n\n     _/_/_/_/_/  _/_/_/_/_/  _/_/  _/_/        John S. Muller\n        _/      _/          _/  _/  _/         [email]\n       _/      _/_/_/_/_/  _/  _/  _/          [email]\n _/   _/              _/  _/      _/           [email] \n _/_/_/      _/_/_/_/_/  _/      _/            \n\n\"You are not drunk until you have to grab the grass,\n to keep the grass from falling off the earth\" - Some Stupid Comedian"
+  },
+  {
+    "doc_id": 2518,
+    "actual": "comp.graphics",
+    "predicted": "comp.windows.x",
+    "confidence": 0.45562725375154167,
+    "n_tokens": 7,
+    "n_known_terms": 6,
+    "toward_predicted": [
+      [
+        "copy",
+        0.7582
+      ],
+      [
+        "tell",
+        0.7431
+      ],
+      [
+        "mailed",
+        0.2145
+      ],
+      [
+        "indicates",
+        0.0372
+      ]
+    ],
+    "toward_actual": [
+      [
+        "address",
+        0.3772
+      ],
+      [
+        "mail",
+        0.2339
+      ]
+    ],
+    "text": "\n\nplease tell me where you where you FTP'd this from? I would like to have\na copy of it. (I would have mailed you, but your post indicates you have no mail\naddress...)\n"
+  },
+  {
+    "doc_id": 1397,
+    "actual": "comp.graphics",
+    "predicted": "comp.windows.x",
+    "confidence": 0.8504031695064451,
+    "n_tokens": 26,
+    "n_known_terms": 19,
+    "toward_predicted": [
+      [
+        "sun",
+        0.9633
+      ],
+      [
+        "characters",
+        0.787
+      ],
+      [
+        "char",
+        0.5106
+      ],
+      [
+        "character",
+        0.2128
+      ],
+      [
+        "standard",
+        0.1782
+      ],
+      [
+        "contain",
+        0.1318
+      ]
+    ],
+    "toward_actual": [
+      [
+        "write",
+        0.2346
+      ],
+      [
+        "fortran",
+        0.1623
+      ],
+      [
+        "program",
+        0.1146
+      ],
+      [
+        "ascii",
+        0.0825
+      ],
+      [
+        "screen",
+        0.0588
+      ],
+      [
+        "buffers",
+        0.0079
+      ]
+    ],
+    "text": "I would like to know if anyone has had any luck using the upper 128 ASCII\ncharacters on a Sun station.  I am trying to convert a fortran program to run\non a Sun.  When we write character buffers to the Sun which contain char(218)\nor char(196) or char(197) etc.  We get characters on the screen but they are\nnot the characters in the standard ASCII tables."
+  },
+  {
+    "doc_id": 1838,
+    "actual": "rec.sport.baseball",
+    "predicted": "rec.sport.hockey",
+    "confidence": 0.33374912606390045,
+    "n_tokens": 7,
+    "n_known_terms": 6,
+    "toward_predicted": [
+      [
+        "lost",
+        0.808
+      ],
+      [
+        "news",
+        0.3781
+      ],
+      [
+        "status",
+        0.2006
+      ]
+    ],
+    "toward_actual": [
+      [
+        "job",
+        0.2414
+      ],
+      [
+        "appreciated",
+        0.1656
+      ],
+      [
+        "starting",
+        0.1475
+      ]
+    ],
+    "text": "Any more news on Steve's status since he lost the starting job\nwould be appreciated"
+  },
+  {
+    "doc_id": 205,
+    "actual": "rec.sport.baseball",
+    "predicted": "rec.sport.hockey",
+    "confidence": 0.4125009206457767,
+    "n_tokens": 39,
+    "n_known_terms": 27,
+    "toward_predicted": [
+      [
+        "agreement",
+        0.4475
+      ],
+      [
+        "instead",
+        0.3284
+      ],
+      [
+        "draft",
+        0.2834
+      ],
+      [
+        "lost",
+        0.2644
+      ],
+      [
+        "management",
+        0.2069
+      ],
+      [
+        "simmons",
+        0.1127
+      ]
+    ],
+    "toward_actual": [
+      [
+        "bonds",
+        0.3169
+      ],
+      [
+        "argument",
+        0.2348
+      ],
+      [
+        "add",
+        0.1863
+      ],
+      [
+        "ted",
+        0.1576
+      ],
+      [
+        "trade",
+        0.1251
+      ],
+      [
+        "excellent",
+        0.1153
+      ]
+    ],
+    "text": "****************************************************\n12) Management: BIG BIG ZERO. Sauer has yet to make a forceful agreement\nin favor of revenue sharing.\n******************************************************\n\n\nI meant argument instead of agreement.\nAlso, I think I should add a coouple of Ted's positive achievements\n- Smiley trade was good for the pirates. but I think Ted could have gotten\nsomeone better than Neagle. Cummings seems to be pretty good.\n- The Cole trade was excellent. BUt Simmons has botched it up now.\n-This year's draft seems to have gone well for the PIrates. BUt then they\nlost 2 high picks in the Bonds fiasco."
+  },
+  {
+    "doc_id": 4397,
+    "actual": "sci.space",
+    "predicted": "comp.graphics",
+    "confidence": 0.5125249426545833,
+    "n_tokens": 16,
+    "n_known_terms": 13,
+    "toward_predicted": [
+      [
+        "interested",
+        0.938
+      ],
+      [
+        "write",
+        0.816
+      ],
+      [
+        "help",
+        0.4307
+      ],
+      [
+        "find",
+        0.3002
+      ],
+      [
+        "trying",
+        0.1458
+      ],
+      [
+        "information",
+        0.1243
+      ]
+    ],
+    "toward_actual": [
+      [
+        "station",
+        0.5615
+      ],
+      [
+        "missile",
+        0.4197
+      ],
+      [
+        "range",
+        0.1132
+      ],
+      [
+        "white",
+        0.0725
+      ],
+      [
+        "receiving",
+        0.0691
+      ],
+      [
+        "possible",
+        0.0068
+      ]
+    ],
+    "text": "Could someone please help me. I am trying to find the \naddress to the TDRS receiving station at White Sands\nMissile Range. I am interested in possible employment\nand would like to write for information."
+  },
+  {
+    "doc_id": 4308,
+    "actual": "comp.windows.x",
+    "predicted": "rec.sport.baseball",
+    "confidence": 0.29565706591481006,
+    "n_tokens": 2239,
+    "n_known_terms": 147,
+    "toward_predicted": [
+      [
+        "bb",
+        0.2183
+      ],
+      [
+        "hr",
+        0.1742
+      ],
+      [
+        "mr",
+        0.1666
+      ],
+      [
+        "al",
+        0.1654
+      ],
+      [
+        "ws",
+        0.119
+      ],
+      [
+        "md",
+        0.1101
+      ]
+    ],
+    "toward_actual": [
+      [
+        "r5",
+        0.183
+      ],
+      [
+        "ma",
+        0.1397
+      ],
+      [
+        "ux",
+        0.1255
+      ],
+      [
+        "nt",
+        0.124
+      ],
+      [
+        "mb",
+        0.1181
+      ],
+      [
+        "mm",
+        0.1007
+      ]
+    ],
+    "text": "part 2/2 of xrastool 1.0\n---cut here---\n[email] !V;#HJ\nM')^.S /&'WB&Z0ASW#LB'M56V,:W5=PQ: 1?%\"_N%Q.$HT3+X\\-%O=0$B\"_J\nM'6=<A<?&XXR+\\0AM?#P.Q=\".U$:U(VRP[6A=C#PVKH8T\\<7(U>2*8 ,O0RE(\n[email]\nM4;B%XD\"28.4J7IAVO!%*#%N!&L!2XQ50TU<+1#3> CU]$;_?E\"&QHNB]$2?U\n[email] [IC20Q!E\n[email]\nM&).)(,: [email] \\V*\\D< [email]\n[email] =^GJ:-H8&#X=J1I =G3 (:\nM [email] YK.Y'UR.// %& C\\\nM$]( ; G+WIQG*;B%=,L%\"GAU84B3GB>P#,G0TB $=%IW(KHM&52OQ!B\"E /@\n[email]\nM(IV =$&S61:H!DD;.$1&%B>*>D1C5Q=O\\!%R[#H^V\\ S3D#J7 [email]\n[email] >HC(6\n[email] )6+RNC6\\C==\n[email] [email]\nM([N1[DAHY+)L[QC^,_6X^,:%\\L4UEG<QO=C]2D7J'%:1G;!6I*&,Y_6IRXCU\nM??!WP\\:KHR?R2* [email]\n[email] [email]\n[email] 'L)&]BQZST$'])[Y.]B2\\E!W0 /\\F5P#AR^D;M^ ]2\n[email] +0\" R\"$G)\nM'BB-QXN?EL&+0K82&X.1[[*1+LF.1T-J&4F6C TH),..ZP3[(_W13]6-C$O\"\nM)(5EGZ:(9/9Q +F7[/OTR?R2<TEY9!:+$VE2]$0R)AF. 28>T\\6J)/F1'&PU\nMCIAPJ\"U[6G^P*5F+?$KZJ2B3(\\E. 3.LZ7!6_#0M)?DX#H_.)#GG,[F-7$;V\nMR2Z3BTG-Y#2J')DK. [email] ]Q^-9#1)7Y\n[email]\nM(P&31!O&U76R3Z:11#E. M&1\\3R.9'?2(_DF&ZM<)^&1ZTF1Y#QRQL7V8DD6\nMBA9DF$<'FW+ '+5#F=CL(ME1[JCJEMH,'RF!_!+^)LM2M2EJ%H QTI\"]^A*\"\nM)<U4_ZR [email]\nM)_4^UZL,Y2_2.;F6S-0MMMR2VK#DX#.2/;G><D9VI+B1)RDNSXQ2/ODLJRU^\nM\"4TYRSN]3XB23),<* [email]\nMO R4%:DH)3/R:*6>I%(J)A6.3DJ$UQ9 2PDH,P7>)F]0S;#\\I%YI-[G\\&1E:\n[email] [email]\n[email] !\"'UH'LE5G8UX./D\nM($%W.TC&G$-0<T>)!.#A($N0H$IH727JR>1;P==0S#8T%;.ZP27($_4=A '0\nM*C<\")II3U'EP5\\FK/**THEB559[(0\"P*BD%<<!#<HGZ#3Z9FDN%E\\G!3RN3Y\n[email] 2T$[?R'V2QX1V.\nM*X%FZZ [email] [email]\n[email] [email]\nM*S>$XL)M'=AI_0)>T2T1ACQ5')M,TI80F"
+  },
+  {
+    "doc_id": 2464,
+    "actual": "comp.graphics",
+    "predicted": "comp.windows.x",
+    "confidence": 0.6799116160788777,
+    "n_tokens": 24,
+    "n_known_terms": 13,
+    "toward_predicted": [
+      [
+        "set",
+        0.6904
+      ],
+      [
+        "functions",
+        0.4005
+      ],
+      [
+        "working",
+        0.3604
+      ],
+      [
+        "sending",
+        0.2687
+      ],
+      [
+        "hangs",
+        0.2345
+      ],
+      [
+        "time",
+        0.1761
+      ]
+    ],
+    "toward_actual": [
+      [
+        "site",
+        0.4587
+      ],
+      [
+        "ftp",
+        0.3675
+      ],
+      [
+        "phillips",
+        0.2564
+      ],
+      [
+        "compare",
+        0.0064
+      ]
+    ],
+    "text": "We have a minivas-2 and we want to record to an Abekas A66.\nWe have most of the functions working but when we go to\nset up a record the minivas hangs. We are sending the\nabekas SMPTE time code. Does anyone have code we can\ncompare to what we have done and is there and ftp site\nfor minivas and abekas code.\n\nGordon Phillips\n[email]"
+  },
+  {
+    "doc_id": 4071,
+    "actual": "comp.graphics",
+    "predicted": "sci.space",
+    "confidence": 0.33946047603616847,
+    "n_tokens": 6,
+    "n_known_terms": 6,
+    "toward_predicted": [
+      [
+        "sig",
+        0.9044
+      ],
+      [
+        "listed",
+        0.1421
+      ]
+    ],
+    "toward_actual": [
+      [
+        "ftp",
+        0.6045
+      ],
+      [
+        "find",
+        0.3847
+      ],
+      [
+        "beg",
+        0.2249
+      ],
+      [
+        "sites",
+        0.1031
+      ]
+    ],
+    "text": "\n\nWhatever you do, don't FTP to the sites listed in my sig...\n \nYou won't like what you find...really.  I beg you NOT to GO there!\nPLEASE!\n\n...e\n"
+  },
+  {
+    "doc_id": 4126,
+    "actual": "comp.graphics",
+    "predicted": "comp.windows.x",
+    "confidence": 0.6506190974982449,
+    "n_tokens": 10,
+    "n_known_terms": 7,
+    "toward_predicted": [
+      [
+        "text",
+        0.9446
+      ],
+      [
+        "tried",
+        0.375
+      ],
+      [
+        "work",
+        0.3489
+      ],
+      [
+        "editor",
+        0.2432
+      ]
+    ],
+    "toward_actual": [
+      [
+        "ideas",
+        0.5469
+      ],
+      [
+        "file",
+        0.2184
+      ],
+      [
+        "opened",
+        0.0843
+      ]
+    ],
+    "text": "\n\n\n\nI opened the file with a text editor and it looks like:\n\n^Vnetwork storyboardpictPICT8BIM^E^......\n\nI have already tried BinHex which does not seem to work. \nAny other ideas?\n\n-- \n"
+  },
+  {
+    "doc_id": 3926,
+    "actual": "comp.graphics",
+    "predicted": "comp.windows.x",
+    "confidence": 0.9453338004333954,
+    "n_tokens": 12,
+    "n_known_terms": 9,
+    "toward_predicted": [
+      [
+        "server",
+        1.821
+      ],
+      [
+        "clients",
+        0.9655
+      ],
+      [
+        "quit",
+        0.458
+      ],
+      [
+        "running",
+        0.3983
+      ],
+      [
+        "un",
+        0.3389
+      ],
+      [
+        "run",
+        0.0995
+      ]
+    ],
+    "toward_actual": [
+      [
+        "need",
+        0.6303
+      ],
+      [
+        "happens",
+        0.1055
+      ]
+    ],
+    "text": "\n\tThis happens when your X server has run out of memory. You need\nmore memory or you need to quit any un-neccessary running clients."
+  },
+  {
+    "doc_id": 1010,
+    "actual": "sci.space",
+    "predicted": "rec.sport.hockey",
+    "confidence": 0.31214491854478954,
+    "n_tokens": 7,
+    "n_known_terms": 3,
+    "toward_predicted": [
+      [
+        "tell",
+        1.2875
+      ]
+    ],
+    "toward_actual": [
+      [
+        "identical",
+        0.2124
+      ],
+      [
+        "star",
+        0.1978
+      ]
+    ],
+    "text": "\n...\n\nHow can you tell they're identical?\n\nYou got one of them \"Star Drek: The Next Syndication\" neutrino\nscanners?"
+  },
+  {
+    "doc_id": 2517,
+    "actual": "comp.graphics",
+    "predicted": "sci.space",
+    "confidence": 0.4342213807783382,
+    "n_tokens": 10,
+    "n_known_terms": 8,
+    "toward_predicted": [
+      [
+        "seriously",
+        0.5104
+      ],
+      [
+        "obvious",
+        0.4926
+      ],
+      [
+        "sign",
+        0.4437
+      ],
+      [
+        "sorry",
+        0.2751
+      ],
+      [
+        "change",
+        0.1846
+      ]
+    ],
+    "toward_actual": [
+      [
+        "algorithm",
+        0.7933
+      ],
+      [
+        "shown",
+        0.5057
+      ],
+      [
+        "correct",
+        0.3357
+      ]
+    ],
+    "text": "\nA brilliant algorithm.  *NOT*\n\nSeriously - it's correct, up to a sign change.  The flaw is obvious, and\nwill therefore not be shown.\n\nsorry about that.\n\n\n"
+  },
+  {
+    "doc_id": 482,
+    "actual": "comp.windows.x",
+    "predicted": "comp.graphics",
+    "confidence": 0.24761981552350534,
+    "n_tokens": 36,
+    "n_known_terms": 18,
+    "toward_predicted": [
+      [
+        "works",
+        0.4906
+      ],
+      [
+        "fine",
+        0.1897
+      ],
+      [
+        "car",
+        0.1882
+      ],
+      [
+        "version",
+        0.1476
+      ],
+      [
+        "la",
+        0.0691
+      ],
+      [
+        "moment",
+        0.0596
+      ]
+    ],
+    "toward_actual": [
+      [
+        "windows",
+        0.3211
+      ],
+      [
+        "toolkit",
+        0.2416
+      ],
+      [
+        "xt",
+        0.2249
+      ],
+      [
+        "de",
+        0.1465
+      ],
+      [
+        "le",
+        0.1443
+      ],
+      [
+        "ported",
+        0.0546
+      ]
+    ],
+    "text": " Yes, eXceed has windows version. Have ported some games like tetris, \nworks fine.\n\nSi c'est vrai, ce serait bien de se le procurer car a ce moment la, le\nportage Xt... Suis-je en train de perdre mon temps avec la toolkit c++\n?"
+  },
+  {
+    "doc_id": 2382,
+    "actual": "rec.sport.baseball",
+    "predicted": "comp.windows.x",
+    "confidence": 0.6527645858556979,
+    "n_tokens": 15,
+    "n_known_terms": 11,
+    "toward_predicted": [
+      [
+        "server",
+        1.4634
+      ],
+      [
+        "mail",
+        0.8472
+      ],
+      [
+        "help",
+        0.5497
+      ],
+      [
+        "comments",
+        0.2915
+      ],
+      [
+        "tried",
+        0.2595
+      ],
+      [
+        "info",
+        0.1141
+      ]
+    ],
+    "toward_actual": [
+      [
+        "stats",
+        0.8546
+      ],
+      [
+        "great",
+        0.4033
+      ],
+      [
+        "address",
+        0.1473
+      ],
+      [
+        "recognize",
+        0.046
+      ]
+    ],
+    "text": "Doug, those stats are great!  they help immensely.  I tried to E-Mail\nyou with some comments on them but my mail server does not recognize\nyour address.  Could you E-Mail me with some info on how to get E-Mail\nto you?  Thanks!"
+  },
+  {
+    "doc_id": 1994,
+    "actual": "comp.windows.x",
+    "predicted": "comp.graphics",
+    "confidence": 0.6007619598667284,
+    "n_tokens": 10,
+    "n_known_terms": 10,
+    "toward_predicted": [
+      [
+        "library",
+        0.5541
+      ],
+      [
+        "need",
+        0.3303
+      ],
+      [
+        "math",
+        0.3271
+      ],
+      [
+        "easy",
+        0.2117
+      ],
+      [
+        "adding",
+        0.1374
+      ]
+    ],
+    "toward_actual": [
+      [
+        "start",
+        0.2843
+      ],
+      [
+        "lx11",
+        0.1644
+      ],
+      [
+        "problem",
+        0.1084
+      ],
+      [
+        "lm",
+        0.0494
+      ],
+      [
+        "try",
+        0.0422
+      ]
+    ],
+    "text": "\nWell, the first 2 are easy.  You need the math library.  Try adding -lm after\n-lX11.  Don't know if that's the whole problem but it's a start.\n"
+  },
+  {
+    "doc_id": 2945,
+    "actual": "rec.sport.baseball",
+    "predicted": "rec.sport.hockey",
+    "confidence": 0.4324551157935858,
+    "n_tokens": 14,
+    "n_known_terms": 9,
+    "toward_predicted": [
+      [
+        "tell",
+        0.7634
+      ],
+      [
+        "shooting",
+        0.5568
+      ],
+      [
+        "funny",
+        0.2943
+      ],
+      [
+        "news",
+        0.2856
+      ],
+      [
+        "sorry",
+        0.1987
+      ],
+      [
+        "usually",
+        0.0535
+      ]
+    ],
+    "toward_actual": [
+      [
+        "daily",
+        0.7081
+      ],
+      [
+        "mike",
+        0.6276
+      ],
+      [
+        "sort",
+        0.2022
+      ]
+    ],
+    "text": "ok - sorry about that...i didn't realise he was being sarcastic about\n those sort of things.\n\nbut i'll tell you, mike lupica (daily news) usually says some pretty\n funny things in his \"shooting from the lip\" columns..."
+  },
+  {
+    "doc_id": 2302,
+    "actual": "rec.sport.baseball",
+    "predicted": "rec.sport.hockey",
+    "confidence": 0.5490093519563739,
+    "n_tokens": 20,
+    "n_known_terms": 15,
+    "toward_predicted": [
+      [
+        "toronto",
+        0.7929
+      ],
+      [
+        "playing",
+        0.3996
+      ],
+      [
+        "town",
+        0.3134
+      ],
+      [
+        "sell",
+        0.2367
+      ],
+      [
+        "april",
+        0.2354
+      ],
+      [
+        "season",
+        0.2263
+      ]
+    ],
+    "toward_actual": [
+      [
+        "cleveland",
+        1.0125
+      ],
+      [
+        "tickets",
+        0.5394
+      ],
+      [
+        "trip",
+        0.2946
+      ],
+      [
+        "end",
+        0.2601
+      ],
+      [
+        "doubt",
+        0.0272
+      ]
+    ],
+    "text": "\n\nThe tribe will be in town from April 16 to the 19th.\nThere are ALWAYS tickets available! (Though they are playing Toronto,\nand many Toronto fans make the trip to Cleveland as it is easier to\nget tickets in Cleveland than in Toronto.  Either way, I seriously\ndoubt they will sell out until the end of the season.)\n"
+  },
+  {
+    "doc_id": 581,
+    "actual": "comp.graphics",
+    "predicted": "sci.space",
+    "confidence": 0.7529199733287375,
+    "n_tokens": 42,
+    "n_known_terms": 29,
+    "toward_predicted": [
+      [
+        "space",
+        2.0612
+      ],
+      [
+        "nasa",
+        1.2874
+      ],
+      [
+        "jpl",
+        0.6801
+      ],
+      [
+        "luck",
+        0.2955
+      ],
+      [
+        "gif",
+        0.1491
+      ],
+      [
+        "sorry",
+        0.1093
+      ]
+    ],
+    "toward_actual": [
+      [
+        "files",
+        0.8765
+      ],
+      [
+        "jpeg",
+        0.4633
+      ],
+      [
+        "pub",
+        0.4563
+      ],
+      [
+        "bits",
+        0.3147
+      ],
+      [
+        "simple",
+        0.2298
+      ],
+      [
+        "gov",
+        0.2295
+      ]
+    ],
+    "text": "\nTry FTP-ing at\n pub-info.jpl.nasa.gov  (128.149.6.2) (simple dir-structure)\n\nand  ames.arc.nasa.gov\nat /pub/SPACE/GIF and /pub/SPACE/JPEG\nsorry only 8 bits gifs and jpegs :-( great piccy's though (try the *x.gif\nfiles they're semi-huge gif89a files)\n                           ^^-watch out gif89a dead ahead!!!\nGood-luck (good software to be found out-there too)\n\nJurriaan\n\n[email] "
+  },
+  {
+    "doc_id": 4905,
+    "actual": "sci.space",
+    "predicted": "comp.graphics",
+    "confidence": 0.6733222519245956,
+    "n_tokens": 99,
+    "n_known_terms": 71,
+    "toward_predicted": [
+      [
+        "image",
+        0.9396
+      ],
+      [
+        "computer",
+        0.5624
+      ],
+      [
+        "software",
+        0.3819
+      ],
+      [
+        "interested",
+        0.2796
+      ],
+      [
+        "works",
+        0.2789
+      ],
+      [
+        "faster",
+        0.2667
+      ]
+    ],
+    "toward_actual": [
+      [
+        "sky",
+        0.4265
+      ],
+      [
+        "telescope",
+        0.2328
+      ],
+      [
+        "spherical",
+        0.1994
+      ],
+      [
+        "technology",
+        0.1979
+      ],
+      [
+        "hubble",
+        0.179
+      ],
+      [
+        "hours",
+        0.147
+      ]
+    ],
+    "text": "\n\nThe main effect of the spherical aberration problems with the\nprimary mirror was to drive the computer engineers to develop the image\nprocessing software that much faster. When they use the _same_ deconvolution \nsoftware on the images from the fixed Hubble, be ready for some \nincredible results!  There is every reason to believe that the results will \n_exceed_ the original specs by a fair margin.  \n\nAdaptive optics is a combination of hardware and software.  It works \nrealtime, not after the fact, as is the case with Hubble.  You might be\ninterested to know this technology has made it to the amateur market, in\nthe form of the AO-2 Adaptive Optics System.  Starting on page 52 of the \nApril, 1993 Sky & Telescope is a three page review of this new product.\nIt lists for $1,290.  The article states: \"The AO-2 Adaptive Optics System \ncomes in a handy soft-plastic case that a three-year-old could carry \naround.\"  Even though this device is really only good for the brightest\nobjects, \"it could cope with image movements of up to 0.8 millimeter\nin the telescope's focal plane.\"  Now just imagine how well this infant \ntechnology will do in a few years, especially in a dedicated system that \nhas hundreds of thousands of dollars, and many man-hours invested in its\ndevelopment.\n\nGeorge Krumins"
+  },
+  {
+    "doc_id": 4021,
+    "actual": "comp.graphics",
+    "predicted": "sci.space",
+    "confidence": 0.551189993387812,
+    "n_tokens": 28,
+    "n_known_terms": 22,
+    "toward_predicted": [
+      [
+        "human",
+        1.0478
+      ],
+      [
+        "appreciate",
+        0.4699
+      ],
+      [
+        "factor",
+        0.2804
+      ],
+      [
+        "bringing",
+        0.2341
+      ],
+      [
+        "enterprise",
+        0.2263
+      ],
+      [
+        "ideas",
+        0.1938
+      ]
+    ],
+    "toward_actual": [
+      [
+        "formats",
+        0.6348
+      ],
+      [
+        "advance",
+        0.626
+      ],
+      [
+        "looking",
+        0.525
+      ],
+      [
+        "location",
+        0.2039
+      ],
+      [
+        "info",
+        0.1974
+      ],
+      [
+        "greatly",
+        0.1324
+      ]
+    ],
+    "text": "Hi all.  I'm looking for datasets of a human body or head  in any\nof the popular formats.  I'm doing a presentation tomorrow which\ncould be greatly enhanced by bringing in this 'human' factor.  I've\nlooked around the net with no sucess so far.  Anyone got any ideas?\nI'd also appreciate info on the location of datasets for the\nUSS Enterprise (any model)\nThanks in advance,\nRonan\n"
+  },
+  {
+    "doc_id": 704,
+    "actual": "comp.windows.x",
+    "predicted": "comp.graphics",
+    "confidence": 0.6810946772922122,
+    "n_tokens": 13,
+    "n_known_terms": 11,
+    "toward_predicted": [
+      [
+        "point",
+        0.8842
+      ],
+      [
+        "library",
+        0.5954
+      ],
+      [
+        "soul",
+        0.3991
+      ],
+      [
+        "direction",
+        0.3551
+      ],
+      [
+        "software",
+        0.3419
+      ],
+      [
+        "kind",
+        0.1885
+      ]
+    ],
+    "toward_actual": [
+      [
+        "personal",
+        0.7106
+      ],
+      [
+        "right",
+        0.4997
+      ],
+      [
+        "group",
+        0.3345
+      ],
+      [
+        "list",
+        0.0519
+      ]
+    ],
+    "text": "Could some kind soul point me in the right direction for the\nFAQ list for this group.\n\nThanks.\n\n--------------------\nSaad Mufti\nPersonal Library Software"
+  },
+  {
+    "doc_id": 3124,
+    "actual": "comp.windows.x",
+    "predicted": "rec.sport.baseball",
+    "confidence": 0.5474258423198886,
+    "n_tokens": 7,
+    "n_known_terms": 7,
+    "toward_predicted": [
+      [
+        "mailing",
+        1.3878
+      ],
+      [
+        "ron",
+        0.3325
+      ],
+      [
+        "list",
+        0.1686
+      ],
+      [
+        "news",
+        0.1348
+      ],
+      [
+        "finally",
+        0.0119
+      ]
+    ],
+    "toward_actual": [
+      [
+        "remove",
+        0.3344
+      ],
+      [
+        "feed",
+        0.2526
+      ]
+    ],
+    "text": "Please remove me from this mailing list - we finally\ngot our news feed!\n\n\tRon L.\n"
+  },
+  {
+    "doc_id": 3141,
+    "actual": "rec.sport.baseball",
+    "predicted": "rec.sport.hockey",
+    "confidence": 0.584113767037632,
+    "n_tokens": 10,
+    "n_known_terms": 8,
+    "toward_predicted": [
+      [
+        "names",
+        0.936
+      ],
+      [
+        "changing",
+        0.2877
+      ],
+      [
+        "san",
+        0.2413
+      ],
+      [
+        "team",
+        0.1846
+      ],
+      [
+        "choices",
+        0.0906
+      ]
+    ],
+    "toward_actual": [
+      [
+        "start",
+        0.3223
+      ],
+      [
+        "baltimore",
+        0.3209
+      ],
+      [
+        "francisco",
+        0.1514
+      ]
+    ],
+    "text": "How about changing team names!\nPost your choices!\n\nHere I'll start:\nHow about the \nBaltimore Baseblazers\nSan Francisco Quakes"
+  },
+  {
+    "doc_id": 3126,
+    "actual": "comp.windows.x",
+    "predicted": "comp.graphics",
+    "confidence": 0.33972204652203614,
+    "n_tokens": 17,
+    "n_known_terms": 13,
+    "toward_predicted": [
+      [
+        "works",
+        0.836
+      ],
+      [
+        "built",
+        0.5302
+      ],
+      [
+        "summary",
+        0.3493
+      ],
+      [
+        "great",
+        0.3305
+      ],
+      [
+        "soon",
+        0.3219
+      ],
+      [
+        "space",
+        0.1865
+      ]
+    ],
+    "toward_actual": [
+      [
+        "xkernel",
+        1.1835
+      ],
+      [
+        "sun",
+        0.6737
+      ],
+      [
+        "bunch",
+        0.4307
+      ],
+      [
+        "disk",
+        0.1998
+      ],
+      [
+        "direct",
+        0.0933
+      ]
+    ],
+    "text": "Has anyone built Xkernel for 3/80's?  It works great on our 3/50s, and I \nwould just as soon kiss the entire Sun 3 architeture goodbye (and reclaim \na bunch of disk space).  Email me direct, I'll post a summary.\n"
+  },
+  {
+    "doc_id": 4057,
+    "actual": "rec.sport.baseball",
+    "predicted": "rec.sport.hockey",
+    "confidence": 0.9012085623014493,
+    "n_tokens": 47,
+    "n_known_terms": 23,
+    "toward_predicted": [
+      [
+        "roger",
+        1.0449
+      ],
+      [
+        "maynard",
+        0.6589
+      ],
+      [
+        "school",
+        0.521
+      ],
+      [
+        "tell",
+        0.2732
+      ],
+      [
+        "classic",
+        0.2545
+      ],
+      [
+        "cordially",
+        0.163
+      ]
+    ],
+    "toward_actual": [
+      [
+        "hate",
+        0.1936
+      ],
+      [
+        "time",
+        0.1244
+      ],
+      [
+        "students",
+        0.0362
+      ],
+      [
+        "dirty",
+        0.0138
+      ],
+      [
+        "teach",
+        0.0101
+      ],
+      [
+        "advanced",
+        0.0019
+      ]
+    ],
+    "text": "\n\tHeheheheh.. Sorry, Roger, I wronged you.. You're not boring ALL\nthe time..  This one is a classic. 'cordially, as always' HEHEHEHEHHE!\n\n\tAre you a jerk?\n\n\t\tDo people hate you?\n\n\t\t\tAre you no fun at parties?\n\n\tWell! Come to the ROGER MAYNARD SCHOOL OF CORDIALITY!\n\n\tWe can teach you to be 'cordial' with the best of them! Use\nsuch time honored 'cordiality' techniques as:\n\n\t1) Calling people assholes!\n\t2) Comparing them to viruses!\n\n\tFor advanced students:\n\n\t3) Comparing them to DIRTY viruses. What is a DIRTY virus,\n\t\tand how can you tell it from a clean one? We know,\n\t\tand here at the ROGER MAYNARD SCHOOL OF CORDIALITY,\n\t\twe can teach you to know, too!\n\n\tHEHEHEH.. Thanks, Roger.. This made my evening :-)"
+  },
+  {
+    "doc_id": 153,
+    "actual": "rec.sport.hockey",
+    "predicted": "sci.space",
+    "confidence": 0.2521412009139205,
+    "n_tokens": 7,
+    "n_known_terms": 5,
+    "toward_predicted": [
+      [
+        "intelligence",
+        0.0957
+      ],
+      [
+        "continues",
+        0.0123
+      ]
+    ],
+    "toward_actual": [
+      [
+        "quick",
+        0.263
+      ],
+      [
+        "wit",
+        0.2241
+      ],
+      [
+        "comeback",
+        0.0235
+      ]
+    ],
+    "text": "\n\n\n\nGood comeback, Rog.  Your quick wit and intelligence continues to\namaze everyone.\n"
+  },
+  {
+    "doc_id": 1355,
+    "actual": "rec.sport.baseball",
+    "predicted": "rec.sport.hockey",
+    "confidence": 0.6361637682059142,
+    "n_tokens": 13,
+    "n_known_terms": 13,
+    "toward_predicted": [
+      [
+        "rangers",
+        0.8974
+      ],
+      [
+        "champs",
+        0.3855
+      ],
+      [
+        "quakers",
+        0.3731
+      ],
+      [
+        "keller",
+        0.2925
+      ],
+      [
+        "ivy",
+        0.2378
+      ],
+      [
+        "george",
+        0.2139
+      ]
+    ],
+    "toward_actual": [
+      [
+        "buck",
+        0.4824
+      ],
+      [
+        "york",
+        0.4138
+      ],
+      [
+        "end",
+        0.3747
+      ],
+      [
+        "league",
+        0.2179
+      ],
+      [
+        "back",
+        0.0991
+      ],
+      [
+        "keith",
+        0.0291
+      ]
+    ],
+    "text": "\n\nWhat makes you think Buck will still be in New York at year's end with\nGeorge back?  :-)\n\n--\n    Keith Keller\t\t\t\tLET'S GO RANGERS!!!!!\n\t\t\t\t\t\tLET'S GO QUAKERS!!!!!\n\t[email]\t\tIVY LEAGUE CHAMPS!!!!"
+  },
+  {
+    "doc_id": 2016,
+    "actual": "rec.sport.hockey",
+    "predicted": "rec.sport.baseball",
+    "confidence": 0.32212394601861405,
+    "n_tokens": 15,
+    "n_known_terms": 8,
+    "toward_predicted": [
+      [
+        "man",
+        0.9526
+      ],
+      [
+        "find",
+        0.1594
+      ],
+      [
+        "necessary",
+        0.1301
+      ],
+      [
+        "kinds",
+        0.0537
+      ]
+    ],
+    "toward_actual": [
+      [
+        "rm",
+        0.6492
+      ],
+      [
+        "richard",
+        0.3969
+      ],
+      [
+        "deleted",
+        0.038
+      ],
+      [
+        "absolutely",
+        0.0189
+      ]
+    ],
+    "text": "\n[all kinds of unacceptably racist drivel deleted]\n\nAnd after that we find the man has absolutely nothing to say.\n\nRichard J. Rauser, you are a dishonourable little man.\n\ncaustically, when necessary,\n\nrm\n    "
+  },
+  {
+    "doc_id": 3053,
+    "actual": "comp.graphics",
+    "predicted": "sci.space",
+    "confidence": 0.5926639540401341,
+    "n_tokens": 7,
+    "n_known_terms": 6,
+    "toward_predicted": [
+      [
+        "status",
+        0.5613
+      ],
+      [
+        "data",
+        0.555
+      ],
+      [
+        "put",
+        0.4643
+      ],
+      [
+        "copyright",
+        0.3133
+      ],
+      [
+        "regarding",
+        0.1857
+      ],
+      [
+        "restrictions",
+        0.0477
+      ]
+    ],
+    "toward_actual": [],
+    "text": "\nWhat is the copyright status of this data?  Are there restrictions regarding the\nuses they can be put to?\n\nKaveh\n\n"
+  },
+  {
+    "doc_id": 4226,
+    "actual": "comp.windows.x",
+    "predicted": "comp.graphics",
+    "confidence": 0.44086577358835355,
+    "n_tokens": 13,
+    "n_known_terms": 11,
+    "toward_predicted": [
+      [
+        "virtual",
+        0.8065
+      ],
+      [
+        "fine",
+        0.3124
+      ],
+      [
+        "today",
+        0.2896
+      ],
+      [
+        "mail",
+        0.1599
+      ],
+      [
+        "worked",
+        0.1356
+      ],
+      [
+        "gary",
+        0.0431
+      ]
+    ],
+    "toward_actual": [
+      [
+        "apr",
+        0.5041
+      ],
+      [
+        "wm",
+        0.3462
+      ],
+      [
+        "following",
+        0.229
+      ],
+      [
+        "excerpts",
+        0.1609
+      ],
+      [
+        "ol",
+        0.1042
+      ]
+    ],
+    "text": "I got the following today from Gary Risebrough and it worked fine:\n\nExcerpts from mail: 29-Apr-93 Re: ol{v}wm 3 virtual keybo..\n[email] (554)\n\n\n\n"
+  },
+  {
+    "doc_id": 2051,
+    "actual": "comp.graphics",
+    "predicted": "comp.windows.x",
+    "confidence": 0.9049558459591122,
+    "n_tokens": 74,
+    "n_known_terms": 40,
+    "toward_predicted": [
+      [
+        "true",
+        0.8107
+      ],
+      [
+        "monitor",
+        0.6772
+      ],
+      [
+        "display",
+        0.617
+      ],
+      [
+        "color",
+        0.5098
+      ],
+      [
+        "xlib",
+        0.3542
+      ],
+      [
+        "function",
+        0.3197
+      ]
+    ],
+    "toward_actual": [
+      [
+        "images",
+        0.8749
+      ],
+      [
+        "colors",
+        0.4122
+      ],
+      [
+        "image",
+        0.3566
+      ],
+      [
+        "rgb",
+        0.2492
+      ],
+      [
+        "ray",
+        0.1693
+      ],
+      [
+        "ms",
+        0.1292
+      ]
+    ],
+    "text": "Hi,\n\nMy name is rahul and I am doing MS at USU, Logan\nMy query is:\n\tI have a HP workstation: HP Series 400 with X running on it.\nI have a true color - 24bit color monitor connected to this machine.\nNormally I have the capability to display 256 colors from a max of\n16.7 million. Since the monitor is True Color I can see 16.7\nmillion at a time. \nQue: do we have a facility in X(c-function call) that will enable me\nto specify any RGB combination and see it on screen? I am using\nXStoreColor to set the pallette of a max of 256 colors.\nQue: If not. Is there any way I can display a true color image\non a true color monitor using XLib function calls?\n\nWe are generating ray traced images and 256 colors are indeed a\npainful limit. besides I need the facility to display the true color images \ni will be generating on a true color system WITHOUT color \nquantification.\nPlease, if anyone can help i'd be obliged"
+  },
+  {
+    "doc_id": 4712,
+    "actual": "comp.windows.x",
+    "predicted": "comp.graphics",
+    "confidence": 0.4555213493409682,
+    "n_tokens": 5,
+    "n_known_terms": 4,
+    "toward_predicted": [
+      [
+        "library",
+        1.3485
+      ]
+    ],
+    "toward_actual": [
+      [
+        "ld",
+        0.6196
+      ],
+      [
+        "path",
+        0.2353
+      ],
+      [
+        "pointed",
+        0.2031
+      ]
+    ],
+    "text": "\n\n\nOr the library might be there but not pointed to by LD_LIBRARY_PATH."
+  },
+  {
+    "doc_id": 4734,
+    "actual": "comp.windows.x",
+    "predicted": "comp.graphics",
+    "confidence": 0.8989134698078974,
+    "n_tokens": 22,
+    "n_known_terms": 19,
+    "toward_predicted": [
+      [
+        "image",
+        0.996
+      ],
+      [
+        "bit",
+        0.9632
+      ],
+      [
+        "mode",
+        0.6066
+      ],
+      [
+        "colors",
+        0.3838
+      ],
+      [
+        "resulting",
+        0.3587
+      ],
+      [
+        "reason",
+        0.2209
+      ]
+    ],
+    "toward_actual": [
+      [
+        "display",
+        0.5745
+      ],
+      [
+        "pseudo",
+        0.5574
+      ],
+      [
+        "tell",
+        0.4083
+      ],
+      [
+        "color",
+        0.178
+      ],
+      [
+        "option",
+        0.1602
+      ],
+      [
+        "displayed",
+        0.1388
+      ]
+    ],
+    "text": "I've found that I have to add the \"-8\" option for displaying JPEGs\nwith the new version.  For some reason, if I don't, it goes into\n24-bit mode and the resulting image is displayed with 216 colors \n(from a 6x6x6 array) instead of 256 and looks grainier.  Since I'm\non the ubiquitous 8-bit pseudo color display I would have thought it\ncould tell that.\n"
+  },
+  {
+    "doc_id": 92,
+    "actual": "sci.space",
+    "predicted": "rec.sport.hockey",
+    "confidence": 0.3709262798878583,
+    "n_tokens": 8,
+    "n_known_terms": 7,
+    "toward_predicted": [
+      [
+        "pay",
+        0.532
+      ],
+      [
+        "headed",
+        0.4655
+      ],
+      [
+        "patrick",
+        0.3954
+      ],
+      [
+        "attention",
+        0.0944
+      ],
+      [
+        "wuarchive",
+        0.064
+      ]
+    ],
+    "toward_actual": [
+      [
+        "gifs",
+        0.4883
+      ],
+      [
+        "news",
+        0.1129
+      ]
+    ],
+    "text": "\n\n\n\tThey did the rollout already??!?  I am going to have to pay more\nattention to the news.  Are any of the gifs headed for wuarchive??\n \n\nPatrick\n\n"
+  }
+]

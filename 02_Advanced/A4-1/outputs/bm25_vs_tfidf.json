@@ -1,0 +1,741 @@
+{
+  "bm25": {
+    "doc_queries": {
+      "P@5": 0.8088457389428263,
+      "P@10": 0.7669902912621359,
+      "MAP@10": 0.7010169774490164
+    },
+    "hand_queries": {
+      "P@5": 0.96,
+      "P@10": 0.96,
+      "queries": [
+        {
+          "query": "3d rendering software",
+          "category": "comp.graphics",
+          "P@5": 0.8,
+          "P@10": 0.8
+        },
+        {
+          "query": "convert gif to jpeg image format",
+          "category": "comp.graphics",
+          "P@5": 1.0,
+          "P@10": 0.9
+        },
+        {
+          "query": "polygon shading algorithm",
+          "category": "comp.graphics",
+          "P@5": 0.8,
+          "P@10": 0.9
+        },
+        {
+          "query": "vga graphics card driver",
+          "category": "comp.graphics",
+          "P@5": 1.0,
+          "P@10": 1.0
+        },
+        {
+          "query": "x window server display",
+          "category": "comp.windows.x",
+          "P@5": 1.0,
+          "P@10": 1.0
+        },
+        {
+          "query": "motif widget toolkit",
+          "category": "comp.windows.x",
+          "P@5": 1.0,
+          "P@10": 1.0
+        },
+        {
+          "query": "xterm font resource",
+          "category": "comp.windows.x",
+          "P@5": 1.0,
+          "P@10": 1.0
+        },
+        {
+          "query": "window manager configuration",
+          "category": "comp.windows.x",
+          "P@5": 1.0,
+          "P@10": 1.0
+        },
+        {
+          "query": "pitcher earned run average",
+          "category": "rec.sport.baseball",
+          "P@5": 1.0,
+          "P@10": 1.0
+        },
+        {
+          "query": "home run hitter batting",
+          "category": "rec.sport.baseball",
+          "P@5": 1.0,
+          "P@10": 1.0
+        },
+        {
+          "query": "world series yankees",
+          "category": "rec.sport.baseball",
+          "P@5": 1.0,
+          "P@10": 0.9
+        },
+        {
+          "query": "spring training roster",
+          "category": "rec.sport.baseball",
+          "P@5": 1.0,
+          "P@10": 0.9
+        },
+        {
+          "query": "hockey playoff goalie",
+          "category": "rec.sport.hockey",
+          "P@5": 1.0,
+          "P@10": 1.0
+        },
+        {
+          "query": "stanley cup finals",
+          "category": "rec.sport.hockey",
+          "P@5": 0.8,
+          "P@10": 0.9
+        },
+        {
+          "query": "power play penalty",
+          "category": "rec.sport.hockey",
+          "P@5": 1.0,
+          "P@10": 1.0
+        },
+        {
+          "query": "nhl draft pick",
+          "category": "rec.sport.hockey",
+          "P@5": 0.8,
+          "P@10": 0.9
+        },
+        {
+          "query": "space shuttle launch",
+          "category": "sci.space",
+          "P@5": 1.0,
+          "P@10": 1.0
+        },
+        {
+          "query": "nasa orbit satellite",
+          "category": "sci.space",
+          "P@5": 1.0,
+          "P@10": 1.0
+        },
+        {
+          "query": "moon base mission cost",
+          "category": "sci.space",
+          "P@5": 1.0,
+          "P@10": 1.0
+        },
+        {
+          "query": "rocket engine propulsion",
+          "category": "sci.space",
+          "P@5": 1.0,
+          "P@10": 1.0
+        }
+      ]
+    }
+  },
+  "tfidf": {
+    "doc_queries": {
+      "P@5": 0.7734627831715211,
+      "P@10": 0.7400215749730313,
+      "MAP@10": 0.6608546942689337
+    },
+    "hand_queries": {
+      "P@5": 0.93,
+      "P@10": 0.9049999999999999,
+      "queries": [
+        {
+          "query": "3d rendering software",
+          "category": "comp.graphics",
+          "P@5": 0.6,
+          "P@10": 0.7
+        },
+        {
+          "query": "convert gif to jpeg image format",
+          "category": "comp.graphics",
+          "P@5": 0.8,
+          "P@10": 0.8
+        },
+        {
+          "query": "polygon shading algorithm",
+          "category": "comp.graphics",
+          "P@5": 0.8,
+          "P@10": 0.9
+        },
+        {
+          "query": "vga graphics card driver",
+          "category": "comp.graphics",
+          "P@5": 1.0,
+          "P@10": 1.0
+        },
+        {
+          "query": "x window server display",
+          "category": "comp.windows.x",
+          "P@5": 1.0,
+          "P@10": 1.0
+        },
+        {
+          "query": "motif widget toolkit",
+          "category": "comp.windows.x",
+          "P@5": 1.0,
+          "P@10": 1.0
+        },
+        {
+          "query": "xterm font resource",
+          "category": "comp.windows.x",
+          "P@5": 1.0,
+          "P@10": 1.0
+        },
+        {
+          "query": "window manager configuration",
+          "category": "comp.windows.x",
+          "P@5": 1.0,
+          "P@10": 1.0
+        },
+        {
+          "query": "pitcher earned run average",
+          "category": "rec.sport.baseball",
+          "P@5": 0.8,
+          "P@10": 0.9
+        },
+        {
+          "query": "home run hitter batting",
+          "category": "rec.sport.baseball",
+          "P@5": 1.0,
+          "P@10": 0.9
+        },
+        {
+          "query": "world series yankees",
+          "category": "rec.sport.baseball",
+          "P@5": 1.0,
+          "P@10": 0.8
+        },
+        {
+          "query": "spring training roster",
+          "category": "rec.sport.baseball",
+          "P@5": 0.8,
+          "P@10": 0.8
+        },
+        {
+          "query": "hockey playoff goalie",
+          "category": "rec.sport.hockey",
+          "P@5": 0.8,
+          "P@10": 0.9
+        },
+        {
+          "query": "stanley cup finals",
+          "category": "rec.sport.hockey",
+          "P@5": 1.0,
+          "P@10": 0.9
+        },
+        {
+          "query": "power play penalty",
+          "category": "rec.sport.hockey",
+          "P@5": 1.0,
+          "P@10": 0.7
+        },
+        {
+          "query": "nhl draft pick",
+          "category": "rec.sport.hockey",
+          "P@5": 1.0,
+          "P@10": 0.9
+        },
+        {
+          "query": "space shuttle launch",
+          "category": "sci.space",
+          "P@5": 1.0,
+          "P@10": 1.0
+        },
+        {
+          "query": "nasa orbit satellite",
+          "category": "sci.space",
+          "P@5": 1.0,
+          "P@10": 1.0
+        },
+        {
+          "query": "moon base mission cost",
+          "category": "sci.space",
+          "P@5": 1.0,
+          "P@10": 0.9
+        },
+        {
+          "query": "rocket engine propulsion",
+          "category": "sci.space",
+          "P@5": 1.0,
+          "P@10": 1.0
+        }
+      ]
+    }
+  },
+  "grid_k1": [
+    0.5,
+    1.2,
+    1.5,
+    2.0
+  ],
+  "grid_b": [
+    0.0,
+    0.25,
+    0.5,
+    0.75,
+    1.0
+  ],
+  "grid_doc_map10": [
+    [
+      0.3622631033715176,
+      0.6492790363178713,
+      0.6932567507405695,
+      0.6987454838102087,
+      0.6976848427252957
+    ],
+    [
+      0.3562855088097807,
+      0.6815045119090427,
+      0.7012644047190972,
+      0.7030060701015393,
+      0.6911925737572987
+    ],
+    [
+      0.35488745911885067,
+      0.6855811544322871,
+      0.705077866817349,
+      0.7010169774490164,
+      0.68878585126967
+    ],
+    [
+      0.3525452047053989,
+      0.688664235201452,
+      0.7054805568397801,
+      0.7014581942090032,
+      0.6827246964949232
+    ]
+  ],
+  "grid_hand_p10": [
+    [
+      0.9099999999999999,
+      0.9399999999999998,
+      0.9399999999999998,
+      0.95,
+      0.96
+    ],
+    [
+      0.9099999999999999,
+      0.9549999999999998,
+      0.96,
+      0.96,
+      0.95
+    ],
+    [
+      0.8949999999999999,
+      0.95,
+      0.96,
+      0.96,
+      0.95
+    ],
+    [
+      0.885,
+      0.9349999999999999,
+      0.9399999999999998,
+      0.9550000000000001,
+      0.95
+    ]
+  ],
+  "mean_result_length": {
+    "corpus_mean": 92.04405096091557,
+    "corpus_median": 35.0,
+    "tfidf": 183.945,
+    "tfidf_median": 32.0,
+    "bm25": 195.245,
+    "bm25_median": 49.0
+  },
+  "examples": [
+    {
+      "query": "space shuttle launch",
+      "overlap": 3,
+      "tfidf": [
+        {
+          "doc_id": 3165,
+          "score": 0.4693,
+          "category": "sci.space",
+          "n_tokens": 83,
+          "snippet": ": >the Single Launch Core Station concept. A Shuttle external tank and solid : >rocket boosters would be used "
+        },
+        {
+          "doc_id": 279,
+          "score": 0.4638,
+          "category": "sci.space",
+          "n_tokens": 25,
+          "snippet": "For an essay, I am writing about the space shuttle and a need for a better propulsion system. Through research"
+        },
+        {
+          "doc_id": 4214,
+          "score": 0.459,
+          "category": "sci.space",
+          "n_tokens": 20,
+          "snippet": "Well, you better not get the shuttle as your launch vehicle. and most ELV's have too far of a backlog for poli"
+        },
+        {
+          "doc_id": 576,
+          "score": 0.4396,
+          "category": "sci.space",
+          "n_tokens": 48,
+          "snippet": "...irely based on the technical aspects of space, but I couldn't find the answer on the FAQs ! I'm currently i"
+        },
+        {
+          "doc_id": 660,
+          "score": 0.4365,
+          "category": "sci.space",
+          "n_tokens": 3190,
+          "snippet": "COMMERCIAL SPACE NEWS/SPACE TECHNOLOGY INVESTOR NUMBER 22 This is number twenty-two in an irregular series on "
+        }
+      ],
+      "bm25": [
+        {
+          "doc_id": 576,
+          "score": 16.9139,
+          "category": "sci.space",
+          "n_tokens": 48,
+          "snippet": "...irely based on the technical aspects of space, but I couldn't find the answer on the FAQs ! I'm currently i"
+        },
+        {
+          "doc_id": 279,
+          "score": 16.7557,
+          "category": "sci.space",
+          "n_tokens": 25,
+          "snippet": "For an essay, I am writing about the space shuttle and a need for a better propulsion system. Through research"
+        },
+        {
+          "doc_id": 1174,
+          "score": 16.6332,
+          "category": "sci.space",
+          "n_tokens": 121,
+          "snippet": "...his notice will be posted weekly in sci.space, sci.astro, and sci.space.shuttle. The Frequently Asked Quest"
+        },
+        {
+          "doc_id": 3165,
+          "score": 16.0877,
+          "category": "sci.space",
+          "n_tokens": 83,
+          "snippet": ": >the Single Launch Core Station concept. A Shuttle external tank and solid : >rocket boosters would be used "
+        },
+        {
+          "doc_id": 1936,
+          "score": 14.3933,
+          "category": "sci.space",
+          "n_tokens": 130,
+          "snippet": "From another space forum When workers at the Kennedy Space Center disassembled the STS-56 solid rocket booster"
+        }
+      ]
+    },
+    {
+      "query": "hockey playoff goalie",
+      "overlap": 2,
+      "tfidf": [
+        {
+          "doc_id": 4186,
+          "score": 0.372,
+          "category": "rec.sport.hockey",
+          "n_tokens": 41,
+          "snippet": "Yes, he does. BUT, the goalie sure as hell doesn't want him there! When I played roller hockey (boy do I miss "
+        },
+        {
+          "doc_id": 1703,
+          "score": 0.2724,
+          "category": "rec.sport.hockey",
+          "n_tokens": 67,
+          "snippet": ".... And local baseball pre-empted the NHL playoffs. Thus far into this playoff season, ESPN/ABC has given me "
+        },
+        {
+          "doc_id": 3121,
+          "score": 0.2558,
+          "category": "rec.sport.hockey",
+          "n_tokens": 47,
+          "snippet": "...f the five games Finns have played, the goalie has been chosen the best player of the opposing team. (In th"
+        },
+        {
+          "doc_id": 3329,
+          "score": 0.2228,
+          "category": "rec.sport.baseball",
+          "n_tokens": 13,
+          "snippet": "...st 2 newsgroups (this one and rec.sport.hockey). Since hockey season is almost over, he's back to being a d"
+        },
+        {
+          "doc_id": 4044,
+          "score": 0.2167,
+          "category": "rec.sport.hockey",
+          "n_tokens": 39,
+          "snippet": "...ional. I can see him as a Barraso style playoff goalie: inconsistant when there's nothing on the line, but "
+        }
+      ],
+      "bm25": [
+        {
+          "doc_id": 4186,
+          "score": 13.7527,
+          "category": "rec.sport.hockey",
+          "n_tokens": 41,
+          "snippet": "Yes, he does. BUT, the goalie sure as hell doesn't want him there! When I played roller hockey (boy do I miss "
+        },
+        {
+          "doc_id": 4044,
+          "score": 11.0425,
+          "category": "rec.sport.hockey",
+          "n_tokens": 39,
+          "snippet": "...ional. I can see him as a Barraso style playoff goalie: inconsistant when there's nothing on the line, but "
+        },
+        {
+          "doc_id": 3308,
+          "score": 10.8602,
+          "category": "rec.sport.hockey",
+          "n_tokens": 27,
+          "snippet": "...really feel the need for a knowledgable hockey observer to explain this year's playoffs to me. I mean, the "
+        },
+        {
+          "doc_id": 3039,
+          "score": 10.6316,
+          "category": "rec.sport.hockey",
+          "n_tokens": 30,
+          "snippet": "...at about the player whose skate cut the goalie? Name? Info? Has this ever happened before in a hockey game?"
+        },
+        {
+          "doc_id": 2890,
+          "score": 10.6068,
+          "category": "rec.sport.hockey",
+          "n_tokens": 16,
+          "snippet": "...^^^^^^^^^^ So, Roger, what exactly *is* playoff hockey all about? Or is it a convenient phrase to use in ce"
+        }
+      ]
+    },
+    {
+      "query": "x window server display",
+      "overlap": 0,
+      "tfidf": [
+        {
+          "doc_id": 1776,
+          "score": 0.5493,
+          "category": "comp.windows.x",
+          "n_tokens": 7,
+          "snippet": "window = XCreateWindow(...); XSetTransientForHint(display, window, window); XMapWindow(...);"
+        },
+        {
+          "doc_id": 1844,
+          "score": 0.5397,
+          "category": "comp.windows.x",
+          "n_tokens": 10,
+          "snippet": "As to how many clients may be display on a server, I believe the limit would be how much memory is available t"
+        },
+        {
+          "doc_id": 2515,
+          "score": 0.4947,
+          "category": "comp.windows.x",
+          "n_tokens": 65,
+          "snippet": "...---------------- #include <X11/Xutil.h> Display display; Window window; { XSizeHints *xsizehints = XAllocSi"
+        },
+        {
+          "doc_id": 1528,
+          "score": 0.3998,
+          "category": "comp.windows.x",
+          "n_tokens": 32,
+          "snippet": "...eliable way to find out the size of the window manager decoration. If your window has been reparented, you "
+        },
+        {
+          "doc_id": 770,
+          "score": 0.388,
+          "category": "comp.windows.x",
+          "n_tokens": 133,
+          "snippet": "I am working on an X-Window based application that needs to override some of the window manager focus processi"
+        }
+      ],
+      "bm25": [
+        {
+          "doc_id": 1975,
+          "score": 15.8277,
+          "category": "comp.windows.x",
+          "n_tokens": 74,
+          "snippet": "To incrementally update the contents of windows, I use the following trick: 1. Set the window background to No"
+        },
+        {
+          "doc_id": 3344,
+          "score": 14.9223,
+          "category": "comp.windows.x",
+          "n_tokens": 43,
+          "snippet": "...2.01 and I need a hardcopy of the login window (the one asking for login and password) to include in a manu"
+        },
+        {
+          "doc_id": 4008,
+          "score": 14.2562,
+          "category": "comp.windows.x",
+          "n_tokens": 46,
+          "snippet": "...e, when I start a mailtool from OW3 and display it on my OW2 display, I can't open the compose window. I wa"
+        },
+        {
+          "doc_id": 3423,
+          "score": 14.0974,
+          "category": "comp.windows.x",
+          "n_tokens": 129,
+          "snippet": "...ve a problem: I am not able to create a window with 24 bit planes. The following code illustrates the probl"
+        },
+        {
+          "doc_id": 1277,
+          "score": 13.7044,
+          "category": "comp.windows.x",
+          "n_tokens": 114,
+          "snippet": "...his question: it depends on whether the display device can hold pixmaps in off-screen memory, and if so, ho"
+        }
+      ]
+    },
+    {
+      "query": "3d rendering image format",
+      "overlap": 2,
+      "tfidf": [
+        {
+          "doc_id": 3366,
+          "score": 0.4967,
+          "category": "comp.graphics",
+          "n_tokens": 33,
+          "snippet": "Yes. There are many methods of rendering, raytracing is one of them. You didn't say what you mean by rendering"
+        },
+        {
+          "doc_id": 3062,
+          "score": 0.4256,
+          "category": "comp.graphics",
+          "n_tokens": 23,
+          "snippet": "...NORMAL ARRAY\" error 3ds gives you while rendering? It seems to present itself while rendering complicated i"
+        },
+        {
+          "doc_id": 4221,
+          "score": 0.3508,
+          "category": "comp.graphics",
+          "n_tokens": 28,
+          "snippet": "...lp me to find a program that converts a format named \"raw\" (also known as \"img\") to the \"gif\" format or \"jp"
+        },
+        {
+          "doc_id": 838,
+          "score": 0.3257,
+          "category": "comp.graphics",
+          "n_tokens": 7,
+          "snippet": "...de a converter from irit's .irt or .dat format to .pov format ? Thanks!"
+        },
+        {
+          "doc_id": 911,
+          "score": 0.3087,
+          "category": "comp.graphics",
+          "n_tokens": 30,
+          "snippet": "...ntly got a file describing a library of rendering routines called SIPP (SImple Polygon Processor). Could an"
+        }
+      ],
+      "bm25": [
+        {
+          "doc_id": 911,
+          "score": 12.8642,
+          "category": "comp.graphics",
+          "n_tokens": 30,
+          "snippet": "...ntly got a file describing a library of rendering routines called SIPP (SImple Polygon Processor). Could an"
+        },
+        {
+          "doc_id": 4221,
+          "score": 12.3372,
+          "category": "comp.graphics",
+          "n_tokens": 28,
+          "snippet": "...lp me to find a program that converts a format named \"raw\" (also known as \"img\") to the \"gif\" format or \"jp"
+        },
+        {
+          "doc_id": 3880,
+          "score": 11.3346,
+          "category": "comp.graphics",
+          "n_tokens": 36,
+          "snippet": "Hello, Does anyone know of an image format conversion tool that will convert a raw (8 bit grey scale) image to"
+        },
+        {
+          "doc_id": 4605,
+          "score": 11.1949,
+          "category": "comp.windows.x",
+          "n_tokens": 34,
+          "snippet": "... that involves storing an application's rendering to an X display and then playing it back again. Rather th"
+        },
+        {
+          "doc_id": 3796,
+          "score": 10.9624,
+          "category": "comp.graphics",
+          "n_tokens": 32,
+          "snippet": "... of a utility that converts any type of image format (gif,tiff,pcx,bmp,jpeg,etc.) to an ascii representatio"
+        }
+      ]
+    },
+    {
+      "query": "baseball pitcher",
+      "overlap": 2,
+      "tfidf": [
+        {
+          "doc_id": 3002,
+          "score": 0.4871,
+          "category": "rec.sport.baseball",
+          "n_tokens": 93,
+          "snippet": "...and that holds a viewer's attention. In baseball, only 3 players are involved in the action for about (here"
+        },
+        {
+          "doc_id": 4108,
+          "score": 0.41,
+          "category": "rec.sport.baseball",
+          "n_tokens": 5,
+          "snippet": "... all. What is the rule that qualifies a pitcher as making a save?"
+        },
+        {
+          "doc_id": 3533,
+          "score": 0.3512,
+          "category": "rec.sport.baseball",
+          "n_tokens": 88,
+          "snippet": "...silly stat, by today's rules, in all of baseball. My understanding is to qualify as a save a pitcher cannot"
+        },
+        {
+          "doc_id": 3070,
+          "score": 0.3234,
+          "category": "rec.sport.baseball",
+          "n_tokens": 64,
+          "snippet": "Major League Baseball is trying to expand its appeal to people with shorter attention spans (i.e. the football"
+        },
+        {
+          "doc_id": 3226,
+          "score": 0.3122,
+          "category": "rec.sport.baseball",
+          "n_tokens": 52,
+          "snippet": ": I have wondered why a pitcher is given 8 pitches when he enters the : game. Let's be serious. The relief pit"
+        }
+      ],
+      "bm25": [
+        {
+          "doc_id": 3002,
+          "score": 12.9267,
+          "category": "rec.sport.baseball",
+          "n_tokens": 93,
+          "snippet": "...and that holds a viewer's attention. In baseball, only 3 players are involved in the action for about (here"
+        },
+        {
+          "doc_id": 4768,
+          "score": 11.181,
+          "category": "rec.sport.baseball",
+          "n_tokens": 42,
+          "snippet": "... about long games? If you want to watch baseball, there's that much more baseball to watch. And yes, baseba"
+        },
+        {
+          "doc_id": 3533,
+          "score": 10.8837,
+          "category": "rec.sport.baseball",
+          "n_tokens": 88,
+          "snippet": "...silly stat, by today's rules, in all of baseball. My understanding is to qualify as a save a pitcher cannot"
+        },
+        {
+          "doc_id": 4150,
+          "score": 10.4501,
+          "category": "rec.sport.baseball",
+          "n_tokens": 52,
+          "snippet": "...owing scenario: Runner on third. As the pitcher starts to throw home, the runner takes off for home and the"
+        },
+        {
+          "doc_id": 2184,
+          "score": 9.8909,
+          "category": "rec.sport.baseball",
+          "n_tokens": 70,
+          "snippet": "...gy. It needn't have been true. If every pitcher in baseball were essentially the same in quality (i.e. if t"
+        }
+      ]
+    }
+  ]
+}

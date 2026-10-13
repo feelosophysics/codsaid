@@ -1,0 +1,878 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>A4-1 뉴스그룹 검색기</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans+KR:wght@400;600;700&display=swap">
+<style>
+/* Layout: 왼쪽 장 목록(데스크톱) + 읽기 열. 실습 패널만 읽기 열보다 넓게 쓴다. 휴대폰에서는 장 목록이 위쪽 가로 띠가 된다.
+   Color: 차가운 종이 바탕, 잉크 남색, 링크 파랑. 검색어 일치는 형광펜 노랑.
+   범주 색은 계열을 담는다: 컴퓨터 두 범주=파랑 계열, 스포츠 두 범주=주황 계열, 우주=초록. */
+:root{
+  --paper:#f2f4f6; --surface:#ffffff; --sunk:#e8ecf0; --ink:#18212c; --muted:#56616d; --line:#d3d9e0;
+  --accent:#1d5fc0; --accent-ink:#ffffff; --mark:#ffe36b; --mark-ink:#18212c; --good:#1b7a4b; --bad:#b4372b;
+  --c0:#0b6bb0; --c1:#3fa3d9; --c2:#cc5500; --c3:#d99a00; --c4:#138a62;
+  --code-bg:#1b2430; --code-ink:#dfe7ef; --code-dim:#8796a6;
+  --font-body:"IBM Plex Sans KR","Malgun Gothic","Apple SD Gothic Neo",system-ui,sans-serif;
+  --font-mono:"IBM Plex Mono",Consolas,"D2Coding",ui-monospace,monospace;
+  --step--1:.875rem; --step-0:1rem; --step-1:1.2rem; --step-2:1.5rem; --step-3:2.1rem;
+  --radius:10px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#121820; --surface:#19212b; --sunk:#222c38; --ink:#e3e9ef; --muted:#a2afbc; --line:#334050;
+  --accent:#78aef5; --accent-ink:#0d1520; --mark:#e9c84a; --mark-ink:#121820; --good:#5fd29a; --bad:#ff8c7d;
+  --c0:#5aaef0; --c1:#9fd6f5; --c2:#ff8f4d; --c3:#f2c14e; --c4:#4fd1a1;
+  --code-bg:#0d131a; --code-ink:#dfe7ef; --code-dim:#7f8d9c; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#121820; --surface:#19212b; --sunk:#222c38; --ink:#e3e9ef; --muted:#a2afbc; --line:#334050;
+  --accent:#78aef5; --accent-ink:#0d1520; --mark:#e9c84a; --mark-ink:#121820; --good:#5fd29a; --bad:#ff8c7d;
+  --c0:#5aaef0; --c1:#9fd6f5; --c2:#ff8f4d; --c3:#f2c14e; --c4:#4fd1a1;
+  --code-bg:#0d131a; --code-ink:#dfe7ef; --code-dim:#7f8d9c; color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-padding-top:72px}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font-body);font-size:var(--step-0);line-height:1.8;-webkit-text-size-adjust:100%}
+a{color:var(--accent);text-underline-offset:3px}
+h1,h2,h3{line-height:1.35;letter-spacing:-.02em;text-wrap:balance;margin:0}
+h1{font-size:var(--step-3);font-weight:700}
+h2{font-size:var(--step-2);font-weight:700}
+h3{font-size:var(--step-1);font-weight:600;margin-top:28px}
+p{margin:0 0 14px}
+code,kbd,.mono{font-family:var(--font-mono);font-size:.92em}
+p code,li code,td code{background:var(--sunk);padding:1px 5px;border-radius:4px;overflow-wrap:anywhere}
+button,input,select,textarea{font:inherit;color:inherit}
+button,select{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:6px 12px;min-height:40px;cursor:pointer}
+button:hover{border-color:var(--accent)}
+button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+input[type=text],input[type=search],textarea{width:100%;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:10px 12px}
+textarea{min-height:110px;resize:vertical;font-family:var(--font-mono);font-size:var(--step--1);line-height:1.6}
+input[type=range]{width:100%;accent-color:var(--accent)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+mark{background:var(--mark);color:var(--mark-ink);padding:0 2px;border-radius:2px}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+th,td{padding:6px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{font-weight:600;color:var(--muted);font-size:var(--step--1)}
+td.num,th.num{text-align:right}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.small{font-size:var(--step--1);color:var(--muted)}
+.label{font-family:var(--font-mono);font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+
+/* 골격 */
+.page{display:grid;grid-template-columns:200px minmax(0,1fr);gap:40px;max-width:1240px;margin:0 auto;padding-inline:24px}
+.rail{position:sticky;top:0;align-self:start;max-height:100vh;overflow:auto;padding-block:28px}
+.rail .brand{font-family:var(--font-mono);font-size:.8rem;color:var(--muted);margin-bottom:14px}
+.rail nav{display:grid;gap:2px}
+.rail a{display:flex;gap:10px;text-decoration:none;color:var(--muted);padding:5px 8px;border-radius:6px;font-size:var(--step--1);line-height:1.5}
+.rail a span{font-family:var(--font-mono);opacity:.7}
+.rail a:hover,.rail a.on{background:var(--sunk);color:var(--ink)}
+main{min-width:0;padding-block:28px 80px}
+section{padding-block:36px;border-top:1px solid var(--line)}
+section:first-of-type{border-top:0}
+.read{max-width:720px}
+.chap{display:flex;align-items:baseline;gap:12px;margin-bottom:16px}
+.chap .no{font-family:var(--font-mono);color:var(--accent);font-weight:600}
+.lead{font-size:var(--step-1);color:var(--muted);max-width:720px}
+
+/* 표지 + 검색 */
+.hero{padding-block:16px 8px}
+.hero h1{max-width:18ch}
+.hero .q{font-family:var(--font-mono);color:var(--muted);font-size:var(--step--1);margin-bottom:10px}
+.facts{display:flex;flex-wrap:wrap;gap:8px 22px;margin:18px 0 6px;font-size:var(--step--1);color:var(--muted)}
+.facts b{color:var(--ink);font-variant-numeric:tabular-nums}
+.lab{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px;margin-block:18px}
+.lab-head{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-bottom:12px}
+.searchbar{display:flex;gap:8px}
+.searchbar input{flex:1;min-width:0;font-size:var(--step-1);font-family:var(--font-mono)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips button{min-height:34px;padding:3px 10px;font-family:var(--font-mono);font-size:.82rem}
+.controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px 18px;margin-top:14px}
+.controls label{display:grid;gap:4px;font-size:var(--step--1);color:var(--muted)}
+.seg{display:inline-flex;flex-wrap:wrap;gap:4px}
+.seg button{min-height:34px;padding:3px 10px;font-size:var(--step--1)}
+.qinfo{font-family:var(--font-mono);font-size:.82rem;color:var(--muted);margin:12px 0 4px;overflow-wrap:anywhere}
+.results{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:10px}
+.results li{display:grid;grid-template-columns:3.6rem minmax(0,1fr);gap:10px;padding:10px 0;border-top:1px solid var(--line)}
+.score{font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-weight:600}
+.meta{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:.8rem;color:var(--muted);margin-bottom:2px}
+.snip{font-size:var(--step--1);line-height:1.65;overflow-wrap:anywhere}
+.cat{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:.78rem;color:var(--ink)}
+.cat::before{content:"";width:9px;height:9px;border-radius:2px;background:var(--cc)}
+.cat0{--cc:var(--c0)}.cat1{--cc:var(--c1)}.cat2{--cc:var(--c2)}.cat3{--cc:var(--c3)}.cat4{--cc:var(--c4)}
+.statline{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:.82rem;color:var(--muted);margin-top:10px;font-family:var(--font-mono)}
+
+/* 흐름도 */
+.flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:18px 0;counter-reset:f}
+.flow div{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:var(--step--1);line-height:1.55;position:relative}
+.flow div b{display:block;font-size:var(--step-0)}
+.flow div .n{font-family:var(--font-mono);color:var(--accent);font-size:.82rem;font-variant-numeric:tabular-nums}
+.flow .fork{border-style:dashed}
+
+/* 전처리 단계 */
+.stages{display:grid;gap:10px;margin-top:12px}
+.stage{display:grid;grid-template-columns:8.5rem minmax(0,1fr);gap:10px;align-items:start}
+.stage .tag{font-family:var(--font-mono);font-size:.8rem;color:var(--muted);padding-top:3px}
+.toks{display:flex;flex-wrap:wrap;gap:4px;font-family:var(--font-mono);font-size:.82rem}
+.toks span{background:var(--sunk);border-radius:4px;padding:1px 6px}
+.toks span.drop{text-decoration:line-through;opacity:.5}
+.toks span.swap{background:var(--mark);color:var(--mark-ink)}
+.toks span.oov{border:1px dashed var(--muted);background:transparent}
+.flat{font-family:var(--font-mono);font-size:.82rem;background:var(--sunk);border-radius:6px;padding:6px 8px;overflow-wrap:anywhere}
+
+/* 수식 */
+.formula{font-family:var(--font-mono);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px 14px;font-size:.9rem;line-height:1.9;overflow-x:auto;white-space:pre}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.toy textarea{min-height:120px}
+.mat th,.mat td{padding:4px 7px;font-family:var(--font-mono);font-size:.78rem;white-space:nowrap}
+.mat td.hot{background:color-mix(in srgb,var(--accent) calc(var(--v)*60%),transparent)}
+.mat td.zero{color:var(--line)}
+
+/* 차트 */
+svg text{fill:var(--muted);font-family:var(--font-mono);font-size:11px}
+svg .axis{stroke:var(--line)}
+svg .grid{stroke:var(--line);stroke-dasharray:2 3}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:.8rem;color:var(--muted);font-family:var(--font-mono)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+.heat td{text-align:center;font-family:var(--font-mono);font-size:.82rem;min-width:3.2rem}
+.heat td.cell{background:color-mix(in srgb,var(--accent) calc(var(--v)*100%),var(--surface))}
+.heat td.cell.strong{color:var(--accent-ink)}
+.bar{height:8px;border-radius:4px;background:var(--accent)}
+.bar.alt{background:var(--c2)}
+
+/* 사례 */
+.cases{display:grid;gap:12px}
+.case{border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);padding:14px}
+.case header{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;margin-bottom:8px;font-size:var(--step--1)}
+.kind{font-family:var(--font-mono);font-size:.75rem;border:1px solid var(--line);border-radius:999px;padding:1px 9px;color:var(--muted)}
+.pull{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px 20px;margin:8px 0}
+.pull div{font-size:.8rem}
+.pull .row{display:grid;grid-template-columns:6.5rem minmax(0,1fr) 3rem;gap:6px;align-items:center;font-family:var(--font-mono)}
+.quote{font-size:var(--step--1);color:var(--muted);border-left:3px solid var(--line);padding-left:10px;overflow-wrap:anywhere}
+
+/* 질문 */
+details{border:1px solid var(--line);border-radius:8px;background:var(--surface);padding:10px 14px;margin-block:8px}
+summary{cursor:pointer;font-weight:600}
+details[open] summary{margin-bottom:8px}
+
+/* 코드 */
+pre.code{background:var(--code-bg);color:var(--code-ink);border-radius:8px;padding:12px 14px;overflow-x:auto;font-family:var(--font-mono);font-size:.8rem;line-height:1.6;margin:8px 0 18px}
+pre.code .ln{color:var(--code-dim);user-select:none;display:inline-block;width:2.6em}
+.codehead{display:flex;justify-content:space-between;gap:10px;font-family:var(--font-mono);font-size:.78rem;color:var(--muted);margin-top:14px}
+.codepick{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px}
+.codepick button{font-family:var(--font-mono);font-size:.78rem;min-height:32px;padding:2px 9px}
+
+.note{border-left:3px solid var(--accent);padding:4px 0 4px 12px;color:var(--muted);font-size:var(--step--1);margin-block:12px}
+
+@media (max-width:860px){
+  .page{grid-template-columns:minmax(0,1fr);gap:0;padding-inline:16px}
+  .rail{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;max-height:none;padding-block:8px;background:var(--paper);border-bottom:1px solid var(--line);margin-inline:-16px;padding-inline:16px}
+  .rail .brand{display:none}
+  .rail nav{display:flex;overflow-x:auto;gap:4px;scrollbar-width:none}
+  .rail a{white-space:nowrap;padding:4px 8px}
+  main{padding-block:16px 60px}
+  .stage{grid-template-columns:minmax(0,1fr);gap:2px}
+  .results li{grid-template-columns:minmax(0,1fr)}
+  .lab{padding:14px}
+}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="page">
+<aside class="rail">
+  <div class="brand">codyssey · A4-1</div>
+  <nav id="toc" aria-label="장 목록">
+    <a href="#search"><span>00</span>검색해 보기</a>
+    <a href="#flow"><span>01</span>전체 흐름</a>
+    <a href="#prep"><span>02</span>전처리</a>
+    <a href="#tfidf"><span>03</span>TF-IDF</a>
+    <a href="#cosine"><span>04</span>코사인 유사도</a>
+    <a href="#classify"><span>05</span>분류</a>
+    <a href="#limits"><span>06</span>BoW의 한계</a>
+    <a href="#variants"><span>07</span>보너스: TF 변형</a>
+    <a href="#bm25"><span>08</span>보너스: BM25</a>
+    <a href="#index"><span>09</span>보너스: 역색인</a>
+    <a href="#check"><span>10</span>스스로 설명하기</a>
+    <a href="#code"><span>11</span>코드 지도</a>
+  </nav>
+</aside>
+
+<main>
+<section id="search" class="hero">
+  <div class="q">rec.sport.hockey · comp.windows.x · sci.space · …</div>
+  <h1>단어를 세기만 해서 원하는 글을 찾을 수 있을까?</h1>
+  <p class="lead">1990년대 뉴스그룹 게시물 <b id="f-docs"></b>건으로 만든 검색기다. 아래 검색창은 Python으로 만든 색인과 같은 값을 이 페이지 안에서 다시 계산한다. 먼저 검색해 보고, 결과가 왜 이렇게 나오는지 장을 따라 내려가며 확인한다.</p>
+  <div class="facts" id="facts"></div>
+
+  <div class="lab" id="searchlab">
+    <div class="searchbar">
+      <label for="q" class="small" hidden>검색어</label>
+      <input id="q" type="search" value="space shuttle launch" autocomplete="off" spellcheck="false" aria-label="검색어(영어)">
+    </div>
+    <div class="chips" id="qchips" style="margin-top:10px" aria-label="예시 검색어"></div>
+    <div class="controls">
+      <label>점수 방식
+        <span class="seg" id="method">
+          <button type="button" data-v="tfidf" aria-pressed="true">TF-IDF 코사인</button>
+          <button type="button" data-v="bm25" aria-pressed="false">BM25</button>
+        </span>
+      </label>
+      <label for="tfv">TF 변형 (TF-IDF)
+        <select id="tfv"><option value="raw">raw: f</option><option value="log">log: 1+ln f</option><option value="double">double: 0.5+0.5·f/max</option><option value="binary">binary: 1</option></select>
+      </label>
+      <label for="k1">BM25 k1 = <b id="k1v" class="mono"></b>
+        <input id="k1" type="range" min="0.1" max="3" step="0.1" value="1.5">
+      </label>
+      <label for="bb">BM25 b = <b id="bv" class="mono"></b>
+        <input id="bb" type="range" min="0" max="1" step="0.05" value="0.75">
+      </label>
+    </div>
+    <div class="qinfo" id="qinfo"></div>
+    <ol class="results" id="results"></ol>
+    <div class="statline" id="stat"></div>
+  </div>
+  <p class="small">문서 ID는 sklearn 원래 순서의 위치 번호다. 발췌는 각 글의 앞 280자이고 이메일·URL은 [email]·[url]로 가렸다. 결과 순위와 점수는 <code>tools/verify_study_guide.py</code>가 Python 결과와 대조한다.</p>
+</section>
+
+<section id="flow">
+  <div class="chap"><span class="no">01</span><h2>전체 흐름</h2></div>
+  <div class="read">
+    <p>검색과 분류는 같은 출발점을 공유한다. 글을 단어 목록으로 자르고, 단어마다 "이 글에서 얼마나 중요한가"를 숫자로 매긴 표(TF-IDF 행렬)를 만든다. 검색은 이 표에서 쿼리와 방향이 비슷한 행을 찾고, 분류는 이 표를 입력으로 범주를 예측한다.</p>
+  </div>
+  <div class="flow" id="flowbox"></div>
+  <div class="read">
+    <p class="note">이 미션이 묻는 질문은 하나다. 단어의 <b>출현 빈도만으로</b> 문서의 의미를 알 수 있는가. 이 검색기에서는 상당 부분 그렇다. 분류 정확도는 0.90이다. 실패한 10%에서 BoW가 무엇을 못 보는지가 드러난다. 06장에서 다룬다.</p>
+  </div>
+</section>
+
+<section id="prep">
+  <div class="chap"><span class="no">02</span><h2>전처리: 무엇을 한 단어로 볼 것인가</h2></div>
+  <div class="read">
+    <p>TF-IDF 벡터의 축 하나하나가 단어다. 그래서 무엇을 한 단어로 볼지가 곧 벡터 공간을 정한다. 아래 글을 고쳐 보면 각 단계에서 무엇이 사라지고 바뀌는지 보인다. 이 함수는 <code>src/preprocess.py</code>와 같은 규칙을 JavaScript로 옮긴 것이다.</p>
+  </div>
+  <div class="lab">
+    <label for="prepin" class="label">입력 글</label>
+    <textarea id="prepin" spellcheck="false">Hi all, I don't know if anyone saw the Shuttle launch on 4/12? See http://www.nasa.gov/sts or mail me at jdoe@cs.example.edu. The colour pictures of the orbiter were GREAT - X11 viewer works fine!</textarea>
+    <div class="stages" id="prepout"></div>
+  </div>
+  <div class="read">
+    <h3>설계 기준과 근거</h3>
+    <div class="scroll"><table>
+      <thead><tr><th>단계</th><th>기준</th><th>왜</th></tr></thead>
+      <tbody>
+        <tr><td>이메일·URL</td><td>지움</td><td>개인 정보다. <code>cs.cmu.edu</code> 같은 조각은 주제가 아니라 작성자 소속을 알려 준다.</td></tr>
+        <tr><td>아포스트로피</td><td>빈 문자열로</td><td><code>don't → dont</code>로 한 토큰을 유지해야 불용어로 거를 수 있다.</td></tr>
+        <tr><td>토큰 규칙</td><td>영문자로 시작, 2자 이상</td><td><code>x11</code>·<code>mpeg2</code>는 살리고 연도·점수·전화번호는 버린다.</td></tr>
+        <tr><td>철자 변형</td><td><span id="nvar"></span>쌍 통합</td><td><code>colour→color</code>처럼 뜻이 같은 철자만. 의미 동의어는 건드리지 않는다.</td></tr>
+        <tr><td>불용어</td><td>직접 정의 <span id="nstop"></span>개</td><td>기능어, 축약형, 게시판 관용어(<code>writes</code>, <code>thanks</code>). <code>not</code>도 뺐다. 주제 분류에는 영향이 작지만 감성 분석이라면 치명적이다.</td></tr>
+        <tr><td>어간 추출</td><td>안 함</td><td><code>graphics→graphic</code>, <code>windows→window</code>처럼 범주를 가르는 단어가 합쳐진다.</td></tr>
+        <tr><td>어휘 가지치기</td><td>min_df=<span class="m-mindf"></span>, max_df=<span class="m-maxdf"></span></td><td>드문 오타·고유명사와 절반 넘는 문서에 나오는 단어를 뺀다. 행렬이 4,631×8,918로 줄어든다.</td></tr>
+      </tbody>
+    </table></div>
+    <h3>언어마다 토큰화가 다른 이유</h3>
+    <p>영어는 띄어쓰기가 단어 경계와 거의 같아 공백 토큰화로 충분하다. 한국어는 띄어쓰기 단위에 조사가 붙는다. 그래서 <code>고양이가</code>와 <code>고양이를</code>이 다른 축이 된다.</p>
+    <div id="korean"></div>
+  </div>
+</section>
+
+<section id="tfidf">
+  <div class="chap"><span class="no">03</span><h2>TF-IDF: 자주, 그러나 흔하지 않게</h2></div>
+  <div class="read">
+    <div class="formula">tf(t,d)    = 문서 d에서 단어 t의 빈도
+idf(t)     = ln((1 + n) / (1 + df(t))) + 1      ← smooth_idf=True
+tfidf(t,d) = tf(t,d) × idf(t)   → 행마다 L2 정규화</div>
+    <p>TF는 "이 글에서 얼마나 자주 나오나", IDF는 "전체에서 얼마나 드문가"를 잰다. 둘을 곱하면 이 글에는 자주 나오지만 다른 글에는 드문 단어가 커진다. 분모·분자의 +1은 df=0일 때의 0 나누기를 막는다. 끝의 +1은 모든 문서에 나오는 단어도 가중치가 0이 되지 않게 한다. L2 정규화는 긴 글이 단어가 많다는 이유만으로 커지지 않게 한다.</p>
+    <p>아래 작은 말뭉치를 고치거나 설정을 바꾸면 행렬이 다시 계산된다. 한 줄이 문서 하나이고, 공백으로 단어를 나눈다(전처리는 이미 끝났다고 본다).</p>
+  </div>
+  <div class="lab toy">
+    <div class="grid2">
+      <div><label for="toyin" class="label">문서(한 줄에 하나)</label>
+        <textarea id="toyin" spellcheck="false">space shuttle launch launch
+hockey goalie playoff
+space station orbit
+baseball pitcher launch</textarea></div>
+      <div class="controls" style="margin-top:0">
+        <label for="toytf">TF 변형<select id="toytf"><option value="raw">raw</option><option value="log">log</option><option value="double">double</option><option value="binary">binary</option></select></label>
+        <label for="toysmooth">IDF<select id="toysmooth"><option value="1">smooth_idf=True</option><option value="0">smooth_idf=False</option></select></label>
+        <label for="toynorm">정규화<select id="toynorm"><option value="l2">L2</option><option value="l1">L1</option><option value="none">없음</option></select></label>
+      </div>
+    </div>
+    <div id="toyout"></div>
+  </div>
+  <div class="read">
+    <h3>NumPy 구현의 핵심 세 줄</h3>
+    <p>빈도 행렬은 모든 (문서, 단어) 쌍을 모은 뒤 <code>np.add.at</code>으로 한 번에 센다. <code>counts[rows, cols] += 1</code>은 같은 쌍이 여러 번 나와도 한 번만 더하므로 틀린다. IDF는 <code>(counts &gt; 0).sum(axis=0)</code>으로 구한 df에서 계산하고, <code>weighted *= idf_</code>로 열마다 곱한다(브로드캐스팅).</p>
+    <h3>sklearn과 대조</h3>
+    <p>같은 토큰 리스트를 <code>TfidfVectorizer(analyzer=lambda doc: doc)</code>에 넣었다. 그리고 파라미터 조합 13개 모두에서 직접 구현과 비교했다. 기준은 오차 1e-6이다.</p>
+    <div class="scroll"><table id="verif"></table></div>
+  </div>
+</section>
+
+<section id="cosine">
+  <div class="chap"><span class="no">04</span><h2>코사인 유사도: 길이 말고 방향</h2></div>
+  <div class="read">
+    <div class="formula">cos(q, d) = (q · d) / (‖q‖ × ‖d‖)</div>
+    <p>내적은 두 벡터가 같은 단어를 얼마나 크게 공유하는지 더한 값이다. 노름으로 나누면 길이가 사라지고 방향만 남는다. 짧은 쿼리와 긴 문서를 공정하게 비교하려면 이렇게 해야 한다. 쿼리에 없는 단어는 쿼리 쪽 값이 0이라 내적에 기여하지 않는다. 그래서 문서 벡터의 칸 수천 개 중 실제로 계산에 쓰이는 칸은 쿼리 단어 몇 개뿐이다.</p>
+  </div>
+  <div class="grid2">
+    <div class="lab" id="angle"></div>
+    <div class="lab" id="explain"></div>
+  </div>
+</section>
+
+<section id="classify">
+  <div class="chap"><span class="no">05</span><h2>분류: 같은 벡터로 범주 맞히기</h2></div>
+  <div class="read">
+    <p>Train 문서로만 어휘와 IDF를 학습한 TF-IDF를 특성으로 Logistic Regression을 학습했다. Test 문서까지 넣어 IDF를 계산하면 평가 데이터의 분포가 특성에 새어 들어간다. C는 Train 안의 5-fold 교차검증으로 골랐다.</p>
+    <div id="clsfacts" class="facts"></div>
+  </div>
+  <div class="grid2">
+    <div class="lab"><div class="label" style="margin-bottom:8px">혼동 행렬 (행=실제, 열=예측)</div><div class="scroll"><table class="heat" id="cm"></table></div></div>
+    <div class="lab"><div class="label" style="margin-bottom:8px">범주별 지표</div><div class="scroll"><table id="perclass"></table></div></div>
+  </div>
+  <div class="read">
+    <p id="cmnote"></p>
+    <h3>오분류 사례: 무엇이 끌어당겼나</h3>
+    <p>로지스틱 회귀에서 범주 k의 점수는 <code>w_k · x + b_k</code>다. 그래서 단어 j가 예측 범주 p를 실제 범주 a보다 밀어준 양은 <code>x_j · (w_pj − w_aj)</code>다. 막대는 그 값이다. 왼쪽은 틀린 쪽으로, 오른쪽은 맞는 쪽으로 끌어당긴 단어다.</p>
+  </div>
+  <div class="cases" id="cases"></div>
+</section>
+
+<section id="limits">
+  <div class="chap"><span class="no">06</span><h2>BoW의 한계: 세기만 하면 못 보는 것</h2></div>
+  <div class="read">
+    <p>BoW(Bag of Words)는 글을 단어 주머니로 본다. 어떤 단어가 몇 번 들어 있는지만 남고 순서와 문맥은 버려진다. 실제 색인으로 두 문장을 벡터로 바꿔 비교해 보자. 어휘에 없는 단어는 점선, 불용어로 빠진 단어는 취소선으로 표시한다.</p>
+  </div>
+  <div class="lab">
+    <div class="grid2">
+      <label class="small" for="sa">문장 A<input id="sa" type="text" value="the pitcher hit the batter" spellcheck="false"></label>
+      <label class="small" for="sb">문장 B<input id="sb" type="text" value="the batter hit the pitcher" spellcheck="false"></label>
+    </div>
+    <div class="chips" id="pairchips" style="margin-top:10px"></div>
+    <div id="pairout" style="margin-top:12px"></div>
+  </div>
+  <div class="read">
+    <h3>다의어: 같은 철자, 다른 뜻</h3>
+    <div id="poly"></div>
+    <h3>오류 유형으로 다시 보기</h3>
+    <ul>
+      <li><b>다의어</b>: <code>space</code>(우주·시간·디스크·기하), <code>save</code>, <code>run</code>. 단어를 맥락 없이 하나의 축으로 센다.</li>
+      <li><b>문맥 부재</b>: 골리의 <code>glove</code>도 야구의 <code>glove</code>와 같은 칸에 들어간다. 다른 게시판을 언급만 해도 그 단어가 센다.</li>
+      <li><b>범주 경계의 중첩</b>: graphics와 windows.x는 주제가 실제로 겹친다. 오분류 92건 중 38건이 이 쌍이다.</li>
+      <li><b>증거 부족</b>: 어휘에 걸리는 단어가 2~3개뿐인 짧은 글에서는 범주와 무관한 단어 하나가 결정을 바꾼다.</li>
+    </ul>
+    <p class="note">개선 방향: 어순과 부정은 n-gram으로 일부 살릴 수 있다. 동의어는 LSA나 단어 임베딩으로, 다의어는 문맥 임베딩(BERT 계열)으로 다룬다. 검색에서는 BM25로 후보를 빠르게 뽑고 임베딩으로 재정렬하는 조합이 흔하다.</p>
+  </div>
+</section>
+
+<section id="variants">
+  <div class="chap"><span class="no">07</span><h2>보너스 1: TF를 어떻게 셀까</h2></div>
+  <div class="read">
+    <p>같은 단어가 20번 나오면 1번 나올 때보다 20배 중요할까? raw는 그렇다고 보고, binary는 같다고 본다. log와 double은 그 사이다. 분류는 같은 분할·같은 C로, 검색은 두 가지로 쟀다. Doc-query는 Test 927건을 각각 쿼리로 Train을 검색하고, 같은 범주 문서를 관련 문서로 본다. 평가 쿼리는 직접 만든 20개다.</p>
+  </div>
+  <div class="lab"><div class="scroll"><table id="tfvtable"></table></div><div id="tfvchart" class="scroll" style="margin-top:14px"></div></div>
+  <div class="read">
+    <p>분류는 네 변형의 차이가 0.6%p(Test 약 6건) 이내다. 분류기가 단어 가중치를 다시 학습하므로 TF 스케일의 영향을 대부분 흡수한다. 검색은 학습이 없어서 차이가 더 분명하다. 반복을 줄여서 세는 log가 가장 좋고, 반복을 아예 버리는 binary가 가장 낮다. 위 검색창에서 TF 변형을 바꿔 결과가 어떻게 달라지는지 확인해 보자.</p>
+  </div>
+</section>
+
+<section id="bm25">
+  <div class="chap"><span class="no">08</span><h2>보너스 2: BM25, 포화와 길이 보정</h2></div>
+  <div class="read">
+    <div class="formula">score(q,d) = Σ idf(t) · f·(k1+1) / (f + k1·(1 − b + b·|d|/avgdl))
+idf(t)     = ln((N − df + 0.5) / (df + 0.5) + 1)</div>
+    <p>TF 항은 f가 커져도 k1+1에 수렴한다(포화). 평균보다 긴 문서는 b만큼 TF를 깎는다(길이 보정). 아래에서 k1과 b를 움직이면 TF 항이 빈도에 따라 어떻게 변하는지 보인다. 짧은 문서(20토큰), 평균 문서, 긴 문서(400토큰)를 비교한다.</p>
+  </div>
+  <div class="lab">
+    <div class="controls" style="margin-top:0">
+      <label for="ck1">k1 = <b id="ck1v" class="mono"></b><input id="ck1" type="range" min="0.1" max="3" step="0.1" value="1.5"></label>
+      <label for="cb">b = <b id="cbv" class="mono"></b><input id="cb" type="range" min="0" max="1" step="0.05" value="0.75"></label>
+    </div>
+    <div id="satchart" class="scroll"></div>
+  </div>
+  <div class="read">
+    <div class="scroll"><table id="bmtable"></table></div>
+    <p id="bmnote" style="margin-top:12px"></p>
+    <h3>k1 × b 민감도 (Doc-query MAP@10)</h3>
+    <div class="scroll"><table class="heat" id="bmgrid"></table></div>
+    <p class="small">b=0(길이 보정 없음)이면 단어가 많은 긴 문서가 문서 전체를 쿼리로 쓴 검색을 독식해 MAP가 0.35로 떨어진다. 이 격자는 Test 쿼리로 잰 민감도 분석이다. 기본값 k1=1.5, b=0.75는 격자를 보기 전에 정했다.</p>
+  </div>
+</section>
+
+<section id="index">
+  <div class="chap"><span class="no">09</span><h2>보너스 3: 역색인, 0인 칸은 보지 않는다</h2></div>
+  <div class="read">
+    <p>TF-IDF 행렬의 <b id="nzratio"></b>는 0이다. 전체 스캔은 쿼리마다 그 0까지 모두 곱한다. 역색인은 단어마다 그 단어가 들어 있는 문서 목록(포스팅)만 저장하고, 쿼리 단어의 목록만 방문한다. 이 페이지의 검색도 역색인으로 동작한다.</p>
+  </div>
+  <div class="lab">
+    <label for="pw" class="label">단어 → 문서 목록</label>
+    <div class="searchbar"><input id="pw" type="text" value="shuttle" spellcheck="false" autocomplete="off"></div>
+    <div id="postout" style="margin-top:10px"></div>
+  </div>
+  <div class="read">
+    <div class="scroll"><table id="ixtable"></table></div>
+  </div>
+  <div class="lab"><div id="ixchart" class="scroll"></div></div>
+  <div class="read">
+    <p id="ixnote"></p>
+  </div>
+</section>
+
+<section id="check">
+  <div class="chap"><span class="no">10</span><h2>스스로 설명하기</h2></div>
+  <div class="read">
+    <p>미션의 과제 목표 다섯 가지다. 먼저 답을 소리 내어 말해 본 뒤 펼쳐서 비교한다.</p>
+    <details><summary>토큰화는 왜 하고, 언어마다 무엇이 다른가?</summary>
+      <p>TF-IDF는 "셀 수 있는 단위"를 축으로 한 벡터라서, 텍스트를 그 단위로 잘라야 계산할 수 있다. 영어는 띄어쓰기가 단어 경계와 거의 같아 공백·정규식으로 충분하다. 한국어는 어절에 조사·어미가 붙는다. 그래서 같은 명사가 여러 토큰으로 흩어지고, 형태소 분석으로 떼어 내야 같은 축에 모인다. 02장의 예에서 공백 토큰화는 같은 단어로 된 두 문장의 유사도를 0.20으로 만들었다.</p></details>
+    <details><summary>TF, IDF, TF-IDF를 수식으로 쓰고 각각의 역할을 말해 보자.</summary>
+      <p>tf(t,d)=문서 d에서 t의 빈도로, 그 문서 안에서의 중요도다. idf(t)=ln((1+n)/(1+df))+1로, 드물수록 커지는 변별력이다. 둘의 곱에 L2 정규화를 하면 길이와 무관한 문서 벡터가 된다. IDF가 없으면 <code>time</code>(768개 문서) 같은 흔한 단어가 벡터를 지배한다.</p></details>
+    <details><summary>코사인 유사도가 내적과 정규화로 계산되는 원리는?</summary>
+      <p>내적은 같은 단어 축에서의 값끼리 곱해 더한 것이다. 이를 두 벡터의 길이로 나누면 두 벡터 사이 각도의 코사인이 된다. 길이가 사라지므로 짧은 쿼리와 긴 문서를 방향만으로 비교한다. 문서를 미리 L2 정규화하면 노름이 1이라 내적이 곧 코사인이다.</p></details>
+    <details><summary>BoW가 문맥과 어순을 못 보는 사례를 들어 보자.</summary>
+      <p>"the pitcher hit the batter"와 "the batter hit the pitcher"는 같은 벡터다(코사인 1.0). "space of 9 months"의 space가 우주 범주로 분류를 끌어당긴 doc 400, 골리의 glove 때문에 야구로 간 doc 3125도 있다. goalie와 goaltender는 같은 뜻인데 코사인이 0이다.</p></details>
+    <details><summary>불용어와 특수문자 범위를 그렇게 정한 근거는?</summary>
+      <p>기능어·축약형·게시판 관용어는 모든 범주에 고르게 나와 변별력이 없다. 이메일·URL은 개인 정보이면서 작성자 소속이라는 엉뚱한 신호다. 숫자만으로 된 토큰은 연도·점수처럼 주제를 가르지 못하지만 x11 같은 기술 용어는 살렸다. not을 뺀 것은 주제 분류라서 가능한 선택이고, 감성 분석이라면 반대로 해야 한다. 남은 빈틈도 있다. http 없이 쓴 호스트명(doc 780)이 그 예다.</p></details>
+  </div>
+</section>
+
+<section id="code">
+  <div class="chap"><span class="no">11</span><h2>코드 지도</h2></div>
+  <div class="read"><p>각 장에서 다룬 계산이 실제 코드의 어디에 있는지 모았다. 줄 번호는 이 자료를 만들 때의 원본 기준이다.</p></div>
+  <div class="codepick" id="codepick"></div>
+  <div id="codeview"></div>
+</section>
+</main>
+</div>
+
+<script id="study-data" type="application/json">__STUDY_DATA__</script>
+<script id="engine">
+/* 검색 엔진: src/preprocess.py, src/tfidf.py, src/search.py, src/bm25.py 와 같은 계산.
+   Node에서도 실행되도록 DOM을 쓰지 않는다(tools/verify_study_guide.py 가 사용). */
+(function (root) {
+  const EMAIL = /\S+@\S+/g, URL = /(?:https?:\/\/|ftp:\/\/|www\.)\S+/g;
+  const APOS = /['’`]/g, NONALNUM = /[^a-z0-9]+/g, TOKEN = /^[a-z][a-z0-9]+$/;
+
+  function makePreprocess(stopwords, variants) {
+    const stop = new Set(stopwords);
+    // 일반 객체로 조회하면 "constructor" 같은 단어가 Object.prototype 속성과 부딪힌다.
+    const spelling = new Map(Object.entries(variants));
+    const clean = t => t.toLowerCase().replace(EMAIL, " ").replace(URL, " ").replace(APOS, "").replace(NONALNUM, " ").trim();
+    const tokenize = t => clean(t).split(" ").filter(x => TOKEN.test(x));
+    const normalize = toks => toks.map(x => spelling.get(x) ?? x);
+    const removeStop = toks => toks.filter(x => !stop.has(x));
+    const preprocess = t => removeStop(normalize(tokenize(t)));
+    return { clean, tokenize, normalize, removeStop, preprocess, stop };
+  }
+
+  function tf(c, variant, max) {
+    if (c <= 0) return 0;
+    if (variant === "raw") return c;
+    if (variant === "log") return 1 + Math.log(c);
+    if (variant === "double") return 0.5 + 0.5 * c / max;
+    return 1;
+  }
+
+  function rank(acc, k) {
+    const rows = [];
+    acc.forEach((s, d) => { if (s > 0) rows.push([s, d]); });
+    rows.sort((a, b) => (b[0] - a[0]) || (a[1] - b[1]));
+    return rows.slice(0, k);
+  }
+
+  function makeEngine(D) {
+    const P = makePreprocess(D.stopwords, D.variants);
+    const terms = D.index.terms, N = D.index.docs.cat.length;
+    const vocab = new Map(terms.map((t, j) => [t, j]));
+    const postings = D.index.postings.map(([dd, cc]) => {
+      const docs = new Int32Array(dd.length); let acc = 0;
+      for (let i = 0; i < dd.length; i++) { acc += dd[i]; docs[i] = acc; }
+      return { docs, counts: Float64Array.from(cc) };
+    });
+    const df = postings.map(p => p.docs.length);
+    const idf = df.map(d => Math.log((1 + N) / (1 + d)) + 1);
+    const bmIdf = df.map(d => Math.log((N - d + 0.5) / (d + 0.5) + 1));
+    const docLen = Float64Array.from(D.index.docs.len);
+    const avgdl = docLen.reduce((a, b) => a + b, 0) / N;
+    const maxCount = new Float64Array(N);
+    postings.forEach(p => p.docs.forEach((d, i) => { if (p.counts[i] > maxCount[d]) maxCount[d] = p.counts[i]; }));
+    const normCache = {};
+    function docNorms(v) {
+      if (normCache[v]) return normCache[v];
+      const s = new Float64Array(N);
+      postings.forEach((p, j) => { for (let i = 0; i < p.docs.length; i++) { const d = p.docs[i]; const w = tf(p.counts[i], v, maxCount[d]) * idf[j]; s[d] += w * w; } });
+      for (let d = 0; d < N; d++) s[d] = Math.sqrt(s[d]);
+      return (normCache[v] = s);
+    }
+    function queryCounts(text) {
+      const toks = P.preprocess(text), counts = new Map();
+      toks.forEach(t => { if (vocab.has(t)) { const j = vocab.get(t); counts.set(j, (counts.get(j) || 0) + 1); } });
+      return { toks, counts };
+    }
+    /* TF-IDF 코사인: 쿼리도 같은 TF 변형·IDF·L2 정규화. 점수는 쿼리 단어의 포스팅에서만 더한다. */
+    function searchTfidf(text, k, variant) {
+      const { toks, counts } = queryCounts(text);
+      const out = { toks, terms: [...counts.keys()].map(j => terms[j]), hits: [], visited: 0, qvec: [] };
+      if (!counts.size) return out;
+      const qmax = Math.max(...counts.values());
+      let ss = 0; const q = [];
+      counts.forEach((c, j) => { const w = tf(c, variant, qmax) * idf[j]; q.push([j, w]); ss += w * w; });
+      const qn = Math.sqrt(ss), norms = docNorms(variant), acc = new Map();
+      for (const [j, w] of q) {
+        const p = postings[j]; out.visited += p.docs.length;
+        for (let i = 0; i < p.docs.length; i++) {
+          const d = p.docs[i];
+          const dw = tf(p.counts[i], variant, maxCount[d]) * idf[j] / norms[d];
+          acc.set(d, (acc.get(d) || 0) + (w / qn) * dw);
+        }
+      }
+      out.qvec = q.map(([j, w]) => [terms[j], w / qn]);
+      out.hits = rank(acc, k);
+      return out;
+    }
+    /* BM25: 쿼리 안 반복은 한 번만 센다. */
+    function searchBm25(text, k, k1, b) {
+      const { toks, counts } = queryCounts(text);
+      const out = { toks, terms: [...counts.keys()].map(j => terms[j]), hits: [], visited: 0 };
+      const acc = new Map();
+      counts.forEach((_, j) => {
+        const p = postings[j]; out.visited += p.docs.length;
+        for (let i = 0; i < p.docs.length; i++) {
+          const d = p.docs[i], f = p.counts[i];
+          const s = bmIdf[j] * f * (k1 + 1) / (f + k1 * (1 - b + b * docLen[d] / avgdl));
+          acc.set(d, (acc.get(d) || 0) + s);
+        }
+      });
+      out.hits = rank(acc, k);
+      return out;
+    }
+    function docVector(text, variant) {
+      const { toks, counts } = queryCounts(text);
+      const vec = new Map(); if (!counts.size) return { toks, vec };
+      const qmax = Math.max(...counts.values()); let ss = 0;
+      counts.forEach((c, j) => { const w = tf(c, variant, qmax) * idf[j]; vec.set(terms[j], w); ss += w * w; });
+      const n = Math.sqrt(ss); vec.forEach((w, t) => vec.set(t, w / n));
+      return { toks, vec };
+    }
+    function docWeight(d, term, variant) {
+      const j = vocab.get(term); if (j === undefined) return 0;
+      const p = postings[j]; let lo = 0, hi = p.docs.length - 1;
+      while (lo <= hi) { const m = (lo + hi) >> 1; if (p.docs[m] === d) return tf(p.counts[m], variant, maxCount[d]) * idf[j] / docNorms(variant)[d]; if (p.docs[m] < d) lo = m + 1; else hi = m - 1; }
+      return 0;
+    }
+    return { P, N, terms, vocab, postings, df, idf, docLen, avgdl, searchTfidf, searchBm25, docVector, docWeight, docNorms };
+  }
+
+  /* 03장 장난감 계산기: TfidfVectorizerNP 와 같은 정의 */
+  function toyTfidf(docs, opt) {
+    const vocab = [...new Set(docs.flat())].sort();
+    const n = docs.length;
+    const counts = docs.map(d => vocab.map(t => d.filter(x => x === t).length));
+    const df = vocab.map((_, j) => counts.filter(r => r[j] > 0).length);
+    const idf = df.map(x => opt.smooth ? Math.log((1 + n) / (1 + x)) + 1 : Math.log(n / x) + 1);
+    const weighted = counts.map(r => { const mx = Math.max(...r); return r.map((c, j) => tf(c, opt.tf, mx) * idf[j]); });
+    const normed = weighted.map(r => {
+      if (opt.norm === "none") return r.slice();
+      const len = opt.norm === "l2" ? Math.sqrt(r.reduce((a, x) => a + x * x, 0)) : r.reduce((a, x) => a + Math.abs(x), 0);
+      return len > 0 ? r.map(x => x / len) : r.slice();
+    });
+    return { vocab, counts, df, idf, weighted, normed };
+  }
+
+  root.A41 = { makePreprocess, makeEngine, toyTfidf, tf };
+})(typeof window !== "undefined" ? window : globalThis);
+</script>
+<script>
+(function () {
+  const D = JSON.parse(document.getElementById("study-data").textContent);
+  const E = A41.makeEngine(D);
+  const CATS = D.meta.categories;
+  const SHORT = CATS.map(c => c.split(".").pop());
+  const $ = id => document.getElementById(id);
+  const fmt = (x, d = 3) => Number(x).toFixed(d);
+  const int = x => Number(x).toLocaleString("en-US");
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const cat = k => `<span class="cat cat${k}">${CATS[k]}</span>`;
+
+  /* ---------- 00 검색 ---------- */
+  $("f-docs").textContent = int(D.meta.n_docs);
+  const v0 = D.verification.configs[0];
+  $("facts").innerHTML = [
+    ["범주", "5"], ["어휘", int(D.meta.vocabulary)],
+    ["sklearn 대조 최대 오차", Math.max(...D.verification.configs.map(r => r.max_error)).toExponential(1)],
+    ["분류 정확도", fmt(D.classification.accuracy)],
+    ["BM25 평가 쿼리 P@10", fmt(D.bm25.table.bm25.handP10, 2)],
+  ].map(([k, v]) => `<span>${k} <b>${v}</b></span>`).join("");
+
+  const state = { method: "tfidf", tfv: "raw", k1: 1.5, b: 0.75 };
+  const examples = ["space shuttle launch", "hockey playoff goalie", "x window server display", "save", "run", "goaltender", "convert gif to jpeg image format"];
+  $("qchips").innerHTML = examples.map(q => `<button type="button" data-q="${esc(q)}">${esc(q)}</button>`).join("");
+  $("qchips").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; $("q").value = b.dataset.q; runSearch(); });
+  $("method").addEventListener("click", e => {
+    const b = e.target.closest("button"); if (!b) return;
+    state.method = b.dataset.v;
+    $("method").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+    runSearch();
+  });
+  $("tfv").addEventListener("change", e => { state.tfv = e.target.value; runSearch(); });
+  $("k1").addEventListener("input", e => { state.k1 = +e.target.value; runSearch(); });
+  $("bb").addEventListener("input", e => { state.b = +e.target.value; runSearch(); });
+  $("q").addEventListener("input", runSearch);
+
+  function highlight(text, terms) {
+    let html = esc(text);
+    if (!terms.length) return html;
+    const re = new RegExp(`\\b(${terms.map(t => t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|")})`, "gi");
+    return html.replace(re, "<mark>$1</mark>");
+  }
+
+  function runSearch() {
+    $("k1v").textContent = state.k1.toFixed(1); $("bv").textContent = state.b.toFixed(2);
+    $("tfv").disabled = state.method !== "tfidf";
+    $("k1").disabled = $("bb").disabled = state.method !== "bm25";
+    const q = $("q").value;
+    const t0 = performance.now();
+    const r = state.method === "tfidf" ? E.searchTfidf(q, 5, state.tfv) : E.searchBm25(q, 5, state.k1, state.b);
+    const ms = performance.now() - t0;
+    const dropped = E.P.tokenize(q).length - r.toks.length;
+    const oov = r.toks.filter(t => !E.vocab.has(t));
+    $("qinfo").innerHTML = `토큰 [${r.toks.map(esc).join(", ")}]` + (dropped ? ` · 불용어 ${dropped}개 제거` : "") + (oov.length ? ` · 어휘에 없음: ${oov.map(esc).join(", ")}` : "");
+    if (!r.hits.length) {
+      $("results").innerHTML = `<li><span></span><div class="small">일치하는 글이 없다. 쿼리 단어가 모두 불용어이거나 어휘에 없다.</div></li>`;
+    } else {
+      $("results").innerHTML = r.hits.map(([s, d], i) => `<li>
+        <div class="score">${state.method === "tfidf" ? fmt(s) : fmt(s, 2)}</div>
+        <div><div class="meta"><span class="mono">${i + 1}. doc ${D.index.docs.id[d]}</span>${cat(D.index.docs.cat[d])}<span>${D.index.docs.len[d]} 토큰</span></div>
+        <div class="snip">${highlight(D.index.docs.text[d], r.terms)}</div></div></li>`).join("");
+    }
+    $("stat").innerHTML = `<span>방문한 포스팅 ${int(r.visited)}개</span><span>전체 스캔이면 ${int(E.N * E.terms.length)}칸</span><span>${ms.toFixed(1)} ms</span>`;
+  }
+
+  /* ---------- 01 흐름 ---------- */
+  const m = D.meta;
+  $("flowbox").innerHTML = [
+    ["원본 게시물", `${int(m.n_raw)}건 · 5개 범주`, "헤더·서명·인용 제거"],
+    ["전처리", `${int(m.n_docs)}건`, `토큰 5개 미만 ${int(m.n_raw - m.n_docs)}건 제거 · 토큰 중앙값 ${m.median_tokens}`],
+    ["빈도 행렬", `${int(m.n_docs)} × ${int(m.vocabulary)}`, `0 아닌 칸 ${int(m.nonzero)}개`],
+    ["TF-IDF", "× idf, L2 정규화", "sklearn과 13개 설정 대조"],
+    ["검색", "코사인 상위 5개", "또는 BM25, 역색인"],
+    ["분류", `정확도 ${fmt(D.classification.accuracy)}`, "Logistic Regression, 8:2"],
+  ].map(([t, n, s], i) => `<div class="${i >= 4 ? "fork" : ""}"><b>${t}</b><span class="n">${n}</span><br>${s}</div>`).join("");
+
+  /* ---------- 02 전처리 ---------- */
+  $("nvar").textContent = Object.keys(D.variants).length;
+  $("nstop").textContent = D.stopwords.length;
+  document.querySelectorAll(".m-mindf").forEach(x => x.textContent = m.min_df);
+  document.querySelectorAll(".m-maxdf").forEach(x => x.textContent = m.max_df);
+  function runPrep() {
+    const text = $("prepin").value;
+    const cleaned = E.P.clean(text);
+    const raw = cleaned.split(" ").filter(Boolean);
+    const toks = E.P.tokenize(text);
+    const norm = E.P.normalize(toks);
+    const span = (t, cls) => `<span class="${cls || ""}">${esc(t)}</span>`;
+    $("prepout").innerHTML = [
+      ["1 정제", `<div class="flat">${esc(cleaned) || "&nbsp;"}</div>`],
+      ["2 토큰 규칙", `<div class="toks">${raw.map(t => span(t, E.P.tokenize(t).length ? "" : "drop")).join("")}</div>`],
+      ["3 철자 변형", `<div class="toks">${toks.map((t, i) => span(norm[i] === t ? t : `${t}→${norm[i]}`, norm[i] === t ? "" : "swap")).join("")}</div>`],
+      ["4 불용어 제거", `<div class="toks">${norm.map(t => span(t, E.P.stop.has(t) ? "drop" : (E.vocab.has(t) ? "" : "oov"))).join("")}</div>`],
+    ].map(([k, v]) => `<div class="stage"><div class="tag">${k}</div><div>${v}</div></div>`).join("") +
+      `<p class="small" style="margin-top:8px">취소선=제거, 노랑=철자 통합, 점선=남았지만 색인 어휘(min_df=${m.min_df})에 없는 단어</p>`;
+  }
+  $("prepin").addEventListener("input", runPrep);
+  const ko = D.bow.korean;
+  $("korean").innerHTML = `<div class="scroll"><table><thead><tr><th>토큰화</th><th>${esc(ko.sentences[0])}</th><th>${esc(ko.sentences[1])}</th><th class="num">코사인</th></tr></thead><tbody>` +
+    ["whitespace", "morpheme"].map(k => `<tr><td>${k === "whitespace" ? "공백" : "형태소(손으로 나눔)"}</td>${ko[k].tokens.map(t => `<td><div class="toks">${t.map(x => `<span>${esc(x)}</span>`).join("")}</div></td>`).join("")}<td class="num mono">${fmt(ko[k].cosine, 4)}</td></tr>`).join("") +
+    `</tbody></table></div><p class="small">공백 토큰화의 0.20은 의미를 구별해서가 아니다. 조사가 달라 같은 명사를 못 맞춘 결과다. 형태소로 나누면 명사가 맞춰지지만, 이번에는 어순을 잃어 누가 누구를 잡았는지 다른 두 문장이 같은 벡터(1.0)가 된다.</p>`;
+
+  /* ---------- 03 TF-IDF ---------- */
+  function runToy() {
+    const docs = $("toyin").value.split("\n").map(l => l.trim().toLowerCase().split(/\s+/).filter(Boolean)).filter(d => d.length);
+    if (!docs.length) { $("toyout").innerHTML = ""; return; }
+    const r = A41.toyTfidf(docs, { tf: $("toytf").value, smooth: $("toysmooth").value === "1", norm: $("toynorm").value });
+    const head = `<tr><th></th>${r.vocab.map(t => `<th>${esc(t)}</th>`).join("")}</tr>`;
+    const mx = Math.max(...r.normed.flat(), 1e-9);
+    const rows = (mat, d, hot) => mat.map((row, i) => `<tr><th>d${i + 1}</th>${row.map(x => x === 0 ? `<td class="zero">0</td>` : `<td class="${hot ? "hot" : ""}" style="--v:${(x / mx).toFixed(3)}">${Number.isInteger(x) ? x : fmt(x, d)}</td>`).join("")}</tr>`).join("");
+    $("toyout").innerHTML = `
+      <div class="label" style="margin-top:14px">① 빈도 행렬 f(t,d)</div><div class="scroll"><table class="mat">${head}${rows(r.counts, 0)}</table></div>
+      <div class="label" style="margin-top:14px">② df와 idf</div><div class="scroll"><table class="mat">${head}<tr><th>df</th>${r.df.map(x => `<td>${x}</td>`).join("")}</tr><tr><th>idf</th>${r.idf.map(x => `<td>${fmt(x, 4)}</td>`).join("")}</tr></table></div>
+      <div class="label" style="margin-top:14px">③ TF-IDF (${$("toynorm").value === "none" ? "정규화 없음" : $("toynorm").value.toUpperCase() + " 정규화 후"})</div><div class="scroll"><table class="mat">${head}${rows(r.normed, 4, true)}</table></div>
+      <p class="small" style="margin-top:8px">여러 문서에 나오는 단어(예: launch, space)는 idf가 작고, 한 문서에만 나오는 단어는 idf가 크다. smooth_idf=False로 바꾸면 모든 문서에 나오는 단어의 idf가 정확히 1이 된다.</p>`;
+  }
+  ["toyin", "toytf", "toysmooth", "toynorm"].forEach(id => $(id).addEventListener("input", runToy));
+  $("verif").innerHTML = `<thead><tr><th>직접 구현</th><th>sklearn 설정</th><th class="num">IDF 오차</th><th class="num">최대 오차</th><th class="num">평균 오차</th><th>결과</th></tr></thead><tbody>` +
+    D.verification.configs.map(r => `<tr><td class="mono">tf=${r.ours.tf}, norm=${r.ours.norm}</td><td class="mono small">smooth_idf=${r.sklearn.smooth_idf}, sublinear_tf=${r.sklearn.sublinear_tf}, norm=${r.sklearn.norm}${r.sklearn.binary ? ", binary=True" : ""}</td><td class="num mono">${r.idf_max_error.toExponential(1)}</td><td class="num mono">${r.max_error.toExponential(2)}</td><td class="num mono">${r.mean_error.toExponential(1)}</td><td style="color:var(--${r.pass ? "good" : "bad"})">${r.pass ? "PASS" : "FAIL"}</td></tr>`).join("") +
+    `</tbody><caption class="small" style="caption-side:bottom;text-align:left;padding-top:6px">shape ${D.verification.configs[0].shape.join(" × ")}, min_df=${m.min_df}, max_df=${m.max_df}. 코사인 유사도도 sklearn과 비교했다(최대 오차 ${D.verification.cosine_max_error.toExponential(2)}).</caption>`;
+
+  /* ---------- 04 코사인 ---------- */
+  function angleSVG() {
+    const W = 300, H = 210, ox = 30, oy = 185, s = 150;
+    const vecs = [["q", [0.95, 0.31], "var(--accent)"], ["d₁ (짧은 글)", [0.55, 0.35], "var(--c4)"], ["d₂ (긴 글)", [0.3, 0.95], "var(--c2)"]];
+    const line = ([x, y]) => [ox + x * s, oy - y * s];
+    let out = `<svg viewBox="0 0 ${W} ${H}" width="100%" style="max-width:${W}px" role="img" aria-label="벡터 방향 비교"><line class="axis" x1="${ox}" y1="${oy}" x2="${W - 10}" y2="${oy}"/><line class="axis" x1="${ox}" y1="${oy}" x2="${ox}" y2="10"/>`;
+    vecs.forEach(([name, v, c]) => { const [x, y] = line(v); out += `<line x1="${ox}" y1="${oy}" x2="${x}" y2="${y}" stroke="${c}" stroke-width="2.5"/><circle cx="${x}" cy="${y}" r="3.5" fill="${c}"/><text x="${x + 6}" y="${y - 4}">${name}</text>`; });
+    out += `<text x="${W - 70}" y="${oy + 16}">shuttle</text><text x="${ox + 4}" y="20">hockey</text></svg>`;
+    const cos = (a, b) => (a[0] * b[0] + a[1] * b[1]) / (Math.hypot(...a) * Math.hypot(...b));
+    return out + `<p class="small">두 축만 있는 장난감 공간이다. d₁은 q보다 짧지만 방향이 비슷해 cos=${fmt(cos(vecs[0][1], vecs[1][1]), 2)}, d₂는 길지만 방향이 달라 cos=${fmt(cos(vecs[0][1], vecs[2][1]), 2)}이다. 내적만 쓰면 길이가 긴 쪽이 유리해진다.</p>`;
+  }
+  $("angle").innerHTML = `<div class="label" style="margin-bottom:6px">각도가 유사도</div>` + angleSVG();
+  const ex = D.explain;
+  $("explain").innerHTML = `<div class="label" style="margin-bottom:6px">실제 계산: "${esc(ex.query)}" vs doc ${ex.doc_id}</div>
+    <div class="scroll"><table class="mat"><thead><tr><th>단어</th><th class="num">q_t</th><th class="num">d_t</th><th class="num">q_t·d_t</th></tr></thead><tbody>
+    ${ex.shared.map(([t, q, d, p]) => `<tr><td>${esc(t)}</td><td class="num">${fmt(q, 4)}</td><td class="num">${fmt(d, 4)}</td><td class="num">${fmt(p, 4)}</td></tr>`).join("")}
+    <tr><th>합(내적)</th><td></td><td></td><td class="num"><b>${fmt(ex.dot, 4)}</b></td></tr></tbody></table></div>
+    <div class="formula" style="margin-top:10px">cos = ${fmt(ex.dot, 4)} / (${fmt(ex.query_norm, 4)} × ${fmt(ex.doc_norm, 4)}) = ${fmt(ex.cosine, 4)}</div>
+    <p class="small">문서 벡터의 0이 아닌 칸 ${ex.doc_nonzero}개 중 쿼리와 겹치는 ${ex.shared.length}칸만 내적에 기여한다. 두 벡터 모두 L2 정규화돼 노름이 1이므로 내적이 곧 코사인이다. <code>space</code>는 우주 범주 글 대부분에 나와 idf가 작고, 그래서 문서 쪽 값 ${fmt(ex.shared.find(s => s[0] === "space")?.[2] ?? 0, 4)}가 작다.</p>`;
+
+  /* ---------- 05 분류 ---------- */
+  const C = D.classification;
+  $("clsfacts").innerHTML = [["Train / Test", `${int(C.n_train)} / ${int(C.n_test)}`], ["어휘(Train)", int(C.n_terms)], ["C", C.C],
+    ["정확도", fmt(C.accuracy, 4)], ["macro F1", fmt(C.f1_macro, 4)], ["오분류", `${C.n_errors}건`]].map(([k, v]) => `<span>${k} <b>${v}</b></span>`).join("");
+  const cmMax = Math.max(...C.confusion.flat());
+  $("cm").innerHTML = `<tr><th></th>${SHORT.map(s => `<th>${s}</th>`).join("")}</tr>` + C.confusion.map((row, i) => `<tr><th>${SHORT[i]}</th>${row.map((v, j) => {
+    const r = v / cmMax; return `<td class="cell${r > 0.55 ? " strong" : ""}" style="--v:${(i === j ? r : Math.min(1, r * 4)).toFixed(3)}">${v}</td>`; }).join("")}</tr>`).join("");
+  $("perclass").innerHTML = `<thead><tr><th>범주</th><th class="num">precision</th><th class="num">recall</th><th class="num">F1</th><th class="num">n</th></tr></thead><tbody>` +
+    Object.entries(C.per_class).map(([k, v], i) => `<tr><td>${cat(i)}</td><td class="num mono">${fmt(v.precision)}</td><td class="num mono">${fmt(v.recall)}</td><td class="num mono">${fmt(v.f1)}</td><td class="num mono">${v.support}</td></tr>`).join("") + `</tbody>`;
+  const cf = C.confusion, pair = (a, b) => cf[a][b] + cf[b][a];
+  $("cmnote").innerHTML = `오분류 ${C.n_errors}건 중 <b>${pair(0, 1)}건</b>이 graphics↔windows.x, <b>${pair(2, 3)}건</b>이 baseball↔hockey에서 나왔다. 일부러 헷갈리게 고른 두 쌍이 오류의 절반 이상을 만든다. 대각선 밖의 칸은 잘 보이도록 4배 진하게 칠했다.`;
+  const bars = (list, cls, max) => list.map(([t, w]) => `<div class="row"><span>${esc(t)}</span><div class="bar ${cls}" style="width:${Math.max(4, (w / max) * 100)}%"></div><span>${fmt(w, 2)}</span></div>`).join("");
+  $("cases").innerHTML = D.cases.map(c => {
+    const max = Math.max(...c.toward_predicted.map(x => x[1]), ...c.toward_actual.map(x => x[1]), 0.01);
+    const ai = CATS.indexOf(c.actual), pi = CATS.indexOf(c.predicted);
+    return `<article class="case"><header><span class="mono">doc ${c.doc_id}</span>${cat(ai)}<span aria-hidden="true">→</span>${cat(pi)}<span class="small">확률 ${fmt(c.confidence, 2)} · 토큰 ${c.n_tokens} · 어휘 ${c.n_known_terms}</span><span class="kind">${c.kind}</span></header>
+      <p style="margin-bottom:6px">${esc(c.note)}</p>
+      <div class="pull"><div><div class="label">예측 쪽으로</div>${bars(c.toward_predicted.slice(0, 4), "alt", max)}</div><div><div class="label">실제 쪽으로</div>${bars(c.toward_actual.slice(0, 4), "", max) || '<span class="small">없음</span>'}</div></div>
+      <div class="quote">${esc(c.text)}</div></article>`;
+  }).join("");
+
+  /* ---------- 06 한계 ---------- */
+  const pairs = [["어순", "the pitcher hit the batter", "the batter hit the pitcher"], ["부정어", "this is a good team", "this is not a good team"],
+    ["동의어", "goalie", "goaltender"], ["다의어", "save the file", "save in the ninth inning"], ["짧은 글", "nasa launch", "nasa shuttle launch schedule delayed"]];
+  $("pairchips").innerHTML = pairs.map(([k, a, b]) => `<button type="button" data-a="${esc(a)}" data-b="${esc(b)}">${k}</button>`).join("");
+  $("pairchips").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; $("sa").value = b.dataset.a; $("sb").value = b.dataset.b; runPair(); });
+  function bag(text) {
+    const raw = E.P.normalize(E.P.tokenize(text));
+    return raw.map(t => E.P.stop.has(t) ? `<span class="drop">${esc(t)}</span>` : E.vocab.has(t) ? `<span>${esc(t)}</span>` : `<span class="oov">${esc(t)}</span>`).join("");
+  }
+  function runPair() {
+    const a = E.docVector($("sa").value, "raw"), b = E.docVector($("sb").value, "raw");
+    let dot = 0; a.vec.forEach((w, t) => { if (b.vec.has(t)) dot += w * b.vec.get(t); });
+    const has = a.vec.size && b.vec.size;
+    $("pairout").innerHTML = `<div class="stages"><div class="stage"><div class="tag">A 주머니</div><div class="toks">${bag($("sa").value) || "&nbsp;"}</div></div>
+      <div class="stage"><div class="tag">B 주머니</div><div class="toks">${bag($("sb").value) || "&nbsp;"}</div></div>
+      <div class="stage"><div class="tag">코사인</div><div class="score" style="font-size:1.4rem">${has ? fmt(dot, 4) : "—"}</div></div></div>
+      <p class="small">${!has ? "한쪽 벡터가 비었다(모든 단어가 불용어이거나 어휘 밖)." : dot > 0.999 ? "같은 벡터다. 순서·부정·문맥의 차이가 모두 사라졌다." : dot < 1e-9 ? "공유하는 단어가 없어 직교한다. 뜻이 같아도 BoW는 알 수 없다." : "일부 단어만 공유한다."}</p>`;
+  }
+  ["sa", "sb"].forEach(id => $(id).addEventListener("input", runPair));
+  $("poly").innerHTML = Object.entries(D.bow.polysemy).map(([w, hits]) => `<p><code>${w}</code> 상위 10개 결과의 범주: ${hits.map(h => `<span class="cat cat${CATS.indexOf(h.category)}">${SHORT[CATS.indexOf(h.category)]}</span>`).join(" ")}</p>
+    <ul class="small">${hits.slice(0, 3).map(h => `<li>doc ${h.doc_id} (${SHORT[CATS.indexOf(h.category)]}): ${highlight(h.snippet, [w])}</li>`).join("")}</ul>`).join("");
+
+  /* ---------- 07 TF 변형 ---------- */
+  const T = D.tfVariants;
+  const best = k => Math.max(...T.map(r => r[k]));
+  const cols = [["accuracy", "정확도"], ["f1_macro", "macro F1"], ["doc_P@10", "Doc P@10"], ["doc_MAP@10", "Doc MAP@10"], ["hand_P@5", "평가 P@5"], ["hand_P@10", "평가 P@10"]];
+  $("tfvtable").innerHTML = `<thead><tr><th>TF</th>${cols.map(([, l]) => `<th class="num">${l}</th>`).join("")}</tr></thead><tbody>` +
+    T.map(r => `<tr><td class="mono">${r.tf}</td>${cols.map(([k]) => `<td class="num mono">${r[k] === best(k) ? "<b>" : ""}${fmt(r[k], 4)}${r[k] === best(k) ? "</b>" : ""}</td>`).join("")}</tr>`).join("") + `</tbody>`;
+  function groupedBars(rows, keys, labels, lo, hi) {
+    const W = 640, H = 230, L = 40, B = 40, top = 12, gw = (W - L - 10) / keys.length, bw = gw / (rows.length + 1.2);
+    const y = v => top + (H - top - B) * (1 - (v - lo) / (hi - lo));
+    const colors = ["var(--c0)", "var(--c2)", "var(--c4)", "var(--c3)"];
+    let s = `<svg viewBox="0 0 ${W} ${H}" width="100%" style="min-width:520px" role="img" aria-label="TF 변형별 지표 막대그래프">`;
+    for (let v = lo; v <= hi + 1e-9; v += 0.1) s += `<line class="grid" x1="${L}" x2="${W - 10}" y1="${y(v)}" y2="${y(v)}"/><text x="${L - 6}" y="${y(v) + 4}" text-anchor="end">${v.toFixed(1)}</text>`;
+    keys.forEach((k, g) => {
+      rows.forEach((r, i) => { const x = L + g * gw + bw * (i + 0.6); s += `<rect x="${x}" y="${y(r[k])}" width="${bw - 3}" height="${y(lo) - y(r[k])}" fill="${colors[i]}"><title>${r.tf}: ${fmt(r[k], 4)}</title></rect>`; });
+      s += `<text x="${L + g * gw + gw / 2}" y="${H - B + 18}" text-anchor="middle">${labels[g]}</text>`;
+    });
+    return s + `</svg><div class="legend">${rows.map((r, i) => `<span><i style="background:${colors[i]}"></i>${r.tf}</span>`).join("")}</div>`;
+  }
+  $("tfvchart").innerHTML = groupedBars(T, ["accuracy", "f1_macro", "doc_MAP@10", "hand_P@10"], ["정확도", "macro F1", "Doc MAP@10", "평가 P@10"], 0.5, 1.0);
+
+  /* ---------- 08 BM25 ---------- */
+  function satChart() {
+    const k1 = +$("ck1").value, b = +$("cb").value;
+    $("ck1v").textContent = k1.toFixed(1); $("cbv").textContent = b.toFixed(2);
+    const W = 640, H = 250, L = 44, B = 34, top = 12, fmax = 20, ymax = 4;
+    const x = f => L + (W - L - 12) * f / fmax, y = v => top + (H - top - B) * (1 - v / ymax);
+    const avg = E.avgdl, lines = [["짧은 글 20토큰", 20, "var(--c4)"], [`평균 ${avg.toFixed(0)}토큰`, avg, "var(--accent)"], ["긴 글 400토큰", 400, "var(--c2)"]];
+    let s = `<svg viewBox="0 0 ${W} ${H}" width="100%" style="min-width:520px" role="img" aria-label="BM25 TF 항 포화 곡선">`;
+    for (let v = 0; v <= ymax; v++) s += `<line class="grid" x1="${L}" x2="${W - 12}" y1="${y(v)}" y2="${y(v)}"/><text x="${L - 6}" y="${y(v) + 4}" text-anchor="end">${v}</text>`;
+    for (let f = 0; f <= fmax; f += 5) s += `<text x="${x(f)}" y="${H - B + 16}" text-anchor="middle">${f}</text>`;
+    s += `<text x="${W - 12}" y="${H - 4}" text-anchor="end">빈도 f</text>`;
+    s += `<line x1="${L}" x2="${x(ymax)}" y1="${y(0)}" y2="${y(ymax)}" stroke="var(--muted)" stroke-dasharray="5 4"/><text x="${x(ymax) + 4}" y="${y(ymax) + 12}">raw TF (선형)</text>`;
+    s += `<line x1="${L}" x2="${W - 12}" y1="${y(k1 + 1)}" y2="${y(k1 + 1)}" stroke="var(--line)" stroke-width="1"/><text x="${W - 14}" y="${y(k1 + 1) - 4}" text-anchor="end">상한 k1+1 = ${(k1 + 1).toFixed(1)}</text>`;
+    lines.forEach(([name, len, c]) => {
+      const pts = []; for (let f = 0; f <= fmax; f += 0.25) pts.push(`${x(f).toFixed(1)},${y(f * (k1 + 1) / (f + k1 * (1 - b + b * len / avg))).toFixed(1)}`);
+      s += `<polyline points="${pts.join(" ")}" fill="none" stroke="${c}" stroke-width="2.5"/>`;
+    });
+    return s + `</svg><div class="legend">${lines.map(([n, , c]) => `<span><i style="background:${c}"></i>${n}</span>`).join("")}<span><i style="background:var(--muted)"></i>raw TF</span></div>`;
+  }
+  const drawSat = () => { $("satchart").innerHTML = satChart(); };
+  ["ck1", "cb"].forEach(id => $(id).addEventListener("input", drawSat));
+  const BT = D.bm25.table;
+  $("bmtable").innerHTML = `<thead><tr><th>방법</th><th class="num">Doc P@10</th><th class="num">Doc MAP@10</th><th class="num">평가 P@5</th><th class="num">평가 P@10</th></tr></thead><tbody>` +
+    [["TF-IDF", BT.tfidf], ["BM25", BT.bm25]].map(([n, r]) => `<tr><td>${n}</td><td class="num mono">${fmt(r.doc["P@10"], 4)}</td><td class="num mono">${fmt(r.doc["MAP@10"], 4)}</td><td class="num mono">${fmt(r.handP5)}</td><td class="num mono">${fmt(r.handP10)}</td></tr>`).join("") + `</tbody>`;
+  const L = D.bm25.mean_result_length;
+  $("bmnote").innerHTML = `BM25가 네 지표 모두 높다. 결과 문서 길이 중앙값은 TF-IDF ${L.tfidf_median}토큰, BM25 ${L.bm25_median}토큰이다(전체 ${L.corpus_median}). TF-IDF는 L2 정규화 때문에 아주 짧은 글을 위로 올리는 경향이 있다. 7토큰짜리 글에 쿼리 단어가 셋이면 그 단어들이 벡터 길이의 대부분을 차지한다. 검색창에서 <code>x window server display</code>를 두 방식으로 비교해 보자. top-5가 하나도 겹치지 않는다.`;
+  const G = D.bm25, gmax = Math.max(...G.grid_doc_map10.flat()), gmin = Math.min(...G.grid_doc_map10.flat());
+  $("bmgrid").innerHTML = `<tr><th>k1 \\ b</th>${G.grid_b.map(b => `<th>${b}</th>`).join("")}</tr>` + G.grid_doc_map10.map((row, i) => `<tr><th>${G.grid_k1[i]}</th>${row.map(v => { const r = (v - gmin) / (gmax - gmin); return `<td class="cell${r > 0.6 ? " strong" : ""}" style="--v:${(0.15 + 0.85 * r).toFixed(3)}">${fmt(v)}</td>`; }).join("")}</tr>`).join("");
+
+  /* ---------- 09 역색인 ---------- */
+  const nz = m.nonzero, cells = m.n_docs * m.vocabulary;
+  $("nzratio").textContent = `${(100 * (1 - nz / cells)).toFixed(2)}%`;
+  function runPost() {
+    const w = E.P.normalize(E.P.tokenize($("pw").value))[0] || "";
+    const j = E.vocab.get(w);
+    if (j === undefined) { $("postout").innerHTML = `<p class="small">"${esc(w)}"는 색인 어휘에 없다${E.P.stop.has(w) ? "(불용어)" : ""}.</p>`; return; }
+    const p = E.postings[j], byCat = [0, 0, 0, 0, 0];
+    p.docs.forEach(d => byCat[D.index.docs.cat[d]]++);
+    const list = Array.from(p.docs.slice(0, 14)).map((d, i) => `${d}<sub>×${p.counts[i]}</sub>`).join(", ");
+    $("postout").innerHTML = `<div class="flat"><b>${esc(w)}</b> → [${list}${p.docs.length > 14 ? ", …" : ""}]</div>
+      <p class="small" style="margin-top:8px">문서 ${p.docs.length}개(df) · idf ${fmt(E.idf[j], 3)} · 숫자는 문서 위치, 아래 첨자는 빈도</p>
+      <div class="legend">${byCat.map((n, k) => `<span><i style="background:var(--c${k})"></i>${SHORT[k]} ${n}</span>`).join("")}</div>`;
+  }
+  $("pw").addEventListener("input", runPost);
+  const IX = D.indexBench;
+  $("ixtable").innerHTML = `<thead><tr><th class="num">문서 N</th><th class="num">전체 스캔 ms</th><th class="num">열 선택 ms</th><th class="num">역색인 ms</th><th class="num">N·V</th><th class="num">Σdf(q)</th><th>결과 동일</th></tr></thead><tbody>` +
+    IX.map(r => `<tr><td class="num mono">${int(r.n_docs)}</td><td class="num mono">${fmt(r.full_scan_ms)}</td><td class="num mono">${fmt(r.column_scan_ms)}</td><td class="num mono"><b>${fmt(r.index_ms)}</b></td><td class="num mono">${int(r.ops_full)}</td><td class="num mono">${fmt(r.ops_index, 1)}</td><td>${r.same_top_k ? "같음" : "다름"}</td></tr>`).join("") + `</tbody>`;
+  function logChart() {
+    const W = 640, H = 250, Lf = 52, B = 34, top = 14;
+    const ns = IX.map(r => r.n_docs), nmax = Math.max(...ns);
+    const series = [["full_scan_ms", "전체 스캔 O(N·V)", "var(--c2)"], ["column_scan_ms", "열 선택 O(N·|q|)", "var(--c3)"], ["index_ms", "역색인 O(Σdf)", "var(--accent)"]];
+    const lo = -2, hi = 2;
+    const x = n => Lf + (W - Lf - 16) * n / nmax, y = v => top + (H - top - B) * (1 - (Math.log10(v) - lo) / (hi - lo));
+    let s = `<svg viewBox="0 0 ${W} ${H}" width="100%" style="min-width:520px" role="img" aria-label="문서 수에 따른 쿼리당 시간(로그 축)">`;
+    for (let e = lo; e <= hi; e++) s += `<line class="grid" x1="${Lf}" x2="${W - 16}" y1="${y(10 ** e)}" y2="${y(10 ** e)}"/><text x="${Lf - 6}" y="${y(10 ** e) + 4}" text-anchor="end">${10 ** e} ms</text>`;
+    ns.forEach(n => s += `<text x="${x(n)}" y="${H - B + 16}" text-anchor="middle">${int(n)}</text>`);
+    s += `<text x="${W - 16}" y="${H - 4}" text-anchor="end">문서 수 N</text>`;
+    series.forEach(([k, , c]) => {
+      s += `<polyline fill="none" stroke="${c}" stroke-width="2.5" points="${IX.map(r => `${x(r.n_docs).toFixed(1)},${y(r[k]).toFixed(1)}`).join(" ")}"/>`;
+      IX.forEach(r => s += `<circle cx="${x(r.n_docs)}" cy="${y(r[k])}" r="3.5" fill="${c}"><title>${int(r.n_docs)}: ${fmt(r[k])} ms</title></circle>`);
+    });
+    return s + `</svg><div class="legend">${series.map(([, n, c]) => `<span><i style="background:${c}"></i>${n}</span>`).join("")}</div>`;
+  }
+  $("ixchart").innerHTML = logChart();
+  const last = IX[IX.length - 1];
+  $("ixnote").innerHTML = `전체 ${int(last.n_docs)}건에서 역색인은 쿼리당 평균 ${fmt(last.ops_index, 0)}개 포스팅만 방문하고 ${fmt(last.full_scan_ms / last.index_ms, 0)}배 빠르다. 연산량은 ${int(Math.round(last.ops_full / last.ops_index))}분의 1인데 속도 차이가 그보다 작다. NumPy 행렬 곱은 BLAS로 최적화돼 칸당 비용이 매우 싸기 때문이다. 대신 역색인은 구축에 ${fmt(last.index_build_ms / 1000, 1)}초가 들고, 문서가 추가되면 포스팅을 갱신해야 한다.`;
+
+  /* ---------- 11 코드 ---------- */
+  const codeNames = Object.keys(D.code);
+  $("codepick").innerHTML = codeNames.map((n, i) => `<button type="button" data-n="${esc(n)}" aria-pressed="${i === 0}">${esc(n)}</button>`).join("");
+  function showCode(n) {
+    const c = D.code[n];
+    $("codeview").innerHTML = `<div class="codehead"><span>${esc(c.file)}</span><span>${c.start}–${c.end}행</span></div><pre class="code">${c.code.split("\n").map((l, i) => `<span class="ln">${c.start + i}</span>${esc(l)}`).join("\n")}</pre>`;
+    $("codepick").querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.n === n)));
+  }
+  $("codepick").addEventListener("click", e => { const b = e.target.closest("button"); if (b) showCode(b.dataset.n); });
+
+  /* ---------- 장 목록 강조 ---------- */
+  const links = [...document.querySelectorAll("#toc a")];
+  if ("IntersectionObserver" in window) {
+    const io = new IntersectionObserver(es => es.forEach(en => { if (en.isIntersecting) links.forEach(a => a.classList.toggle("on", a.getAttribute("href") === "#" + en.target.id)); }), { rootMargin: "-30% 0px -60% 0px" });
+    document.querySelectorAll("main section").forEach(s => io.observe(s));
+  }
+
+  runSearch(); runPrep(); runToy(); runPair(); drawSat(); runPost(); showCode(codeNames[0]);
+})();
+</script>
+</body>
+</html>

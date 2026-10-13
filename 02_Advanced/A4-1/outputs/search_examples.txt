@@ -1,0 +1,54 @@
+=== 검색 결과 (TF-IDF 코사인) ===
+Query: "space shuttle launch"  →  토큰 ['space', 'shuttle', 'launch']
+Top 5 결과:
+1. [0.469] doc 3165 (sci.space) ": >the Single Launch Core Station concept. A Shuttle external tank and solid : >rocket boo"
+2. [0.464] doc 279 (sci.space) "For an essay, I am writing about the space shuttle and a need for a better propulsion syst"
+3. [0.459] doc 4214 (sci.space) "Well, you better not get the shuttle as your launch vehicle. and most ELV's have too far o"
+4. [0.440] doc 576 (sci.space) "...irely based on the technical aspects of space, but I couldn't find the answer on the FA"
+5. [0.437] doc 660 (sci.space) "COMMERCIAL SPACE NEWS/SPACE TECHNOLOGY INVESTOR NUMBER 22 This is number twenty-two in an "
+
+=== 검색 결과 (TF-IDF 코사인) ===
+Query: "hockey playoff goalie"  →  토큰 ['hockey', 'playoff', 'goalie']
+Top 5 결과:
+1. [0.372] doc 4186 (rec.sport.hockey) "Yes, he does. BUT, the goalie sure as hell doesn't want him there! When I played roller ho"
+2. [0.272] doc 1703 (rec.sport.hockey) ".... And local baseball pre-empted the NHL playoffs. Thus far into this playoff season, ES"
+3. [0.256] doc 3121 (rec.sport.hockey) "...f the five games Finns have played, the goalie has been chosen the best player of the o"
+4. [0.223] doc 3329 (rec.sport.baseball) "...st 2 newsgroups (this one and rec.sport.hockey). Since hockey season is almost over, he"
+5. [0.217] doc 4044 (rec.sport.hockey) "...ional. I can see him as a Barraso style playoff goalie: inconsistant when there's nothi"
+
+=== 검색 결과 (TF-IDF 코사인) ===
+Query: "x window server display"  →  토큰 ['window', 'server', 'display']
+Top 5 결과:
+1. [0.549] doc 1776 (comp.windows.x) "window = XCreateWindow(...); XSetTransientForHint(display, window, window); XMapWindow(..."
+2. [0.540] doc 1844 (comp.windows.x) "As to how many clients may be display on a server, I believe the limit would be how much m"
+3. [0.495] doc 2515 (comp.windows.x) "...---------------- #include <X11/Xutil.h> Display display; Window window; { XSizeHints *x"
+4. [0.400] doc 1528 (comp.windows.x) "...eliable way to find out the size of the window manager decoration. If your window has b"
+5. [0.388] doc 770 (comp.windows.x) "I am working on an X-Window based application that needs to override some of the window ma"
+
+=== 검색 결과 (TF-IDF 코사인) ===
+Query: "3d rendering image format"  →  토큰 ['rendering', 'image', 'format']
+Top 5 결과:
+1. [0.497] doc 3366 (comp.graphics) "Yes. There are many methods of rendering, raytracing is one of them. You didn't say what y"
+2. [0.426] doc 3062 (comp.graphics) "...NORMAL ARRAY" error 3ds gives you while rendering? It seems to present itself while ren"
+3. [0.351] doc 4221 (comp.graphics) "...lp me to find a program that converts a format named "raw" (also known as "img") to the"
+4. [0.326] doc 838 (comp.graphics) "...de a converter from irit's .irt or .dat format to .pov format ? Thanks!"
+5. [0.309] doc 911 (comp.graphics) "...ntly got a file describing a library of rendering routines called SIPP (SImple Polygon "
+
+=== 검색 결과 (TF-IDF 코사인) ===
+Query: "baseball pitcher"  →  토큰 ['baseball', 'pitcher']
+Top 5 결과:
+1. [0.487] doc 3002 (rec.sport.baseball) "...and that holds a viewer's attention. In baseball, only 3 players are involved in the ac"
+2. [0.410] doc 4108 (rec.sport.baseball) "... all. What is the rule that qualifies a pitcher as making a save?"
+3. [0.351] doc 3533 (rec.sport.baseball) "...silly stat, by today's rules, in all of baseball. My understanding is to qualify as a s"
+4. [0.323] doc 3070 (rec.sport.baseball) "Major League Baseball is trying to expand its appeal to people with shorter attention span"
+5. [0.312] doc 3226 (rec.sport.baseball) ": I have wondered why a pitcher is given 8 pitches when he enters the : game. Let's be ser"
+
+=== 코사인 유사도 계산 예시 ===
+Query: "space shuttle launch"  /  문서 doc 3165
+겹치는 단어: q_t × d_t
+  launch     0.6291 × 0.3512 = 0.2210
+  shuttle    0.6257 × 0.3494 = 0.2186
+  space      0.4612 × 0.0644 = 0.0297
+코사인 유사도 = (Query · 문서) / (||Query|| × ||문서||)
+            = 0.4693 / (1.0000 × 1.0000) = 0.4693
+(문서 벡터의 0이 아닌 칸 57개 중 쿼리와 겹치는 칸만 내적에 기여한다. 두 벡터 모두 L2 정규화돼 노름이 1이므로 내적이 곧 코사인이다)

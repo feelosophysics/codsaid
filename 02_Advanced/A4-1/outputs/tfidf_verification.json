@@ -1,0 +1,330 @@
+{
+  "configs": [
+    {
+      "ours": {
+        "tf": "raw",
+        "smooth_idf": true,
+        "norm": "l2"
+      },
+      "sklearn": {
+        "smooth_idf": true,
+        "sublinear_tf": false,
+        "norm": "l2",
+        "binary": false,
+        "analyzer": "같은 토큰 리스트",
+        "min_df": 5,
+        "max_df": 0.5
+      },
+      "shape": [
+        4631,
+        8918
+      ],
+      "vocabulary_equal": true,
+      "idf_max_error": 0.0,
+      "max_error": 1.3322676295501878e-15,
+      "mean_error": 6.414688455200994e-20,
+      "pass": true
+    },
+    {
+      "ours": {
+        "tf": "raw",
+        "smooth_idf": true,
+        "norm": "l1"
+      },
+      "sklearn": {
+        "smooth_idf": true,
+        "sublinear_tf": false,
+        "norm": "l1",
+        "binary": false,
+        "analyzer": "같은 토큰 리스트",
+        "min_df": 5,
+        "max_df": 0.5
+      },
+      "shape": [
+        4631,
+        8918
+      ],
+      "vocabulary_equal": true,
+      "idf_max_error": 0.0,
+      "max_error": 3.0531133177191805e-16,
+      "mean_error": 1.642733758406705e-20,
+      "pass": true
+    },
+    {
+      "ours": {
+        "tf": "raw",
+        "smooth_idf": true,
+        "norm": null
+      },
+      "sklearn": {
+        "smooth_idf": true,
+        "sublinear_tf": false,
+        "norm": null,
+        "binary": false,
+        "analyzer": "같은 토큰 리스트",
+        "min_df": 5,
+        "max_df": 0.5
+      },
+      "shape": [
+        4631,
+        8918
+      ],
+      "vocabulary_equal": true,
+      "idf_max_error": 0.0,
+      "max_error": 0.0,
+      "mean_error": 0.0,
+      "pass": true
+    },
+    {
+      "ours": {
+        "tf": "log",
+        "smooth_idf": true,
+        "norm": "l2"
+      },
+      "sklearn": {
+        "smooth_idf": true,
+        "sublinear_tf": true,
+        "norm": "l2",
+        "binary": false,
+        "analyzer": "같은 토큰 리스트",
+        "min_df": 5,
+        "max_df": 0.5
+      },
+      "shape": [
+        4631,
+        8918
+      ],
+      "vocabulary_equal": true,
+      "idf_max_error": 0.0,
+      "max_error": 3.0531133177191805e-16,
+      "mean_error": 6.527942626116917e-20,
+      "pass": true
+    },
+    {
+      "ours": {
+        "tf": "log",
+        "smooth_idf": true,
+        "norm": "l1"
+      },
+      "sklearn": {
+        "smooth_idf": true,
+        "sublinear_tf": true,
+        "norm": "l1",
+        "binary": false,
+        "analyzer": "같은 토큰 리스트",
+        "min_df": 5,
+        "max_df": 0.5
+      },
+      "shape": [
+        4631,
+        8918
+      ],
+      "vocabulary_equal": true,
+      "idf_max_error": 0.0,
+      "max_error": 1.1102230246251565e-16,
+      "mean_error": 1.646412695736443e-20,
+      "pass": true
+    },
+    {
+      "ours": {
+        "tf": "log",
+        "smooth_idf": true,
+        "norm": null
+      },
+      "sklearn": {
+        "smooth_idf": true,
+        "sublinear_tf": true,
+        "norm": null,
+        "binary": false,
+        "analyzer": "같은 토큰 리스트",
+        "min_df": 5,
+        "max_df": 0.5
+      },
+      "shape": [
+        4631,
+        8918
+      ],
+      "vocabulary_equal": true,
+      "idf_max_error": 0.0,
+      "max_error": 0.0,
+      "mean_error": 0.0,
+      "pass": true
+    },
+    {
+      "ours": {
+        "tf": "raw",
+        "smooth_idf": false,
+        "norm": "l2"
+      },
+      "sklearn": {
+        "smooth_idf": false,
+        "sublinear_tf": false,
+        "norm": "l2",
+        "binary": false,
+        "analyzer": "같은 토큰 리스트",
+        "min_df": 5,
+        "max_df": 0.5
+      },
+      "shape": [
+        4631,
+        8918
+      ],
+      "vocabulary_equal": true,
+      "idf_max_error": 0.0,
+      "max_error": 2.1649348980190553e-15,
+      "mean_error": 7.459009700045975e-20,
+      "pass": true
+    },
+    {
+      "ours": {
+        "tf": "raw",
+        "smooth_idf": false,
+        "norm": "l1"
+      },
+      "sklearn": {
+        "smooth_idf": false,
+        "sublinear_tf": false,
+        "norm": "l1",
+        "binary": false,
+        "analyzer": "같은 토큰 리스트",
+        "min_df": 5,
+        "max_df": 0.5
+      },
+      "shape": [
+        4631,
+        8918
+      ],
+      "vocabulary_equal": true,
+      "idf_max_error": 0.0,
+      "max_error": 1.942890293094024e-16,
+      "mean_error": 1.6492079136630072e-20,
+      "pass": true
+    },
+    {
+      "ours": {
+        "tf": "raw",
+        "smooth_idf": false,
+        "norm": null
+      },
+      "sklearn": {
+        "smooth_idf": false,
+        "sublinear_tf": false,
+        "norm": null,
+        "binary": false,
+        "analyzer": "같은 토큰 리스트",
+        "min_df": 5,
+        "max_df": 0.5
+      },
+      "shape": [
+        4631,
+        8918
+      ],
+      "vocabulary_equal": true,
+      "idf_max_error": 0.0,
+      "max_error": 0.0,
+      "mean_error": 0.0,
+      "pass": true
+    },
+    {
+      "ours": {
+        "tf": "log",
+        "smooth_idf": false,
+        "norm": "l2"
+      },
+      "sklearn": {
+        "smooth_idf": false,
+        "sublinear_tf": true,
+        "norm": "l2",
+        "binary": false,
+        "analyzer": "같은 토큰 리스트",
+        "min_df": 5,
+        "max_df": 0.5
+      },
+      "shape": [
+        4631,
+        8918
+      ],
+      "vocabulary_equal": true,
+      "idf_max_error": 0.0,
+      "max_error": 2.220446049250313e-16,
+      "mean_error": 6.772944166504188e-20,
+      "pass": true
+    },
+    {
+      "ours": {
+        "tf": "log",
+        "smooth_idf": false,
+        "norm": "l1"
+      },
+      "sklearn": {
+        "smooth_idf": false,
+        "sublinear_tf": true,
+        "norm": "l1",
+        "binary": false,
+        "analyzer": "같은 토큰 리스트",
+        "min_df": 5,
+        "max_df": 0.5
+      },
+      "shape": [
+        4631,
+        8918
+      ],
+      "vocabulary_equal": true,
+      "idf_max_error": 0.0,
+      "max_error": 1.1102230246251565e-16,
+      "mean_error": 1.6173523395586158e-20,
+      "pass": true
+    },
+    {
+      "ours": {
+        "tf": "log",
+        "smooth_idf": false,
+        "norm": null
+      },
+      "sklearn": {
+        "smooth_idf": false,
+        "sublinear_tf": true,
+        "norm": null,
+        "binary": false,
+        "analyzer": "같은 토큰 리스트",
+        "min_df": 5,
+        "max_df": 0.5
+      },
+      "shape": [
+        4631,
+        8918
+      ],
+      "vocabulary_equal": true,
+      "idf_max_error": 0.0,
+      "max_error": 0.0,
+      "mean_error": 0.0,
+      "pass": true
+    },
+    {
+      "ours": {
+        "tf": "binary",
+        "smooth_idf": true,
+        "norm": "l2"
+      },
+      "sklearn": {
+        "smooth_idf": true,
+        "sublinear_tf": false,
+        "norm": "l2",
+        "binary": true,
+        "analyzer": "같은 토큰 리스트",
+        "min_df": 5,
+        "max_df": 0.5
+      },
+      "shape": [
+        4631,
+        8918
+      ],
+      "vocabulary_equal": true,
+      "idf_max_error": 0.0,
+      "max_error": 2.220446049250313e-16,
+      "mean_error": 7.389365916729096e-20,
+      "pass": true
+    }
+  ],
+  "cosine_max_error": 1.1102230246251565e-16
+}

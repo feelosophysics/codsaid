@@ -1,0 +1,14 @@
+[project]
+name = "a4-1-document-search"
+version = "0.1.0"
+description = "20 Newsgroups TF-IDF·BM25 문서 검색과 분류를 NumPy로 직접 구현하는 A4-1 미션"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "numpy>=1.23",
+    "scikit-learn>=1.2",
+    "matplotlib>=3.5",
+]
+
+[tool.uv]
+package = false

@@ -1,0 +1,31 @@
+=== BoW 한계 분석 ===
+[문제 1: 어순 무시]
+"the pitcher hit the batter" → ['pitcher', 'hit', 'batter']
+"the batter hit the pitcher" → ['batter', 'hit', 'pitcher']
+→ 두 TF-IDF 벡터의 코사인 유사도 = 1.0000
+
+[문제 2: 부정어 소실(불용어 'not')]
+"this is a good team" → ['team']
+"this is not a good team" → ['team']
+→ 두 TF-IDF 벡터의 코사인 유사도 = 1.0000
+
+[문제 3: 동의어 불일치]
+"goalie" → ['goalie']
+"goaltender" → ['goaltender']
+→ 두 TF-IDF 벡터의 코사인 유사도 = 0.0000, 각 검색 top-10 겹침 0/10
+
+[문제 4: 다의어]
+"save" top-10 범주: ['baseball', 'x', 'graphics', 'baseball', 'baseball', 'graphics', 'baseball', 'baseball', 'graphics', 'graphics']
+    doc 4108 (baseball): ...le that qualifies a pitcher as making a save?
+    doc 3899 (x): ...ured by a pop up window which has : the Save Under attribute set, the subwindows of my 
+    doc 1490 (graphics): ... with which I can create ray-traces and save them as bit-mapped files? (Of course if th
+    doc 166 (baseball): ...nd that the official scorer awarded the save in every one of the games - even those in 
+"run" top-10 범주: ['graphics', 'x', 'x', 'baseball', 'graphics', 'x', 'baseball', 'x', 'graphics', 'x']
+    doc 500 (graphics): What hardware do plan to run on? Workstation or PC? Cost level? Run-time licensing needs? 
+    doc 4233 (x): ... What is really powerful is that it can run the X server without running a window manag
+    doc 3504 (x): It works for me. I've run Motif 1.1.3,1.1.4,1.1.5,1.2,1.2.1, and 1.2.2 on an X11R5 server 
+    doc 2052 (baseball): ...ing the ability to hit, pitch, field or run.
+
+[언어별 토큰화: 한국어 공백 토큰화 vs 형태소 토큰화(손으로 나눈 예)]
+whitespace: [['고양이가', '쥐를', '잡았다'], ['쥐가', '고양이를', '잡았다']] → 코사인 0.2020
+morpheme: [['고양이', '가', '쥐', '를', '잡', '았', '다'], ['쥐', '가', '고양이', '를', '잡', '았', '다']] → 코사인 1.0000

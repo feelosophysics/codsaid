@@ -1,0 +1,86 @@
+=== TF-IDF 구현 검증 결과 ===
+데이터: 20 Newsgroups 5개 범주, 전처리 후 문서 4631건
+TF-IDF 행렬 shape: (4631, 8918)  (min_df=5, max_df=0.5)
+sklearn 공통 설정: TfidfVectorizer(analyzer=<같은 토큰 리스트>, min_df=5, max_df=0.5, dtype=float64)
+
+[검증] 직접 구현(tf=raw) vs Scikit-learn
+  - sklearn 설정: smooth_idf=True, sublinear_tf=False, norm='l2', binary=False
+  - 어휘 일치: True, IDF 최대 오차: 0.00e+00
+  - 최대 오차: 1.33e-15
+  - 평균 오차: 6.41e-20
+  - 결과: PASS (허용 오차 1e-6 이내)
+[검증] 직접 구현(tf=raw) vs Scikit-learn
+  - sklearn 설정: smooth_idf=True, sublinear_tf=False, norm='l1', binary=False
+  - 어휘 일치: True, IDF 최대 오차: 0.00e+00
+  - 최대 오차: 3.05e-16
+  - 평균 오차: 1.64e-20
+  - 결과: PASS (허용 오차 1e-6 이내)
+[검증] 직접 구현(tf=raw) vs Scikit-learn
+  - sklearn 설정: smooth_idf=True, sublinear_tf=False, norm=None, binary=False
+  - 어휘 일치: True, IDF 최대 오차: 0.00e+00
+  - 최대 오차: 0.00e+00
+  - 평균 오차: 0.00e+00
+  - 결과: PASS (허용 오차 1e-6 이내)
+[검증] 직접 구현(tf=log) vs Scikit-learn
+  - sklearn 설정: smooth_idf=True, sublinear_tf=True, norm='l2', binary=False
+  - 어휘 일치: True, IDF 최대 오차: 0.00e+00
+  - 최대 오차: 3.05e-16
+  - 평균 오차: 6.53e-20
+  - 결과: PASS (허용 오차 1e-6 이내)
+[검증] 직접 구현(tf=log) vs Scikit-learn
+  - sklearn 설정: smooth_idf=True, sublinear_tf=True, norm='l1', binary=False
+  - 어휘 일치: True, IDF 최대 오차: 0.00e+00
+  - 최대 오차: 1.11e-16
+  - 평균 오차: 1.65e-20
+  - 결과: PASS (허용 오차 1e-6 이내)
+[검증] 직접 구현(tf=log) vs Scikit-learn
+  - sklearn 설정: smooth_idf=True, sublinear_tf=True, norm=None, binary=False
+  - 어휘 일치: True, IDF 최대 오차: 0.00e+00
+  - 최대 오차: 0.00e+00
+  - 평균 오차: 0.00e+00
+  - 결과: PASS (허용 오차 1e-6 이내)
+[검증] 직접 구현(tf=raw) vs Scikit-learn
+  - sklearn 설정: smooth_idf=False, sublinear_tf=False, norm='l2', binary=False
+  - 어휘 일치: True, IDF 최대 오차: 0.00e+00
+  - 최대 오차: 2.16e-15
+  - 평균 오차: 7.46e-20
+  - 결과: PASS (허용 오차 1e-6 이내)
+[검증] 직접 구현(tf=raw) vs Scikit-learn
+  - sklearn 설정: smooth_idf=False, sublinear_tf=False, norm='l1', binary=False
+  - 어휘 일치: True, IDF 최대 오차: 0.00e+00
+  - 최대 오차: 1.94e-16
+  - 평균 오차: 1.65e-20
+  - 결과: PASS (허용 오차 1e-6 이내)
+[검증] 직접 구현(tf=raw) vs Scikit-learn
+  - sklearn 설정: smooth_idf=False, sublinear_tf=False, norm=None, binary=False
+  - 어휘 일치: True, IDF 최대 오차: 0.00e+00
+  - 최대 오차: 0.00e+00
+  - 평균 오차: 0.00e+00
+  - 결과: PASS (허용 오차 1e-6 이내)
+[검증] 직접 구현(tf=log) vs Scikit-learn
+  - sklearn 설정: smooth_idf=False, sublinear_tf=True, norm='l2', binary=False
+  - 어휘 일치: True, IDF 최대 오차: 0.00e+00
+  - 최대 오차: 2.22e-16
+  - 평균 오차: 6.77e-20
+  - 결과: PASS (허용 오차 1e-6 이내)
+[검증] 직접 구현(tf=log) vs Scikit-learn
+  - sklearn 설정: smooth_idf=False, sublinear_tf=True, norm='l1', binary=False
+  - 어휘 일치: True, IDF 최대 오차: 0.00e+00
+  - 최대 오차: 1.11e-16
+  - 평균 오차: 1.62e-20
+  - 결과: PASS (허용 오차 1e-6 이내)
+[검증] 직접 구현(tf=log) vs Scikit-learn
+  - sklearn 설정: smooth_idf=False, sublinear_tf=True, norm=None, binary=False
+  - 어휘 일치: True, IDF 최대 오차: 0.00e+00
+  - 최대 오차: 0.00e+00
+  - 평균 오차: 0.00e+00
+  - 결과: PASS (허용 오차 1e-6 이내)
+[검증] 직접 구현(tf=binary) vs Scikit-learn
+  - sklearn 설정: smooth_idf=True, sublinear_tf=False, norm='l2', binary=True
+  - 어휘 일치: True, IDF 최대 오차: 0.00e+00
+  - 최대 오차: 2.22e-16
+  - 평균 오차: 7.39e-20
+  - 결과: PASS (허용 오차 1e-6 이내)
+
+[검증] 코사인 유사도 직접 구현 vs sklearn.metrics.pairwise.cosine_similarity (평가 쿼리 20개): 최대 오차 1.11e-16
+전체 13개 설정 PASS: True
