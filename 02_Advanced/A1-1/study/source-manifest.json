@@ -1,6 +1,6 @@
 {
   "date": "2026-10-10",
-  "scope": "project:check",
+  "mission": "A1-1",
   "hash_mode": "UTF-8 text: CRLF normalized to LF; binary: exact bytes",
   "files": {
     "src/run_analysis.py": "edb8cb5b04748d2ef4cbf2524d23ccdfd75270c48c4238b8691f781be9d62882",

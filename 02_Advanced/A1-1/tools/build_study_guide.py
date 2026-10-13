@@ -100,7 +100,7 @@ def calculations(analyzer):
 
 def main():
     STUDY.mkdir(parents=True, exist_ok=True)
-    sources, manifest = {}, {"date": "2026-10-10", "scope": "project:check",
+    sources, manifest = {}, {"date": "2026-10-10", "mission": "A1-1",
                             "hash_mode": "UTF-8 text: CRLF normalized to LF; binary: exact bytes",
                             "files": {}, "excerpts": {}}
     for file in SOURCE_FILES:
