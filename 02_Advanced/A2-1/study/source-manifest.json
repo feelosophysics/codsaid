@@ -1,0 +1,178 @@
+{
+  "hash_mode": "UTF-8 텍스트는 CRLF를 LF로 바꾼 뒤 SHA-256, 이미지·JSON 결과는 원래 바이트의 SHA-256",
+  "text": {
+    "src/calculus.py": "86ec546f6cd77ea3daf5cc11d3698ef9236ec1ce13b5f05169d053a87c1fa12a",
+    "src/information.py": "3846fa8b4e11566213c2d89ff416b7ccf6115db5ccb28f0ac900e3e87989cda7",
+    "src/linear_algebra.py": "c8b744d676f6246e0cbefcfe416a43f6c66749c5ac2b272deab8553a65f5bb0b",
+    "src/neural_net.py": "9048c1954578eccef157ee754f8d5ac9e0f2de78df03b9aceb927404952b1154",
+    "src/optimizer.py": "c6d6ba4da0af947ec1c15a5ddee9fdcedb67780bdecec85ec001454805febd7e",
+    "src/probability.py": "167f8057b68ffda4d7faeee59dfabec7369eb486c964930b6fbee9b5b95f1e31",
+    "src/run_all.py": "91261f3209b401b7a3537aee95f8abb23482d6196a18e6a41850c8378e318bf3",
+    "study/a2-1.template.html": "ce6e11019ff483cbd43c6565d36103da7941e35f77e926bd5cbc02e4ae72f479"
+  },
+  "binary": {
+    "outputs/04_transforms_overview.png": "37016f3235f0a2b1eaff9b9291566acfcbb82a8edd5811087d493cd58c36238a",
+    "outputs/05_power_iteration.png": "7e8847b947ec08d0c5aa2d7a9f834fcec9194c872ecb1c15b66ec5c192db2dac",
+    "outputs/06_svd_compression.png": "7c74fd65c920f6d7ff5532934a12f97826831839afda6851169e5c8383f219f0",
+    "outputs/07_singular_values.png": "8c89996b8d6056594a4d0cf1fc6662bd621210ef59d513a5841c17185cc6eba6",
+    "outputs/08_gradient_field.png": "2806509f595e73d69f1636fb898026c748aac115c390b143fd9ce1aabe19ef37",
+    "outputs/09_derivative_error.png": "ed7d87075fcd861c2fca72029e128bd7fbb76dcd4197dc1ab23ecd0fb6e635cc",
+    "outputs/11_lr_divergence.png": "f83d866e3a80bf4136ecc0522d01e566fb3b9d27e1401d513bac699c9d924b81",
+    "outputs/12_gd_vs_momentum_quadratic.png": "3032b5e6ea57dfda5054cac0561992770569cefcfd1bfe0a739f99ef7c624a4f",
+    "outputs/13_gd_vs_momentum_elliptic.png": "f9589421f2e0c661fd7ac3c5e81fbdb6a5de8592870827b08840d7ce1648298e",
+    "outputs/14_adam_comparison.png": "92cf64564a00b3c4cce056b0bcf651747a12c6de2860dfe47f05b627773192c4",
+    "outputs/15_newton_method.png": "14123b819280c80cbc13b22859e4486a5cd59cc8ef10f7c1a9dab6fdfc3adb70",
+    "outputs/16_normal_pdf.png": "2b47e1438d5890df7952d744942d44969538cfd588f9cddcd6831aa1a271bf73",
+    "outputs/17_bernoulli_pmf.png": "6b89024409676466d21724d8bc99e0d3f068d2c45880f2b308379c32e3427297",
+    "outputs/18_loss_mle.png": "ec549b6060479be3527c6574a66facf93e70553a557f4ea99b80215ec5be2c6f",
+    "outputs/19_information_theory.png": "24d24f4e6843cf20db8e07730995e8bade1e038656e6499ba72cef9fe9a6951c",
+    "data/grace_hopper_128.png": "9b91ed4f2301b91ebcbaf839d260fb6f0e17e74d8b7bb59982e4103db1502fb4"
+  },
+  "excerpts": [
+    {
+      "file": "src/linear_algebra.py",
+      "name": "rotation_matrix",
+      "start": 26,
+      "end": 29
+    },
+    {
+      "file": "src/linear_algebra.py",
+      "name": "scaling_matrix",
+      "start": 32,
+      "end": 34
+    },
+    {
+      "file": "src/linear_algebra.py",
+      "name": "shear_matrix",
+      "start": 37,
+      "end": 42
+    },
+    {
+      "file": "src/linear_algebra.py",
+      "name": "determinant_2x2",
+      "start": 58,
+      "end": 65
+    },
+    {
+      "file": "src/linear_algebra.py",
+      "name": "polygon_area",
+      "start": 68,
+      "end": 77
+    },
+    {
+      "file": "src/linear_algebra.py",
+      "name": "area_ratio_check",
+      "start": 80,
+      "end": 94
+    },
+    {
+      "file": "src/linear_algebra.py",
+      "name": "power_iteration",
+      "start": 142,
+      "end": 193
+    },
+    {
+      "file": "src/linear_algebra.py",
+      "name": "svd_compress",
+      "start": 221,
+      "end": 254
+    },
+    {
+      "file": "src/calculus.py",
+      "name": "numerical_derivative",
+      "start": 10,
+      "end": 20
+    },
+    {
+      "file": "src/calculus.py",
+      "name": "numerical_gradient",
+      "start": 23,
+      "end": 45
+    },
+    {
+      "file": "src/calculus.py",
+      "name": "gradient_contour_orthogonality",
+      "start": 111,
+      "end": 128
+    },
+    {
+      "file": "src/neural_net.py",
+      "name": "TwoLayerNet.forward",
+      "start": 62,
+      "end": 74
+    },
+    {
+      "file": "src/neural_net.py",
+      "name": "TwoLayerNet.backward",
+      "start": 76,
+      "end": 91
+    },
+    {
+      "file": "src/optimizer.py",
+      "name": "VanillaGD",
+      "start": 79,
+      "end": 89
+    },
+    {
+      "file": "src/optimizer.py",
+      "name": "Momentum",
+      "start": 92,
+      "end": 114
+    },
+    {
+      "file": "src/optimizer.py",
+      "name": "Adam",
+      "start": 117,
+      "end": 150
+    },
+    {
+      "file": "src/optimizer.py",
+      "name": "NewtonMethod",
+      "start": 153,
+      "end": 179
+    },
+    {
+      "file": "src/optimizer.py",
+      "name": "optimize",
+      "start": 182,
+      "end": 202
+    },
+    {
+      "file": "src/probability.py",
+      "name": "softmax",
+      "start": 27,
+      "end": 36
+    },
+    {
+      "file": "src/probability.py",
+      "name": "gaussian_nll",
+      "start": 44,
+      "end": 51
+    },
+    {
+      "file": "src/probability.py",
+      "name": "bernoulli_nll",
+      "start": 54,
+      "end": 61
+    },
+    {
+      "file": "src/information.py",
+      "name": "entropy",
+      "start": 18,
+      "end": 25
+    },
+    {
+      "file": "src/information.py",
+      "name": "cross_entropy",
+      "start": 28,
+      "end": 38
+    },
+    {
+      "file": "src/information.py",
+      "name": "kl_divergence",
+      "start": 41,
+      "end": 50
+    }
+  ],
+  "html_bytes": 1195466
+}

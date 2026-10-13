@@ -1,0 +1,1292 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A2-1 AI 학습 수학</title>
+<style>
+:root {
+  --bg: #f7f7f4; --card: #ffffff; --fg: #1d2125; --muted: #5d656e; --line: #dfe2e5;
+  --accent: #2563c9; --accent-soft: #e6eefb; --red: #c8402f; --red-soft: #fbe9e6;
+  --green: #23824a; --green-soft: #e3f3e9; --amber: #a86400; --amber-soft: #fbf0dc;
+  --purple: #7b3fb5; --code-bg: #f1f2f0; --plot-bg: #ffffff; --grid: #e4e7ea;
+  --radius: 12px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #15181b; --card: #1d2125; --fg: #e7e9eb; --muted: #9ba3ab; --line: #343a40;
+    --accent: #6ea2f5; --accent-soft: #1f2d45; --red: #f07b6a; --red-soft: #3d2420;
+    --green: #5cc58a; --green-soft: #1b3326; --amber: #e4a74a; --amber-soft: #3a2e17;
+    --purple: #b58be6; --code-bg: #24292e; --plot-bg: #1d2125; --grid: #2f353b;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #15181b; --card: #1d2125; --fg: #e7e9eb; --muted: #9ba3ab; --line: #343a40;
+  --accent: #6ea2f5; --accent-soft: #1f2d45; --red: #f07b6a; --red-soft: #3d2420;
+  --green: #5cc58a; --green-soft: #1b3326; --amber: #e4a74a; --amber-soft: #3a2e17;
+  --purple: #b58be6; --code-bg: #24292e; --plot-bg: #1d2125; --grid: #2f353b;
+}
+* { box-sizing: border-box; }
+html { scroll-padding-top: 64px; -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--fg);
+  font: 16px/1.7 "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", system-ui, sans-serif;
+  word-break: keep-all; overflow-wrap: anywhere;
+}
+header.top { padding: 28px 16px 8px; max-width: 860px; margin: 0 auto; }
+header.top h1 { font-size: 1.6rem; line-height: 1.3; margin: 0 0 6px; }
+header.top p { margin: 0; color: var(--muted); }
+nav.chips {
+  position: sticky; top: 0; z-index: 10; background: color-mix(in srgb, var(--bg) 92%, transparent);
+  backdrop-filter: blur(6px); border-bottom: 1px solid var(--line);
+}
+nav.chips .inner { max-width: 860px; margin: 0 auto; display: flex; gap: 6px; overflow-x: auto; padding: 8px 16px; scrollbar-width: thin; }
+nav.chips a {
+  flex: none; font-size: .85rem; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--line);
+  color: var(--fg); text-decoration: none; background: var(--card);
+}
+nav.chips a.on { background: var(--accent); color: #fff; border-color: var(--accent); }
+#themeBtn { flex: none; font-size: .85rem; border-radius: 999px; border: 1px solid var(--line); background: var(--card); color: var(--fg); padding: 4px 10px; cursor: pointer; }
+main { max-width: 860px; margin: 0 auto; padding: 8px 16px 80px; }
+section { margin: 28px 0 40px; }
+section > h2 { font-size: 1.35rem; line-height: 1.35; margin: 0 0 4px; }
+section > .lead { color: var(--muted); margin: 0 0 14px; }
+h3 { font-size: 1.08rem; margin: 22px 0 6px; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 16px; margin: 12px 0; }
+.widget { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; margin: 14px 0; }
+.widget > .wtitle { font-weight: 700; margin-bottom: 8px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.tag { font-size: .72rem; font-weight: 700; padding: 1px 8px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); }
+.tag.bonus { background: var(--amber-soft); color: var(--amber); }
+.tag.req { background: var(--green-soft); color: var(--green); }
+.note { border-left: 4px solid var(--accent); background: var(--accent-soft); padding: 10px 12px; border-radius: 0 8px 8px 0; margin: 12px 0; }
+.note.warn { border-color: var(--amber); background: var(--amber-soft); }
+.note.key { border-color: var(--green); background: var(--green-soft); }
+.note.red { border-color: var(--red); background: var(--red-soft); }
+.predict { border: 1px dashed var(--accent); border-radius: 8px; padding: 8px 12px; margin: 10px 0; font-size: .95rem; }
+.predict b { color: var(--accent); }
+.m { font-family: "Cambria Math", "STIX Two Math", "Times New Roman", serif; font-style: italic; white-space: nowrap; }
+.eq { font-family: "Cambria Math", "STIX Two Math", "Times New Roman", serif; font-size: 1.05rem; background: var(--code-bg); border-radius: 8px; padding: 10px 12px; margin: 10px 0; overflow-x: auto; white-space: nowrap; line-height: 1.9; }
+.eq .c { font-family: inherit; color: var(--muted); font-style: normal; font-size: .85rem; margin-left: 10px; }
+code, pre, .mono { font-family: "Cascadia Code", "D2Coding", Consolas, "SFMono-Regular", monospace; font-size: .86rem; }
+code { background: var(--code-bg); padding: 1px 5px; border-radius: 4px; }
+pre { background: var(--code-bg); border-radius: 8px; padding: 10px 12px; overflow-x: auto; line-height: 1.5; margin: 8px 0; }
+pre .ln { color: var(--muted); user-select: none; display: inline-block; min-width: 2.6em; }
+table { border-collapse: collapse; width: 100%; font-size: .9rem; margin: 8px 0; }
+.tablewrap { overflow-x: auto; }
+th, td { border-bottom: 1px solid var(--line); padding: 6px 8px; text-align: left; vertical-align: top; }
+th { color: var(--muted); font-weight: 600; white-space: nowrap; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+canvas { display: block; width: 100%; background: var(--plot-bg); border: 1px solid var(--line); border-radius: 8px; touch-action: manipulation; }
+.sq { aspect-ratio: 1 / 1; max-width: 460px; margin: 0 auto; }
+.wide { aspect-ratio: 16 / 10; }
+.short { aspect-ratio: 16 / 7; max-height: 300px; }
+.tiny { aspect-ratio: 16 / 5; max-height: 220px; }
+.controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px 14px; margin: 10px 0; }
+.controls label { font-size: .85rem; color: var(--muted); display: flex; flex-direction: column; gap: 2px; }
+.controls label .val { color: var(--fg); font-weight: 600; font-family: Consolas, monospace; }
+input[type=range] { width: 100%; accent-color: var(--accent); }
+input[type=number], select, input[type=text] {
+  width: 100%; font: inherit; font-size: .95rem; padding: 5px 8px; border-radius: 6px;
+  border: 1px solid var(--line); background: var(--bg); color: var(--fg);
+}
+.btns { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+button.b {
+  font: inherit; font-size: .88rem; padding: 6px 12px; border-radius: 8px; border: 1px solid var(--line);
+  background: var(--bg); color: var(--fg); cursor: pointer; min-height: 36px;
+}
+button.b.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+button.b:active { transform: translateY(1px); }
+.readout { font-family: Consolas, monospace; font-size: .85rem; background: var(--code-bg); border-radius: 8px; padding: 8px 10px; margin: 8px 0; white-space: pre; overflow-x: auto; line-height: 1.55; }
+@media (max-width: 560px) { .readout { font-size: .78rem; } table { font-size: .82rem; } }
+td.mono { white-space: nowrap; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+@media (max-width: 560px) { .grid2 { grid-template-columns: 1fr; } .grid2.keep { grid-template-columns: 1fr 1fr; } }
+.matrix-in { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; max-width: 220px; }
+.ok { color: var(--green); font-weight: 700; }
+.bad { color: var(--red); font-weight: 700; }
+.muted { color: var(--muted); }
+details { border: 1px solid var(--line); border-radius: 8px; padding: 6px 12px; margin: 8px 0; background: var(--card); }
+details > summary { cursor: pointer; font-weight: 600; }
+details[open] > summary { margin-bottom: 6px; }
+figure { margin: 14px 0; }
+figure img { width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--line); background: #fff; }
+figcaption { font-size: .88rem; color: var(--muted); margin-top: 4px; }
+.loop { width: 100%; height: auto; }
+.loop .stage { cursor: pointer; }
+.loop .stage rect { fill: var(--card); stroke: var(--line); stroke-width: 1.5; }
+.loop .stage:hover rect { stroke: var(--accent); }
+.loop text { fill: var(--fg); font-size: 13px; }
+.loop .sub { fill: var(--muted); font-size: 11px; }
+.loop .arrow { stroke: var(--muted); stroke-width: 1.6; fill: none; marker-end: url(#ah); }
+a { color: var(--accent); }
+.net { display: block; width: 100%; max-width: 520px; margin: 0 auto; }
+.net text { fill: var(--fg); font-size: 11px; font-family: Consolas, monospace; }
+.net .grad { fill: var(--red); }
+.net circle { fill: var(--card); stroke: var(--accent); stroke-width: 2; }
+.net line { stroke: var(--muted); stroke-width: 1.4; }
+.ws input { width: 7.5em; font-family: Consolas, monospace; }
+.ws td { vertical-align: middle; }
+.path-steps { counter-reset: s; list-style: none; padding: 0; }
+.path-steps > li { counter-increment: s; position: relative; padding: 10px 12px 10px 46px; border: 1px solid var(--line); border-radius: 10px; margin: 8px 0; background: var(--card); }
+.path-steps > li::before { content: counter(s); position: absolute; left: 12px; top: 10px; width: 24px; height: 24px; border-radius: 50%; background: var(--accent); color: #fff; font-weight: 700; font-size: .8rem; display: flex; align-items: center; justify-content: center; }
+.path-steps .m, .note .m { white-space: normal; }
+.kbd { font-family: Consolas, monospace; font-size: .8rem; border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; padding: 0 4px; }
+footer { color: var(--muted); font-size: .85rem; max-width: 860px; margin: 0 auto; padding: 0 16px 40px; }
+@media print { nav.chips, .widget .btns, #themeBtn { display: none; } section { break-inside: avoid-page; } }
+</style>
+</head>
+<body>
+<header class="top">
+  <h1>A2-1 · AI가 학습하는 원리를 수학으로</h1>
+  <p>선형대수 · 미적분 · 확률통계가 "학습 한 번"의 어디에서 쓰이는지 먼저 보고, 그다음 각 부품을 직접 만져 본다.</p>
+</header>
+<nav class="chips" aria-label="장 이동"><div class="inner">
+  <a href="#start">0 사용법</a><a href="#big">1 큰 그림</a><a href="#step">2 학습 한 스텝</a>
+  <a href="#matrix">3 행렬</a><a href="#eigen">4 고유벡터</a><a href="#svd">5 SVD</a>
+  <a href="#deriv">6 미분</a><a href="#backprop">7 역전파</a><a href="#optim">8 최적화</a>
+  <a href="#prob">9 확률·손실</a><a href="#info">10 정보 이론</a><a href="#code">11 코드 지도</a>
+  <a href="#results">12 결과</a><a href="#check">13 자기 점검</a><a href="#notes">14 해석 메모</a>
+  <button id="themeBtn" type="button" aria-label="밝기 테마 전환">테마</button>
+</div></nav>
+
+<main>
+
+<!-- ===================================================================== -->
+<section id="start">
+  <h2>0. 이 자료를 쓰는 법 — 탑다운 학습 전략</h2>
+  <p class="lead">세부 수학부터 쌓지 않고 <b>"모델이 한 번 배우는 과정"</b>이라는 완성된 그림에서 출발한다. 모르는 부품이 나오면 그때 그 부품으로 내려간다.</p>
+
+  <ol class="path-steps">
+    <li><b>큰 그림 (20분)</b> — <a href="#big">1장</a>의 학습 루프와 <a href="#step">2장</a>의 위젯에서 "1 스텝 학습"을 여러 번 눌러 본다. 손실이 왜 줄어드는지 말로 설명할 수 있으면 통과다. 세부 수식은 아직 몰라도 된다.</li>
+    <li><b>부품 분해 (장당 20–40분)</b> — 3–10장의 위젯마다 <span class="predict" style="display:inline;padding:1px 6px"><b>예측</b></span> 상자가 있다. 슬라이더를 움직이기 <b>전에</b> 결과를 먼저 예측하고 확인한다. 틀린 예측이 가장 많이 배우는 지점이다.</li>
+    <li><b>손계산 (60–90분, 종이와 계산기)</b> — <a href="#backprop">7장</a> 연습지에서 고정 예제를 손으로 풀고 채점한다. "새 문제"로 숫자를 바꿔 한 번 더 푼다. 행렬식·Power Iteration 2회·소프트맥스도 손으로 해 본다.</li>
+    <li><b>코드 대조 (60분)</b> — <a href="#code">11장</a>에서 각 수식이 어느 함수 어느 줄인지 확인하고, <code>tests/test_requirements.py</code>가 요구사항을 어떻게 검사하는지 읽는다. 노트북을 처음부터 실행한다.</li>
+    <li><b>설명 연습</b> — <a href="#check">13장</a>의 다섯 질문에 답을 보지 않고 1분씩 말로 설명한다. 막히면 해당 장으로 돌아간다.</li>
+  </ol>
+
+  <div class="note key"><b>왜 탑다운인가.</b> 고유값·연쇄 법칙·MLE를 따로 외우면 "이걸 왜 배우지?"에서 멈춘다. 학습 루프라는 목적을 먼저 잡으면 각 개념이 <i>루프의 어느 칸을 채우는 부품</i>인지 분명해지고, 부품 사이의 연결(예: Sigmoid+BCE의 기울기 <span class="m">ŷ − y</span>가 역전파와 MLE 양쪽에서 똑같이 나오는 것)이 보인다.</div>
+
+  <h3>표기 약속</h3>
+  <div class="tablewrap"><table>
+    <tr><th>표기</th><th>뜻</th></tr>
+    <tr><td><span class="m">A @ x</span>, <span class="m">Ax</span></td><td>행렬 곱. 코드의 <code>@</code></td></tr>
+    <tr><td>shape <code>(2,)</code>, <code>(2,2)</code>, <code>()</code></td><td>벡터 2개, 2×2 행렬, 스칼라</td></tr>
+    <tr><td><span class="m">∂L/∂W</span></td><td>W를 아주 조금 바꿨을 때 손실 L이 바뀌는 비율. 항상 W와 같은 shape</td></tr>
+    <tr><td><span class="m">⊙</span></td><td>원소별 곱 (NumPy의 <code>*</code>)</td></tr>
+    <tr><td><span class="m">N(μ, σ²)</span></td><td>평균 μ, <b>분산</b> σ²인 정규분포</td></tr>
+  </table></div>
+  <p class="muted">이 페이지의 계산 위젯은 Python 결과와 대조 검증한 JavaScript 함수로 동작한다(<code>study/README.md</code>). 인터넷 없이 열린다.</p>
+</section>
+
+<!-- ===================================================================== -->
+<section id="big">
+  <h2>1. 큰 그림 — 학습은 네 칸짜리 반복이다</h2>
+  <p class="lead">신경망 학습은 "예측 → 얼마나 틀렸나 → 누구 탓인가 → 조금 고치기"의 반복이다. 이 미션의 모든 모듈이 이 네 칸 중 하나를 맡는다. 칸을 누르면 해당 장으로 이동한다.</p>
+  <svg class="loop" viewBox="0 0 640 330" role="img" aria-label="학습 루프: 순전파, 손실, 역전파, 갱신">
+    <defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor" style="color:var(--muted)"/></marker></defs>
+    <g class="stage" data-go="#matrix"><rect x="20" y="20" width="270" height="100" rx="12"/>
+      <text x="36" y="48" font-weight="700">① 순전파 — 예측하기</text>
+      <text x="36" y="70" class="sub">z = W x + b,  a = σ(z)</text>
+      <text x="36" y="90" class="sub">선형대수: 행렬 곱 = 공간 변형</text>
+      <text x="36" y="108" class="sub">linear_algebra.py · 3–5장</text></g>
+    <g class="stage" data-go="#prob"><rect x="350" y="20" width="270" height="100" rx="12"/>
+      <text x="366" y="48" font-weight="700">② 손실 — 얼마나 틀렸나</text>
+      <text x="366" y="70" class="sub">L = −[y log ŷ + (1−y) log(1−ŷ)]</text>
+      <text x="366" y="90" class="sub">확률통계: 손실 = 음의 로그우도</text>
+      <text x="366" y="108" class="sub">probability.py · 9–10장</text></g>
+    <g class="stage" data-go="#backprop"><rect x="350" y="200" width="270" height="100" rx="12"/>
+      <text x="366" y="228" font-weight="700">③ 역전파 — 누구 탓인가</text>
+      <text x="366" y="250" class="sub">∂L/∂W = 연쇄 법칙의 곱</text>
+      <text x="366" y="270" class="sub">미적분: 미분 · Gradient</text>
+      <text x="366" y="288" class="sub">calculus.py · neural_net.py · 6–7장</text></g>
+    <g class="stage" data-go="#optim"><rect x="20" y="200" width="270" height="100" rx="12"/>
+      <text x="36" y="228" font-weight="700">④ 갱신 — 조금 고치기</text>
+      <text x="36" y="250" class="sub">W ← W − η · ∂L/∂W</text>
+      <text x="36" y="270" class="sub">최적화: GD · Momentum · Adam</text>
+      <text x="36" y="288" class="sub">optimizer.py · 8장</text></g>
+    <path class="arrow" d="M292,70 L346,70"/>
+    <path class="arrow" d="M485,122 L485,196"/>
+    <path class="arrow" d="M348,250 L294,250"/>
+    <path class="arrow" d="M155,198 L155,124"/>
+    <text x="320" y="166" text-anchor="middle" class="sub">손실이 충분히 작아질 때까지 반복</text>
+  </svg>
+
+  <div class="tablewrap"><table>
+    <tr><th>칸</th><th>이 미션에서 만드는 것</th><th>핵심 질문</th></tr>
+    <tr><td>① 순전파</td><td>행렬 변환 시각화, 행렬식, Power Iteration, SVD</td><td>행렬을 곱하면 공간이 어떻게 변하나?</td></tr>
+    <tr><td>② 손실</td><td>분포 시각화, 소프트맥스, MSE/CE ↔ MLE 유도</td><td>손실 공식은 어디서 왔나?</td></tr>
+    <tr><td>③ 역전파</td><td>수치 미분, Gradient 시각화, 2층 신경망 역전파 손계산</td><td>각 가중치가 손실에 얼마나 책임이 있나?</td></tr>
+    <tr><td>④ 갱신</td><td>VanillaGD, Momentum (+Adam, Newton), 수렴 경로</td><td>얼마나, 어떤 방향으로 고쳐야 빨리 수렴하나?</td></tr>
+  </table></div>
+  <div class="note">SVD와 고유값은 루프 안에서 직접 쓰이기보다 <b>"행렬이 공간을 어떻게 늘리고 줄이는가"</b>를 해석하는 도구다. 가중치 행렬의 주요 방향, 데이터 압축(PCA), 저랭크 근사(LoRA 같은 미세조정 기법)의 바탕이 된다.</div>
+</section>
+
+<!-- ===================================================================== -->
+<section id="step">
+  <h2>2. 학습 한 스텝을 끝까지 따라가기</h2>
+  <p class="lead">미션의 고정 예제 신경망(입력 2 → 은닉 2 → 출력 1, Sigmoid, BCE)이다. 숫자는 모두 실제 계산이다. 이 장이 이후 모든 장의 "목적지"다.</p>
+  <div class="widget" id="w-step">
+    <div class="wtitle">학습 루프 시뮬레이터 <span class="tag req">필수 3</span></div>
+    <svg class="net" id="netSvg" viewBox="0 0 360 230" role="img" aria-label="2층 신경망 값과 기울기"></svg>
+    <div class="controls">
+      <label>입력 x₁ <input type="number" step="0.1" id="st-x1" value="1"></label>
+      <label>입력 x₂ <input type="number" step="0.1" id="st-x2" value="0"></label>
+      <label>정답 y <select id="st-y"><option value="1">1</option><option value="0">0</option></select></label>
+      <label>학습률 η <span class="val" id="st-lr-v">0.5</span><input type="range" id="st-lr" min="0.05" max="3" step="0.05" value="0.5"></label>
+    </div>
+    <div class="btns">
+      <button class="b primary" id="st-one" type="button">1 스텝 학습</button>
+      <button class="b" id="st-ten" type="button">10 스텝</button>
+      <button class="b" id="st-reset" type="button">초기화</button>
+    </div>
+    <canvas id="st-loss" class="tiny" aria-label="손실 기록 그래프"></canvas>
+    <div class="readout" id="st-out"></div>
+    <div class="predict"><b>예측</b> x₂ = 0인 동안 W1의 두 번째 열(0.2, 0.4)은 학습해도 바뀔까? "10 스텝"을 누르기 전에 답하고 확인하라. 이유는 7장 ∂L/∂W1 = outer(∂L/∂z1, x)에 있다.</div>
+  </div>
+  <div class="note key">이 위젯 한 번 클릭 안에 미션 전체가 들어 있다: <b>행렬 곱</b>(W1 @ x) → <b>Sigmoid와 BCE</b>(베르누이 MLE) → <b>연쇄 법칙</b>으로 기울기 → <b>경사하강법</b>으로 갱신.</div>
+</section>
+
+<!-- ===================================================================== -->
+<section id="matrix">
+  <h2>3. 행렬 곱 = 공간 변형, 행렬식 = 면적 배율</h2>
+  <p class="lead">2×2 행렬 <span class="m">A</span>는 평면의 모든 점을 옮긴다. 기저 벡터 <span class="m">e₁=(1,0)</span>은 A의 1열로, <span class="m">e₂=(0,1)</span>은 2열로 간다. 이것만 알면 그림 전체를 예측할 수 있다.</p>
+  <div class="widget">
+    <div class="wtitle">행렬 변환 실험실 <span class="tag req">필수 1</span></div>
+    <canvas id="mx-cv" class="sq" aria-label="단위 원과 격자의 변환 전후"></canvas>
+    <div class="btns">
+      <button class="b" data-mx="rot" type="button">회전 R(θ)</button>
+      <button class="b" data-mx="scale" type="button">스케일 S(2, 0.5)</button>
+      <button class="b" data-mx="shear" type="button">전단 Sh(1)</button>
+      <button class="b" data-mx="gen" type="button">일반 [[2,1],[1,3]]</button>
+      <button class="b" data-mx="flip" type="button">반사</button>
+      <button class="b" data-mx="sing" type="button">특이 (det=0)</button>
+      <button class="b" data-mx="id" type="button">단위행렬</button>
+    </div>
+    <div class="controls">
+      <div><div class="muted" style="font-size:.85rem">A = [[a, b], [c, d]]</div>
+        <div class="matrix-in">
+          <input type="number" step="0.1" id="mx-a" aria-label="a" value="2"><input type="number" step="0.1" id="mx-b" aria-label="b" value="0">
+          <input type="number" step="0.1" id="mx-c" aria-label="c" value="0"><input type="number" step="0.1" id="mx-d" aria-label="d" value="0.5">
+        </div></div>
+      <label>회전각 θ (도) <span class="val" id="mx-th-v">45</span><input type="range" id="mx-th" min="-180" max="180" step="1" value="45"></label>
+      <label style="flex-direction:row;align-items:center;gap:6px"><input type="checkbox" id="mx-eig"> 고유벡터 방향 표시</label>
+    </div>
+    <div class="readout" id="mx-out"></div>
+    <div class="predict"><b>예측</b> 전단 Sh(1)은 원을 비스듬히 찌그러뜨린다. 면적은 커질까 작아질까? det를 계산해 보고 버튼을 눌러라.</div>
+  </div>
+
+  <h3>왜 |det A|가 면적 배율인가</h3>
+  <p>단위 정사각형(넓이 1)은 <span class="m">e₁, e₂</span>가 만드는 도형이다. 변환 후에는 A의 두 열 <span class="m">(a, c)</span>, <span class="m">(b, d)</span>가 만드는 평행사변형이 되고, 그 넓이가 <span class="m">|ad − bc|</span>다. 선형 변환은 평면 전체에 같은 배율을 적용하므로 원·삼각형·어떤 도형이든 넓이가 <span class="m">|det A|</span>배가 된다.</p>
+  <div class="eq">det [[a, b], [c, d]] = ad − bc <span class="c">부호가 음수면 방향(시계/반시계)이 뒤집힘, 0이면 평면이 선으로 납작해짐</span></div>
+  <p>코드는 단위 원을 100개 점의 다각형으로 만들고 <b>신발끈 공식</b>으로 변환 전후 넓이를 구해 비교한다. 다각형도 "도형"이므로 비율은 근사가 아니라 정확히 |det|다. 다각형 넓이 자체는 π보다 약간 작다(3.1395).</p>
+  <div class="eq">Area = ½ |Σᵢ (xᵢ yᵢ₊₁ − xᵢ₊₁ yᵢ)|</div>
+  <div class="note warn"><b>함정.</b> 미션의 세 변환(회전, S(2, 0.5), Sh(k))은 <b>모두 det = 1</b>이다. 면적비 1 = det 1만 보면 관계를 제대로 확인한 것이 아니다. 그래서 구현은 det = 5, det = −2인 행렬로도 확인한다(<code>run_all.py</code>의 <code>transforms_extra</code>, 테스트).</div>
+  <p>신경망의 <span class="m">z = W₁x</span>도 같은 일이다. 은닉층은 입력 공간을 늘이고, 비틀고, 회전한 뒤 Sigmoid로 휘게 만든다. 층을 쌓는다는 것은 이런 변형을 이어 붙이는 것이다.</p>
+</section>
+
+<!-- ===================================================================== -->
+<section id="eigen">
+  <h2>4. 고유벡터와 Power Iteration</h2>
+  <p class="lead">대부분의 벡터는 A를 곱하면 방향이 바뀐다. <b>고유벡터</b>는 방향이 그대로이고 길이만 λ배가 되는 특별한 방향이다: <span class="m">Av = λv</span>.</p>
+  <div class="widget">
+    <div class="wtitle">Power Iteration 단계 실행 <span class="tag req">필수 1</span></div>
+    <canvas id="ev-cv" class="sq" aria-label="반복마다 벡터 방향"></canvas>
+    <div class="controls">
+      <label>행렬 <select id="ev-mat">
+        <option value="0">[[4,1],[1,3]] (미션 예시)</option>
+        <option value="1">[[2,1],[1,2]] — λ 3, 1</option>
+        <option value="2">[[1,2],[2,1]] — λ 3, −1</option>
+        <option value="3">[[3,0.2],[0.2,2.9]] — λ가 거의 같음</option>
+        <option value="4">[[0,−1],[1,0]] — 90° 회전</option>
+      </select></label>
+      <label>시작 벡터 각도 <span class="val" id="ev-ang-v">120°</span><input type="range" id="ev-ang" min="0" max="359" value="120"></label>
+    </div>
+    <div class="btns">
+      <button class="b primary" id="ev-step" type="button">A 한 번 곱하기</button>
+      <button class="b" id="ev-run" type="button">수렴까지</button>
+      <button class="b" id="ev-reset" type="button">처음으로</button>
+    </div>
+    <div class="readout" id="ev-out"></div>
+    <div class="predict"><b>예측</b> λ가 3과 2.9로 거의 같은 행렬과, 3과 1로 차이가 큰 행렬 중 어느 쪽이 더 빨리 수렴할까? 90° 회전 행렬에서는 무슨 일이 생길까?</div>
+  </div>
+  <h3>왜 반복하면 가장 큰 고유벡터로 모이나</h3>
+  <p>시작 벡터를 고유벡터로 분해하면 <span class="m">b₀ = c₁v₁ + c₂v₂</span>. A를 t번 곱하면</p>
+  <div class="eq">Aᵗb₀ = c₁λ₁ᵗ v₁ + c₂λ₂ᵗ v₂ = λ₁ᵗ ( c₁v₁ + c₂(λ₂/λ₁)ᵗ v₂ )</div>
+  <p><span class="m">|λ₂/λ₁| &lt; 1</span>이면 두 번째 항이 매번 그 비율만큼 줄어 v₁ 방향만 남는다. 매 단계 길이를 1로 정규화하는 것은 숫자가 폭발하지 않게 하려는 것뿐이다. 고유값은 Rayleigh 몫 <span class="m">λ ≈ bᵀAb</span>로 읽는다. 대칭 행렬에서는 이 오차가 <span class="m">(λ₂/λ₁)²ᵗ</span>로 줄어 더 빠르다. A=[[4,1],[1,3]]는 비율 0.516이라 23회 만에 tol 1e-6을 만족한다.</p>
+  <div class="note warn"><b>실패 조건.</b> ① |λ₁| = |λ₂|이면 (예: 회전 행렬의 복소 고유값, λ = 3과 −3) 한 방향이 이기지 못한다. ② 시작 벡터가 v₁과 정확히 직교하면 c₁ = 0이라 v₁이 나타나지 않는다(실제로는 반올림 오차가 구해 준다). 구현은 무작위 시작 벡터(seed 42)를 쓰고, 수렴 여부를 <code>converged</code>로 반환한다.</div>
+  <p class="muted">검증 규칙: 고유값 계산 자체에는 <code>np.linalg.eig</code>를 쓰지 않고, <code>compare_with_numpy_eig</code>에서 결과 비교에만 쓴다. 오차 3.8e-11%로 5% 기준을 통과했다.</p>
+</section>
+
+<!-- ===================================================================== -->
+<section id="svd">
+  <h2>5. SVD — 이미지를 "중요한 층"의 합으로 쪼개기</h2>
+  <p class="lead">모든 행렬은 <span class="m">A = UΣVᵀ = Σᵢ σᵢ uᵢ vᵢᵀ</span>로 쓸 수 있다. 각 항 <span class="m">σᵢuᵢvᵢᵀ</span>는 rank-1 "층"이고, σᵢ가 그 층의 중요도다. 큰 σ부터 k개만 더하면 압축이다.</p>
+  <div class="widget">
+    <div class="wtitle">SVD 압축 슬라이더 <span class="tag req">필수 1</span></div>
+    <div class="grid2 keep">
+      <div><canvas id="svd-orig" class="sq" aria-label="원본 128x128 이미지"></canvas><div class="muted" style="text-align:center;font-size:.85rem">원본 128×128</div></div>
+      <div><canvas id="svd-rec" class="sq" aria-label="SVD 복원 이미지"></canvas><div class="muted" style="text-align:center;font-size:.85rem" id="svd-cap">k개 층의 합</div></div>
+    </div>
+    <div class="controls">
+      <label>k (사용할 특이값 수) <span class="val" id="svd-k-v">10</span><input type="range" id="svd-k" min="1" max="128" value="10"></label>
+      <label style="flex-direction:row;align-items:center;gap:6px"><input type="checkbox" id="svd-only"> k번째 층 하나만 보기</label>
+    </div>
+    <div class="btns"><button class="b" data-k="10" type="button">k=10</button><button class="b" data-k="50" type="button">k=50</button><button class="b" data-k="100" type="button">k=100</button><button class="b" data-k="1" type="button">k=1</button></div>
+    <canvas id="svd-spec" class="short" aria-label="특이값 크기와 누적 에너지"></canvas>
+    <div class="readout" id="svd-out"></div>
+    <div class="predict"><b>예측</b> k=1 이미지는 어떻게 생겼을까? (힌트: <span class="m">u₁v₁ᵀ</span>의 모든 행은 v₁의 배수다.) k를 얼마로 하면 원본보다 저장 공간이 커질까?</div>
+  </div>
+  <div class="eq">저장 비율 = k(m + n + 1) / (mn) <span class="c">U의 m·k + σ의 k + V의 n·k 개 숫자</span></div>
+  <p>128×128에서는 <span class="m">k &lt; 63.75</span>일 때만 실제로 줄어든다. k=100은 화질이 거의 원본(PSNR 54 dB)이지만 저장량은 1.57배라 "압축"이 아니다. 64×64 이미지는 rank가 최대 64라서 k=100이 아예 불가능하다. 그래서 이 구현은 128×128을 썼다.</p>
+  <div class="note key"><b>Eckart–Young 정리.</b> 상위 k개 층의 합 <span class="m">A_k</span>는 rank가 k 이하인 모든 행렬 중 원본과의 오차(Frobenius)가 가장 작다. 오차는 버린 특이값으로 정해진다: <span class="m">‖A − A_k‖ = √(σ²ₖ₊₁ + … + σ²ₙ)</span>. 테스트 <code>test_svd_matches_eckart_young_error</code>가 이 식을 직접 확인한다.</div>
+</section>
+
+<!-- ===================================================================== -->
+<section id="deriv">
+  <h2>6. 미분과 Gradient — "어느 쪽으로 가면 손실이 커지나"</h2>
+  <p class="lead">미분은 입력을 아주 조금 바꿨을 때 출력이 바뀌는 비율이다. 컴퓨터는 극한을 못 하므로 작은 h로 근사한다.</p>
+  <div class="eq">전진차분 f′(x) ≈ [f(x+h) − f(x)] / h <span class="c">오차 O(h)</span><br>중심차분 f′(x) ≈ [f(x+h) − f(x−h)] / 2h <span class="c">오차 O(h²) — 테일러 전개에서 h² 항이 상쇄</span></div>
+  <div class="widget">
+    <div class="wtitle">h를 줄이면 무조건 정확해질까? <span class="tag req">필수 2</span></div>
+    <div class="controls">
+      <label>함수와 위치 <select id="dv-f">
+        <option value="sq">f(x) = x², x = 3 (정답 6)</option>
+        <option value="sin">f(x) = sin x, x = 1 (정답 cos 1)</option>
+        <option value="exp">f(x) = eˣ, x = 0 (정답 1)</option>
+      </select></label>
+      <label>log₁₀ h <span class="val" id="dv-h-v">−5</span><input type="range" id="dv-h" min="-15" max="0" step="0.25" value="-5"></label>
+    </div>
+    <canvas id="dv-cv" class="wide" aria-label="h에 따른 미분 오차"></canvas>
+    <div class="readout" id="dv-out"></div>
+    <div class="predict"><b>예측</b> h를 1e-15까지 줄이면 오차가 어떻게 될까? 이유는 "거의 같은 두 수의 뺄셈"에 있다.</div>
+  </div>
+  <p>h가 크면 <b>절단 오차</b>(테일러 고차항), 너무 작으면 <b>반올림 오차</b>(float64의 유효숫자 약 16자리가 뺄셈에서 사라짐, 크기 ≈ ε/h)가 지배한다. 중심차분은 h ≈ 1e-5 근처에서 오차가 가장 작다. 구현의 기본값 <code>h=1e-5</code>는 여기서 나온 값이다. x²에서는 절단 오차가 정확히 0이라 오차 3.9e-11은 전부 반올림 오차다.</p>
+
+  <h3>Gradient는 등고선에 수직이다</h3>
+  <div class="widget">
+    <div class="wtitle">등고선 위 아무 점이나 눌러 보기 <span class="tag req">필수 2</span></div>
+    <div class="controls"><label>함수 <select id="gr-f"><option value="bowl">f = x² + y²</option><option value="ellipse">f = x² + 10y²</option></select></label></div>
+    <canvas id="gr-cv" class="sq" aria-label="등고선과 Gradient 화살표"></canvas>
+    <div class="readout" id="gr-out"></div>
+  </div>
+  <p>등고선 위에서 접선 방향 <span class="m">t</span>로 아주 조금 움직이면 f가 변하지 않는다: <span class="m">f(p + εt) − f(p) ≈ ε ∇f·t = 0</span>. 따라서 <span class="m">∇f ⊥ t</span>다. 위젯은 접선을 타원의 매개변수식에서, Gradient를 중심차분에서 <b>따로</b> 구한 뒤 cos를 계산한다. 코드의 <code>gradient_contour_orthogonality</code>도 같은 방식이다.</p>
+  <div class="note warn"><b>그림 함정.</b> 축 비율이 다르면(x축 1칸 ≠ y축 1칸) 수직인 화살표가 비스듬해 보인다. 그래서 시각화 함수는 <code>ax.set_aspect("equal")</code>을 쓴다.</div>
+  <div class="note key"><b>학습과의 연결.</b> −∇L은 손실이 가장 빨리 줄어드는 방향이다. 경사하강법은 이 방향으로 한 걸음씩 걷는다. 역전파는 수백만 개 파라미터의 ∇L을 한 번에 효율적으로 구하는 방법이다. 수치 미분은 파라미터마다 손실을 두 번 계산해야 해서 느리다. 그래서 수치 미분은 역전파 결과를 <b>검증</b>하는 데 쓴다(7장).</div>
+</section>
+
+<!-- ===================================================================== -->
+<section id="backprop">
+  <h2>7. 역전파 — 연쇄 법칙으로 "책임" 나누기</h2>
+  <p class="lead">L은 W1에 직접 의존하지 않는다. W1 → z1 → a1 → z2 → ŷ → L 사슬을 거친다. 연쇄 법칙은 사슬의 각 고리에서 국소 미분을 곱한다. 역전파는 이것을 <b>출력에서 입력 방향으로</b> 한 번만 계산하고 재사용한다.</p>
+
+  <h3>순전파 (shape 포함)</h3>
+  <div class="eq">z₁ = W₁x + b₁ <span class="c">(2,) = (2,2)(2,) + (2,)</span><br>a₁ = σ(z₁) <span class="c">(2,)</span><br>z₂ = W₂·a₁ + b₂ <span class="c">() = (2,)·(2,) + ()</span><br>ŷ = σ(z₂) <span class="c">()</span><br>L = −[y log ŷ + (1−y) log(1−ŷ)] <span class="c">()</span></div>
+
+  <h3>역전파 유도</h3>
+  <ol class="path-steps">
+    <li><b>∂L/∂ŷ = −y/ŷ + (1−y)/(1−ŷ)</b> <span class="muted">()</span> — log의 미분 (log u)′ = 1/u.</li>
+    <li><b>σ′(z) = σ(z)(1−σ(z))</b> — σ = (1+e⁻ᶻ)⁻¹을 미분하면 e⁻ᶻ/(1+e⁻ᶻ)² = σ·(1−σ).</li>
+    <li><b>∂L/∂z₂ = ∂L/∂ŷ · ŷ(1−ŷ) = ŷ − y</b> <span class="muted">()</span> ✔ 체크포인트 — 분모 ŷ, (1−ŷ)가 약분된다. 출력층의 기울기는 "예측 − 정답"이다.</li>
+    <li><b>∂L/∂W₂ = ∂L/∂z₂ · a₁</b> <span class="muted">(2,)</span>, <b>∂L/∂b₂ = ∂L/∂z₂</b> — z₂ = Σ W₂ᵢa₁ᵢ + b₂ 이므로 ∂z₂/∂W₂ᵢ = a₁ᵢ.</li>
+    <li><b>∂L/∂a₁ = ∂L/∂z₂ · W₂</b> <span class="muted">(2,)</span> — 오차가 가중치를 따라 거꾸로 나뉜다. 큰 가중치로 연결된 뉴런이 더 큰 책임을 진다.</li>
+    <li><b>∂L/∂z₁ = ∂L/∂a₁ ⊙ a₁(1−a₁)</b> <span class="muted">(2,)</span> ✔ 체크포인트 — a₁ᵢ는 z₁ᵢ에만 의존하므로 원소별 곱.</li>
+    <li><b>∂L/∂W₁ = outer(∂L/∂z₁, x)</b> <span class="muted">(2,2)</span>, <b>∂L/∂b₁ = ∂L/∂z₁</b> — ∂z₁ᵢ/∂W₁[i,j] = xⱼ. "뒤에서 온 오차 × 앞에서 온 입력".</li>
+  </ol>
+  <div class="note key"><b>shape 규칙.</b> ∂L/∂(값)의 shape은 그 값의 shape과 같다. 갱신 W ← W − η∂L/∂W가 성립하려면 당연하다. 유도 중 shape이 안 맞으면 전치나 외적을 빼먹은 것이다.</div>
+
+  <h3>손계산 연습지</h3>
+  <div class="widget ws" id="w-ws">
+    <div class="wtitle">종이에 풀고 소수점 4자리로 입력 <span class="tag req">필수 3</span></div>
+    <div id="ws-problem" class="readout"></div>
+    <div class="btns">
+      <button class="b primary" id="ws-check" type="button">채점</button>
+      <button class="b" id="ws-show" type="button">정답 보기</button>
+      <button class="b" id="ws-clear" type="button">지우기</button>
+      <button class="b" id="ws-new" type="button">새 문제 (가중치 무작위)</button>
+      <button class="b" id="ws-fixed" type="button">미션 고정 예제로</button>
+    </div>
+    <div class="tablewrap"><table id="ws-table"></table></div>
+    <div id="ws-score" class="muted"></div>
+  </div>
+  <details><summary>손계산 팁 (막힐 때만 열기)</summary>
+    <ul>
+      <li>σ(z)는 계산기로 1/(1+e^(−z)). 중간값은 소수점 6자리로 들고 다니고 마지막에 4자리로 반올림한다. 4자리로 반올림한 값을 다음 단계에 쓰면 마지막 자리가 1 정도 틀릴 수 있다.</li>
+      <li>∂L/∂z₂는 ŷ − y로 바로 구하고, ∂L/∂ŷ·ŷ(1−ŷ)로 검산한다.</li>
+      <li>x₂ = 0이면 W₁의 두 번째 열 기울기는 바로 0이다.</li>
+      <li>미션 결과 예시의 ∂L/∂z₁ 두 번째 값 −0.0513은 오타로 보인다. −0.2116 × 0.2445 = −0.0517이고 NumPy와 수치 미분도 −0.0517이다.</li>
+    </ul>
+  </details>
+  <p>노트북 <code>notebooks/backprop_derivation.ipynb</code>는 같은 표를 Markdown으로 적고, 순수 NumPy·모듈 구현·수치 미분 세 방법으로 같은 값을 얻는지 확인한다(최대 차이 1.1e-11).</p>
+</section>
+
+<!-- ===================================================================== -->
+<section id="optim">
+  <h2>8. 최적화 — 얼마나, 어떤 방향으로 고칠까</h2>
+  <p class="lead">경사하강법은 <span class="m">θ ← θ − η∇f(θ)</span>. 학습률 η가 너무 작으면 느리고, 너무 크면 골짜기를 넘어 튕겨 나간다. 화면을 누르면 시작점이 바뀐다.</p>
+  <div class="widget">
+    <div class="wtitle">옵티마이저 실험실 <span class="tag req">필수 4</span> <span class="tag bonus">보너스 Adam·Newton</span></div>
+    <canvas id="op-cv" class="sq" aria-label="등고선 위 수렴 경로"></canvas>
+    <div class="btns" id="op-presets"></div>
+    <div class="controls">
+      <label>함수 <select id="op-f">
+        <option value="bowl">x² + y² (둥근 그릇)</option>
+        <option value="ellipse">x² + 10y² (좁은 골짜기)</option>
+        <option value="rosenbrock">Rosenbrock (휘어진 골짜기)</option>
+        <option value="saddle">x² − y² (안장)</option>
+      </select></label>
+      <label>학습률 η <span class="val" id="op-lr-v">0.1</span><input type="range" id="op-lr" min="-3" max="0.35" step="0.01" value="-1"></label>
+      <label>Momentum β <span class="val" id="op-beta-v">0.9</span><input type="range" id="op-beta" min="0" max="0.99" step="0.01" value="0.9"></label>
+      <label>반복 수 <span class="val" id="op-n-v">100</span><input type="range" id="op-n" min="1" max="1000" step="1" value="100"></label>
+    </div>
+    <div class="controls">
+      <label style="flex-direction:row;align-items:center;gap:6px"><input type="checkbox" id="op-gd" checked> <span style="color:#1f77b4">●</span> VanillaGD</label>
+      <label style="flex-direction:row;align-items:center;gap:6px"><input type="checkbox" id="op-mom"> <span style="color:#d62728">●</span> Momentum</label>
+      <label style="flex-direction:row;align-items:center;gap:6px"><input type="checkbox" id="op-adam"> <span style="color:#2ca02c">●</span> Adam</label>
+      <label style="flex-direction:row;align-items:center;gap:6px"><input type="checkbox" id="op-newton"> <span style="color:#9467bd">●</span> Newton</label>
+    </div>
+    <div class="tablewrap"><table id="op-table"></table></div>
+    <div class="readout" id="op-hint"></div>
+  </div>
+
+  <h3>학습률의 안정 조건</h3>
+  <p>x² + y²에서 ∇f = (2x, 2y)이므로 한 스텝은 <span class="m">x ← x − η·2x = (1 − 2η)x</span>다. 매 스텝 <span class="m">|1 − 2η|</span>배가 된다.</p>
+  <div class="tablewrap"><table>
+    <tr><th>η</th><th class="num">|1 − 2η|</th><th>결과</th></tr>
+    <tr><td>0.1</td><td class="num">0.8</td><td>천천히 수렴 (100회 후 1.4e-9)</td></tr>
+    <tr><td>0.5</td><td class="num">0</td><td><b>한 번에 원점 도착</b></td></tr>
+    <tr><td>0.9</td><td class="num">0.8</td><td>부호를 바꾸며 수렴 (지그재그)</td></tr>
+    <tr><td>1.0</td><td class="num">1</td><td>±5 사이를 영원히 진동</td></tr>
+    <tr><td>1.1</td><td class="num">1.2</td><td>발산 (100회 후 5.9e8)</td></tr>
+  </table></div>
+  <div class="note red"><b>미션 문장 검토.</b> "lr=0.5 이상에서 발산"은 x² + y²에서는 성립하지 않는다. 경계는 η = 1이다. 일반 규칙은 <b>η &lt; 2 / (가장 큰 곡률)</b>이다. x² + y²의 곡률은 2라서 η &lt; 1, x² + 10y²의 곡률은 20이라서 η &lt; 0.1이다. 구현은 실제 경계를 보여 주고, 발산 그래프는 η = 1.1과 "x² + 10y²의 η = 0.5"로 제시한다(<code>outputs/11_lr_divergence.png</code>).</div>
+
+  <h3>Momentum은 언제 이득인가</h3>
+  <div class="eq">v ← βv + ∇f(θ),  θ ← θ − ηv</div>
+  <p>v는 과거 기울기의 누적이다. 같은 방향이 계속되면 속도가 붙고(최대 약 1/(1−β) = 10배), 부호가 번갈아 바뀌는 성분은 서로 상쇄된다. 실험 결과는 생각보다 미묘하다.</p>
+  <div class="tablewrap"><table>
+    <tr><th>상황</th><th class="num">GD</th><th class="num">Momentum β=0.9</th></tr>
+    <tr><td>x²+y², η=0.1, 100회 후 ‖θ‖</td><td class="num">1.4e-9</td><td class="num">2.0e-2</td></tr>
+    <tr><td>x²+10y², η=0.01, 100회 후 ‖θ‖</td><td class="num">0.663</td><td class="num">0.026</td></tr>
+    <tr><td>x²+10y², η=0.09, 100회 후 ‖θ‖</td><td class="num">1.2e-8</td><td class="num">0.025</td></tr>
+    <tr><td>x²+10y², η=0.002, ‖θ‖&lt;1e-3까지</td><td class="num">2126회</td><td class="num">149회</td></tr>
+  </table></div>
+  <p>η가 작으면 GD는 완만한 x 방향에서 거의 움직이지 못한다. 이때 Momentum이 크게 이긴다. 그러나 η를 GD의 한계(0.1) 가까이 키우면 GD가 더 빠르다. β = 0.9인 Momentum의 수렴률은 약 <span class="m">√β ≈ 0.95</span>에서 더 좋아지지 않는다. β = 0.9는 조건수(최대/최소 곡률)가 1000 이상인 골짜기에 맞는 값이다. 조건수 10인 이 문제에서는 관성이 과해 소용돌이친다.</p>
+  <div class="note key"><b>정리.</b> 실제 신경망의 손실 지형은 조건수가 매우 크고, η는 가장 가파른 방향 때문에 작게 잡을 수밖에 없다. 그 상황에서 Momentum이 평평한 방향을 가속한다. "Momentum이 항상 빠르다"가 아니라 "작은 η에서 평평한 방향을 가속한다"가 정확한 설명이다.</div>
+
+  <h3>보너스: Adam과 Newton</h3>
+  <div class="eq">Adam: m ← β₁m + (1−β₁)g,  v ← β₂v + (1−β₂)g²,  θ ← θ − η m̂ / (√v̂ + ε)</div>
+  <p>Adam은 좌표마다 기울기 크기 <span class="m">√v</span>로 나눈다. 그래서 첫 스텝은 곡률과 상관없이 좌표마다 약 η만큼 움직인다. x²+10y²에서 η = 0.1이면 GD는 y 방향에서 영원히 진동한다(1 − 20·0.1 = −1). Adam은 144회 만에 1e-3에 도달한다. 같은 η로 두 함수에서 경로가 똑같다는 점도 확인해 보라. 좌표별 스케일에 둔감하다는 것이 "적응적 학습률"의 효과다.</p>
+  <div class="eq">Newton: θ ← θ − H⁻¹∇f <span class="c">2차 테일러 근사의 최저점으로 바로 이동</span></div>
+  <p>이차 함수에서는 한 번에 최저점에 간다. Rosenbrock에서도 5회 만에 도달한다(GD η = 0.001은 17,695회). 대가는 ① n×n Hessian을 구하고 풀어야 하는 비용(파라미터 백만 개면 10¹²개 원소)과 ② 안장점에 끌려가는 성질이다. x² − y²에서 Newton은 안장점 (0,0)으로 곧장 간다. GD는 −y 방향의 기울기를 따라 안장점에서 탈출한다.</p>
+</section>
+
+<!-- ===================================================================== -->
+<section id="prob">
+  <h2>9. 확률 분포와 손실 함수 — 손실은 "가정"에서 나온다</h2>
+  <p class="lead">"데이터가 어떤 분포에서 나왔다고 가정하는가"를 정하면, 그 데이터가 관측될 확률(우도)을 최대로 만드는 것이 손실을 최소로 만드는 것과 같아진다.</p>
+
+  <div class="widget">
+    <div class="wtitle">정규분포 PDF 두 개 비교 <span class="tag req">필수 5</span></div>
+    <canvas id="nm-cv" class="wide" aria-label="정규분포 확률밀도"></canvas>
+    <div class="controls">
+      <label>μ₁ <span class="val" id="nm-m1-v">0</span><input type="range" id="nm-m1" min="-3" max="3" step="0.1" value="0"></label>
+      <label>σ₁² (분산) <span class="val" id="nm-v1-v">1</span><input type="range" id="nm-v1" min="0.1" max="3" step="0.05" value="1"></label>
+      <label>μ₂ <span class="val" id="nm-m2-v">2</span><input type="range" id="nm-m2" min="-3" max="3" step="0.1" value="2"></label>
+      <label>σ₂² (분산) <span class="val" id="nm-v2-v">0.5</span><input type="range" id="nm-v2" min="0.1" max="3" step="0.05" value="0.5"></label>
+    </div>
+    <div class="readout" id="nm-out"></div>
+  </div>
+  <p>N(2, 0.5)의 0.5는 <b>분산</b>이다(표준편차 0.707). 폭이 좁아지면 넓이 1을 유지하려고 봉우리가 높아진다. 확률밀도는 확률이 아니므로 1을 넘을 수 있다. 분산을 0.1로 줄여 확인해 보라.</p>
+
+  <div class="widget">
+    <div class="wtitle">베르누이 PMF 두 개 비교 <span class="tag req">필수 5</span></div>
+    <canvas id="bn-cv" class="short" aria-label="베르누이 확률질량"></canvas>
+    <div class="controls">
+      <label>p₁ <span class="val" id="bn-p1-v">0.3</span><input type="range" id="bn-p1" min="0" max="1" step="0.01" value="0.3"></label>
+      <label>p₂ <span class="val" id="bn-p2-v">0.7</span><input type="range" id="bn-p2" min="0" max="1" step="0.01" value="0.7"></label>
+    </div>
+  </div>
+
+  <h3>MSE 최소화 = 정규분포 가정의 MLE</h3>
+  <ol class="path-steps">
+    <li><b>가정</b> y = f(x) + ε, ε ~ N(0, σ²) → <span class="m">p(y|x) = (2πσ²)^(−½) exp(−(y − f(x))² / 2σ²)</span></li>
+    <li><b>우도</b> 독립이면 <span class="m">Πᵢ p(yᵢ|xᵢ)</span>. log는 증가 함수라 최대점이 같고 곱을 합으로 바꾼다 → <span class="m">Σᵢ log p(yᵢ|xᵢ)</span></li>
+    <li><b>대입</b> <span class="m">Σ log p = −(1/2σ²) Σ (yᵢ − f(xᵢ))² − (n/2) log(2πσ²)</span></li>
+    <li><b>상수 제거</b> 둘째 항은 θ와 무관, 양수 1/2σ²와 1/n을 곱해도 최적점 불변, 부호를 바꾸면 max → min</li>
+    <li><b>결론</b> <span class="m">argmax Σ log p = argmin (1/n) Σ (yᵢ − f(xᵢ))² = argmin MSE</span></li>
+  </ol>
+  <div class="widget">
+    <div class="wtitle">w를 움직여 MSE와 음의 로그우도 비교 <span class="tag req">필수 5</span></div>
+    <div class="grid2">
+      <canvas id="ml-data" class="sq" aria-label="데이터와 직선 모델"></canvas>
+      <canvas id="ml-curve" class="sq" aria-label="w에 따른 MSE와 NLL"></canvas>
+    </div>
+    <div class="controls"><label>w (모델 ŷ = w·x) <span class="val" id="ml-w-v">0.8</span><input type="range" id="ml-w" min="0" max="3" step="0.01" value="0.8"></label>
+      <label>가정한 σ² <span class="val" id="ml-v-v">0.25</span><input type="range" id="ml-v" min="0.05" max="2" step="0.05" value="0.25"></label></div>
+    <div class="readout" id="ml-out"></div>
+    <div class="predict"><b>예측</b> 가정한 σ²를 바꾸면 NLL 곡선의 최저점 위치가 움직일까? 높이는?</div>
+  </div>
+
+  <h3>Cross-Entropy 최소화 = 베르누이/카테고리 분포 가정의 MLE</h3>
+  <ol class="path-steps">
+    <li><b>가정</b> y ∈ {0,1}, y ~ Bernoulli(ŷ) → <span class="m">p(y|x) = ŷʸ(1 − ŷ)¹⁻ʸ</span> (y=1이면 ŷ, y=0이면 1−ŷ만 남는 압축 표기)</li>
+    <li><b>로그우도</b> <span class="m">Σᵢ [yᵢ log ŷᵢ + (1 − yᵢ) log(1 − ŷᵢ)]</span></li>
+    <li><b>부호 반전</b> → 그대로 BCE. 버릴 상수조차 없다.</li>
+    <li><b>다중 클래스</b> one-hot y, ŷ = softmax(z) → <span class="m">p(y|x) = Π_c ŷ_c^(y_c)</span> → <span class="m">−Σ log p = −Σᵢ Σ_c y_ic log ŷ_ic</span> = Categorical CE. 정답 클래스 확률의 −log만 남는다.</li>
+  </ol>
+  <div class="note key"><b>2장과의 연결.</b> 2장 신경망의 손실 BCE는 "정답이 확률 ŷ인 베르누이에서 나왔다"는 가정의 음의 로그우도다. 그리고 Sigmoid + BCE의 logit 기울기 <span class="m">ŷ − y</span>는 7장 ∂L/∂z₂와 같은 식이다. MSE를 쓰면 기울기에 σ′(z)가 곱해진다. 그래서 확신을 갖고 틀린 경우(ŷ ≈ 0, y = 1) 기울기가 사라져 학습이 멈춘다.</div>
+
+  <div class="widget">
+    <div class="wtitle">소프트맥스 <span class="tag req">필수 5</span></div>
+    <canvas id="sm-cv" class="short" aria-label="소프트맥스 확률 막대"></canvas>
+    <div class="controls" id="sm-ctrl"></div>
+    <div class="readout" id="sm-out"></div>
+    <div class="predict"><b>예측</b> 모든 logit에 똑같이 +3을 더하면 확률이 바뀔까? 온도 T를 0.1로 낮추면?</div>
+  </div>
+  <p>softmax(z)ᵢ = e^(zᵢ) / Σⱼ e^(zⱼ). 모든 z에서 같은 상수를 빼도 결과가 같다. 그래서 구현은 max(z)를 빼서 e¹⁰⁰⁰ overflow를 막는다(<code>softmax([1000, 1001, 1002])</code>도 정상). 출력 합과 1의 차이는 0으로 1e-6 기준을 통과했다.</p>
+</section>
+
+<!-- ===================================================================== -->
+<section id="info">
+  <h2>10. 보너스 — 정보 이론으로 다시 보기</h2>
+  <p class="lead">엔트로피는 분포의 불확실성, Cross-Entropy는 "모델 q로 실제 p를 설명하는 비용", KL은 그 추가 비용이다.</p>
+  <div class="eq">H(p) = −Σ pᵢ log pᵢ,  H(p, q) = −Σ pᵢ log qᵢ,  KL(p‖q) = Σ pᵢ log(pᵢ/qᵢ) ≥ 0<br>H(p, q) = H(p) + KL(p‖q)</div>
+  <div class="widget">
+    <div class="wtitle">베르누이 p(실제)와 q(모델) <span class="tag bonus">보너스 3</span></div>
+    <canvas id="it-cv" class="short" aria-label="엔트로피와 KL 막대"></canvas>
+    <div class="controls">
+      <label>p (실제 P(1)) <span class="val" id="it-p-v">0.7</span><input type="range" id="it-p" min="0.01" max="0.99" step="0.01" value="0.7"></label>
+      <label>q (모델 P(1)) <span class="val" id="it-q-v">0.4</span><input type="range" id="it-q" min="0.01" max="0.99" step="0.01" value="0.4"></label>
+    </div>
+    <div class="readout" id="it-out"></div>
+  </div>
+  <p>학습 중 정답 분포 p는 고정이라 H(p)는 상수다. 따라서 <b>Cross-Entropy 최소화 = KL 최소화 = MLE</b>. one-hot 정답이면 H(p) = 0이라 CE = KL = −log q[정답]이다. KL은 대칭이 아니다(KL(p‖q) = 0.1838 ≠ KL(q‖p) = 0.1920, p=[0.7,0.2,0.1], q=[0.4,0.4,0.2]). 그래서 거리(distance)가 아니라 발산(divergence)이라 부른다.</p>
+</section>
+
+<!-- ===================================================================== -->
+<section id="code">
+  <h2>11. 코드 지도 — 요구사항 → 함수 → 검증</h2>
+  <p class="lead">수식이 코드 어디에 있는지, 어떤 테스트가 그것을 지키는지 한 표로 본다. 발췌는 생성 시점의 원본 사본이며 줄 번호는 원본 기준이다.</p>
+  <div class="tablewrap"><table>
+    <tr><th>요구사항</th><th>구현</th><th>검증 (tests/test_requirements.py)</th></tr>
+    <tr><td>회전·스케일·전단 시각화</td><td><code>linear_algebra.plot_transformation</code></td><td><code>test_transforms_change_shape_as_expected</code></td></tr>
+    <tr><td>det vs 면적비 1% 이내</td><td><code>determinant_2x2</code>, <code>polygon_area</code>, <code>area_ratio_check</code></td><td><code>test_det_matches_area_ratio_within_1_percent</code></td></tr>
+    <tr><td>Power Iteration, eig 대비 5% 이내</td><td><code>power_iteration</code>, <code>compare_with_numpy_eig</code></td><td><code>test_power_iteration_within_5_percent_of_eig</code></td></tr>
+    <tr><td>SVD k=10/50/100</td><td><code>svd_compress</code>, <code>plot_svd_compression</code></td><td><code>test_svd_compression_k_values</code>, <code>test_svd_matches_eckart_young_error</code></td></tr>
+    <tr><td>x² 수치 미분 1e-4 이내</td><td><code>calculus.numerical_derivative</code></td><td><code>test_derivative_of_x_squared_at_3</code></td></tr>
+    <tr><td>등고선 + Gradient 수직</td><td><code>plot_gradient_field</code>, <code>gradient_contour_orthogonality</code></td><td><code>test_gradient_perpendicular_to_contour</code></td></tr>
+    <tr><td>역전파 손계산 4자리 일치</td><td><code>neural_net.TwoLayerNet</code>, 노트북</td><td><code>BackpropTest</code> 6개</td></tr>
+    <tr><td>GD lr=0.1 반경 0.1, 발산</td><td><code>optimizer.VanillaGD</code>, <code>optimize</code></td><td><code>test_vanilla_gd_reaches_origin</code>, <code>test_learning_rate_stability_boundary</code></td></tr>
+    <tr><td>Momentum 비교, 타원 이점</td><td><code>Momentum</code>, <code>plot_convergence_paths</code></td><td><code>test_momentum_reaches_origin_and_helps_on_ellipse</code></td></tr>
+    <tr><td>PDF·PMF·소프트맥스</td><td><code>probability.*</code></td><td><code>ProbabilityTest</code></td></tr>
+    <tr><td>보너스 Adam·Newton·정보 이론</td><td><code>Adam</code>, <code>NewtonMethod</code>, <code>information.*</code></td><td><code>test_adam_*</code>, <code>test_newton_*</code>, <code>test_information_identities</code></td></tr>
+  </table></div>
+  <div id="code-list"></div>
+</section>
+
+<!-- ===================================================================== -->
+<section id="results">
+  <h2>12. 실행 결과 그림</h2>
+  <p class="lead"><code>python -m src.run_all</code>이 저장한 <code>outputs/</code> 그림의 축소본이다. 위젯과 같은 실험을 Python으로 실행한 결과다.</p>
+  <div id="gallery"></div>
+</section>
+
+<!-- ===================================================================== -->
+<section id="check">
+  <h2>13. 자기 점검 — 미션 목표 5문항</h2>
+  <p class="lead">답을 열기 전에 1분 동안 소리 내어 설명해 본다. 막히면 괄호의 장으로 돌아간다.</p>
+  <details><summary>Q1. 행렬 곱셈은 공간을 어떻게 변형하고, 행렬식은 면적 변화와 어떻게 연결되나? (3장)</summary>
+    <p>행렬은 기저 벡터 e₁, e₂를 자기 열벡터로 보내고, 나머지 점은 그 선형 결합대로 따라간다. 그래서 격자는 평행사변형 격자가 되고 원은 타원이 된다. 단위 정사각형이 두 열벡터의 평행사변형이 되므로 넓이 배율은 |ad − bc| = |det A|다. 선형이라 모든 도형에 같은 배율이 적용된다. 음수면 방향이 뒤집히고, 0이면 평면이 선이나 점으로 납작해져 역변환이 없다.</p></details>
+  <details><summary>Q2. 고유값·고유벡터의 의미와 SVD를 이용한 압축 원리는? (4–5장)</summary>
+    <p>고유벡터는 변환 후에도 방향이 유지되는 방향이고, 고유값은 그 방향의 배율이다. A를 반복해 곱하면 가장 큰 |λ| 방향이 (λ₂/λ₁)ᵗ 비율로 다른 성분을 압도하므로 Power Iteration으로 구할 수 있다. SVD는 임의의 행렬을 중요도 σᵢ 순의 rank-1 층 σᵢuᵢvᵢᵀ로 분해한다. 큰 σ 몇 개만 남기면 최소 오차의 저랭크 근사(Eckart–Young)가 된다. k(m+n+1) &lt; mn일 때만 저장량이 줄어든다.</p></details>
+  <details><summary>Q3. 2층 신경망의 역전파를 유도하고 손계산할 수 있나? (7장)</summary>
+    <p>출력에서 시작해 국소 미분을 곱해 내려간다. ∂L/∂z₂ = ŷ − y, ∂L/∂W₂ = ∂L/∂z₂·a₁, ∂L/∂a₁ = ∂L/∂z₂·W₂, ∂L/∂z₁ = ∂L/∂a₁ ⊙ a₁(1−a₁), ∂L/∂W₁ = outer(∂L/∂z₁, x). 고정 예제는 ∂L/∂z₂ = −0.3527, ∂L/∂z₁ = [−0.0440, −0.0517], ∂L/∂W₁ = [[−0.0440, 0], [−0.0517, 0]]이다. 7장 연습지를 답 없이 풀 수 있으면 통과다.</p></details>
+  <details><summary>Q4. MSE와 Cross-Entropy의 확률적 의미 차이와 MLE 연결은? (9–10장)</summary>
+    <p>MSE는 "타깃 = 예측 + 정규 잡음" 가정의 음의 로그우도에서 상수를 뺀 것이고, 회귀에 맞는다. Cross-Entropy는 "타깃 ~ 베르누이/카테고리(모델 확률)" 가정의 음의 로그우도 그 자체이고, 분류에 맞는다. 둘 다 MLE이며 가정한 분포만 다르다. CE = H(p) + KL(p‖q)이므로 CE 최소화는 모델 분포를 데이터 분포에 맞추는 것이다.</p></details>
+  <details><summary>Q5. Learning Rate와 Momentum이 수렴에 미치는 영향을 실험 결과로 설명하면? (8장)</summary>
+    <p>이차 함수에서 GD는 방향마다 |1 − η·곡률|배가 되므로 η &lt; 2/최대곡률이어야 수렴한다. x²+y²는 η &lt; 1이고, η=0.5는 한 번에 도착, η=1.1은 발산한다. x²+10y²는 η &lt; 0.1이다. 작은 η에서는 평평한 방향이 느리고(η=0.01에서 100회 후 0.663), Momentum β=0.9는 기울기를 누적해 25배 가까이 간다(0.026). 그러나 η가 한계에 가까우면 β=0.9의 과한 관성 때문에 GD보다 느리다(√β ≈ 0.95 수렴률). Adam은 좌표별로 기울기를 정규화해 곡률 차이에 둔감하다.</p></details>
+
+  <h3>자주 틀리는 포인트</h3>
+  <ul>
+    <li>N(2, 0.5)의 0.5를 표준편차로 읽기 → 분산이다.</li>
+    <li>∂L/∂W₁을 outer(x, ∂L/∂z₁)로 쓰기 → shape은 같은 (2,2)지만 전치된 답이다. z₁ = W₁x에서 W₁[i,j]는 입력 j → 은닉 i 연결이다.</li>
+    <li>det = 1인 변환만으로 "면적비 = det"를 확인했다고 생각하기.</li>
+    <li>"Momentum은 항상 빠르다", "lr=0.5면 발산한다"처럼 조건 없는 문장.</li>
+    <li>SVD k=100이 128×128 이미지를 "압축"했다고 말하기 → 저장량 1.57배.</li>
+  </ul>
+</section>
+
+<!-- ===================================================================== -->
+<section id="notes">
+  <h2>14. 해석 결정과 주의점</h2>
+  <div class="tablewrap"><table>
+    <tr><th>항목</th><th>결정</th><th>이유</th></tr>
+    <tr><td>손계산 정답 y</td><td>y = 1</td><td>미션 설명의 정답 값이 비어 있고 결과 예시가 y = 1을 사용</td></tr>
+    <tr><td>SVD 이미지 크기</td><td>128×128 흑백</td><td>64×64 이하는 rank ≤ 64라 k=100 비교가 불가능</td></tr>
+    <tr><td>N(2, 0.5)</td><td>분산 0.5</td><td>N(μ, σ²) 표준 표기</td></tr>
+    <tr><td>"lr ≥ 0.5에서 발산"</td><td>실제 경계 η = 1을 보이고, η = 1.1과 타원 η = 0.5로 발산 제시</td><td>x²+y²에서 η = 0.5는 한 번에 수렴하는 값</td></tr>
+    <tr><td>Momentum 이점</td><td>타원의 작은 η에서 확인하고, 큰 η에서 불리한 결과도 함께 기록</td><td>β = 0.9의 수렴률 한계 √β</td></tr>
+    <tr><td>예시 ∂L/∂z₁ = −0.0513</td><td>−0.0517 사용</td><td>손계산·NumPy·수치 미분 모두 −0.0517</td></tr>
+    <tr><td>전단 Sh(k)</td><td>x 방향, k = 1</td><td>(x, y) → (x + ky, y). k 값이 지정되지 않음</td></tr>
+    <tr><td>회전 R(θ)</td><td>θ = 45°</td><td>θ 값이 지정되지 않음</td></tr>
+  </table></div>
+  <p class="muted">위젯의 계산 함수(신경망, Power Iteration, 옵티마이저, 소프트맥스, 분포, 정보량, 면적, SVD 복원)는 Python 구현과 같은 입력으로 대조해 일치를 확인했다. 위젯의 그림 그리기와 무작위 연습 문제 생성은 대조 대상이 아니다.</p>
+</section>
+</main>
+<footer>A2-1 학습 자료 · 내용의 근거는 같은 폴더의 src/, notebooks/, outputs/ 이다.</footer>
+
+<script id="mathlib">
+const M = (() => {
+  const sigmoid = z => 1 / (1 + Math.exp(-z));
+  const dot = (a, b) => a.reduce((s, v, i) => s + v * b[i], 0);
+  const norm = v => Math.sqrt(dot(v, v));
+
+  function network(p) {
+    const z1 = [0, 1].map(i => p.W1[i][0] * p.x[0] + p.W1[i][1] * p.x[1] + p.b1[i]);
+    const a1 = z1.map(sigmoid);
+    const z2 = p.W2[0] * a1[0] + p.W2[1] * a1[1] + p.b2;
+    const yp = sigmoid(z2);
+    const eps = 1e-12, q = Math.min(Math.max(yp, eps), 1 - eps);
+    const loss = -(p.y * Math.log(q) + (1 - p.y) * Math.log(1 - q));
+    const dyp = -p.y / yp + (1 - p.y) / (1 - yp);
+    const dz2 = dyp * yp * (1 - yp);
+    const dW2 = a1.map(a => dz2 * a);
+    const da1 = p.W2.map(w => dz2 * w);
+    const sp = a1.map(a => a * (1 - a));
+    const dz1 = da1.map((d, i) => d * sp[i]);
+    const dW1 = dz1.map(d => p.x.map(x => d * x));
+    return { z1, a1, z2, yp, loss, dyp, dz2, dW2, db2: dz2, da1, sp, dz1, dW1, db1: dz1.slice() };
+  }
+
+  const det2 = A => A[0][0] * A[1][1] - A[0][1] * A[1][0];
+  function unitCircle(n = 100) {
+    const xs = [], ys = [];
+    for (let i = 0; i < n; i++) { const t = 2 * Math.PI * i / (n - 1); xs.push(Math.cos(t)); ys.push(Math.sin(t)); }
+    return [xs, ys];
+  }
+  const transform = (A, [xs, ys]) => [xs.map((x, i) => A[0][0] * x + A[0][1] * ys[i]), xs.map((x, i) => A[1][0] * x + A[1][1] * ys[i])];
+  function shoelace([xs, ys]) {
+    let s = 0;
+    for (let i = 0; i < xs.length; i++) { const j = (i + 1) % xs.length; s += xs[i] * ys[j] - xs[j] * ys[i]; }
+    return Math.abs(s) / 2;
+  }
+  function areaRatio(A) {
+    const c = unitCircle(); const before = shoelace(c), after = shoelace(transform(A, c));
+    return { det: det2(A), before, after, ratio: after / before };
+  }
+  const matVec = (A, v) => A.map(row => dot(row, v));
+  function signFix(v) { let k = 0; v.forEach((x, i) => { if (Math.abs(x) > Math.abs(v[k])) k = i; }); return v[k] < 0 ? v.map(x => -x) : v.slice(); }
+  function powerStep(A, b) {
+    const Ab = matVec(A, b), n = norm(Ab), next = Ab.map(v => v / n);
+    const diff = dot(next, b) < 0 ? norm(next.map((v, i) => v + b[i])) : norm(next.map((v, i) => v - b[i]));
+    return { b: next, lambda: dot(next, matVec(A, next)), diff };
+  }
+  function powerIteration(A, x0, tol = 1e-6, maxIter = 1000) {
+    let b = x0.map(v => v / norm(x0)); const history = [];
+    for (let t = 1; t <= maxIter; t++) {
+      const s = powerStep(A, b); b = s.b; history.push(s);
+      if (s.diff < tol) return { eigenvalue: s.lambda, eigenvector: signFix(b), iterations: t, converged: true, history };
+    }
+    return { eigenvalue: dot(b, matVec(A, b)), eigenvector: signFix(b), iterations: maxIter, converged: false, history };
+  }
+  function eig2(A) {
+    const tr = A[0][0] + A[1][1], d = det2(A), disc = tr * tr / 4 - d;
+    if (disc < 0) return { real: false, re: tr / 2, im: Math.sqrt(-disc) };
+    const l1 = tr / 2 + Math.sqrt(disc), l2 = tr / 2 - Math.sqrt(disc);
+    const vec = l => { const [a, b] = A[0], [c, dd] = A[1];
+      let v = Math.abs(b) > 1e-12 ? [b, l - a] : Math.abs(c) > 1e-12 ? [l - dd, c] : (Math.abs(l - a) < 1e-12 ? [1, 0] : [0, 1]);
+      const n = norm(v); return v.map(x => x / n); };
+    return { real: true, values: [l1, l2], vectors: [vec(l1), vec(l2)] };
+  }
+
+  function softmax(z) { const m = Math.max(...z); const e = z.map(v => Math.exp(v - m)); const s = e.reduce((a, b) => a + b, 0); return e.map(v => v / s); }
+  const normalPdf = (x, mu, v) => Math.exp(-((x - mu) ** 2) / (2 * v)) / Math.sqrt(2 * Math.PI * v);
+  const bernoulliPmf = (k, p) => Math.pow(p, k) * Math.pow(1 - p, 1 - k);
+  function entropy(p) { return -p.reduce((s, v) => s + (v > 0 ? v * Math.log(v) : 0), 0); }
+  function crossEntropy(p, q) { let s = 0; for (let i = 0; i < p.length; i++) if (p[i] > 0) { if (q[i] === 0) return Infinity; s -= p[i] * Math.log(q[i]); } return s; }
+  function kl(p, q) { let s = 0; for (let i = 0; i < p.length; i++) if (p[i] > 0) { if (q[i] === 0) return Infinity; s += p[i] * Math.log(p[i] / q[i]); } return s; }
+  const forwardDiff = (f, x, h) => (f(x + h) - f(x)) / h;
+  const centralDiff = (f, x, h) => (f(x + h) - f(x - h)) / (2 * h);
+  function gaussianNll(y, yhat, v) { let s = 0; for (let i = 0; i < y.length; i++) s -= Math.log(normalPdf(y[i], yhat[i], v)); return s; }
+  function mse(y, yhat) { let s = 0; for (let i = 0; i < y.length; i++) s += (y[i] - yhat[i]) ** 2; return s / y.length; }
+
+  const FUNCS = {
+    bowl: { f: ([x, y]) => x * x + y * y, grad: ([x, y]) => [2 * x, 2 * y], hess: () => [[2, 0], [0, 2]], min: [0, 0] },
+    ellipse: { f: ([x, y]) => x * x + 10 * y * y, grad: ([x, y]) => [2 * x, 20 * y], hess: () => [[2, 0], [0, 20]], min: [0, 0] },
+    rosenbrock: { f: ([x, y]) => (1 - x) ** 2 + 100 * (y - x * x) ** 2,
+      grad: ([x, y]) => [-2 * (1 - x) - 400 * x * (y - x * x), 200 * (y - x * x)],
+      hess: ([x, y]) => [[2 - 400 * (y - x * x) + 800 * x * x, -400 * x], [-400 * x, 200]], min: [1, 1] },
+    saddle: { f: ([x, y]) => x * x - y * y, grad: ([x, y]) => [2 * x, -2 * y], hess: () => [[2, 0], [0, -2]], min: [0, 0] },
+  };
+  function solve2(H, g) { const d = det2(H); return [(H[1][1] * g[0] - H[0][1] * g[1]) / d, (-H[1][0] * g[0] + H[0][0] * g[1]) / d]; }
+  function makeOptimizer(name, o) {
+    const lr = o.lr, beta = o.beta ?? 0.9, b1 = 0.9, b2 = 0.999, eps = 1e-8;
+    let v = null, m = null, t = 0;
+    return {
+      step(x, g, H) {
+        t++;
+        if (name === 'GD') return x.map((xi, i) => xi - lr * g[i]);
+        if (name === 'Momentum') { v = v === null ? g.slice() : v.map((vi, i) => beta * vi + g[i]); return x.map((xi, i) => xi - lr * v[i]); }
+        if (name === 'Adam') {
+          if (m === null) { m = [0, 0]; v = [0, 0]; }
+          m = m.map((mi, i) => b1 * mi + (1 - b1) * g[i]); v = v.map((vi, i) => b2 * vi + (1 - b2) * g[i] * g[i]);
+          const mh = m.map(mi => mi / (1 - b1 ** t)), vh = v.map(vi => vi / (1 - b2 ** t));
+          return x.map((xi, i) => xi - lr * mh[i] / (Math.sqrt(vh[i]) + eps));
+        }
+        if (name === 'Newton') { const d = solve2(H, g); return x.map((xi, i) => xi - lr * d[i]); }
+        throw new Error('unknown optimizer ' + name);
+      }
+    };
+  }
+  function runOptimizer(fname, name, o, x0, n, stopTol = null) {
+    const F = FUNCS[fname], opt = makeOptimizer(name, o);
+    let x = x0.slice(); const path = [x.slice()];
+    for (let k = 0; k < n; k++) {
+      const g = F.grad(x);
+      if (stopTol !== null && norm(g) < stopTol) break;
+      x = opt.step(x, g, F.hess(x)); path.push(x.slice());
+      if (!x.every(Number.isFinite)) break;
+    }
+    return path;
+  }
+  function itersToReach(path, target, tol) {
+    for (let i = 0; i < path.length; i++) if (Math.hypot(path[i][0] - target[0], path[i][1] - target[1]) < tol) return i;
+    return null;
+  }
+  function svdReconstruct(U, S, Vt, m, n, k, only = false) {
+    const out = new Float64Array(m * n), r = U.length / m;
+    for (let l = only ? k - 1 : 0; l < k; l++) {
+      const s = S[l];
+      for (let i = 0; i < m; i++) { const u = U[i * r + l] * s; if (u === 0) continue; const row = i * n, vrow = l * n; for (let j = 0; j < n; j++) out[row + j] += u * Vt[vrow + j]; }
+    }
+    return out;
+  }
+  function svdStats(orig, approx, S, m, n, k) {
+    let num = 0, den = 0, se = 0;
+    for (let i = 0; i < orig.length; i++) { const d = orig[i] - approx[i]; num += d * d; den += orig[i] * orig[i]; const c = Math.min(1, Math.max(0, approx[i])); se += (orig[i] - c) ** 2; }
+    let e1 = 0, e2 = 0; for (let i = 0; i < S.length; i++) { if (i < k) e1 += S[i] * S[i]; e2 += S[i] * S[i]; }
+    const msev = se / orig.length;
+    return { relErr: Math.sqrt(num / den), energy: e1 / e2, psnr: msev === 0 ? Infinity : 10 * Math.log10(1 / msev), storage: k * (m + n + 1) / (m * n) };
+  }
+  const binaryEntropy = p => (p <= 0 || p >= 1) ? 0 : -(p * Math.log(p) + (1 - p) * Math.log(1 - p));
+  return { sigmoid, network, det2, unitCircle, transform, shoelace, areaRatio, powerStep, powerIteration, eig2, softmax,
+    normalPdf, bernoulliPmf, entropy, crossEntropy, kl, forwardDiff, centralDiff, gaussianNll, mse, FUNCS, makeOptimizer,
+    runOptimizer, itersToReach, svdReconstruct, svdStats, binaryEntropy, norm, dot };
+})();
+</script>
+<script>const DATA = /*__DATA__*/null;</script>
+<script>
+"use strict";
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const cssv = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+function fmt(v, d = 4) {
+  if (Array.isArray(v)) return '[' + v.map(x => fmt(x, d)).join(', ') + ']';
+  if (v === null || v === undefined) return '—';
+  if (!Number.isFinite(v)) return Number.isNaN(v) ? 'NaN' : (v > 0 ? '∞' : '−∞');
+  const a = Math.abs(v);
+  if (a !== 0 && (a >= 1e5 || a < Math.pow(10, -d))) return v.toExponential(2).replace('-', '−');
+  const s = (Object.is(Number(v.toFixed(d)), -0) ? 0 : v).toFixed(d);
+  return s.startsWith('-') ? '−' + s.slice(1) : s;
+}
+const renderers = [];
+function onResize(fn) { renderers.push(fn); fn(); }
+let rT; window.addEventListener('resize', () => { clearTimeout(rT); rT = setTimeout(() => renderers.forEach(f => f()), 120); });
+
+function plot(canvas, xmin, xmax, ymin, ymax, equal = true) {
+  const dpr = window.devicePixelRatio || 1, w = canvas.clientWidth, h = canvas.clientHeight || w;
+  canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
+  const ctx = canvas.getContext('2d'); ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, w, h);
+  let sx = w / (xmax - xmin), sy = h / (ymax - ymin);
+  if (equal) { const s = Math.min(sx, sy), cx = (xmin + xmax) / 2, cy = (ymin + ymax) / 2; xmin = cx - w / (2 * s); xmax = cx + w / (2 * s); ymin = cy - h / (2 * s); ymax = cy + h / (2 * s); sx = sy = s; }
+  const clamp = v => Math.max(-1e5, Math.min(1e5, v));
+  const X = x => clamp((x - xmin) * sx), Y = y => clamp(h - (y - ymin) * sy);
+  return { ctx, w, h, X, Y, sx, sy, xmin, xmax, ymin, ymax, inv: (px, py) => [xmin + px / sx, ymin + (h - py) / sy] };
+}
+function axes(P, step = 1, labels = true) {
+  const { ctx, X, Y, xmin, xmax, ymin, ymax } = P;
+  ctx.lineWidth = 1; ctx.strokeStyle = cssv('--grid'); ctx.beginPath();
+  for (let x = Math.ceil(xmin / step) * step; x <= xmax; x += step) { ctx.moveTo(X(x), 0); ctx.lineTo(X(x), P.h); }
+  for (let y = Math.ceil(ymin / step) * step; y <= ymax; y += step) { ctx.moveTo(0, Y(y)); ctx.lineTo(P.w, Y(y)); }
+  ctx.stroke(); ctx.strokeStyle = cssv('--muted'); ctx.beginPath(); ctx.moveTo(X(xmin), Y(0)); ctx.lineTo(X(xmax), Y(0)); ctx.moveTo(X(0), Y(ymin)); ctx.lineTo(X(0), Y(ymax)); ctx.stroke();
+  if (labels) { ctx.fillStyle = cssv('--muted'); ctx.font = '10px sans-serif'; for (let x = Math.ceil(xmin / step) * step; x <= xmax; x += step) if (Math.abs(x) > 1e-9) ctx.fillText(String(+x.toFixed(2)), X(x) + 2, Y(0) + 11); }
+}
+function polyline(P, xs, ys, color, width = 2, dash = []) {
+  const { ctx, X, Y } = P; ctx.strokeStyle = color; ctx.lineWidth = width; ctx.setLineDash(dash); ctx.beginPath();
+  xs.forEach((x, i) => i ? ctx.lineTo(X(x), Y(ys[i])) : ctx.moveTo(X(x), Y(ys[i]))); ctx.stroke(); ctx.setLineDash([]);
+}
+function arrow(P, x0, y0, x1, y1, color, width = 2) {
+  const { ctx, X, Y } = P, ax = X(x0), ay = Y(y0), bx = X(x1), by = Y(y1), a = Math.atan2(by - ay, bx - ax), L = 9;
+  ctx.strokeStyle = ctx.fillStyle = color; ctx.lineWidth = width; ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(bx, by); ctx.stroke();
+  if (Math.hypot(bx - ax, by - ay) > 4) { ctx.beginPath(); ctx.moveTo(bx, by); ctx.lineTo(bx - L * Math.cos(a - 0.4), by - L * Math.sin(a - 0.4)); ctx.lineTo(bx - L * Math.cos(a + 0.4), by - L * Math.sin(a + 0.4)); ctx.closePath(); ctx.fill(); }
+}
+function text(P, s, px, py, color, font = '12px sans-serif') { P.ctx.fillStyle = color; P.ctx.font = font; P.ctx.fillText(s, px, py); }
+function contourBands(P, f, scale = 2.2, logy = true) {
+  const { ctx, w, h, inv } = P, dpr = window.devicePixelRatio || 1;
+  const img = ctx.createImageData(Math.round(w * dpr), Math.round(h * dpr));
+  const dark = matchMedia('(prefers-color-scheme: dark)').matches && document.documentElement.dataset.theme !== 'light' || document.documentElement.dataset.theme === 'dark';
+  const step = 2;
+  for (let py = 0; py < img.height; py += step) for (let px = 0; px < img.width; px += step) {
+    const [x, y] = inv(px / dpr, py / dpr); const v = f([x, y]);
+    const s = logy ? Math.sign(v) * Math.log1p(Math.abs(v)) : v; const band = s * scale; const fr = band - Math.floor(band);
+    const line = fr < 0.07 && Math.abs(s) > 0.06; const t = Math.max(0, Math.min(1, (s + 2) / 12));
+    let r, g, b;
+    if (dark) { r = 29 + 30 * t; g = 33 + 40 * (1 - t); b = 37 + 50 * (1 - t); if (line) { r = 90 + 80 * t; g = 130 + 60 * (1 - t); b = 160; } }
+    else { r = 255 - 25 * t; g = 255 - 10 * t; b = 255 - 40 * (1 - t); if (line) { r = 120 + 100 * t; g = 150 + 60 * (1 - t); b = 200 - 60 * t; } }
+    for (let dy = 0; dy < step; dy++) for (let dx = 0; dx < step; dx++) { const k = ((py + dy) * img.width + px + dx) * 4; if (k < img.data.length) { img.data[k] = r; img.data[k + 1] = g; img.data[k + 2] = b; img.data[k + 3] = 255; } }
+  }
+  ctx.putImageData(img, 0, 0);
+}
+
+/* ---------- 테마 · 내비게이션 ---------- */
+(() => {
+  const btn = $('#themeBtn');
+  try { const t = localStorage.getItem('a21-theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+  btn.addEventListener('click', () => {
+    const cur = document.documentElement.dataset.theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const next = cur === 'dark' ? 'light' : 'dark'; document.documentElement.dataset.theme = next;
+    try { localStorage.setItem('a21-theme', next); } catch (e) {}
+    renderers.forEach(f => f());
+  });
+  $$('.loop .stage').forEach(g => g.addEventListener('click', () => $(g.dataset.go).scrollIntoView({ behavior: 'smooth' })));
+  const links = $$('nav.chips a'); const map = new Map(links.map(a => [a.getAttribute('href').slice(1), a]));
+  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { links.forEach(a => a.classList.remove('on')); const a = map.get(e.target.id); if (a) { a.classList.add('on'); a.scrollIntoView({ block: 'nearest', inline: 'center' }); } } }), { rootMargin: '-45% 0px -50% 0px' });
+  $$('main > section').forEach(s => io.observe(s));
+})();
+
+/* ---------- 2. 학습 스텝 ---------- */
+(() => {
+  const init = () => ({ x: [1, 0], W1: [[0.1, 0.2], [0.3, 0.4]], b1: [0, 0], W2: [0.5, 0.6], b2: 0, y: 1 });
+  let p = init(), hist = [], steps = 0;
+  const svg = $('#netSvg'), out = $('#st-out');
+  function read() { p.x = [+$('#st-x1').value || 0, +$('#st-x2').value || 0]; p.y = +$('#st-y').value; }
+  function draw() {
+    read(); const r = M.network(p); if (!hist.length) hist.push(r.loss);
+    const N = { x1: [40, 55], x2: [40, 175], h1: [180, 55], h2: [180, 175], o: [315, 115] };
+    let s = '';
+    const edge = (a, b, w, g, t, dy) => { const [x1, y1] = N[a], [x2, y2] = N[b], mx = x1 + (x2 - x1) * t + 4, my = y1 + (y2 - y1) * t + dy;
+      s += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/><text x="${mx - 22}" y="${my - 3}">w ${fmt(w, 3)}</text><text class="grad" x="${mx - 22}" y="${my + 9}">∂ ${fmt(g, 4)}</text>`; };
+    edge('x1', 'h1', p.W1[0][0], r.dW1[0][0], 0.5, -8); edge('x2', 'h1', p.W1[0][1], r.dW1[0][1], 0.3, 4);
+    edge('x1', 'h2', p.W1[1][0], r.dW1[1][0], 0.3, -4); edge('x2', 'h2', p.W1[1][1], r.dW1[1][1], 0.5, 18);
+    edge('h1', 'o', p.W2[0], r.dW2[0], 0.5, -12); edge('h2', 'o', p.W2[1], r.dW2[1], 0.5, 22);
+    const node = (k, l1, l2, l3) => { const [x, y] = N[k]; s += `<circle cx="${x}" cy="${y}" r="20"/><text x="${x - 12}" y="${y + 4}" style="font-weight:700">${l1}</text>`;
+      if (l2) s += `<text x="${x - 30}" y="${y - 26}">${l2}</text>`; if (l3) s += `<text x="${x - 30}" y="${y + 34}">${l3}</text>`; };
+    node('x1', 'x₁', '', fmt(p.x[0], 2)); node('x2', 'x₂', '', fmt(p.x[1], 2));
+    node('h1', 'h₁', 'z ' + fmt(r.z1[0], 3), 'a ' + fmt(r.a1[0], 3)); node('h2', 'h₂', 'z ' + fmt(r.z1[1], 3), 'a ' + fmt(r.a1[1], 3));
+    node('o', ' ŷ', 'z₂ ' + fmt(r.z2, 3), 'ŷ ' + fmt(r.yp, 4));
+    s += `<text x="250" y="222">L = ${fmt(r.loss, 4)}</text>`;
+    svg.innerHTML = s;
+    out.textContent =
+`스텝 ${steps}   손실 L = ${fmt(r.loss, 6)}   (y = ${p.y}, η = ${$('#st-lr').value})
+── 순전파 ──────────────────────────
+z1  (2,)   = W1 @ x + b1      = ${fmt(r.z1)}
+a1  (2,)   = σ(z1)            = ${fmt(r.a1)}
+z2  ()     = W2 · a1 + b2     = ${fmt(r.z2)}
+ŷ   ()     = σ(z2)            = ${fmt(r.yp)}
+── 역전파 ──────────────────────────
+∂L/∂ŷ  ()    = −y/ŷ + (1−y)/(1−ŷ) = ${fmt(r.dyp)}
+∂L/∂z2 ()    = ŷ − y              = ${fmt(r.dz2)}   ✔
+∂L/∂W2 (2,)  = ∂L/∂z2 · a1        = ${fmt(r.dW2)}
+∂L/∂a1 (2,)  = ∂L/∂z2 · W2        = ${fmt(r.da1)}
+∂L/∂z1 (2,)  = ∂L/∂a1 ⊙ a1(1−a1)  = ${fmt(r.dz1)}   ✔
+∂L/∂W1 (2,2) = outer(∂L/∂z1, x)   = [${fmt(r.dW1[0])}, ${fmt(r.dW1[1])}]
+── 현재 가중치 ───────────────────────
+W1 = [${fmt(p.W1[0], 4)}, ${fmt(p.W1[1], 4)}]   b1 = ${fmt(p.b1)}
+W2 = ${fmt(p.W2)}   b2 = ${fmt(p.b2)}`;
+    drawLoss();
+  }
+  function drawLoss() {
+    const c = $('#st-loss'), n = Math.max(hist.length, 2), mx = Math.max(...hist, 0.1);
+    const P = plot(c, -0.5, n - 0.5, -mx * 0.08, mx * 1.15, false);
+    axes(P, Math.max(1, Math.ceil(n / 10)), false);
+    polyline(P, hist.map((_, i) => i), hist, cssv('--accent'), 2);
+    hist.forEach((v, i) => { P.ctx.fillStyle = cssv('--accent'); P.ctx.beginPath(); P.ctx.arc(P.X(i), P.Y(v), 2.5, 0, 7); P.ctx.fill(); });
+    text(P, 'loss per step', 8, 14, cssv('--muted'));
+  }
+  function step(k) {
+    for (let i = 0; i < k; i++) {
+      read(); const r = M.network(p), lr = +$('#st-lr').value;
+      p.W1 = p.W1.map((row, a) => row.map((w, b) => w - lr * r.dW1[a][b])); p.b1 = p.b1.map((b, a) => b - lr * r.db1[a]);
+      p.W2 = p.W2.map((w, a) => w - lr * r.dW2[a]); p.b2 -= lr * r.db2; steps++; hist.push(M.network(p).loss);
+    }
+    draw();
+  }
+  $('#st-one').onclick = () => step(1); $('#st-ten').onclick = () => step(10);
+  $('#st-reset').onclick = () => { p = init(); hist = []; steps = 0; $('#st-x1').value = 1; $('#st-x2').value = 0; $('#st-y').value = '1'; draw(); };
+  $('#st-lr').oninput = e => { $('#st-lr-v').textContent = e.target.value; draw(); };
+  ['#st-x1', '#st-x2', '#st-y'].forEach(s => $(s).addEventListener('input', () => { hist = []; draw(); }));
+  onResize(draw);
+})();
+
+/* ---------- 3. 행렬 ---------- */
+(() => {
+  const ids = ['a', 'b', 'c', 'd'].map(k => '#mx-' + k);
+  const setA = A => { [A[0][0], A[0][1], A[1][0], A[1][1]].forEach((v, i) => $(ids[i]).value = +v.toFixed(4)); draw(); };
+  const getA = () => { const v = ids.map(s => +$(s).value || 0); return [[v[0], v[1]], [v[2], v[3]]]; };
+  const rot = deg => { const t = deg * Math.PI / 180; return [[Math.cos(t), -Math.sin(t)], [Math.sin(t), Math.cos(t)]]; };
+  const presets = { rot: () => rot(+$('#mx-th').value), scale: () => [[2, 0], [0, 0.5]], shear: () => [[1, 1], [0, 1]], gen: () => [[2, 1], [1, 3]], flip: () => [[1, 0], [0, -1]], sing: () => [[1, 2], [0.5, 1]], id: () => [[1, 0], [0, 1]] };
+  $$('[data-mx]').forEach(b => b.onclick = () => setA(presets[b.dataset.mx]()));
+  $('#mx-th').oninput = e => { $('#mx-th-v').textContent = e.target.value; setA(rot(+e.target.value)); };
+  ids.forEach(s => $(s).addEventListener('input', draw)); $('#mx-eig').onchange = draw;
+  function draw() {
+    const A = getA(), c = $('#mx-cv'), P = plot(c, -3, 3, -3, 3);
+    axes(P, 0.5, false);
+    const blue = cssv('--accent'), red = cssv('--red');
+    for (let k = -2; k <= 2; k += 0.5) {
+      const ln = [[-2, 2], [k, k]], vl = [[k, k], [-2, 2]];
+      for (const [xs, ys] of [ln, vl]) { const pts = [[], []]; for (let i = 0; i <= 20; i++) { const t = i / 20; pts[0].push(xs[0] + (xs[1] - xs[0]) * t); pts[1].push(ys[0] + (ys[1] - ys[0]) * t); }
+        const tp = M.transform(A, pts); P.ctx.globalAlpha = 0.35; polyline(P, tp[0], tp[1], red, 1); P.ctx.globalAlpha = 1; }
+    }
+    const circ = M.unitCircle(), tc = M.transform(A, circ);
+    polyline(P, circ[0], circ[1], blue, 2.5); polyline(P, tc[0], tc[1], red, 2.5);
+    arrow(P, 0, 0, A[0][0], A[1][0], cssv('--fg')); arrow(P, 0, 0, A[0][1], A[1][1], cssv('--fg'));
+    text(P, 'Ae₁', P.X(A[0][0]) + 4, P.Y(A[1][0]) - 4, cssv('--fg')); text(P, 'Ae₂', P.X(A[0][1]) + 4, P.Y(A[1][1]) - 4, cssv('--fg'));
+    const e = M.eig2(A);
+    if ($('#mx-eig').checked && e.real) e.vectors.forEach((v, i) => polyline(P, [-3 * v[0], 3 * v[0]], [-3 * v[1], 3 * v[1]], cssv('--green'), 1.5, [6, 4]));
+    text(P, '파랑: 단위 원   빨강: A 적용 후', 8, 16, cssv('--muted'));
+    const r = M.areaRatio(A);
+    const orient = r.det > 1e-12 ? '보존' : r.det < -1e-12 ? '뒤집힘 (거울상)' : '평면이 선으로 납작해짐 — 역행렬 없음';
+    const eigTxt = e.real ? `λ = ${fmt(e.values[0])}, ${fmt(e.values[1])}  (방향 ${fmt(e.vectors[0], 3)}, ${fmt(e.vectors[1], 3)})` : `복소수 ${fmt(e.re, 3)} ± ${fmt(e.im, 3)}i — 실수 고유벡터 없음 (회전 성분)`;
+    $('#mx-out').textContent = `A = [${fmt(A[0], 3)}, ${fmt(A[1], 3)}]
+det A = ad − bc = ${fmt(A[0][0], 3)}·${fmt(A[1][1], 3)} − ${fmt(A[0][1], 3)}·${fmt(A[1][0], 3)} = ${fmt(r.det)}
+면적 (신발끈): 변환 전 ${fmt(r.before)} → 변환 후 ${fmt(r.after)}, 비율 ${fmt(r.ratio)}
+|det|와 면적비 오차: ${Math.abs(r.det) > 1e-12 ? fmt(Math.abs(r.ratio - Math.abs(r.det)) / Math.abs(r.det) * 100, 6) + '%' : '—'}
+방향: ${orient}
+고유값: ${eigTxt}`;
+  }
+  onResize(draw);
+})();
+
+/* ---------- 4. Power Iteration ---------- */
+(() => {
+  const mats = [[[4, 1], [1, 3]], [[2, 1], [1, 2]], [[1, 2], [2, 1]], [[3, 0.2], [0.2, 2.9]], [[0, -1], [1, 0]]];
+  let A = mats[0], b = null, trail = [], t = 0, last = null;
+  function reset() { A = mats[+$('#ev-mat').value]; const a = +$('#ev-ang').value * Math.PI / 180; b = [Math.cos(a), Math.sin(a)]; trail = [b.slice()]; t = 0; last = null; draw(); }
+  function step(k) { for (let i = 0; i < k; i++) { last = M.powerStep(A, b); b = last.b; trail.push(b.slice()); t++; } draw(); }
+  $('#ev-step').onclick = () => step(1);
+  $('#ev-run').onclick = () => { let i = 0; while (i < 200 && !(last && last.diff < 1e-6)) { step(1); i++; } };
+  $('#ev-reset').onclick = reset; $('#ev-mat').onchange = reset;
+  $('#ev-ang').oninput = e => { $('#ev-ang-v').textContent = e.target.value + '°'; reset(); };
+  function draw() {
+    const P = plot($('#ev-cv'), -1.6, 1.6, -1.6, 1.6); axes(P, 0.5, false);
+    const circ = M.unitCircle(); polyline(P, circ[0], circ[1], cssv('--grid'), 1.5);
+    const e = M.eig2(A);
+    if (e.real) e.vectors.forEach((v, i) => polyline(P, [-1.5 * v[0], 1.5 * v[0]], [-1.5 * v[1], 1.5 * v[1]], i === 0 ? cssv('--green') : cssv('--muted'), 1.5, [6, 4]));
+    trail.forEach((v, i) => { P.ctx.globalAlpha = 0.15 + 0.85 * (i + 1) / trail.length; arrow(P, 0, 0, v[0], v[1], i === trail.length - 1 ? cssv('--red') : cssv('--accent'), i === trail.length - 1 ? 3 : 1.2); });
+    P.ctx.globalAlpha = 1;
+    text(P, '초록 점선: 최대 |λ| 고유벡터 방향', 8, 16, cssv('--muted'));
+    const ratio = e.real ? Math.min(Math.abs(e.values[0]), Math.abs(e.values[1])) / Math.max(Math.abs(e.values[0]), Math.abs(e.values[1])) : 1;
+    let msg = `t = ${t}   b_t = ${fmt(b, 4)}`;
+    if (last) msg += `\nλ 추정 (bᵀAb) = ${fmt(last.lambda, 6)}   |b_t − b_(t−1)| = ${fmt(last.diff, 6)}${last.diff < 1e-6 ? '  → 수렴 (tol 1e-6)' : ''}`;
+    msg += e.real ? `\n실제 고유값 ${fmt(e.values[0])}, ${fmt(e.values[1])}  |λ₂/λ₁| = ${fmt(ratio, 3)} — 작을수록 빨리 수렴` : `\n고유값이 복소수(크기 같음): 방향이 매번 90° 돌기만 하고 수렴하지 않는다`;
+    if (e.real && Math.abs(Math.abs(e.values[0]) - Math.abs(e.values[1])) < 1e-9) msg += '\n|λ₁| = |λ₂| — 한 방향이 이기지 못한다';
+    $('#ev-out').textContent = msg;
+  }
+  reset(); onResize(draw);
+})();
+
+/* ---------- 5. SVD ---------- */
+(() => {
+  if (!DATA || !DATA.svd) return;
+  const dec = (b64, T) => { const bin = atob(b64), u8 = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i); return new T(u8.buffer); };
+  const { m, n } = DATA.svd, U = dec(DATA.svd.U, Float32Array), S = dec(DATA.svd.S, Float32Array), Vt = dec(DATA.svd.Vt, Float32Array);
+  const orig = Float64Array.from(dec(DATA.svd.image, Uint8Array), v => v / 255);
+  function paint(canvas, arr, stretch = false) {
+    const dpr = window.devicePixelRatio || 1, w = canvas.clientWidth; canvas.width = Math.round(w * dpr); canvas.height = Math.round(w * dpr);
+    const ctx = canvas.getContext('2d'), off = document.createElement('canvas'); off.width = n; off.height = m;
+    const oc = off.getContext('2d'), img = oc.createImageData(n, m);
+    let lo = 0, hi = 1; if (stretch) { lo = Infinity; hi = -Infinity; arr.forEach(v => { lo = Math.min(lo, v); hi = Math.max(hi, v); }); }
+    for (let i = 0; i < m * n; i++) { const v = Math.round(255 * Math.min(1, Math.max(0, (arr[i] - lo) / (hi - lo || 1)))); img.data[4 * i] = img.data[4 * i + 1] = img.data[4 * i + 2] = v; img.data[4 * i + 3] = 255; }
+    oc.putImageData(img, 0, 0); ctx.imageSmoothingEnabled = false; ctx.drawImage(off, 0, 0, canvas.width, canvas.height);
+  }
+  function spec(k) {
+    const P = plot($('#svd-spec'), 0, S.length + 1, -0.05, 1.05, false); axes(P, 16, false);
+    const lmax = Math.log10(S[0]), lmin = Math.log10(S[S.length - 1] || 1e-6);
+    const ys = Array.from(S, s => (Math.log10(s) - lmin) / (lmax - lmin)); polyline(P, ys.map((_, i) => i + 1), ys, cssv('--accent'), 2);
+    let cum = 0, tot = 0; S.forEach(s => tot += s * s); const cs = Array.from(S, s => (cum += s * s) / tot); polyline(P, cs.map((_, i) => i + 1), cs, cssv('--amber'), 2);
+    polyline(P, [k, k], [0, 1], cssv('--red'), 1.5, [4, 3]);
+    text(P, '파랑: log σᵢ (정규화)   주황: 누적 에너지   빨강: k', 8, 14, cssv('--muted'));
+    P.ctx.fillStyle = cssv('--muted'); [1, 32, 64, 96, 128].forEach(i => P.ctx.fillText(String(i), P.X(i) - 6, P.h - 4));
+  }
+  function draw() {
+    const k = +$('#svd-k').value, only = $('#svd-only').checked; $('#svd-k-v').textContent = k;
+    const rec = M.svdReconstruct(U, S, Vt, m, n, k, only);
+    paint($('#svd-orig'), orig); paint($('#svd-rec'), rec, only); spec(k);
+    $('#svd-cap').textContent = only ? `${k}번째 층 σ${k}u${k}v${k}ᵀ (대비 확대)` : `상위 ${k}개 층의 합`;
+    const st = M.svdStats(orig, only ? M.svdReconstruct(U, S, Vt, m, n, k) : rec, S, m, n, k);
+    $('#svd-out').textContent = `k = ${k}   σ_k = ${fmt(S[k - 1], 4)}   (σ₁ = ${fmt(S[0], 2)})
+저장 비율 k(m+n+1)/mn = ${fmt(st.storage, 3)}  ${st.storage > 1 ? '← 원본보다 큼: 압축 아님' : ''}
+에너지 보존 Σσ²(≤k)/Σσ² = ${fmt(st.energy * 100, 2)}%
+상대 오차 ‖A−A_k‖/‖A‖ = ${fmt(st.relErr, 4)}   PSNR = ${Number.isFinite(st.psnr) ? fmt(st.psnr, 2) + ' dB' : '∞'}`;
+  }
+  $('#svd-k').oninput = draw; $('#svd-only').onchange = draw;
+  $$('[data-k]').forEach(b => b.onclick = () => { $('#svd-k').value = b.dataset.k; draw(); });
+  onResize(draw);
+})();
+
+/* ---------- 6. 미분 ---------- */
+(() => {
+  const F = { sq: [x => x * x, x => 2 * x, 3], sin: [Math.sin, Math.cos, 1], exp: [Math.exp, Math.exp, 0] };
+  function draw() {
+    const [f, df, x0] = F[$('#dv-f').value], lh = +$('#dv-h').value, h = Math.pow(10, lh), exact = df(x0);
+    $('#dv-h-v').textContent = lh.toFixed(2).replace('-', '−');
+    const P = plot($('#dv-cv'), -15.5, 0.5, -17.5, 1, false); axes(P, 1, false);
+    const err = (g, hh) => Math.max(Math.abs(g(f, x0, hh) - exact), 1e-17);
+    const hs = []; for (let e = -15; e <= 0; e += 0.125) hs.push(e);
+    polyline(P, hs, hs.map(e => Math.log10(err(M.forwardDiff, Math.pow(10, e)))), cssv('--amber'), 2);
+    polyline(P, hs, hs.map(e => Math.log10(err(M.centralDiff, Math.pow(10, e)))), cssv('--accent'), 2);
+    polyline(P, [lh, lh], [-17.5, 1], cssv('--red'), 1.5, [4, 3]);
+    P.ctx.fillStyle = cssv('--muted'); P.ctx.font = '10px sans-serif';
+    for (let e = -15; e <= 0; e += 3) P.ctx.fillText('1e' + e, P.X(e) - 10, P.h - 4);
+    for (let e = -16; e <= 0; e += 4) P.ctx.fillText('1e' + e, 2, P.Y(e) + 3);
+    text(P, '주황: 전진차분 오차   파랑: 중심차분 오차   (로그-로그)', 40, 14, cssv('--muted'));
+    const fw = M.forwardDiff(f, x0, h), ce = M.centralDiff(f, x0, h);
+    $('#dv-out').textContent = `h = ${h.toExponential(2)}   정답 f′(x) = ${exact.toPrecision(12)}
+전진차분 = ${fw.toPrecision(12)}   오차 ${Math.abs(fw - exact).toExponential(2)}
+중심차분 = ${ce.toPrecision(12)}   오차 ${Math.abs(ce - exact).toExponential(2)}`;
+  }
+  $('#dv-f').onchange = draw; $('#dv-h').oninput = draw; onResize(draw);
+})();
+
+/* ---------- 6. Gradient ⟂ 등고선 ---------- */
+(() => {
+  let pt = [1.6, 1.2];
+  const coef = () => $('#gr-f').value === 'bowl' ? [1, 1] : [1, 10];
+  function draw() {
+    const [a, b] = coef(), f = ([x, y]) => a * x * x + b * y * y;
+    const P = plot($('#gr-cv'), -3, 3, -3, 3); contourBands(P, f, 1.6); axes(P, 1, true);
+    const c = f(pt), r1 = Math.sqrt(c / a), r2 = Math.sqrt(c / b);
+    const th = []; for (let i = 0; i <= 100; i++) th.push(2 * Math.PI * i / 100);
+    polyline(P, th.map(t => r1 * Math.cos(t)), th.map(t => r2 * Math.sin(t)), cssv('--accent'), 2);
+    const h = 1e-5, g = [(f([pt[0] + h, pt[1]]) - f([pt[0] - h, pt[1]])) / (2 * h), (f([pt[0], pt[1] + h]) - f([pt[0], pt[1] - h])) / (2 * h)];
+    const t = Math.atan2(pt[1] / r2, pt[0] / r1), tan = [-r1 * Math.sin(t), r2 * Math.cos(t)], tl = Math.hypot(...tan), tu = tan.map(v => v / tl);
+    polyline(P, [pt[0] - tu[0] * 0.9, pt[0] + tu[0] * 0.9], [pt[1] - tu[1] * 0.9, pt[1] + tu[1] * 0.9], cssv('--fg'), 2);
+    const gl = Math.hypot(...g), sc = Math.min(1.2, 0.25 * gl) / gl;
+    arrow(P, pt[0], pt[1], pt[0] + g[0] * sc, pt[1] + g[1] * sc, cssv('--red'), 2.5);
+    arrow(P, pt[0], pt[1], pt[0] - g[0] * sc * 0.6, pt[1] - g[1] * sc * 0.6, cssv('--green'), 1.5);
+    text(P, '빨강 ∇f   초록 −∇f (하강)   검정 접선   파랑 등고선', 8, 16, cssv('--muted'));
+    const cos = (g[0] * tu[0] + g[1] * tu[1]) / gl;
+    $('#gr-out').textContent = `점 (${fmt(pt[0], 3)}, ${fmt(pt[1], 3)})   f = ${fmt(c, 4)}
+∇f (중심차분) = ${fmt(g, 4)}   |∇f| = ${fmt(gl, 4)}
+접선 (매개변수식) = ${fmt(tu, 4)}
+cos(∇f, 접선) = ${cos.toExponential(2)}  → 수직`;
+  }
+  const cv = $('#gr-cv');
+  cv.addEventListener('pointerdown', e => { const P = plot(cv, -3, 3, -3, 3), r = cv.getBoundingClientRect(); const q = P.inv(e.clientX - r.left, e.clientY - r.top); if (Math.hypot(...q) > 0.05) { pt = q; draw(); } });
+  $('#gr-f').onchange = draw; onResize(draw);
+})();
+
+/* ---------- 7. 손계산 연습지 ---------- */
+(() => {
+  const fixed = () => ({ x: [1, 0], W1: [[0.1, 0.2], [0.3, 0.4]], b1: [0, 0], W2: [0.5, 0.6], b2: 0, y: 1 });
+  let p = fixed();
+  const rows = [
+    ['z1[0]', r => r.z1[0], 'W1[0]·x + b1[0]'], ['z1[1]', r => r.z1[1], 'W1[1]·x + b1[1]'],
+    ['a1[0]', r => r.a1[0], 'σ(z1[0])'], ['a1[1]', r => r.a1[1], 'σ(z1[1])'],
+    ['z2', r => r.z2, 'W2·a1 + b2'], ['ŷ', r => r.yp, 'σ(z2)'],
+    ['∂L/∂ŷ', r => r.dyp, '−y/ŷ + (1−y)/(1−ŷ)'], ['∂L/∂z2 ✔', r => r.dz2, 'ŷ − y'],
+    ['∂L/∂W2[0]', r => r.dW2[0], '∂L/∂z2 · a1[0]'], ['∂L/∂W2[1]', r => r.dW2[1], '∂L/∂z2 · a1[1]'],
+    ['∂L/∂a1[0]', r => r.da1[0], '∂L/∂z2 · W2[0]'], ['∂L/∂a1[1]', r => r.da1[1], '∂L/∂z2 · W2[1]'],
+    ['∂L/∂z1[0] ✔', r => r.dz1[0], '∂L/∂a1[0] · a1[0](1−a1[0])'], ['∂L/∂z1[1] ✔', r => r.dz1[1], '∂L/∂a1[1] · a1[1](1−a1[1])'],
+    ['∂L/∂W1[0,0]', r => r.dW1[0][0], '∂L/∂z1[0] · x[0]'], ['∂L/∂W1[0,1]', r => r.dW1[0][1], '∂L/∂z1[0] · x[1]'],
+    ['∂L/∂W1[1,0]', r => r.dW1[1][0], '∂L/∂z1[1] · x[0]'], ['∂L/∂W1[1,1]', r => r.dW1[1][1], '∂L/∂z1[1] · x[1]'],
+  ];
+  function render() {
+    $('#ws-problem').textContent = `x = ${fmt(p.x, 1)}   y = ${p.y}
+W1 = [${fmt(p.W1[0], 1)}, ${fmt(p.W1[1], 1)}]   b1 = ${fmt(p.b1, 1)}
+W2 = ${fmt(p.W2, 1)}   b2 = ${fmt(p.b2, 1)}   활성화 Sigmoid, 손실 BCE`;
+    $('#ws-table').innerHTML = '<tr><th>값</th><th>식</th><th>내 답</th><th>결과</th></tr>' + rows.map((r, i) =>
+      `<tr><td class="mono">${r[0]}</td><td class="muted" style="font-size:.82rem">${r[2]}</td><td><input type="text" inputmode="decimal" id="ws-${i}" aria-label="${r[0]} 답"></td><td id="ws-r${i}"></td></tr>`).join('');
+    $('#ws-score').textContent = '';
+  }
+  const parse = s => +String(s).trim().replace('−', '-').replace(',', '.');
+  $('#ws-check').onclick = () => {
+    const r = M.network(p); let ok = 0, filled = 0;
+    rows.forEach((row, i) => { const v = $('#ws-' + i).value; const cell = $('#ws-r' + i); if (v.trim() === '') { cell.textContent = ''; return; }
+      filled++; const d = Math.abs(parse(v) - row[1](r)), good = d <= 6e-5, near = !good && d <= 1.6e-4;
+      if (good) ok++; cell.innerHTML = good ? '<span class="ok">✓</span>' : near ? '<span style="color:var(--amber);font-weight:700">△ 마지막 자리</span>' : '<span class="bad">✗</span>'; });
+    $('#ws-score').textContent = `${filled}칸 중 ${ok}칸 정답 (소수점 4자리 기준). △는 반올림한 중간값을 이어 써서 마지막 자리만 다른 경우다. ✔ 표시 칸이 맞으면 그 앞까지의 연쇄는 맞다.`;
+  };
+  $('#ws-show').onclick = () => { const r = M.network(p); rows.forEach((row, i) => $('#ws-r' + i).innerHTML = `<span class="mono">${fmt(row[1](r), 4)}</span>`); };
+  $('#ws-clear').onclick = render;
+  $('#ws-fixed').onclick = () => { p = fixed(); render(); };
+  $('#ws-new').onclick = () => {
+    const r1 = () => Math.round((Math.random() * 2 - 1) * 10) / 10;
+    p = { x: [Math.round(Math.random() * 2), Math.round(Math.random() * 2) - 1], W1: [[r1(), r1()], [r1(), r1()]], b1: [r1(), 0], W2: [r1(), r1()], b2: r1(), y: Math.random() < 0.5 ? 0 : 1 };
+    render();
+  };
+  render();
+})();
+
+/* ---------- 8. 옵티마이저 실험실 ---------- */
+(() => {
+  const VIEW = { bowl: [-6, 6, -6, 6], ellipse: [-6, 6, -6, 6], rosenbrock: [-2, 2, -1, 3], saddle: [-3, 3, -3, 3] };
+  const START = { bowl: [5, 5], ellipse: [5, 5], rosenbrock: [-1.5, 2], saddle: [1, 0.5] };
+  const COLORS = { GD: '#1f77b4', Momentum: '#d62728', Adam: '#2ca02c', Newton: '#9467bd' };
+  const CURV = { bowl: 2, ellipse: 20 };
+  let start = START.bowl.slice(), lrExact = null;
+  const lrVal = () => { if (lrExact !== null) return lrExact; const v = Math.pow(10, +$('#op-lr').value); return v >= 0.1 ? Math.round(v * 100) / 100 : v >= 0.01 ? Math.round(v * 1000) / 1000 : Math.round(v * 10000) / 10000; };
+  const setLr = v => { $('#op-lr').value = Math.log10(v); lrExact = v; };
+  const presets = [
+    ['필수: GD η=0.1', { f: 'bowl', lr: 0.1, n: 100, opts: ['GD'] }],
+    ['η=0.5 한 번에', { f: 'bowl', lr: 0.5, n: 10, opts: ['GD'] }],
+    ['η=1.0 진동', { f: 'bowl', lr: 1.0, n: 20, opts: ['GD'] }],
+    ['η=1.1 발산', { f: 'bowl', lr: 1.1, n: 20, opts: ['GD'] }],
+    ['GD vs Momentum', { f: 'bowl', lr: 0.1, n: 100, opts: ['GD', 'Momentum'] }],
+    ['타원 η=0.01', { f: 'ellipse', lr: 0.01, n: 100, opts: ['GD', 'Momentum'] }],
+    ['타원 η=0.09', { f: 'ellipse', lr: 0.09, n: 100, opts: ['GD', 'Momentum'] }],
+    ['타원 η=0.5 발산', { f: 'ellipse', lr: 0.5, n: 10, opts: ['GD'] }],
+    ['Adam (타원 η=0.1)', { f: 'ellipse', lr: 0.1, n: 200, opts: ['GD', 'Momentum', 'Adam'] }],
+    ['Newton vs GD (Rosenbrock)', { f: 'rosenbrock', lr: 0.001, n: 1000, opts: ['GD', 'Newton'] }],
+    ['Newton과 안장점', { f: 'saddle', lr: 0.1, n: 12, opts: ['GD', 'Newton'] }],
+  ];
+  const box = $('#op-presets');
+  presets.forEach(([label, s]) => { const b = document.createElement('button'); b.className = 'b'; b.type = 'button'; b.textContent = label;
+    b.onclick = () => { $('#op-f').value = s.f; start = START[s.f].slice(); setLr(s.lr); $('#op-n').value = s.n; $('#op-beta').value = 0.9;
+      ['GD', 'Momentum', 'Adam', 'Newton'].forEach(o => $('#op-' + ({ GD: 'gd', Momentum: 'mom', Adam: 'adam', Newton: 'newton' })[o]).checked = s.opts.includes(o)); draw(); };
+    box.appendChild(b); });
+  function draw() {
+    const fname = $('#op-f').value, F = M.FUNCS[fname], lr = lrVal(), beta = +$('#op-beta').value, n = +$('#op-n').value;
+    $('#op-lr-v').textContent = lr; $('#op-beta-v').textContent = beta; $('#op-n-v').textContent = n;
+    const [x0, x1, y0, y1] = VIEW[fname], P = plot($('#op-cv'), x0, x1, y0, y1);
+    contourBands(P, F.f, fname === 'rosenbrock' ? 1.3 : 2.0); axes(P, fname === 'rosenbrock' ? 0.5 : 1, true);
+    P.ctx.fillStyle = cssv('--fg'); P.ctx.font = '18px sans-serif'; P.ctx.fillText(fname === 'saddle' ? '✕' : '★', P.X(F.min[0]) - 7, P.Y(F.min[1]) + 6);
+    const chosen = [['GD', '#op-gd'], ['Momentum', '#op-mom'], ['Adam', '#op-adam'], ['Newton', '#op-newton']].filter(([, s]) => $(s).checked).map(([o]) => o);
+    let rows = '<tr><th>옵티마이저</th><th>최종 위치</th><th class="num">‖θ−θ*‖</th><th class="num">1e-3 도달</th><th>상태</th></tr>';
+    const d0 = Math.hypot(start[0] - F.min[0], start[1] - F.min[1]);
+    chosen.forEach(o => {
+      const path = M.runOptimizer(fname, o, { lr: o === 'Newton' ? 1 : lr, beta }, start, n, o === 'Newton' ? 1e-10 : null);
+      const ctx = P.ctx; ctx.strokeStyle = ctx.fillStyle = COLORS[o]; ctx.lineWidth = 1.6; ctx.setLineDash([5, 3]); ctx.beginPath();
+      path.forEach((q, i) => { if (!q.every(Number.isFinite)) return; i ? ctx.lineTo(P.X(q[0]), P.Y(q[1])) : ctx.moveTo(P.X(q[0]), P.Y(q[1])); }); ctx.stroke(); ctx.setLineDash([]);
+      const every = Math.max(1, Math.floor(path.length / 120));
+      path.forEach((q, i) => { if (i % every || !q.every(Number.isFinite)) return; ctx.beginPath(); ctx.arc(P.X(q[0]), P.Y(q[1]), 2.4, 0, 7); ctx.fill(); });
+      const last = path[path.length - 1], dist = Math.hypot(last[0] - F.min[0], last[1] - F.min[1]), hit = M.itersToReach(path, F.min, 1e-3);
+      let st = hit !== null ? `<span class="ok">수렴</span>` : !Number.isFinite(dist) || dist > 2 * d0 ? `<span class="bad">발산</span>` : dist > 0.9 * d0 ? '<span class="bad">진동/정체</span>' : '진행 중';
+      if (fname === 'saddle') st = dist < 1e-6 ? '<span class="bad">안장점에 갇힘</span>' : (Math.abs(last[1]) > 2 ? '<span class="ok">안장점 탈출</span>' : '이동 중');
+      rows += `<tr><td style="color:${COLORS[o]};font-weight:700">${o}${o === 'Newton' ? ' (η=1)' : ''}</td><td class="mono">${fmt(last, 3)}</td><td class="num">${fmt(dist, 4)}</td><td class="num">${hit === null ? '—' : hit + '회'}</td><td>${st}</td></tr>`;
+    });
+    $('#op-table').innerHTML = rows;
+    P.ctx.fillStyle = cssv('--fg'); P.ctx.beginPath(); P.ctx.arc(P.X(start[0]), P.Y(start[1]), 4, 0, 7); P.ctx.fill();
+    let hint = `시작점 (${fmt(start[0], 2)}, ${fmt(start[1], 2)}) — 화면을 눌러 바꿀 수 있다.`;
+    if (CURV[fname]) { const L = CURV[fname], lim = 2 / L; hint += `\nGD 안정 조건: η < 2/최대곡률 = 2/${L} = ${lim}.  현재 η·최대곡률 = ${fmt(lr * L, 3)} → 축소율 |1 − η·${L}| = ${fmt(Math.abs(1 - lr * L), 3)}${lr > lim ? '  ⚠ 발산' : lr === lim ? '  ⚠ 경계: 진동' : ''}`;
+      if (fname === 'ellipse') hint += `\n완만한 x 방향 축소율 |1 − 2η| = ${fmt(Math.abs(1 - 2 * lr), 3)} — 1에 가까울수록 GD가 느리다.`; }
+    if (fname === 'rosenbrock') hint += '\nRosenbrock: 최솟값 (1, 1). 골짜기 바닥은 평평하고 벽은 가파르다. 최솟값 근처의 최대 곡률이 약 1002라서 GD는 η < 2/1002 ≈ 0.002여야 하고, 그 작은 η로는 평평한 바닥을 아주 천천히 이동한다.';
+    if (fname === 'saddle') hint += '\n✕는 최솟값이 아니라 안장점이다. f는 y 방향으로 끝없이 내려간다.';
+    hint += '\nNewton은 학습률 1과 정확한 Hessian을 사용한다.';
+    $('#op-hint').textContent = hint;
+  }
+  const cv = $('#op-cv');
+  cv.addEventListener('pointerdown', e => { const fname = $('#op-f').value, [x0, x1, y0, y1] = VIEW[fname], P = plot(cv, x0, x1, y0, y1), r = cv.getBoundingClientRect(); start = P.inv(e.clientX - r.left, e.clientY - r.top); draw(); });
+  $('#op-f').onchange = () => { start = START[$('#op-f').value].slice(); draw(); };
+  $('#op-lr').oninput = () => { lrExact = null; draw(); };
+  ['#op-beta', '#op-n'].forEach(s => $(s).oninput = draw);
+  ['#op-gd', '#op-mom', '#op-adam', '#op-newton'].forEach(s => $(s).onchange = draw);
+  onResize(draw);
+})();
+
+/* ---------- 9. 분포 ---------- */
+(() => {
+  const ids = ['m1', 'v1', 'm2', 'v2'];
+  function draw() {
+    const [m1, v1, m2, v2] = ids.map(k => +$('#nm-' + k).value); ids.forEach(k => $('#nm-' + k + '-v').textContent = $('#nm-' + k).value);
+    const pk = Math.max(M.normalPdf(m1, m1, v1), M.normalPdf(m2, m2, v2));
+    const P = plot($('#nm-cv'), -5, 6, -0.04 * pk, pk * 1.18, false); axes(P, 1, true);
+    const xs = []; for (let x = -5; x <= 6; x += 0.02) xs.push(x);
+    [[m1, v1, cssv('--accent')], [m2, v2, cssv('--red')]].forEach(([m, v, c]) => {
+      const ys = xs.map(x => M.normalPdf(x, m, v)); P.ctx.globalAlpha = 0.15; P.ctx.fillStyle = c; P.ctx.beginPath(); P.ctx.moveTo(P.X(xs[0]), P.Y(0));
+      xs.forEach((x, i) => P.ctx.lineTo(P.X(x), P.Y(ys[i]))); P.ctx.lineTo(P.X(xs[xs.length - 1]), P.Y(0)); P.ctx.fill(); P.ctx.globalAlpha = 1; polyline(P, xs, ys, c, 2.5); });
+    const area = (m, v) => { let s = 0; for (let x = -30; x <= 30; x += 0.001) s += M.normalPdf(x, m, v) * 0.001; return s; };
+    $('#nm-out').textContent = `파랑 N(${m1}, ${v1}): σ = ${fmt(Math.sqrt(v1), 3)}, 최대 밀도 ${fmt(M.normalPdf(m1, m1, v1), 4)}, 넓이 ${fmt(area(m1, v1), 4)}
+빨강 N(${m2}, ${v2}): σ = ${fmt(Math.sqrt(v2), 3)}, 최대 밀도 ${fmt(M.normalPdf(m2, m2, v2), 4)}, 넓이 ${fmt(area(m2, v2), 4)}`;
+  }
+  ids.forEach(k => $('#nm-' + k).oninput = draw); onResize(draw);
+  function drawB() {
+    const p1 = +$('#bn-p1').value, p2 = +$('#bn-p2').value; $('#bn-p1-v').textContent = p1; $('#bn-p2-v').textContent = p2;
+    const P = plot($('#bn-cv'), -0.6, 1.6, -0.08, 1.12, false), ctx = P.ctx; axes(P, 1, false);
+    [[p1, cssv('--accent'), -0.12], [p2, cssv('--red'), 0.12]].forEach(([p, c, off]) => [0, 1].forEach(k => {
+      const v = M.bernoulliPmf(k, p); ctx.fillStyle = c; ctx.fillRect(P.X(k + off - 0.1), P.Y(v), P.X(0.2) - P.X(0), P.Y(0) - P.Y(v));
+      ctx.fillStyle = cssv('--fg'); ctx.font = '11px sans-serif'; ctx.fillText(v.toFixed(2), P.X(k + off - 0.08), P.Y(v) - 4); }));
+    text(P, 'k = 0 (실패)', P.X(-0.2), P.h - 4, cssv('--muted')); text(P, 'k = 1 (성공)', P.X(0.8), P.h - 4, cssv('--muted'));
+    text(P, `파랑 B(${p1})   빨강 B(${p2})`, 8, 14, cssv('--muted'));
+  }
+  $('#bn-p1').oninput = drawB; $('#bn-p2').oninput = drawB; onResize(drawB);
+})();
+
+/* ---------- 9. MLE ---------- */
+(() => {
+  let s = 12345; const rnd = () => { s = (s + 0x6D2B79F5) | 0; let t = Math.imul(s ^ (s >>> 15), 1 | s); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+  const gauss = () => Math.sqrt(-2 * Math.log(rnd() + 1e-12)) * Math.cos(2 * Math.PI * rnd());
+  const xs = [], ys = []; for (let i = 0; i < 30; i++) { const x = rnd() * 4 - 2; xs.push(x); ys.push(1.5 * x + 0.5 * gauss()); }
+  const ws = []; for (let w = 0; w <= 3.0001; w += 0.01) ws.push(w);
+  function draw() {
+    const w = +$('#ml-w').value, v = +$('#ml-v').value; $('#ml-w-v').textContent = w.toFixed(2); $('#ml-v-v').textContent = v;
+    const P = plot($('#ml-data'), -2.3, 2.3, -4.5, 4.5, false); axes(P, 1, false);
+    xs.forEach((x, i) => { polyline(P, [x, x], [ys[i], w * x], cssv('--red'), 1); P.ctx.fillStyle = cssv('--accent'); P.ctx.beginPath(); P.ctx.arc(P.X(x), P.Y(ys[i]), 3, 0, 7); P.ctx.fill(); });
+    polyline(P, [-2.3, 2.3], [-2.3 * w, 2.3 * w], cssv('--fg'), 2); text(P, '빨간 선 = 잔차 y − wx', 8, 14, cssv('--muted'));
+    const mses = ws.map(ww => M.mse(ys, xs.map(x => ww * x))), nlls = ws.map(ww => M.gaussianNll(ys, xs.map(x => ww * x), v));
+    const norm01 = a => { const lo = Math.min(...a), hi = Math.max(...a); return a.map(z => (z - lo) / (hi - lo)); };
+    const Q = plot($('#ml-curve'), 0, 3, -0.05, 1.1, false); axes(Q, 0.5, true);
+    polyline(Q, ws, norm01(mses), cssv('--accent'), 3); polyline(Q, ws, norm01(nlls), cssv('--amber'), 2, [6, 4]);
+    polyline(Q, [w, w], [0, 1.1], cssv('--red'), 1.5);
+    text(Q, '파랑 MSE(w)  주황 점선 NLL(w)  (각각 0–1로 정규화)', 6, 14, cssv('--muted'));
+    const mse = M.mse(ys, xs.map(x => w * x)), nll = M.gaussianNll(ys, xs.map(x => w * x), v), n = xs.length;
+    const am = ws[mses.indexOf(Math.min(...mses))], an = ws[nlls.indexOf(Math.min(...nlls))];
+    $('#ml-out').textContent = `w = ${w.toFixed(2)}   MSE = ${fmt(mse)}   NLL = ${fmt(nll)}
+NLL − n/(2σ²)·MSE = ${fmt(nll - n / (2 * v) * mse, 6)}   ← w를 바꿔도 그대로인 상수 (n/2)·log(2πσ²) = ${fmt(n / 2 * Math.log(2 * Math.PI * v), 6)}
+argmin MSE = ${am.toFixed(2)}, argmin NLL = ${an.toFixed(2)}   (데이터 생성 시 실제 w = 1.5)`;
+  }
+  $('#ml-w').oninput = draw; $('#ml-v').oninput = draw; onResize(draw);
+})();
+
+/* ---------- 9. 소프트맥스 ---------- */
+(() => {
+  const z = [2, 1, 0.1, -1], ctrl = $('#sm-ctrl');
+  z.forEach((v, i) => { const l = document.createElement('label'); l.innerHTML = `logit z${i + 1} <span class="val" id="sm-v${i}">${v}</span><input type="range" id="sm-z${i}" min="-5" max="5" step="0.1" value="${v}">`; ctrl.appendChild(l); });
+  const lt = document.createElement('label'); lt.innerHTML = `온도 T <span class="val" id="sm-tv">1</span><input type="range" id="sm-t" min="0.1" max="5" step="0.1" value="1">`; ctrl.appendChild(lt);
+  const ls = document.createElement('label'); ls.innerHTML = `정답 클래스 <select id="sm-y"><option value="0">1</option><option value="1">2</option><option value="2">3</option><option value="3">4</option></select>`; ctrl.appendChild(ls);
+  const lb = document.createElement('div'); lb.className = 'btns'; lb.innerHTML = '<button class="b" type="button" id="sm-add">모든 z에 +3</button><button class="b" type="button" id="sm-big">z = [1000, 1001, 1002, 999]</button>'; ctrl.appendChild(lb);
+  function draw() {
+    const zz = z.map((_, i) => +$('#sm-z' + i).value), T = +$('#sm-t').value, yi = +$('#sm-y').value;
+    zz.forEach((v, i) => $('#sm-v' + i).textContent = v); $('#sm-tv').textContent = T;
+    const p = M.softmax(zz.map(v => v / T)), P = plot($('#sm-cv'), -0.5, 3.5, -0.08, 1.12, false), ctx = P.ctx; axes(P, 1, false);
+    p.forEach((v, i) => { ctx.fillStyle = i === yi ? cssv('--green') : cssv('--accent'); ctx.fillRect(P.X(i - 0.3), P.Y(v), P.X(0.6) - P.X(0), P.Y(0) - P.Y(v));
+      ctx.fillStyle = cssv('--fg'); ctx.font = '11px sans-serif'; ctx.fillText(v.toFixed(3), P.X(i - 0.2), P.Y(v) - 4); ctx.fillText('class ' + (i + 1), P.X(i - 0.25), P.h - 3); });
+    const sum = p.reduce((a, b) => a + b, 0);
+    $('#sm-out').textContent = `softmax(z/T) = ${fmt(p, 4)}
+합 = ${sum.toFixed(12)}   |합 − 1| = ${Math.abs(sum - 1).toExponential(1)} (기준 1e-6)
+정답 클래스 ${yi + 1}의 Cross-Entropy = −log p = ${fmt(-Math.log(p[yi]), 4)}`;
+  }
+  $('#sm-add').onclick = () => { z.forEach((_, i) => { const r = $('#sm-z' + i); r.value = Math.min(5, +r.value + 3); }); draw(); };
+  $('#sm-big').onclick = () => { const big = [1000, 1001, 1002, 999], p = M.softmax(big);
+    $('#sm-out').textContent = `z = [1000, 1001, 1002, 999]\n최댓값을 빼지 않으면 e^1000 = ${Math.exp(1000)} → ∞/∞ = NaN\n최댓값(1002)을 빼면 [−2, −1, 0, −3] → softmax = ${fmt(p, 4)}`; };
+  ctrl.addEventListener('input', draw); onResize(draw);
+})();
+
+/* ---------- 10. 정보 이론 ---------- */
+(() => {
+  function draw() {
+    const p = +$('#it-p').value, q = +$('#it-q').value; $('#it-p-v').textContent = p; $('#it-q-v').textContent = q;
+    const P2 = [p, 1 - p], Q2 = [q, 1 - q], H = M.entropy(P2), CE = M.crossEntropy(P2, Q2), KL = M.kl(P2, Q2), KLr = M.kl(Q2, P2);
+    const mx = Math.max(CE, KLr, 0.8) * 1.15, P = plot($('#it-cv'), -0.5, 3.5, -0.05 * mx, mx, false), ctx = P.ctx; axes(P, 1, false);
+    const bar = (i, lo, hi, c) => { ctx.fillStyle = c; ctx.fillRect(P.X(i - 0.3), P.Y(hi), P.X(0.6) - P.X(0), P.Y(lo) - P.Y(hi)); };
+    bar(0, 0, H, cssv('--accent')); bar(1, 0, KL, cssv('--amber')); bar(2, 0, H, cssv('--accent')); bar(2, H, CE, cssv('--amber')); bar(3, 0, KLr, cssv('--muted'));
+    ctx.fillStyle = cssv('--fg'); ctx.font = '11px sans-serif';
+    [['H(p)', H], ['KL(p‖q)', KL], ['H(p,q)', CE], ['KL(q‖p)', KLr]].forEach(([l, v], i) => { ctx.fillText(v.toFixed(4), P.X(i - 0.22), P.Y(v) - 4); ctx.fillText(l, P.X(i - 0.25), P.h - 3); });
+    $('#it-out').textContent = `H(p) = ${fmt(H)}   KL(p‖q) = ${fmt(KL)}   H(p) + KL = ${fmt(H + KL)}
+H(p, q) = ${fmt(CE)}   ← 같다
+KL(q‖p) = ${fmt(KLr)}   ← KL(p‖q)와 ${Math.abs(KL - KLr) < 1e-9 ? '같다 (p = q 또는 대칭 위치)' : '다르다: 비대칭'}`;
+  }
+  $('#it-p').oninput = draw; $('#it-q').oninput = draw; onResize(draw);
+})();
+
+/* ---------- 11–12. 코드 · 그림 ---------- */
+(() => {
+  if (!DATA) return;
+  const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  $('#code-list').innerHTML = DATA.code.map(c => `<details><summary><code>${c.file}</code> · ${esc(c.name)} <span class="muted">(${c.start}–${c.end}행)</span></summary><pre>${
+    c.text.split('\n').map((l, i) => `<span class="ln">${c.start + i}</span>${esc(l)}`).join('\n')}</pre></details>`).join('');
+  $('#gallery').innerHTML = DATA.images.map(im => `<figure><img loading="lazy" src="${im.src}" alt="${esc(im.caption)}"><figcaption><code>outputs/${im.file}</code> — ${esc(im.caption)}</figcaption></figure>`).join('');
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+[project]
+name = "a2-1-ai-math"
+version = "0.1.0"
+description = "AI 학습 원리를 선형대수·미적분·확률통계로 직접 구현하는 A2-1 미션"
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "numpy>=1.21",
+    "matplotlib>=3.4",
+]
+
+[dependency-groups]
+# 노트북 실행 도구(tools/execute_notebooks.py) 전용
+dev = [
+    "nbclient>=0.5",
+    "nbformat>=5.1",
+    "ipykernel>=6.0",
+]
+
+[tool.uv]
+package = false
