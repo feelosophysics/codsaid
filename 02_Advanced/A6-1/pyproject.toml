@@ -1,0 +1,14 @@
+[project]
+name = "minigrad"
+version = "0.1.0"
+description = "NumPy만으로 만든 미니 딥러닝 프레임워크 (A6-1): Tensor·AutoGrad·Layer·Optimizer"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "numpy>=1.23",
+    "matplotlib>=3.6",
+]
+
+[build-system]
+requires = ["uv_build>=0.9,<0.13"]
+build-backend = "uv_build"

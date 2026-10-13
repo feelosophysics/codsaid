@@ -1,0 +1,5 @@
+.venv/
+__pycache__/
+*.py[cod]
+# 실행 시 내려받는 MNIST 원본 (scripts/download_mnist.py)
+data/mnist/

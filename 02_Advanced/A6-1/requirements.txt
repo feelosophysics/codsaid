@@ -1,0 +1,6 @@
+# uv 없이 설치할 때 쓰는 사본이다. 원본은 pyproject.toml이다.
+# 계산: NumPy / 그림: Matplotlib (한글 글꼴 대체 출력에 3.6 이상 필요)
+numpy>=1.23
+matplotlib>=3.6
+# minigrad 패키지 자체 (src/minigrad, 편집 가능 설치)
+-e .
