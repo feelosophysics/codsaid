@@ -1,0 +1,24 @@
+[project]
+name = "a5-1-credit-risk"
+version = "1.0.0"
+description = "A5-1 신용 점수 회귀와 연체 위험 분류 파이프라인"
+requires-python = ">=3.12"
+dependencies = [
+    "numpy",
+    "pandas",
+    "scikit-learn",
+    "matplotlib",
+    "seaborn",
+    "imbalanced-learn",
+    "xgboost",
+]
+
+[dependency-groups]
+dev = [
+    "nbclient",
+    "nbformat",
+    "ipykernel",
+]
+
+[tool.uv]
+package = false
