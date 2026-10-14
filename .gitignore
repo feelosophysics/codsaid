@@ -128,6 +128,8 @@ activemq-data/
 
 # Environments
 .env
+.env.*
+!.env.example
 .envrc
 .venv
 env/
@@ -192,3 +194,12 @@ tmp/
 # Local tools and notebook execution state
 node_modules/
 .notebook-runtime/
+
+# Local private credentials
+.aws/
+.ssh/
+*.pem
+*.p12
+*.pfx
+id_rsa
+id_ed25519
