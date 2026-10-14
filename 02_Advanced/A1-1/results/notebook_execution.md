@@ -1,0 +1,75 @@
+# 분석 노트북 실행 기록
+
+`tools/execute_notebook.py`가 실제 전체 실행에 성공한 뒤 생성한 기록이다. 실행 안내를 적은 문서와 구분하며, 기록 이후 파일 변경 시 다시 실행해야 한다.
+
+- 재현 명령: A1-1 폴더에서 `uv run python tools/execute_notebook.py`
+- 실행 노트북: [analysis_report.ipynb](../notebooks/analysis_report.ipynb)
+- 시작: 2026-10-15 00:26:07 KST (UTC+09:00)
+- 완료: 2026-10-15 00:26:13 KST (UTC+09:00)
+- 소요 시간: 6.20초
+- 실행 환경: Windows, Python 3.12.14
+- 코드 셀: 18개, 실행 완료: 18개, 오류 출력: 0개
+- PNG 출력: 8개
+- 소스·입력·환경 파일의 실행 전후 해시: 모두 일치
+
+## 라이브러리
+
+| 라이브러리 | 실제 설치 버전 |
+| --- | --- |
+| numpy | 2.5.3 |
+| pandas | 3.0.6 |
+| matplotlib | 3.11.2 |
+| seaborn | 0.13.2 |
+| plotly | 6.9.0 |
+| nbclient | 0.11.0 |
+| nbformat | 5.11.1 |
+| ipykernel | 7.4.0 |
+
+## 코드 셀 실행 결과
+
+| 코드 셀 | execution_count | 출력 수 | 오류 수 |
+| ---: | ---: | ---: | ---: |
+| 1 | 1 | 0 | 0 |
+| 2 | 2 | 4 | 0 |
+| 3 | 3 | 3 | 0 |
+| 4 | 4 | 2 | 0 |
+| 5 | 5 | 2 | 0 |
+| 6 | 6 | 3 | 0 |
+| 7 | 7 | 3 | 0 |
+| 8 | 8 | 1 | 0 |
+| 9 | 9 | 1 | 0 |
+| 10 | 10 | 1 | 0 |
+| 11 | 11 | 1 | 0 |
+| 12 | 12 | 1 | 0 |
+| 13 | 13 | 1 | 0 |
+| 14 | 14 | 1 | 0 |
+| 15 | 15 | 2 | 0 |
+| 16 | 16 | 2 | 0 |
+| 17 | 17 | 4 | 0 |
+| 18 | 18 | 2 | 0 |
+
+## 실행 대상 SHA-256
+
+UTF-8 텍스트는 CRLF를 LF로 정규화하고 `.npy`는 원래 바이트를 해시한다. 소스·입력·환경 파일은 실행 전후에 대조했으며, 노트북 해시는 실행 결과를 저장한 뒤 계산했다. 해시는 기록과 파일의 대응을 확인하는 수단이며 독립 기관의 실행 인증은 아니다.
+
+| 파일 | SHA-256 |
+| --- | --- |
+| `data/sample/customers.csv` | `c40b09df6cc8563c32279da3dad78359c908ecef9503db6706fb0c41c056b311` |
+| `data/sample/images.npy` | `a46d01d25f598fdd5ab344fd6b5a25c676be492b3baa95b1a510122dd1263e0d` |
+| `data/sample/metadata.json` | `5784068841d63e0422634f20aac45f1cf3f600081492aded8cafa424c8905838` |
+| `data/sample/products.csv` | `c6244b515c15d5f911bca26425cc5187c01207b15d8426f5b8c5ca8dc37c2189` |
+| `data/sample/transactions.csv` | `ede38d02ea9b4281a1adec27ccc3bb41a2ef22724bb99aaf4a27a7c091f8d995` |
+| `pyproject.toml` | `3bde2c0a522611781ef4d1758b7d16656d69266e672b31897ad9f678b67ca3db` |
+| `src/__init__.py` | `aec430778cbc743f2605be797f9774dae890efe90bda7b89c8551f929294eeca` |
+| `src/bonus.py` | `051cfbf5cc694596ca1ae23cbec06f702ce877f7f72ed9459b2e1ec770744c18` |
+| `src/pipeline.py` | `824f56822208bbf5df1d64fc80c5389d2db47bc4211f2b3cf7517054fb1a4a67` |
+| `src/report.py` | `05e5f47f971ff883f9706a992a773788d2f61b9d92e05db7910cb41d2c9a1c35` |
+| `src/run_analysis.py` | `2f15861f7665717a882d4b30b30eb6b1b3976620b3a1c1c7b9c15fa994a10cd9` |
+| `src/sample_data.py` | `8c42895ce288be822605e5120d756193945db01ad89a5a64e7705858b1e4df4e` |
+| `tools/execute_notebook.py` | `76cd01596ad045ab90c40b2edddc5ed00d33cd7a629024e5201544cc7bae830d` |
+| `uv.lock` | `f69b2cbd5ca635e27927948e890a9ede9b9d71fece16f147bf136f86fc159b86` |
+| `notebooks/analysis_report.ipynb` | `542134a191f3f248821dc3cd5d81559a978725d25e9954ddf77a62da38b5063f` |
+
+## 확인 범위
+
+노트북의 모든 코드 셀을 순서대로 실행했고, 필수 분석·시각화·보너스 결과 생성까지 완료했다. 이 기록은 해당 입력·환경에서의 실행 성공 근거다. 통계 해석의 외부 타당성, 다른 데이터에서의 정확성, 브라우저 조작 성공을 증명하지 않는다.

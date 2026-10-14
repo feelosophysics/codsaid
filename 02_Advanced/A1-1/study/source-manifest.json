@@ -1,10 +1,10 @@
 {
-  "date": "2026-10-14",
+  "date": "2026-10-15",
   "mission": "A1-1",
   "hash_mode": "UTF-8 text: CRLF normalized to LF; binary: exact bytes",
   "files": {
     "src/run_analysis.py": "2f15861f7665717a882d4b30b30eb6b1b3976620b3a1c1c7b9c15fa994a10cd9",
-    "src/pipeline.py": "e0e76f8afea47b3682f08cd018777c296fcea6664b15d78b481cde35fd5de582",
+    "src/pipeline.py": "824f56822208bbf5df1d64fc80c5389d2db47bc4211f2b3cf7517054fb1a4a67",
     "src/sample_data.py": "8c42895ce288be822605e5120d756193945db01ad89a5a64e7705858b1e4df4e",
     "src/report.py": "05e5f47f971ff883f9706a992a773788d2f61b9d92e05db7910cb41d2c9a1c35",
     "tests/test_pipeline.py": "1a4528741f63f25ada1afd89fdeb8d26f964fe78d90d2d7df54e15cab898985e",
@@ -71,8 +71,8 @@
     },
     "image": {
       "file": "src/pipeline.py",
-      "start": 153,
-      "end": 160,
+      "start": 161,
+      "end": 168,
       "text": "        axes = tuple(range(1, self.images.ndim))\n        image_mean = self.images.mean(axis=axes, dtype=np.float64)\n        image_std = self.images.std(axis=axes, dtype=np.float64)\n        indices = self.df.image_index.to_numpy(dtype=int)\n        self.df[\"image_mean\"] = image_mean[indices]\n        self.df[\"image_std\"] = image_std[indices]\n        self.df[\"name_length\"] = self.df.product_name.astype(\"string\").str.len()\n        self.df[\"name_word_count\"] = self.df.product_name.astype(\"string\").str.split().str.len()"
     },
     "iqr": {
@@ -83,44 +83,44 @@
     },
     "flag": {
       "file": "src/pipeline.py",
-      "start": 163,
-      "end": 172,
+      "start": 171,
+      "end": 180,
       "text": "    def detect_outliers(self, column, threshold=1.5):\n        \"\"\"Add a flag and return outlier rows; retain the unaltered measurements.\"\"\"\n        self._require_loaded()\n        lower, upper = iqr_bounds(self.df[column], threshold)\n        values = self.df[column]\n        flag = values.lt(lower) | values.gt(upper)\n        self.df[f\"{column}_is_outlier\"] = flag\n        self.audit.setdefault(\"outliers\", {})[column] = {\n            \"threshold\": threshold, \"lower\": lower, \"upper\": upper, \"count\": int(flag.sum())}\n        return self.df.loc[flag].copy()"
     },
     "treat": {
       "file": "src/pipeline.py",
-      "start": 174,
-      "end": 183,
+      "start": 182,
+      "end": 191,
       "text": "    def treat_outliers(self, column, threshold=1.5, method=\"clip\"):\n        \"\"\"Return a comparison series; do not mutate source columns or RFM inputs.\"\"\"\n        self._require_loaded()\n        if method not in (\"clip\", \"remove\"):\n            raise ValueError(\"method must be clip or remove\")\n        lower, upper = iqr_bounds(self.df[column], threshold)\n        values = self.df[column]\n        if method == \"clip\":\n            return values.clip(lower, upper).rename(f\"{column}_treated\")\n        return values.loc[values.between(lower, upper)].rename(f\"{column}_treated\")"
     },
     "eligible": {
       "file": "src/pipeline.py",
-      "start": 200,
-      "end": 209,
+      "start": 208,
+      "end": 217,
       "text": "        valid = (self.df[customer_col].notna() & self.df[order_col].notna() & self.df[date_col].notna()\n                 & self.df[amount_col].gt(0) & self.df.quantity.gt(0) & self.df.unit_price.gt(0))\n        purchases = self.df.loc[valid].copy()\n        if purchases.empty:\n            raise ValueError(\"No valid positive purchases available for RFM\")\n        dates = pd.to_datetime(purchases[date_col], errors=\"raise\").dt.normalize()\n        reference = pd.Timestamp(reference_date).normalize() if reference_date is not None else dates.max() + pd.Timedelta(days=1)\n        if pd.isna(reference) or reference < dates.max():\n            raise ValueError(\"reference_date must not precede the latest purchase\")\n        purchases[date_col] = dates"
     },
     "aggregate": {
       "file": "src/pipeline.py",
-      "start": 213,
-      "end": 216,
+      "start": 221,
+      "end": 224,
       "text": "        grouped = purchases.groupby(customer_col)\n        result = grouped.agg(last_purchase=(date_col, \"max\"), frequency=(order_col, \"nunique\"),\n                             monetary=(amount_col, \"sum\"))\n        result[\"recency\"] = (reference - result.last_purchase).dt.days"
     },
     "score": {
       "file": "src/pipeline.py",
-      "start": 217,
-      "end": 222,
+      "start": 225,
+      "end": 230,
       "text": "        for variable, ascending, score in [(\"recency\", False, \"r_score\"),\n                                            (\"frequency\", True, \"f_score\"),\n                                            (\"monetary\", True, \"m_score\")]:\n            percentile = result[variable].rank(method=\"average\", pct=True, ascending=ascending)\n            result[score] = np.ceil(percentile * 5).clip(1, 5).astype(int)\n        result[\"rfm_score\"] = result[[\"r_score\", \"f_score\", \"m_score\"]].sum(axis=1)"
     },
     "segment": {
       "file": "src/pipeline.py",
-      "start": 223,
-      "end": 229,
+      "start": 231,
+      "end": 237,
       "text": "        vip_cutoff = float(result.monetary.quantile(0.75))\n        inactive = result.recency > inactive_days\n        new = (result.recency <= recent_days) & result.frequency.eq(1)\n        vip = (result.recency <= recent_days) & (result.frequency >= loyal_orders) & (result.monetary >= vip_cutoff)\n        loyal = result.frequency >= loyal_orders\n        result[\"segment\"] = np.select([inactive, new, vip, loyal],\n                                       [\"Inactive\", \"New\", \"VIP\", \"Loyal\"], default=\"Regular\")"
     },
     "summary": {
       "file": "src/pipeline.py",
-      "start": 249,
-      "end": 258,
+      "start": 257,
+      "end": 266,
       "text": "    def segment_summary(self):\n        if self.rfm is None:\n            raise RuntimeError(\"Call calculate_rfm() first\")\n        summary = self.rfm.groupby(\"segment\").agg(\n            customers=(\"monetary\", \"size\"), mean_recency=(\"recency\", \"mean\"),\n            mean_frequency=(\"frequency\", \"mean\"), mean_monetary=(\"monetary\", \"mean\"),\n            revenue=(\"monetary\", \"sum\"))\n        summary[\"customer_share_pct\"] = summary.customers / summary.customers.sum() * 100\n        summary[\"revenue_share_pct\"] = summary.revenue / summary.revenue.sum() * 100\n        return summary"
     },
     "sample": {

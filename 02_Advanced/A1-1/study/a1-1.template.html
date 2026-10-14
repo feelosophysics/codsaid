@@ -143,6 +143,7 @@
 
 <section class="chapter" id="chapter-11" data-title="11. 실행과 검증 따라가기">
 <span class="section-no">11 / REPRODUCIBILITY</span><h2>돌아가는 것과 계산이 맞는 것을 구분하기</h2>
+<p>실행 날짜·셀별 성공 여부는 <a href="../results/notebook_execution.md">Markdown 실행 기록</a>에서, IQR·결측치 대치의 한계와 NumPy 성능·대규모 처리·재구매 예측 설계는 <a href="../results/method_notes.md">분석 방법 설명</a>에서 확인할 수 있습니다. 두 문서는 이 HTML과 같은 폴더 구조로 보관하면 연결됩니다.</p>
 <p>예외 없이 실행된다는 것만으로 Frequency가 올바른지는 알 수 없습니다. 작은 입력과 미리 계산한 기대값을 비교해야 합니다. 아래 테스트에서는 A의 거래 행이 3개여도 주문은 2개라는 것을 확인합니다.</p>
 @@CODE:test@@
 <p>테스트의 금액 20·10·20은 계산을 작게 만든 값입니다. 앞서 설명한 20,000·10,000·20,000원 예제와 비율은 같지만 금액 단위는 다릅니다. 기대값 50을 50,000으로 읽지 않도록 구분하세요.</p>

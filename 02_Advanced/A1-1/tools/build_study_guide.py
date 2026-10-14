@@ -1,6 +1,7 @@
 """Build an offline HTML guide from exact source excerpts and verified calculations."""
 import ast
 import base64
+from datetime import datetime, timedelta, timezone
 import hashlib
 import html
 import json
@@ -101,7 +102,7 @@ def calculations(analyzer):
 
 def main():
     STUDY.mkdir(parents=True, exist_ok=True)
-    sources, manifest = {}, {"date": "2026-10-14", "mission": "A1-1",
+    sources, manifest = {}, {"date": datetime.now(timezone(timedelta(hours=9))).date().isoformat(), "mission": "A1-1",
                             "hash_mode": "UTF-8 text: CRLF normalized to LF; binary: exact bytes",
                             "files": {}, "excerpts": {}}
     for file in SOURCE_FILES:

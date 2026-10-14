@@ -147,6 +147,14 @@ class DataAnalyzer:
         self.audit["missing_after"] = self.df.isna().sum().to_dict()
         return self.df
 
+    def handle_missing(self, strategy="median", group_col="category",
+                       product_columns=("catalog_price", "rating"),
+                       transaction_columns=("shipping_days",)):
+        """Compatibility name for handle_missing_values(), with identical behavior."""
+        return self.handle_missing_values(
+            strategy=strategy, group_col=group_col,
+            product_columns=product_columns, transaction_columns=transaction_columns)
+
     def engineer_features(self):
         """Reduce all image axes except the product axis, without a pixel/image loop."""
         self._require_loaded()
