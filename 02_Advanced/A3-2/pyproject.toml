@@ -1,0 +1,15 @@
+[project]
+name = "a3-2-object-tracking"
+version = "0.1.0"
+description = "배경 차분·거리 기반 추적·특징점 매칭으로 영상 속 객체를 따라가고, 고전 CV의 한계를 측정하는 A3-2 미션"
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    # SIFT는 OpenCV 4.4부터 기본 패키지에 있다 (contrib 불필요).
+    "opencv-python>=4.5",
+    "numpy>=1.20",
+    "matplotlib>=3.3",
+]
+
+[tool.uv]
+package = false
