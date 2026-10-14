@@ -72,11 +72,21 @@ def generate_sample_data(output_dir, seed=42):
     transactions.to_csv(output_dir / "transactions.csv", index=False)
     products.to_csv(output_dir / "products.csv", index=False)
     np.save(output_dir / "images.npy", images, allow_pickle=False)
+    # A separate RNG preserves the original transaction/product/image samples.
+    # These are explicit synthetic signup dates, not dates inferred as signups
+    # from the first purchase by the cohort analyzer.
+    first = transactions.groupby('customer_id').order_date.min()
+    signup_rng = np.random.default_rng(seed + 101)
+    customers = pd.DataFrame({'customer_id': first.index,
+                              'signup_date': (pd.to_datetime(first.to_numpy())
+                                              - pd.to_timedelta(signup_rng.integers(0, 91, len(first)), unit='D'))})
+    customers.to_csv(output_dir / 'customers.csv', index=False, date_format='%Y-%m-%d')
     metadata = {
         "source": "Locally generated synthetic teaching data; not real commerce records",
         "seed": seed, "transactions": len(transactions), "orders": len(owners),
         "customers": n_customers, "products": n_products,
         "image_shape": list(images.shape), "currency": "KRW (synthetic)",
+        "signup_source": "Synthetic first purchase minus 0..90 days, independent RNG seed+101",
         "injected_conditions": ["missing catalog price, rating, name and shipping days",
                                 "long shipping times", "legitimate high-price products"],
     }

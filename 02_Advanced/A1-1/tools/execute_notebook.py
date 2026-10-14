@@ -12,6 +12,19 @@ from nbclient import NotebookClient
 from jupyter_client.kernelspec import KernelSpecManager
 
 
+def portable_outputs(value, root):
+    """Keep machine-specific checkout paths out of published notebook outputs."""
+    if isinstance(value, str):
+        for prefix in (str(root), root.as_posix(), str(root).replace('\\', '\\\\')):
+            value = value.replace(prefix, '.')
+        return value
+    if isinstance(value, list):
+        return [portable_outputs(item, root) for item in value]
+    if isinstance(value, dict):
+        return value.__class__({key: portable_outputs(item, root) for key, item in value.items()})
+    return value
+
+
 def main():
     root = Path(__file__).resolve().parents[1]
     runtime = root / ".notebook-runtime"
@@ -32,6 +45,9 @@ def main():
     client.km = client.create_kernel_manager()
     client.km.kernel_spec_manager = KernelSpecManager(kernel_dirs=[str(runtime / "kernels")])
     client.execute()
+    for cell in notebook.cells:
+        if cell.cell_type == 'code':
+            cell.outputs = portable_outputs(cell.outputs, root)
     # Keep the saved notebook usable with the normal Python kernel on other machines.
     notebook.metadata.kernelspec = {"display_name": "Python 3", "language": "python", "name": "python3"}
     nbformat.write(notebook, path)

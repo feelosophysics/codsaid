@@ -8,7 +8,7 @@
 
 - 학습 장 12개, 예측·설명 질문 12개
 - 원본에서 자동 발췌한 코드 18개와 실제 줄 번호
-- 5개 Python 파일의 전체 소스 탐색, 함수·클래스·줄 번호 이동
+- 7개 Python 파일의 전체 소스 탐색, 함수·클래스·줄 번호 이동
 - 실행 단계별 입력·출력 상태 비교
 - 상품 단위 vs 판매 행 단위 결측치 대치 비교
 - 이미지 픽셀 밝기·변동과 평균·표준편차 조작
@@ -24,12 +24,14 @@
 이 자료의 상위 A1-1 폴더에서:
 
 ```powershell
-.\.venv\Scripts\python.exe tools/build_study_guide.py
-.\.venv\Scripts\python.exe tools/verify_study_guide.py
+uv run python tools/build_study_guide.py
+uv run python tools/verify_study_guide.py
 ```
 
 분석 입력이나 결과를 바꿨다면 먼저 `python -m src.run_analysis`를 실행한다. `a1-1.template.html`은 설명과 화면의 편집 원본이다. build 도구는 현재 Python 코드·RFM 값·PNG를 읽어 HTML에 포함하며 `source-manifest.json`과 `calculation-evidence.json`을 저장한다. 설명문과 일부 예시 수치는 자동 갱신되지 않으므로 데이터·정책 변경 후에는 설명도 재검토해야 한다.
 
-검증 도구는 파일 해시와 내장 소스, 18개 코드 발췌, 내부 링크·요소 참조·입력 레이블, 6개 내장 PNG를 검사한다. UTF-8 텍스트는 Git 체크아웃의 LF/CRLF 차이를 LF로 정규화해서 비교하고, 이미지·NumPy 배열은 원래 바이트를 그대로 비교한다. 이 방식은 source-manifest.json의 hash_mode에 명시한다. 실제 Python 로직으로 계산한 예제 근거를 다시 계산하고 Node.js에서 HTML의 계산 함수를 실행해 비교한다. 비교 사례는 25개이고, 고객 240명의 R·F·M 점수와 기본 그룹도 모두 대조한다.
+검증 도구는 파일 해시와 내장 소스, 18개 코드 발췌, 내부 링크·요소 참조·입력 레이블, 8개 내장 PNG를 검사한다. UTF-8 텍스트는 Git 체크아웃의 LF/CRLF 차이를 LF로 정규화해서 비교하고, 이미지·NumPy 배열은 원래 바이트를 그대로 비교한다. 이 방식은 source-manifest.json의 hash_mode에 명시한다. 실제 Python 로직으로 계산한 예제 근거를 다시 계산하고 Node.js에서 HTML의 계산 함수를 실행해 비교한다. 비교 사례는 25개이고, 고객 240명의 R·F·M 점수와 기본 그룹도 모두 대조한다.
 
 브라우저에서는 데스크톱·320px·390px에서 화면과 주요 조작을 확인했다. 이는 수동 브라우저 관찰이며 자동 CLI 실행 검증과 구분한다. 인쇄용 CSS는 포함했지만 PDF 출력 품질은 별도로 검증하지 않았다.
+
+보너스 절은 NumPy 이미지 피처, 가입 월별 코호트(미관측 월 마스킹), 오프라인 Plotly RFM을 포함한다. 라이브러리는 iframe의 srcdoc에 포함되고 외부 CDN을 요청하지 않는다. 코호트 표와 그림·차트는 results/bonus의 결과와 해시로 대조한다.

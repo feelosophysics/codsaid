@@ -12,6 +12,7 @@
     3
   ],
   "currency": "KRW (synthetic)",
+  "signup_source": "Synthetic first purchase minus 0..90 days, independent RNG seed+101",
   "injected_conditions": [
     "missing catalog price, rating, name and shipping days",
     "long shipping times",

@@ -1,13 +1,23 @@
 {
-  "date": "2026-10-10",
+  "date": "2026-10-14",
   "mission": "A1-1",
   "hash_mode": "UTF-8 text: CRLF normalized to LF; binary: exact bytes",
   "files": {
-    "src/run_analysis.py": "edb8cb5b04748d2ef4cbf2524d23ccdfd75270c48c4238b8691f781be9d62882",
+    "src/run_analysis.py": "2f15861f7665717a882d4b30b30eb6b1b3976620b3a1c1c7b9c15fa994a10cd9",
     "src/pipeline.py": "e0e76f8afea47b3682f08cd018777c296fcea6664b15d78b481cde35fd5de582",
-    "src/sample_data.py": "1428dc4bb5e4c6ef01e86d7b6cee6c56739cfe3cb1df93be54894137ee5c5712",
+    "src/sample_data.py": "8c42895ce288be822605e5120d756193945db01ad89a5a64e7705858b1e4df4e",
     "src/report.py": "05e5f47f971ff883f9706a992a773788d2f61b9d92e05db7910cb41d2c9a1c35",
     "tests/test_pipeline.py": "1a4528741f63f25ada1afd89fdeb8d26f964fe78d90d2d7df54e15cab898985e",
+    "src/bonus.py": "051cfbf5cc694596ca1ae23cbec06f702ce877f7f72ed9459b2e1ec770744c18",
+    "tests/test_bonus.py": "28c79d9f5378c3892ef10e2a68c209627d4b0a5c6ee4e756c9168c0f2154adc9",
+    "results/bonus/image_features.png": "2a2dd3b2f1516d3a2e5da2574b3b46ec6dbb603009713167efd550cf87a20af8",
+    "results/bonus/cohort_retention.png": "4c24fce555fdb8451fe613777d05668c29a038a1bc275a662ba9e90116478397",
+    "results/bonus/image_features.csv": "377110a0baf18a460dc6b1c7fc74f9296abaca32f1fef274b8356d691a4dfa45",
+    "results/bonus/cohort_sizes.csv": "70025905a558f46ad42b023d9a7cf51ff2858463c4e3f82ab1f53b7d45448827",
+    "results/bonus/cohort_counts.csv": "02314c81610d1f28846164495e347a798a5d67809767670c08b6735f282b1b9f",
+    "results/bonus/cohort_retention.csv": "be7023aa329e3ab39669955936c48843c7f33d964d59ea8989cf802550670b2c",
+    "results/bonus/summary.json": "358ddaa94c8bc6c9d2493bd2bb8c760daa6d196457559211963c5f90c18c1baf",
+    "results/bonus/rfm_interactive.html": "ba7500879afd1336b7390e338abdd0511844528bf9f11ca0aff970edc82f4904",
     "results/figures/01_histogram.png": "10c43f0a7b62203d2f750b8f9e4c270d3c1c00f55004d90931eed1927732ebbf",
     "results/figures/02_boxplot.png": "8ce39fbd682e6daedd6b03be2cd6685619a386d4dc6f69d6b16b15eb4b226e74",
     "results/figures/03_bar.png": "dc08ef1441fa719995ca0bb22922f1c096c108be287ac07213f1c82a20e4d16f",
@@ -17,6 +27,7 @@
     "data/sample/transactions.csv": "ede38d02ea9b4281a1adec27ccc3bb41a2ef22724bb99aaf4a27a7c091f8d995",
     "data/sample/products.csv": "c6244b515c15d5f911bca26425cc5187c01207b15d8426f5b8c5ca8dc37c2189",
     "data/sample/images.npy": "a46d01d25f598fdd5ab344fd6b5a25c676be492b3baa95b1a510122dd1263e0d",
+    "data/sample/customers.csv": "c40b09df6cc8563c32279da3dad78359c908ecef9503db6706fb0c41c056b311",
     "results/rfm_customers.csv": "df5ba50e63844e8377dcaf109ed766bbd22534c45ee0f571516756f88f9dcec9",
     "results/segment_summary.csv": "be341c3fa30aa85b7bb3ef70b5b191abcb476ce8c0d7b436690c86405d27ea7e",
     "results/audit.json": "a7cce722d95543efcc95b34bb0a026e1364b0832ed1d12529dcdafc483ac8377"
@@ -25,8 +36,8 @@
     "flow": {
       "file": "src/run_analysis.py",
       "start": 10,
-      "end": 20,
-      "text": "def run_analysis(data_dir, output_dir, reference_date=None):\n    data_dir = Path(data_dir)\n    analyzer = DataAnalyzer(data_dir / \"transactions.csv\")\n    analyzer.load_data()\n    analyzer.handle_missing_values()\n    analyzer.engineer_features()\n    analyzer.detect_outliers(\"shipping_days\")\n    analyzer.detect_outliers(\"unit_price\")\n    analyzer.calculate_rfm(reference_date=reference_date)\n    write_report(analyzer, output_dir)\n    return analyzer"
+      "end": 24,
+      "text": "def run_analysis(data_dir, output_dir, reference_date=None, include_bonus=True,\n                 customers_path=None, observation_end=None):\n    data_dir = Path(data_dir)\n    analyzer = DataAnalyzer(data_dir / \"transactions.csv\")\n    analyzer.load_data()\n    analyzer.handle_missing_values()\n    analyzer.engineer_features()\n    analyzer.detect_outliers(\"shipping_days\")\n    analyzer.detect_outliers(\"unit_price\")\n    analyzer.calculate_rfm(reference_date=reference_date)\n    write_report(analyzer, output_dir)\n    if include_bonus:\n        from .bonus import write_bonus\n        analyzer.audit['bonus'] = write_bonus(analyzer, output_dir, customers_path, observation_end)\n    return analyzer"
     },
     "state": {
       "file": "src/pipeline.py",

@@ -4,34 +4,35 @@
 
 기본 데이터는 **로컬에서 생성한 합성 데이터**다. 거래·상품·이미지를 모두 재현할 수 있도록 고정 난수(seed=42)를 사용한다. 실제 고객·실제 상품 사진은 포함하지 않는다. 고객 행동을 의도적으로 구성했으므로 아래 인사이트는 분석 방법을 설명하는 가설이며 실제 시장 효과를 검증한 결과가 아니다.
 
-필수 구현과 실행 검증, HTML 학습 자료를 제공한다. 선택 보너스 과제는 포함하지 않는다.
+필수 구현과 선택 보너스 3종(NumPy 이미지 피처, 가입 월별 코호트, Plotly RFM 탐색), 실행 검증, HTML 학습 자료를 제공한다.
 
 ## 실행
 
 현재 고정한 라이브러리는 **Python 3.12 이상**이 필요하다. 검증 환경은 Windows, Python 3.12.14다. 이 README가 있는 A1-1 폴더에서 실행한다.
 
 ```powershell
-python -m venv .venv
-.venv\Scripts\python.exe -m pip install -r requirements.txt
-.venv\Scripts\python.exe -m src.run_analysis
+uv sync --locked
+uv run python -m src.run_analysis
 ```
 
 샘플 파일은 저장소에 포함했다. 데이터를 같은 조건으로 다시 만들려면 아래처럼 실행한다. 이 옵션은 지정한 데이터 폴더의 샘플 파일을 교체하므로 외부 원본 폴더에는 사용하지 않는다.
 
 ```powershell
-.venv\Scripts\python.exe -m src.run_analysis --generate-sample --seed 42
-.venv\Scripts\python.exe -m unittest discover -s tests -v
+uv run python -m src.run_analysis --generate-sample --seed 42
+uv run python -m unittest discover -s tests -v
 ```
 
-Windows 외 환경에서는 `.venv/bin/python`을 사용한다. 명령이 성공하면 `results/`에 CSV·JSON·Markdown 보고서와 PNG 차트가 저장된다. 분석 로직에는 NumPy·Pandas·Matplotlib·Seaborn만 직접 사용하며 이미지 처리는 NumPy 배열 연산으로 구현한다. Matplotlib의 설치 의존성에 Pillow가 포함될 수 있지만 프로젝트에서 Pillow API로 이미지를 처리하지 않는다.
+환경은 uv로 관리한다. `.python-version`은 Python 3.12, `pyproject.toml`은 의존성과 노트북 개발 의존성, `uv.lock`은 정확한 버전을 고정한다. Windows와 다른 운영체제에서 같은 uv 명령을 사용한다. uv 없이 설치할 때는 `requirements.txt` 또는 노트북용 `requirements-dev.txt`를 쓴다. 두 파일은 uv.lock에서 내보낸 사본이다.
+
+명령이 성공하면 `results/`에 필수 CSV·JSON·Markdown·차트 6종, `results/bonus/`에 보너스 결과가 저장된다. 핵심 분석에는 NumPy·Pandas·Matplotlib·Seaborn만 직접 사용하며 이미지 처리는 NumPy 배열 연산으로 구현한다. Plotly는 미션에서 허용한 보너스 3의 시각화에만 사용한다. Matplotlib의 설치 의존성에 Pillow가 포함되지만 프로젝트에서 Pillow API로 이미지를 처리하지 않는다.
 
 ## 분석 노트북
 
 [`notebooks/analysis_report.ipynb`](notebooks/analysis_report.ipynb)는 실행 결과·해석·차트가 저장된 보고서다. VS Code나 Jupyter에서 `.venv`의 Python을 커널로 선택해 처음부터 실행할 수 있다. 별도 Jupyter 화면 없이 전용 환경에서 실행하려면:
 
 ```powershell
-.venv\Scripts\python.exe -m pip install -r requirements-dev.txt
-.venv\Scripts\python.exe tools/execute_notebook.py
+uv sync --locked
+uv run python tools/execute_notebook.py
 ```
 
 이 도구는 저장소 안에 임시 커널 설정을 만들어 현재 Python으로 실행한다. Notebook 도구는 실행·표시용이며 분석 로직에 추가 라이브러리를 사용하지 않는다.
@@ -41,9 +42,10 @@ Windows 외 환경에서는 `.venv/bin/python`을 사용한다. 명령이 성공
 [`study/a1-1.html`](study/a1-1.html)을 브라우저에서 연다. 한 파일에 설명·코드·실제 차트를 포함해 인터넷 없이 사용할 수 있다. 첫 학습 순서는 **01 전체 흐름 → 02 한 행의 의미 → 07 RFM 계산**을 권장한다.
 
 - 12개 학습 질문과 설명 예시, Python 문법·Class·모듈 위치 안내
-- 18개 원본 코드 발췌, 원래 줄 번호와 5개 파일 전체 소스 탐색기
+- 18개 원본 코드 발췌, 원래 줄 번호와 7개 파일 전체 소스 탐색기
 - 파이프라인 단계, 결측치 대치 단위, 이미지 통계, IQR, RFM 기준일·주문 집계·고객 분류 정책 조작
 - 실행 결과의 6종 차트와 수치 해석, 관찰과 실행 가설의 구분
+- 이미지 고급 피처·가입 코호트 해석과 결과 그림 2종, 오프라인 Plotly RFM 차트
 
 자료의 JavaScript 계산은 Python 결과 25개 사례 및 고객 240명의 점수·그룹과 대조했다. 내장 소스는 생성 시점 사본이며 원본을 수정하는 기능이 아니다. 소스를 바꾼 뒤에는 재생성과 설명 검토가 필요하다. 생성·검증 방법은 [`study/README.md`](study/README.md)에 있다.
 
@@ -55,11 +57,13 @@ Windows 외 환경에서는 `.venv/bin/python`을 사용한다. 명령이 성공
 | `data/sample/products.csv` | 상품명·카테고리·카탈로그 가격·평점·이미지 연결 | 80행, 6컬럼 |
 | `data/sample/images.npy` | 상품별 생성 RGB 배열, 픽셀 범위 0–255 | `(80, 16, 16, 3)` |
 | `data/sample/metadata.json` | 생성 출처·난수·규모·주입 조건 | seed=42 |
+| `data/sample/customers.csv` | 합성 고객 ID와 가입일 | 240명, 가입일 = 첫 구매 전 0–90일 |
 | `src/sample_data.py` | 재현 가능한 데이터 생성 | 결측치·장기 배송·정상 고가 상품 포함 |
 | `src/pipeline.py` | `DataAnalyzer`, IQR 함수, 전처리·피처·RFM | 핵심 분석 로직 |
 | `src/report.py` | 6종 차트, 통계 해석, 비즈니스 가설 | 결과 저장 |
 | `src/run_analysis.py` | 데이터부터 보고서까지 실행 | CLI 진입점 |
-| `tests/test_pipeline.py` | 집계·대치·이미지·경계 조건 검증 | 12개 테스트 |
+| `src/bonus.py` | 이미지 고급 피처·가입 코호트·Plotly 차트 | 보너스 3종 |
+| `tests/test_pipeline.py`, `tests/test_bonus.py` | 집계·대치·이미지·코호트·경계 조건 검증 | 21개 테스트 |
 
 상품 조인 직후 16컬럼이며, 문자·단어 수와 이미지 평균·표준편차, 두 이상치 표시 컬럼을 추가하면 22컬럼이다. 기본 결측치 보완 수는 상품 카탈로그 가격 12개·평점 7개, 거래 배송 일수 272개다. 같은 상품의 속성이 여러 거래 행에 나타나므로 거래 행 기준 결측치 수와 상품 기준 대치 수는 다르다.
 
@@ -134,16 +138,25 @@ R은 마지막 구매 이후 일수, F는 **고유 주문 수**, M은 관측 기
 외부 원본은 별도 폴더에 보관하고, 아래 입력 규약에 맞춰 변환한 후 경로를 지정한다. 이 구현은 임의의 데이터셋을 자동 추론해 변환하는 수집 도구가 아니다.
 
 ```powershell
-.venv\Scripts\python.exe -m src.run_analysis --data-dir data/external --output-dir results/external --reference-date 2026-10-10
+uv run python -m src.run_analysis --data-dir data/external --output-dir results/external --reference-date 2026-10-10 --observation-end 2026-10-09
 ```
 
 - `transactions.csv`: `line_id`, `order_id`, `customer_id`, `order_date`, `product_id`, `unit_price`, `quantity`, `amount`, `shipping_days`. 국가·결제수단은 선택 컬럼이다. `amount`는 **행의 총액**이어야 하며 주문 전체 금액을 각 행에 반복해서 넣으면 안 된다.
 - `products.csv`: `product_id`, `product_name`, `category`, `catalog_price`, `rating`, `image_index`. 상품 ID는 유일해야 하고 카테고리는 누락되지 않아야 한다.
 - `images.npy`: 모든 이미지의 크기와 픽셀 스케일을 통일한 수치 배열. `(N,H,W)` 또는 `(N,H,W,C)` 형태다. `image_index`는 유효한 0부터 시작하는 정수 위치다. pickle 기반 배열은 허용하지 않는다.
+- `customers.csv`: 코호트 보너스용 `customer_id`, `signup_date`. 구매하지 않은 가입 고객도 포함한다. 다른 위치면 `--customers-path`로 지정한다. 가입일이 없는 입력에서는 `--skip-bonus`로 필수 분석만 실행한다. 첫 구매일을 가입일로 간주하지 않는다. 이미지 보너스는 0–255 범위의 회색 또는 RGB 배열을 받는다.
 
 결측치 전략·IQR 임계값·그룹 기준은 `DataAnalyzer`의 메서드 인자로 조절한다. 외부 데이터에서는 출처·이용 조건·통화·관측 기간을 별도로 기록하고, 보고서의 합성 데이터 설명과 위 예시 수치를 갱신한다. 잘못된 날짜와 환불 제외 정책, 현재 고객 수, 실제로 생성된 세그먼트 수를 `audit.json`에서 확인한다.
 
 공식 구현 참고: [NumPy의 여러 축 평균 연산](https://numpy.org/doc/stable/reference/generated/numpy.mean.html).
+
+## 보너스 결과
+
+1. **이미지 고급 피처**: 상품 80개의 밝기를 8개 구간으로 나눠 정규화 히스토그램을 계산하고, 이웃 픽셀의 절대 차이 평균과 엔트로피를 추가했다. RGB→밝기 변환·구간 집계·차분은 모두 NumPy 배열 연산이다. `image_features.csv`와 `transactions_with_image_features.csv`에 상품·거래 피처를 저장한다. 기본 분석 표 22컬럼은 유지하고 보너스 표에는 10개 피처를 더한다. 밝기·질감의 요약이며 품질·의미를 판별한 값이 아니다.
+2. **가입 코호트**: 합성 가입 고객 240명을 가입 월 기준 12개 코호트로 나눴다. 분모는 코호트 가입자 전체, 분자는 해당 경과 월의 양수 구매 고객 수다. 여러 주문·상품 행은 고객당 한 번만 센다. 관측 종료일 2026-10-09 기준으로 완전히 관측한 칸 66개를 계산하고, 나머지 78개는 NaN/공백으로 남긴다. 가입 월 활동률도 반드시 100%가 아니다. `--observation-end`는 실제로 데이터 수집이 끝난 날로 지정한다. 샘플 가입일은 별도 난수로 생성한 예시이며 실제 유지율을 입증하지 않는다.
+3. **인터랙티브 RFM**: [results/bonus/rfm_interactive.html](results/bonus/rfm_interactive.html)에서 고객 240명의 R/F/M·점수를 hover로 확인하고 그룹을 범례로 선택하며 확대·PNG 저장을 할 수 있다. Plotly 라이브러리를 HTML에 포함해 오프라인으로 동작한다. [Plotly 공식 HTML 내보내기 안내](https://plotly.com/python/interactive-html-export/)를 따른다.
+
+계산표·그림과 해석은 [보너스 결과](results/bonus/README.md), 실행된 사례는 분석 노트북, 설명과 조작은 학습 HTML에도 포함했다.
 
 ## 과정 내 위치
 

@@ -19,7 +19,7 @@
 <a class="skip" href="#chapter-01">본문으로 이동</a>
 <div class="shell">
 <header class="masthead"><span class="brand">CODSAID / A1-1</span><span>A1-1 · 학습 자료 · 2026.10.10</span></header>
-<div class="hero"><span class="eyebrow">DATA → CODE → JUDGMENT</span><h1>숫자를 고객에 대한<br>판단으로 바꾸는 과정</h1><p>작은 표로 계산해 보고, 같은 일을 하는 실제 Python 코드를 찾고, 2,842행의 결과를 읽습니다. 이해의 기준은 “이 코드가 왜 필요한지 다른 사람에게 설명할 수 있는가”입니다.</p><div class="hero-meta"><span>12개 학습 질문</span><span>18개 원본 코드 발췌</span><span>5개 파일 소스 탐색</span><span>인터넷 없이 작동</span></div></div>
+<div class="hero"><span class="eyebrow">DATA → CODE → JUDGMENT</span><h1>숫자를 고객에 대한<br>판단으로 바꾸는 과정</h1><p>작은 표로 계산해 보고, 같은 일을 하는 실제 Python 코드를 찾고, 2,842행의 결과를 읽습니다. 이해의 기준은 “이 코드가 왜 필요한지 다른 사람에게 설명할 수 있는가”입니다.</p><div class="hero-meta"><span>12개 학습 질문</span><span>18개 원본 코드 발췌</span><span>7개 파일 소스 탐색</span><span>인터넷 없이 작동</span></div></div>
 <details class="mobile-toc"><summary>학습 순서 펼치기</summary><nav id="mobile-nav"></nav></details>
 <div class="layout">
 <aside class="sidebar"><nav aria-label="학습 목차" id="desktop-nav"></nav><p class="route">첫 회에는<br><strong>01 → 02 → 07</strong><br>전체 흐름과 구매 집계부터 읽으세요. 그다음 03–06으로 돌아와 전처리를 이해합니다.</p><div class="quiz-progress"><span id="progress-label">설명 체크 0 / 12</span><progress id="progress" max="12" value="0" aria-label="스스로 설명한 질문 수"></progress></div></aside>
@@ -149,27 +149,43 @@
 <h3>직접 실행하는 순서</h3><pre class="command"><code># A1-1 폴더에서 실행
 
 # 포함된 데이터로 분석 결과 다시 계산
-.\.venv\Scripts\python.exe -m src.run_analysis
+uv run python -m src.run_analysis
 
 # 집계·이미지·결측치·오류 조건 검증
-.\.venv\Scripts\python.exe -m unittest discover -s tests -v
+uv run python -m unittest discover -s tests -v
 
 # 설치된 Notebook 실행 도구로 보고서 전체 실행
-.\.venv\Scripts\python.exe tools/execute_notebook.py</code></pre>
-<p>현재 환경의 Python은 3.12 이상입니다. 새 환경은 README의 requirements 설치 안내를 따르세요. <code>--generate-sample --seed 42</code>는 입력 샘플을 다시 만드므로 기존 외부 원본 폴더에는 쓰지 않습니다.</p>
-<div class="table-scroll"><table><thead><tr><th>확인</th><th>실제 검증 범위</th><th>그 자체로 보장하지 않는 것</th></tr></thead><tbody><tr><td>12개 의미 테스트</td><td>주문 수, 동점 점수, 대치, 이미지 축, IQR 보존, 잘못된 입력 등</td><td>모든 가능한 실데이터 오류를 검증했다는 보장은 아님</td></tr><tr><td>15개 노트북 코드 셀 실행</td><td>현재 환경에서 위에서 아래로 실행 가능</td><td>다른 라이브러리 버전·다른 데이터에서도 항상 성공한다는 보장은 아님</td></tr><tr><td>6종 차트와 집계 일치</td><td>파일 생성과 거래·고객·주문 금액의 일치</td><td>비즈니스 가설이 효과가 있거나 학습자가 이해했다는 증거는 아님</td></tr></tbody></table></div>
+uv run python tools/execute_notebook.py</code></pre>
+<p>현재 환경의 Python은 3.12 이상입니다. 새 환경은 uv sync --locked로 준비합니다. 정확한 의존성은 uv.lock에 고정되어 있습니다. <code>--generate-sample --seed 42</code>는 입력 샘플을 다시 만드므로 기존 외부 원본 폴더에는 쓰지 않습니다.</p>
+<div class="table-scroll"><table><thead><tr><th>확인</th><th>실제 검증 범위</th><th>그 자체로 보장하지 않는 것</th></tr></thead><tbody><tr><td>21개 의미 테스트</td><td>주문 수, 동점 점수, 대치, 이미지 축, IQR 보존, 잘못된 입력 등</td><td>모든 가능한 실데이터 오류를 검증했다는 보장은 아님</td></tr><tr><td>18개 노트북 코드 셀 실행</td><td>현재 환경에서 위에서 아래로 실행 가능</td><td>다른 라이브러리 버전·다른 데이터에서도 항상 성공한다는 보장은 아님</td></tr><tr><td>6종 차트와 집계 일치</td><td>파일 생성과 거래·고객·주문 금액의 일치</td><td>비즈니스 가설이 효과가 있거나 학습자가 이해했다는 증거는 아님</td></tr></tbody></table></div>
 <div class="question" data-question="11"><label class="check"><input type="checkbox"><span>Q11. 코드 실행 성공, 테스트 통과, 고객 유지 전략 성공은 같은 종류의 근거인가요?</span></label><details><summary>설명 예시</summary><p>서로 다르다. 실행 성공은 프로그램이 완료됐다는 근거, 테스트는 특정 계산과 경계 조건의 근거, 전략 성공은 실제 대상에서 효과가 나타났다는 실험 근거다. 앞의 두 가지로 전략 효과를 대신 주장할 수 없다.</p></details></div>
 </section>
 
 <section class="chapter" id="chapter-12" data-title="12. 소스 탐색과 다음 학습">
 <span class="section-no">12 / SOURCE EXPLORER</span><h2>설명에서 실제 코드로 돌아가기</h2>
-<p>위 발췌의 “전체 코드에서 보기”를 누르면 아래에서 해당 줄을 찾을 수 있습니다. 파일을 바꾸거나 함수·클래스 이름을 선택해 탐색하세요. 내장 코드는 2026-10-10 생성 시점의 사본입니다. 원본이 바뀌면 자료를 재생성하고 설명도 다시 검토해야 합니다.</p>
+<p>위 발췌의 “전체 코드에서 보기”를 누르면 아래에서 해당 줄을 찾을 수 있습니다. 파일을 바꾸거나 함수·클래스 이름을 선택해 탐색하세요. 내장 코드는 2026-10-14 생성 시점의 사본입니다. 원본이 바뀌면 자료를 재생성하고 설명도 다시 검토해야 합니다.</p>
 <div class="panel"><div class="controls"><div class="field"><label for="source-file">파일</label><select id="source-file"></select></div><div class="field"><label for="source-symbol">함수·클래스</label><select id="source-symbol"></select></div><div class="field"><label for="source-line">줄 번호</label><input id="source-line" type="number" min="1" value="1"></div><button id="source-go" type="button">해당 줄로 이동</button></div><div id="source-status" class="sub" aria-live="polite"></div><div id="source-window" class="source-window" role="region" aria-label="전체 Python 소스와 줄 번호" tabindex="0"></div><p id="source-hash" class="source-note"></p></div>
 <h3>배운 내용을 설명하는 순서</h3><ol><li>“한 거래 행이 무엇인지”부터 정의합니다.</li><li>어떤 입력을 읽고 어떤 값으로 변환했는지 설명합니다.</li><li>그 변환을 수행하는 파일과 함수를 찾습니다.</li><li>작은 입력으로 결과를 예측하고 실제 계산과 비교합니다.</li><li>관찰한 결과와 추가 검증이 필요한 가설을 구분합니다.</li></ol>
 <div class="question" data-question="12"><label class="check"><input type="checkbox"><span>Q12. 실데이터로 교체할 때 가장 먼저 확인할 세 가지를 설명할 수 있나요?</span></label><details><summary>설명 예시</summary><p>① 한 행의 단위와 amount가 행 금액인지 확인한다. ② 거래–상품–이미지의 연결 키와 중복·누락을 확인한다. ③ 통화·관측 기간·반품 처리·분류 기준이 목적에 맞는지 확인한다. 출처와 이용 조건도 별도로 기록해야 한다.</p></details></div>
 <div class="callout"><p><strong>오늘의 첫 활동</strong><br>07번의 A 고객 R·F·M을 먼저 손으로 계산하세요. 그다음 횟수 계산을 “거래 행 수”로 바꿔 무엇이 틀어지는지 보고, <code>calculate_rfm()</code>의 <code>nunique</code> 줄을 소스 탐색기에서 찾아보세요.</p></div>
 <h3>참고와 출처</h3><ul><li>데이터·그래프·코드: A1-1 분석 코드와 seed=42 실행 결과. 실제 상거래 자료가 아닙니다.</li><li>여러 축 평균과 표준편차: <a href="https://numpy.org/doc/stable/reference/generated/numpy.mean.html" target="_blank" rel="noopener">NumPy mean</a>, <a href="https://numpy.org/doc/stable/reference/generated/numpy.std" target="_blank" rel="noopener">NumPy std</a>.</li><li>그룹 통계와 동점 순위: <a href="https://pandas.pydata.org/docs/user_guide/groupby.html" target="_blank" rel="noopener">Pandas groupby</a>, <a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.rank.html" target="_blank" rel="noopener">Pandas rank</a>.</li></ul>
 <p class="sub">체크는 스스로 설명해봤다는 표시이며 자동 채점이 아닙니다. 이 페이지를 새로 열면 체크는 초기화됩니다. 기본 계산·소스 탐색·차트는 인터넷 없이 작동하고, 외부 참고 링크를 열 때만 네트워크가 필요합니다.</p>
+</section>
+
+<section class="chapter" id="bonus" data-title="보너스 · 이미지, 가입 코호트, RFM 탐색">
+<span class="section-no">BONUS / THREE EXTENSIONS</span><h2>같은 데이터에서 더 자세히 보기</h2>
+<h3>1. 이미지 밝기 분포와 엣지</h3>
+<p>평균이 같은 이미지도 픽셀 분포와 경계는 다를 수 있습니다. <code>src/bonus.py → image_features()</code>에서 밝기를 8개 구간으로 나누고 각 구간의 픽셀 비율을 계산합니다. 구간 합은 1입니다. 이웃 픽셀의 절대 차이를 평균하면 국소적인 변화의 크기, 히스토그램의 엔트로피는 밝기 분포의 퍼짐을 요약합니다. 모두 NumPy 배열 연산이며 의미·품질의 판정값은 아닙니다.</p>
+<figure><img style="width:100%;height:auto" src="@@BONUS_IMAGE:image_features@@" alt="상품 80개의 평균 정규화 밝기 히스토그램과 픽셀 표준편차 대비 이웃 차이 산점도" loading="lazy"><figcaption>균일한 이미지의 엣지·엔트로피는 0, 검정·흰색이 절반씩인 2×2 이미지의 엔트로피는 1비트입니다.</figcaption></figure>
+<h3>2. 가입 월이 같은 고객의 구매 활동</h3>
+<p>가입일을 가진 <code>customers.csv</code>를 별도로 읽습니다. 첫 구매일을 가입일로 대신 쓰지 않습니다. 같은 가입 월의 전체 고객을 분모로 놓고, 가입 후 각 월에 양수 구매를 한 고객을 한 번씩 셉니다. 주문이 여러 건이거나 상품 행이 여러 개여도 같은 달의 같은 고객은 한 명입니다. 구매하지 않은 가입자도 분모에 남습니다.</p>
+<p>가입 월(month 0)에도 구매하지 않은 고객이 있으므로 100%일 필요는 없습니다. 관측 종료일 2026-10-09에는 10월 전체를 아직 보지 못했습니다. 이런 칸을 0%로 채우면 최근 고객을 더 나쁘게 평가하게 됩니다. 아래에서는 완전히 관측한 66칸만 표시하고 나머지 78칸은 미관측으로 남깁니다. 합성 가입일로 만든 예시이며 실제 유지율의 증거는 아닙니다.</p>
+<figure><img style="width:100%;height:auto" src="@@BONUS_IMAGE:cohort_retention@@" alt="가입 코호트별 경과 월 구매 활동률. 완전히 관측하지 않은 월은 빈칸" loading="lazy"></figure>
+<div class="table-scroll">@@COHORT_TABLE@@</div>
+<h3>3. 고객별 R/F/M을 직접 탐색</h3>
+<p>범례를 눌러 관심 그룹을 선택하고 점에 마우스를 올려 R/F/M과 점수를 확인하세요. 드래그로 확대하고 도구 모음에서 PNG를 저장할 수 있습니다. Plotly는 이 선택 보너스에서만 사용하며 라이브러리를 파일에 포함해 인터넷 없이 동작합니다.</p>
+<iframe title="Plotly 고객 RFM 탐색" sandbox="allow-scripts allow-downloads" srcdoc="@@BONUS_RFM@@" style="width:100%;height:720px;border:1px solid var(--line);border-radius:12px" loading="lazy"></iframe>
+<p class="sub"><code>results/bonus/</code>에 상품·거래 피처, 코호트 인원·구매 고객 수·활동률과 차트 원본이 있습니다. 세 계산은 소스 탐색기에서 <code>src/bonus.py</code>로 돌아가 확인할 수 있습니다.</p>
 </section>
 </main></div><footer class="footer">CHECK · A1-1 / 코드·데이터·계산 근거는 생성 시점의 사본으로 포함했습니다. HTML은 Python을 실행하지 않고, 표시된 학습용 계산을 JavaScript로 재현합니다.</footer>
 </div>

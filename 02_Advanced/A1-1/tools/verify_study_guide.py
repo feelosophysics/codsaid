@@ -71,7 +71,7 @@ def main():
     doc.feed(text)
     assert len(doc.ids) == len(set(doc.ids)), "Duplicate HTML IDs"
     assert len(doc.questions) == 12 and len(set(doc.questions)) == 12
-    assert len(doc.images) == 6
+    assert len(doc.images) == 8
     assert len(doc.excerpts) == 18
     assert not re.search(r"@@[A-Z]+[:@]", text), "Unresolved template marker"
     assert all(link[1:] in doc.ids for link in doc.links if link.startswith("#"))
@@ -90,7 +90,7 @@ def main():
     for name, excerpt in manifest["excerpts"].items():
         current = "\n".join((ROOT / excerpt["file"]).read_text(encoding="utf-8").splitlines()[excerpt["start"]-1:excerpt["end"]])
         assert current == excerpt["text"] == doc.excerpts[name], f"Excerpt mismatch: {name}"
-    pngs = sorted((ROOT / "results/figures").glob("*.png"))
+    pngs = sorted((ROOT / "results/figures").glob("*.png")) + [ROOT / 'results/bonus/image_features.png', ROOT / 'results/bonus/cohort_retention.png']
     for image, file in zip(doc.images, pngs):
         assert image.get("alt") and image["src"].startswith("data:image/png;base64,")
         assert base64.b64decode(image["src"].split(",", 1)[1]) == file.read_bytes()
@@ -100,7 +100,7 @@ def main():
     assert calculations(analyzer) == evidence, "Python example evidence changed"
     subprocess.run(["node", str(ROOT / "tools/verify_study_math.mjs")], cwd=ROOT, check=True)
     print(json.dumps({"passed": True, "chapters": 12, "questions": 12, "exact_excerpts": 18,
-                      "embedded_sources": 5, "offline_charts": 6, "bytes": len(text.encode("utf-8"))}))
+                      "embedded_sources": len(embedded['sources']), "offline_images": 8, "bytes": len(text.encode("utf-8"))}))
 
 
 if __name__ == "__main__":

@@ -15,7 +15,8 @@ import pandas as pd
 from src.pipeline import DataAnalyzer, iqr_bounds
 
 STUDY = ROOT / "study"
-SOURCE_FILES = ["src/run_analysis.py", "src/pipeline.py", "src/sample_data.py", "src/report.py", "tests/test_pipeline.py"]
+SOURCE_FILES = ["src/run_analysis.py", "src/pipeline.py", "src/sample_data.py", "src/report.py", "tests/test_pipeline.py",
+                "src/bonus.py", "tests/test_bonus.py"]
 EXCERPTS = {
     "flow": ("src/run_analysis.py", "def run_analysis(", "    return analyzer"),
     "state": ("src/pipeline.py", "    def __init__(", "        self.audit = {}"),
@@ -100,7 +101,7 @@ def calculations(analyzer):
 
 def main():
     STUDY.mkdir(parents=True, exist_ok=True)
-    sources, manifest = {}, {"date": "2026-10-10", "mission": "A1-1",
+    sources, manifest = {}, {"date": "2026-10-14", "mission": "A1-1",
                             "hash_mode": "UTF-8 text: CRLF normalized to LF; binary: exact bytes",
                             "files": {}, "excerpts": {}}
     for file in SOURCE_FILES:
@@ -135,10 +136,21 @@ def main():
                "tiny": evidence["tiny_records"], "vip_cutoff": analyzer.audit["rfm"]["vip_monetary_cutoff"]}
     embedded = json.dumps(dataset, ensure_ascii=False, separators=(",", ":")).replace("<", "\\u003c")
     template = template.replace("@@DATA@@", embedded)
+    bonus = ROOT / 'results/bonus'
+    rates = pd.read_csv(bonus / 'cohort_retention.csv', index_col=0)
+    template = template.replace('@@COHORT_TABLE@@', rates.map(lambda x: '미관측' if pd.isna(x) else f'{x:.0%}').to_html())
+    template = template.replace('@@BONUS_RFM@@', html.escape((bonus / 'rfm_interactive.html').read_text(encoding='utf-8'), quote=True))
+    for name in ['image_features.png', 'cohort_retention.png']:
+        image = bonus / name
+        template = template.replace(f'@@BONUS_IMAGE:{image.stem}@@', 'data:image/png;base64,' + base64.b64encode(image.read_bytes()).decode('ascii'))
+        manifest['files'][image.relative_to(ROOT).as_posix()] = digest(image.read_bytes())
+    for name in ['image_features.csv', 'cohort_sizes.csv', 'cohort_counts.csv', 'cohort_retention.csv', 'summary.json', 'rfm_interactive.html']:
+        file = bonus / name
+        manifest['files'][file.relative_to(ROOT).as_posix()] = digest(file.read_bytes(), text=True)
     for image in (ROOT / "results/figures").glob("*.png"):
         template = template.replace(f"@@IMAGE:{image.stem}@@", "data:image/png;base64," + base64.b64encode(image.read_bytes()).decode("ascii"))
         manifest["files"][image.relative_to(ROOT).as_posix()] = digest(image.read_bytes())
-    for file in ["data/sample/transactions.csv", "data/sample/products.csv", "data/sample/images.npy",
+    for file in ["data/sample/transactions.csv", "data/sample/products.csv", "data/sample/images.npy", "data/sample/customers.csv",
                  "results/rfm_customers.csv", "results/segment_summary.csv", "results/audit.json"]:
         manifest["files"][file] = digest((ROOT / file).read_bytes(), text=Path(file).suffix != ".npy")
     if re.search(r"@@[A-Z]+[:@]", template):
@@ -146,7 +158,7 @@ def main():
     (STUDY / "a1-1.html").write_text(template, encoding="utf-8")
     (STUDY / "source-manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
     (STUDY / "calculation-evidence.json").write_text(json.dumps(evidence, ensure_ascii=False, indent=2), encoding="utf-8")
-    print(f"Built offline guide: {len(EXCERPTS)} exact excerpts, {len(sources)} sources, six embedded charts; {len(template.encode('utf-8')):,} bytes")
+    print(f"Built offline guide: {len(EXCERPTS)} exact excerpts, {len(sources)} sources, eight images and offline Plotly; {len(template.encode('utf-8')):,} bytes")
 
 
 if __name__ == "__main__":
