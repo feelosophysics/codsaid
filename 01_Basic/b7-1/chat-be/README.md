@@ -166,7 +166,7 @@ Git 이력의 alzznd와 feelosophysics는 같은 작성자입니다. 위 구현 
 
 ## 문서 안내
 
-- [미션 요구사항 원문](docs/mission_requirements.md) · [요구사항 점검표](docs/mission-checklist.md)
+- [구현 점검표](docs/mission-checklist.md)
 - [통합 학습 가이드](docs/deep_dive_study_guide.md)
 - [인증](docs/roles/auth_guide.md) · [DB·로그](docs/roles/log_db_guide.md) · [AI·채팅](docs/roles/chat_api_guide.md)
 - [배포](docs/deployment.md) · [건설 도메인 자료](docs/domain_knowledge.md)

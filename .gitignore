@@ -203,3 +203,11 @@ node_modules/
 *.pfx
 id_rsa
 id_ed25519
+
+# Local assignment reference documents
+mission.html
+mission_text.txt
+mission_requirements.md
+assignment_original.*
+과제원문.*
+과제_원문.*

@@ -8,7 +8,7 @@
 
 ```text
 b7-1/
-├── README.md     # 미션 안내와 원본 출처
+├── README.md     # 프로젝트 구성과 코드 출처
 ├── chat-be/      # FastAPI 백엔드, DB, AI 연동, 테스트·학습 문서
 │   └── README.md # 백엔드 실행 방법과 API·환경 변수 설명
 └── chat-fe/      # HTML·CSS·JavaScript 프론트엔드, 화면 자료
@@ -19,12 +19,11 @@ b7-1/
 | --- | --- |
 | [백엔드 README](chat-be/README.md) | 기능, 로컬 실행, 환경 변수, API, DB, 팀 역할 |
 | [프론트엔드 README](chat-fe/README.md) | 화면 구성, API 연결, 실행·배포 방법, 팀 역할 |
-| [미션 요구사항](chat-be/docs/mission_requirements.md) | 과제 요구사항 원문 |
 | [요구사항 점검표](chat-be/docs/mission-checklist.md) | 구현과 확인 항목 |
 | [통합 학습 가이드](chat-be/docs/deep_dive_study_guide.md) | 코드 구조와 학습 설명 |
 | [UI 안내](chat-fe/docs/ui-review.md) | 화면 검토와 스크린샷 |
 
-각 프로젝트의 README와 팀 기여 설명은 원문을 보존합니다. 원문 속 저장소·배포·PR 안내는 원본 팀 프로젝트 기준입니다.
+각 프로젝트의 README와 팀 기여 설명은 팀 프로젝트의 구현 기록을 보관합니다. 저장소·배포·PR 안내는 원본 팀 프로젝트 기준입니다.
 
 ## 원본과 보관 기준
 

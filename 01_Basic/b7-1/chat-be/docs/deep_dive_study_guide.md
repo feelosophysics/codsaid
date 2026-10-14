@@ -2,7 +2,7 @@
 
 사용자 행동부터 서버 처리와 DB 저장까지 읽는 공통 학습 가이드입니다. 역할별 문서는 담당 영역의 코드와 실습을 다룹니다.
 
-실행·API는 [README](../README.md), 평가요건은 [미션 원문](mission_requirements.md)과 [점검표](mission-checklist.md), 배포는 [배포 가이드](deployment.md)를 참고합니다.
+실행·API는 [README](../README.md), 구현 상태는 [점검표](mission-checklist.md), 배포는 [배포 가이드](deployment.md)를 참고합니다.
 
 ## 1. 먼저 이해할 전체 흐름
 
