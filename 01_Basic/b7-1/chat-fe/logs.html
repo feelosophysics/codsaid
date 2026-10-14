@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<!-- HTML은 화면의 구조를 정합니다. 태그는 구역/버튼/입력칸을 뜻하고 class는 CSS 모양, id는 JS가 찾는 -->
+<!-- 이름입니다. -->
+<!-- 주석은 브라우저 화면에는 표시되지 않지만 페이지 소스에는 보이므로 비밀을 적지 않습니다. CSS는 모양, -->
+<!-- JavaScript는 클릭/요청 동작을 맡습니다. -->
+<html lang="ko">
+  <!-- 화면에 직접 보이지 않는 문서 정보와 스타일/라이브러리를 연결합니다. viewport는 모바일 화면 폭에 맞추는 -->
+  <!-- 설정입니다. -->
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#142e25">
+    <meta name="description" content="건설의 질문을 이해하기 쉬운 지식으로. 현장노트 건설 지식 AI 어시스턴트.">
+    <title>
+      대화 기록 · 현장노트
+    </title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <!-- 스크립트는 적힌 순서대로 연결됩니다. 공통 설정/도구를 먼저 읽고 페이지 전용 코드가 이를 사용합니다. -->
+    <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js">
+    </script>
+    <!-- 스크립트는 적힌 순서대로 연결됩니다. 공통 설정/도구를 먼저 읽고 페이지 전용 코드가 이를 사용합니다. -->
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.4.16/dist/purify.min.js">
+    </script>
+  </head>
+  <!-- 브라우저에 실제로 표시되는 영역입니다. 아래 id를 바꾸면 해당 요소를 찾는 JavaScript도 함께 확인해야 -->
+  <!-- 합니다. -->
+  <body data-page="logs">
+    <a class="skip-link" href="#mainContent">
+      본문으로 바로가기
+    </a>
+    <div class="app-shell">
+      <button class="sidebar-backdrop" onclick="toggleSidebar(false)" aria-label="작업 공간 메뉴 닫기">
+      </button>
+      <!-- 옆 메뉴입니다. 작은 화면에서는 접어서 메뉴 버튼으로 열고 닫습니다. -->
+      <aside class="sidebar" id="sidebar" aria-label="작업 공간 메뉴">
+        <a class="brand" href="index.html" aria-label="현장노트 홈">
+          <span class="brand-mark" aria-hidden="true">
+            N
+          </span>
+          <span>
+            <span class="brand-title">
+              현장노트
+            </span>
+            <span class="brand-sub" style="display:block">
+              FIELDNOTE · CONSTRUCTION
+            </span>
+          </span>
+        </a>
+        <div class="workspace-label">
+          나의 작업 공간
+        </div>
+        <!-- 관련 화면/계정으로 이동하는 메뉴입니다. aria-label은 보조기기에 메뉴의 의미를 알려 줍니다. -->
+        <nav class="rail-nav" aria-label="주 메뉴">
+          <a class="rail-link " href="index.html" >
+            <i class="fa-regular fa-comment" aria-hidden="true">
+            </i>
+            지식 채팅
+          </a>
+          <a class="rail-link active" href="logs.html" aria-current="page">
+            <i class="fa-solid fa-layer-group" aria-hidden="true">
+            </i>
+            대화 기록
+          </a>
+        </nav>
+        <div class="rail-guide">
+          <strong>
+            질문이 쌓이면 지식이 됩니다.
+          </strong>
+          필요할 때 다시 꺼내 볼 수 있도록
+          <br>
+          나의 질문과 답변을 모아 둡니다.
+        </div>
+        <div class="rail-footer">
+          <span class="dot" aria-hidden="true">
+          </span>
+          BUILD YOUR UNDERSTANDING
+        </div>
+      </aside>
+      <div class="main-column">
+        <!-- 상단 안내와 계정 메뉴입니다. 로그인 정보에 맞춰 JavaScript가 authNav 내용을 채웁니다. -->
+        <header class="topbar">
+          <button class="icon-button mobile-menu" onclick="toggleSidebar()" aria-label="작업 공간 메뉴 열기" aria-expanded="false" aria-controls="sidebar">
+            <i class="fa-solid fa-bars" aria-hidden="true">
+            </i>
+          </button>
+          <div class="breadcrumb">
+            <span class="breadcrumb-root">
+              나의 작업 공간
+            </span>
+            <span class="slash">
+              /
+            </span>
+            <strong>
+              대화 기록
+            </strong>
+          </div>
+          <!-- 관련 화면/계정으로 이동하는 메뉴입니다. aria-label은 보조기기에 메뉴의 의미를 알려 줍니다. -->
+          <nav id="authNav" class="auth-nav" aria-label="계정 메뉴">
+          </nav>
+        </header>
+        <!-- 이 화면의 핵심 작업 영역입니다. 로그인/채팅/기록 중 해당 페이지의 기능을 담습니다. -->
+        <main id="mainContent" class="page-scroll">
+          <div class="records-page">
+            <div class="page-heading">
+              <div>
+                <div class="eyebrow">
+                  YOUR KNOWLEDGE, COLLECTED
+                </div>
+                <h1>
+                  대화 기록
+                </h1>
+                <p>
+                  나의 질문과 답변을 모아, 필요한 순간 다시 꺼내 보세요.
+                </p>
+              </div>
+              <button id="refreshLogs" class="button button-secondary" onclick="refreshLogs()">
+                <i class="fa-solid fa-rotate" aria-hidden="true">
+                </i>
+                <span>
+                  새로고침
+                </span>
+              </button>
+            </div>
+            <div class="metric-grid">
+              <div class="metric">
+                <div class="metric-label">
+                  저장된 질문
+                  <i class="fa-regular fa-comment" aria-hidden="true">
+                  </i>
+                </div>
+                <div id="statTotalLogs" class="metric-value">
+                  —
+                </div>
+                <div class="metric-note">
+                  전체 대화의 질문 수
+                </div>
+              </div>
+              <div class="metric">
+                <div class="metric-label">
+                  대화 모음
+                  <i class="fa-regular fa-folder-open" aria-hidden="true">
+                  </i>
+                </div>
+                <div id="statSessions" class="metric-value">
+                  —
+                </div>
+                <div class="metric-note">
+                  함께 나눈 대화 수
+                </div>
+              </div>
+              <div class="metric">
+                <div class="metric-label">
+                  평균 응답 시간
+                  <i class="fa-regular fa-clock" aria-hidden="true">
+                  </i>
+                </div>
+                <div id="statAvgLatency" class="metric-value">
+                  —
+                </div>
+                <div class="metric-note">
+                  성공한 답변의 평균
+                </div>
+              </div>
+              <div class="metric">
+                <div class="metric-label">
+                  답변 성공률
+                  <i class="fa-regular fa-circle-check" aria-hidden="true">
+                  </i>
+                </div>
+                <div id="statSuccessRate" class="metric-value">
+                  —
+                </div>
+                <div class="metric-note">
+                  전체 질문 대비 성공한 답변
+                </div>
+              </div>
+            </div>
+            <section class="records-panel" aria-label="질문과 답변 기록">
+              <div class="records-toolbar">
+                <div class="record-tabs" role="group" aria-label="표시할 메시지">
+                  <button class="record-tab active" data-role="" aria-pressed="true" onclick="setLogRole('',this)">
+                    전체 기록
+                  </button>
+                  <button class="record-tab" data-role="user" aria-pressed="false" onclick="setLogRole('user',this)">
+                    나의 질문
+                  </button>
+                  <button class="record-tab" data-role="assistant" aria-pressed="false" onclick="setLogRole('assistant',this)">
+                    AI 답변
+                  </button>
+                </div>
+                <div class="record-tools">
+                  <div class="search-field">
+                    <i class="fa-solid fa-magnifying-glass" aria-hidden="true">
+                    </i>
+                    <label class="sr-only" for="logSearch">
+                      현재 페이지의 기록 검색
+                    </label>
+                    <!-- name/id/type과 길이 조건이 입력의 역할을 정합니다. 브라우저 검사에 더해 -->
+                    <!-- 서버에서도 같은 조건을 검사합니다. -->
+                    <input id="logSearch" type="search" placeholder="현재 페이지의 질문·답변 검색" oninput="renderLogs()">
+                  </div>
+                  <label class="sr-only" for="statusFilter">
+                    응답 상태
+                  </label>
+                  <select id="statusFilter" class="filter-select" onchange="changeLogStatus()">
+                    <option value="">
+                      모든 상태
+                    </option>
+                    <option value="success">
+                      성공
+                    </option>
+                    <option value="error">
+                      오류
+                    </option>
+                    <option value="timeout">
+                      시간 초과
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <div class="table-scroll">
+                <!-- 기록을 행/열로 표시합니다. th는 열 제목이고 tbody에 JS가 기록 행을 넣습니다. -->
+                <table class="records-table">
+                  <thead>
+                    <tr>
+                      <th scope="col">
+                        기록
+                      </th>
+                      <th scope="col" class="content-cell">
+                        질문과 답변
+                      </th>
+                      <th scope="col">
+                        일시
+                      </th>
+                      <th scope="col" class="desktop-column">
+                        응답 시간
+                      </th>
+                      <th scope="col">
+                        상태
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody id="logsTableBody">
+                    <tr>
+                      <td colspan="5" class="loading-state">
+                        기록을 불러오는 중…
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="table-footer">
+                <span id="logCountLabel" aria-live="polite">
+                  기록을 불러오는 중
+                </span>
+                <div class="pagination">
+                  <button id="prevPage" class="page-nav" onclick="changeLogPage(-1)" disabled aria-label="이전 페이지">
+                    <i class="fa-solid fa-chevron-left" aria-hidden="true">
+                    </i>
+                  </button>
+                  <span id="pageLabel">
+                    1 / 1
+                  </span>
+                  <button id="nextPage" class="page-nav" onclick="changeLogPage(1)" disabled aria-label="다음 페이지">
+                    <i class="fa-solid fa-chevron-right" aria-hidden="true">
+                    </i>
+                  </button>
+                </div>
+              </div>
+            </section>
+            <div class="records-note">
+              <span>
+                기록을 누르면 전체 내용을 확인할 수 있어요.
+              </span>
+              <span id="lastUpdated" aria-live="polite">
+              </span>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+    <!-- 전체 기록을 보여 주는 대화상자입니다. 평소에는 닫혀 있고 JS의 showModal로 엽니다. -->
+    <dialog id="logDetail" class="detail-dialog">
+      <!-- 상단 안내와 계정 메뉴입니다. 로그인 정보에 맞춰 JavaScript가 authNav 내용을 채웁니다. -->
+      <header class="detail-header">
+        <div>
+          <h2 id="detailTitle">
+            대화 기록
+          </h2>
+          <div id="detailMeta" class="detail-meta">
+          </div>
+        </div>
+        <button class="icon-button" onclick="document.getElementById('logDetail').close()" aria-label="기록 상세 닫기">
+          <i class="fa-solid fa-xmark" aria-hidden="true">
+          </i>
+        </button>
+      </header>
+      <div id="detailContent" class="detail-body markdown-body">
+      </div>
+    </dialog>
+    <div id="toast-container" class="toast-container" role="status" aria-live="polite">
+    </div>
+    <!-- 스크립트는 적힌 순서대로 연결됩니다. 공통 설정/도구를 먼저 읽고 페이지 전용 코드가 이를 사용합니다. -->
+    <script src="js/config.js">
+    </script>
+    <!-- 스크립트는 적힌 순서대로 연결됩니다. 공통 설정/도구를 먼저 읽고 페이지 전용 코드가 이를 사용합니다. -->
+    <script src="js/api.js">
+    </script>
+    <!-- 스크립트는 적힌 순서대로 연결됩니다. 공통 설정/도구를 먼저 읽고 페이지 전용 코드가 이를 사용합니다. -->
+    <script src="js/ui.js">
+    </script>
+    <!-- 스크립트는 적힌 순서대로 연결됩니다. 공통 설정/도구를 먼저 읽고 페이지 전용 코드가 이를 사용합니다. -->
+    <script src="js/logs.js">
+    </script>
+  </body>
+</html>

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<!-- HTML은 화면의 구조를 정합니다. 태그는 구역/버튼/입력칸을 뜻하고 class는 CSS 모양, id는 JS가 찾는 -->
+<!-- 이름입니다. -->
+<!-- 주석은 브라우저 화면에는 표시되지 않지만 페이지 소스에는 보이므로 비밀을 적지 않습니다. CSS는 모양, -->
+<!-- JavaScript는 클릭/요청 동작을 맡습니다. -->
+<html lang="ko">
+  <!-- 화면에 직접 보이지 않는 문서 정보와 스타일/라이브러리를 연결합니다. viewport는 모바일 화면 폭에 맞추는 -->
+  <!-- 설정입니다. -->
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#142e25">
+    <meta name="description" content="건설의 질문을 이해하기 쉬운 지식으로. 현장노트 건설 지식 AI 어시스턴트.">
+    <title>
+      로그인 · 현장노트
+    </title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+  </head>
+  <!-- 브라우저에 실제로 표시되는 영역입니다. 아래 id를 바꾸면 해당 요소를 찾는 JavaScript도 함께 확인해야 -->
+  <!-- 합니다. -->
+  <body data-page="auth" class="auth-page ">
+    <section class="auth-story" aria-label="현장노트 소개">
+      <a class="brand" href="index.html" aria-label="현장노트 홈">
+        <span class="brand-mark" aria-hidden="true">
+          N
+        </span>
+        <span>
+          <span class="brand-title">
+            현장노트
+          </span>
+          <span class="brand-sub" style="display:block">
+            FIELDNOTE · CONSTRUCTION
+          </span>
+        </span>
+      </a>
+      <div class="auth-story-main">
+        <div class="eyebrow">
+          CONSTRUCTION KNOWLEDGE, SIMPLIFIED
+        </div>
+        <h1>
+          현장의 질문을,
+          <br>
+          <span>
+            나만의 지식으로.
+          </span>
+        </h1>
+        <p>
+          건설을 배우는 가장 좋은 시작은 질문입니다.
+          <br>
+          낯선 개념을 이해하고, 대화를 기록하며
+          <br>
+          나의 지식을 한 장씩 쌓아가세요.
+        </p>
+        <div class="auth-topics">
+          <span>
+            자재와 구조
+          </span>
+          <span>
+            시공과 공정
+          </span>
+          <span>
+            계약과 용어
+          </span>
+        </div>
+      </div>
+      <svg class="plan-art" viewBox="0 0 220 190" fill="none" aria-hidden="true">
+        <g stroke="#819873" stroke-width="1">
+          <path d="M23 30h174v125H23zM27 34h166v117H27z"/>
+          <path d="M95 34v67H27m68 0h44v50m0-57h54M95 67h98M57 101v50"/>
+          <path d="M95 84a17 17 0 0 0 17 17m-17-17h17v17M139 114a20 20 0 0 0 20-20m-20 20V94h20"/>
+          <path d="M36 41h43v16H36zM36 60h43v16H36zM155 106h29v36h-29zM104 112h25v30h-25z"/>
+          <path d="M13 30v125m-4-125h8m-8 125h8M23 171h174m-174-4v8m174-8v8" stroke-dasharray="2 3"/>
+          <path d="M15 13h17m-8-8v16M187 169h23m-11-11v23"/>
+        </g>
+        <g fill="#819873" font-family="monospace" font-size="6">
+          <text x="104" y="48">
+            FIELD NOTE / 01
+          </text>
+          <text x="53" y="90">
+            KNOWLEDGE
+          </text>
+          <text x="102" y="180">
+            1 : 100
+          </text>
+        </g>
+        <rect x="164" y="44" width="21" height="14" fill="#ccd6b5" opacity=".4"/>
+        <circle cx="44" cy="128" r="6" stroke="#a8b880"/>
+        <path d="m203 12 2 7h-4l2-7z" fill="#8ca477"/>
+        <path d="M203 19v10" stroke="#8ca477"/>
+      </svg>
+      <div class="auth-story-footer">
+        <span>
+          FIELDNOTE
+        </span>
+        <span>
+          한 번의 질문, 한 장의 지식.
+        </span>
+      </div>
+    </section>
+    <!-- 이 화면의 핵심 작업 영역입니다. 로그인/채팅/기록 중 해당 페이지의 기능을 담습니다. -->
+    <main class="auth-main" id="mainContent">
+      <div class="mobile-brand">
+        <a class="brand" href="index.html" aria-label="현장노트 홈">
+          <span class="brand-mark" aria-hidden="true">
+            N
+          </span>
+          <span>
+            <span class="brand-title">
+              현장노트
+            </span>
+            <span class="brand-sub" style="display:block">
+              FIELDNOTE · CONSTRUCTION
+            </span>
+          </span>
+        </a>
+      </div>
+      <div class="auth-top">
+        처음 방문하셨나요?
+        <a href="register.html">
+          회원가입
+        </a>
+      </div>
+      <div class="auth-card">
+        <div class="eyebrow">
+          WELCOME BACK
+        </div>
+        <h2>
+          다시 만나 반가워요
+        </h2>
+        <p class="auth-description">
+          지난 대화를 이어가거나, 새로운 질문을 남겨보세요.
+        </p>
+        <!-- 입력을 묶어 제출하는 폼입니다. onsubmit의 JS 함수가 기본 이동을 막고 API 요청을 보냅니다. -->
+        <form class="auth-form" id="loginForm" onsubmit="handleLogin(event)">
+          <div class="form-field">
+            <label for="username">
+              아이디
+            </label>
+            <!-- name/id/type과 길이 조건이 입력의 역할을 정합니다. 브라우저 검사에 더해 서버에서도 같은 -->
+            <!-- 조건을 검사합니다. -->
+            <input id="username" name="username" autocomplete="username" required minlength="3" maxlength="30" placeholder="아이디를 입력하세요">
+          </div>
+          <div class="form-field">
+            <label for="password">
+              비밀번호
+            </label>
+            <div class="input-wrap">
+              <!-- name/id/type과 길이 조건이 입력의 역할을 정합니다. 브라우저 검사에 더해 서버에서도 -->
+              <!-- 같은 조건을 검사합니다. -->
+              <input id="password" name="password" type="password" autocomplete="current-password" required  placeholder="비밀번호를 입력하세요">
+              <button type="button" class="password-toggle" onclick="togglePassword('password',this)" aria-label="비밀번호 표시" aria-pressed="false">
+                <i class="fa-regular fa-eye" aria-hidden="true">
+                </i>
+              </button>
+            </div>
+          </div>
+          <div id="errorMessage" class="form-error hidden" role="alert">
+            <i class="fa-solid fa-circle-exclamation" aria-hidden="true">
+            </i>
+            <span id="errorText">
+            </span>
+          </div>
+          <button id="submitBtn" class="button auth-submit" type="submit">
+            <span>
+              로그인
+            </span>
+            <i class="fa-solid fa-arrow-right" aria-hidden="true">
+            </i>
+          </button>
+        </form>
+        <p class="auth-bottom-note">
+          아이디와 비밀번호로 나의 대화 기록을 이어갑니다.
+          <br>
+          처음이라면 회원가입으로 시작하세요.
+        </p>
+      </div>
+      <footer class="auth-footer">
+        © 2026 FIELDNOTE · 건설 지식 AI 어시스턴트
+      </footer>
+    </main>
+    <div id="toast-container" class="toast-container" role="status" aria-live="polite">
+    </div>
+    <!-- 스크립트는 적힌 순서대로 연결됩니다. 공통 설정/도구를 먼저 읽고 페이지 전용 코드가 이를 사용합니다. -->
+    <script src="js/config.js">
+    </script>
+    <!-- 스크립트는 적힌 순서대로 연결됩니다. 공통 설정/도구를 먼저 읽고 페이지 전용 코드가 이를 사용합니다. -->
+    <script src="js/api.js">
+    </script>
+    <!-- 스크립트는 적힌 순서대로 연결됩니다. 공통 설정/도구를 먼저 읽고 페이지 전용 코드가 이를 사용합니다. -->
+    <script src="js/ui.js">
+    </script>
+    <!-- 스크립트는 적힌 순서대로 연결됩니다. 공통 설정/도구를 먼저 읽고 페이지 전용 코드가 이를 사용합니다. -->
+    <script src="js/auth.js">
+    </script>
+  </body>
+</html>

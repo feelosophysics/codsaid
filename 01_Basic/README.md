@@ -17,5 +17,6 @@
 | [b6-1](b6-1/README.md) | SQL 도서 대여 데이터베이스 |
 | [b6-2](b6-2/README.md) | 서버·CRUD 평가 기록 |
 | [b6-3](b6-3/README.md) | 인증·데이터베이스 평가 기록 |
+| [b7-1](b7-1/README.md) | 현장노트 건설 지식 Q&A 챗봇 · 백엔드·프론트엔드 |
 
 공통 일기와 공부 메모는 [diary](../diary/README.md)에 있습니다.
