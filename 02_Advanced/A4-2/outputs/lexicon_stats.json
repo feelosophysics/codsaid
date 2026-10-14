@@ -1,0 +1,24 @@
+{
+ "custom_entries": 412,
+ "custom_by_domain": {
+  "general": 316,
+  "movie": 66,
+  "service": 30
+ },
+ "custom_by_pos": {
+  "P": 169,
+  "N": 220,
+  "E": 23
+ },
+ "modifiers": 54,
+ "knu": {
+  "total": 14854,
+  "predicate": 2867,
+  "phrase": 8391,
+  "emoticon": 77,
+  "neutral": 148,
+  "dropped_one_syllable_noun": 25,
+  "dropped_modifier": 5,
+  "start_only": 36
+ }
+}

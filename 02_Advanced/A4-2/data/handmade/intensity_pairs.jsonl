@@ -1,0 +1,16 @@
+{"id": "int01", "kind": "intensifier", "base": "좋다", "modified": "정말 좋다"}
+{"id": "int02", "kind": "intensifier", "base": "재밌다", "modified": "너무 재밌다"}
+{"id": "int03", "kind": "intensifier", "base": "지루하다", "modified": "매우 지루하다"}
+{"id": "int04", "kind": "intensifier", "base": "별로다", "modified": "진짜 별로다"}
+{"id": "int05", "kind": "intensifier", "base": "맛있어요", "modified": "엄청 맛있어요"}
+{"id": "int06", "kind": "intensifier", "base": "실망했다", "modified": "완전 실망했다"}
+{"id": "int07", "kind": "intensifier", "base": "친절해요", "modified": "아주 친절해요"}
+{"id": "int08", "kind": "intensifier", "base": "비싸요", "modified": "너무 비싸요"}
+{"id": "int09", "kind": "intensifier", "base": "감동적이다", "modified": "굉장히 감동적이다"}
+{"id": "int10", "kind": "intensifier", "base": "쓰레기", "modified": "개쓰레기"}
+{"id": "int11", "kind": "intensifier", "base": "재미없다", "modified": "재미 더럽게 없다"}
+{"id": "int12", "kind": "intensifier", "base": "좋지 않다", "modified": "정말 좋지 않다"}
+{"id": "dim01", "kind": "diminisher", "base": "좋다", "modified": "조금 좋다"}
+{"id": "dim02", "kind": "diminisher", "base": "아쉽다", "modified": "약간 아쉽다"}
+{"id": "dim03", "kind": "diminisher", "base": "지루하다", "modified": "다소 지루하다"}
+{"id": "dim04", "kind": "diminisher", "base": "비싸요", "modified": "좀 비싸요"}

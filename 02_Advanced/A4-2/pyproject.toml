@@ -1,0 +1,14 @@
+[project]
+name = "a4-2-rule-based-nlp"
+version = "0.1.0"
+description = "정규표현식 정보 추출과 감성 사전 기반 감성 분석을 규칙으로 구현하고 평가하는 A4-2 미션"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "numpy>=1.23",
+    "scikit-learn>=1.2",
+    "matplotlib>=3.5",
+]
+
+[tool.uv]
+package = false

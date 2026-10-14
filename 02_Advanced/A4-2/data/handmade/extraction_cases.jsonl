@@ -1,0 +1,80 @@
+{"id": "e01", "focus": "email", "text": "문의: user@domain.com", "gold": [{"type": "email", "text": "user@domain.com", "value": "user@domain.com"}]}
+{"id": "e02", "focus": "email", "text": "이메일은 test.user@sub.domain.co.kr입니다", "gold": [{"type": "email", "text": "test.user@sub.domain.co.kr", "value": "test.user@sub.domain.co.kr"}]}
+{"id": "e03", "focus": "email", "text": "담당자 메일 Kim.Minsu+cs@Example.COM 으로 보내 주세요", "gold": [{"type": "email", "text": "Kim.Minsu+cs@Example.COM", "value": "Kim.Minsu+cs@example.com"}]}
+{"id": "e04", "focus": "email", "text": "회신은 support_team@my-company.io로 부탁드립니다.", "gold": [{"type": "email", "text": "support_team@my-company.io", "value": "support_team@my-company.io"}]}
+{"id": "e05", "focus": "email", "text": "(연락처: help@service.kr)", "gold": [{"type": "email", "text": "help@service.kr", "value": "help@service.kr"}]}
+{"id": "e06", "focus": "email", "text": "a@b.co 와 first.last@company.org 두 곳으로 보냈습니다", "gold": [{"type": "email", "text": "a@b.co", "value": "a@b.co"}, {"type": "email", "text": "first.last@company.org", "value": "first.last@company.org"}]}
+{"id": "e07", "focus": "email", "text": "문장 끝에 점이 붙은 주소: admin@site.net.", "gold": [{"type": "email", "text": "admin@site.net", "value": "admin@site.net"}]}
+{"id": "e08", "focus": "email", "text": "트위터 @username 으로 멘션 주세요", "gold": [], "note": "음성 사례: 멘션은 이메일이 아니다"}
+{"id": "e09", "focus": "email", "text": "user@localhost 는 외부에서 받을 수 없다", "gold": [], "note": "음성 사례: 최상위 도메인이 없다"}
+{"id": "e10", "focus": "email", "text": "메일은 user at domain dot com 입니다", "gold": [{"type": "email", "text": "user at domain dot com", "value": "user@domain.com"}], "fail": "난독화 표기", "note": "스팸 수집을 피하려고 @와 .을 글자로 풀어 쓴 주소"}
+{"id": "e11", "focus": "email", "text": "한글 도메인 사용자@도메인.한국 으로 보내세요", "gold": [{"type": "email", "text": "사용자@도메인.한국", "value": "사용자@도메인.한국"}], "fail": "국제화 도메인", "note": "패턴이 ASCII만 허용한다"}
+{"id": "e12", "focus": "email", "text": "user..name@domain.com 은 형식 오류", "gold": [], "fail": "형식 검증 부족", "note": "로컬 파트에 점이 연속하면 RFC 5321 위반이지만 패턴은 허용한다"}
+{"id": "e13", "focus": "email", "text": "abc@def.com,xyz@uvw.net", "gold": [{"type": "email", "text": "abc@def.com", "value": "abc@def.com"}, {"type": "email", "text": "xyz@uvw.net", "value": "xyz@uvw.net"}]}
+{"id": "p01", "focus": "phone", "text": "연락처: 010-1234-5678", "gold": [{"type": "phone", "text": "010-1234-5678", "value": "010-1234-5678"}]}
+{"id": "p02", "focus": "phone", "text": "전화번호는 02-123-4567 또는 031-1234-5678", "gold": [{"type": "phone", "text": "02-123-4567", "value": "02-123-4567"}, {"type": "phone", "text": "031-1234-5678", "value": "031-1234-5678"}]}
+{"id": "p03", "focus": "phone", "text": "휴대폰 010.9876.5432로 연락 주세요", "gold": [{"type": "phone", "text": "010.9876.5432", "value": "010-9876-5432"}]}
+{"id": "p04", "focus": "phone", "text": "01055556666 번으로 문자 주세요", "gold": [{"type": "phone", "text": "01055556666", "value": "010-5555-6666"}]}
+{"id": "p05", "focus": "phone", "text": "대표번호 1588-1234 (평일 9시~18시)", "gold": [{"type": "phone", "text": "1588-1234", "value": "1588-1234"}]}
+{"id": "p06", "focus": "phone", "text": "해외에서는 +82-10-1234-5678로 거세요", "gold": [{"type": "phone", "text": "+82-10-1234-5678", "value": "010-1234-5678"}]}
+{"id": "p07", "focus": "phone", "text": "사무실 (02) 345-6789", "gold": [{"type": "phone", "text": "(02) 345-6789", "value": "02-345-6789"}]}
+{"id": "p08", "focus": "phone", "text": "인터넷전화 070-4321-8765", "gold": [{"type": "phone", "text": "070-4321-8765", "value": "070-4321-8765"}]}
+{"id": "p09", "focus": "phone", "text": "제주 지사 064 123 4567", "gold": [{"type": "phone", "text": "064 123 4567", "value": "064-123-4567"}]}
+{"id": "p10", "focus": "phone", "text": "주문번호 1234-5678-9012 확인 바랍니다", "gold": [], "note": "음성 사례: 0으로 시작하지 않는 숫자열"}
+{"id": "p11", "focus": "phone", "text": "2024-01-15에 방문 예정", "gold": [{"type": "date", "text": "2024-01-15", "value": "2024-01-15"}], "note": "음성 사례(전화): 날짜를 전화번호로 읽으면 안 된다"}
+{"id": "p12", "focus": "phone", "text": "연락처는 공일공-일이삼사-오육칠팔입니다", "gold": [{"type": "phone", "text": "공일공-일이삼사-오육칠팔", "value": "010-1234-5678"}], "fail": "한글 숫자 표기", "note": "미션 결과 예시의 실패 사례"}
+{"id": "p13", "focus": "phone", "text": "010-1234-56789 는 자릿수가 틀린 번호", "gold": [], "note": "음성 사례: 끝자리가 5자리"}
+{"id": "p14", "focus": "phone", "text": "콜센터 1544 - 1234", "gold": [{"type": "phone", "text": "1544 - 1234", "value": "1544-1234"}], "fail": "구분자 주변 공백", "note": "대표번호 패턴은 하이픈을 붙여 쓴 형태만 받는다"}
+{"id": "p15", "focus": "phone", "text": "번호가 바뀌었어요 010-1234-5678 → 010-8765-4321", "gold": [{"type": "phone", "text": "010-1234-5678", "value": "010-1234-5678"}, {"type": "phone", "text": "010-8765-4321", "value": "010-8765-4321"}]}
+{"id": "d01", "focus": "date", "text": "일시: 2024년 3월 15일", "gold": [{"type": "date", "text": "2024년 3월 15일", "value": "2024-03-15"}]}
+{"id": "d02", "focus": "date", "text": "기한: 2024/03/15, 2024-03-15", "gold": [{"type": "date", "text": "2024/03/15", "value": "2024-03-15"}, {"type": "date", "text": "2024-03-15", "value": "2024-03-15"}]}
+{"id": "d03", "focus": "date", "text": "2024.1.5까지 접수", "gold": [{"type": "date", "text": "2024.1.5", "value": "2024-01-05"}]}
+{"id": "d04", "focus": "date", "text": "행사는 2024. 3. 15.(금)에 열립니다", "gold": [{"type": "date", "text": "2024. 3. 15.", "value": "2024-03-15"}]}
+{"id": "d05", "focus": "date", "text": "24.12.25 크리스마스 공연", "gold": [{"type": "date", "text": "24.12.25", "value": "2024-12-25"}]}
+{"id": "d06", "focus": "date", "text": "마감은 3월 31일입니다", "gold": [{"type": "date", "text": "3월 31일", "value": "--03-31"}]}
+{"id": "d07", "focus": "date", "text": "March 15, 2024 에 출시", "gold": [{"type": "date", "text": "March 15, 2024", "value": "2024-03-15"}]}
+{"id": "d08", "focus": "date", "text": "계약일 2023년12월1일", "gold": [{"type": "date", "text": "2023년12월1일", "value": "2023-12-01"}]}
+{"id": "d09", "focus": "date", "text": "버전 10.15.7 업데이트", "gold": [], "note": "음성 사례: 버전 번호"}
+{"id": "d10", "focus": "date", "text": "2024-13-45는 없는 날짜", "gold": [], "note": "음성 사례: 13월 45일"}
+{"id": "d11", "focus": "date", "text": "2024-02-29는 윤년이고 2023-02-29는 없는 날", "gold": [{"type": "date", "text": "2024-02-29", "value": "2024-02-29"}], "note": "윤년 검증"}
+{"id": "d12", "focus": "date", "text": "미국식 표기 3/15/2024 도 있다", "gold": [{"type": "date", "text": "3/15/2024", "value": "2024-03-15"}], "fail": "지원하지 않는 형식", "note": "월/일/연 순서는 일/월/연과 구별할 수 없어 패턴에 넣지 않았다"}
+{"id": "d13", "focus": "date", "text": "기간은 2024년 3월 15일~20일", "gold": [{"type": "date", "text": "2024년 3월 15일", "value": "2024-03-15"}, {"type": "date", "text": "20일", "value": "2024-03-20"}], "fail": "생략된 범위 끝", "note": "범위 끝의 연·월이 생략되면 앞 날짜에서 물려받아야 한다"}
+{"id": "d14", "focus": "date", "text": "이천이십사년 삼월 십오일", "gold": [{"type": "date", "text": "이천이십사년 삼월 십오일", "value": "2024-03-15"}], "fail": "한글 숫자 표기"}
+{"id": "d15", "focus": "date", "text": "작성 2020-01-01 / 수정 2021-06-30", "gold": [{"type": "date", "text": "2020-01-01", "value": "2020-01-01"}, {"type": "date", "text": "2021-06-30", "value": "2021-06-30"}]}
+{"id": "m01", "focus": "money", "text": "가격: 10,000원", "gold": [{"type": "money", "text": "10,000원", "value": 10000}]}
+{"id": "m02", "focus": "money", "text": "총액 1억 2천만원 예정", "gold": [{"type": "money", "text": "1억 2천만원", "value": 120000000}]}
+{"id": "m03", "focus": "money", "text": "$100 정도 듭니다", "gold": [{"type": "money", "text": "$100", "value": 10000}]}
+{"id": "m04", "focus": "money", "text": "참가비 50,000 원", "gold": [{"type": "money", "text": "50,000 원", "value": 50000}]}
+{"id": "m05", "focus": "money", "text": "월세는 5만원입니다", "gold": [{"type": "money", "text": "5만원", "value": 50000}]}
+{"id": "m06", "focus": "money", "text": "예산 2.5억원", "gold": [{"type": "money", "text": "2.5억원", "value": 250000000}]}
+{"id": "m07", "focus": "money", "text": "커피 한 잔 오천원", "gold": [{"type": "money", "text": "오천원", "value": 5000}]}
+{"id": "m08", "focus": "money", "text": "₩3,000 할인", "gold": [{"type": "money", "text": "₩3,000", "value": 3000}]}
+{"id": "m09", "focus": "money", "text": "USD 1,299.99 결제", "gold": [{"type": "money", "text": "USD 1,299.99", "value": 129999}]}
+{"id": "m10", "focus": "money", "text": "보증금 1,500만원에 월 80만 원", "gold": [{"type": "money", "text": "1,500만원", "value": 15000000}, {"type": "money", "text": "80만 원", "value": 800000}]}
+{"id": "m11", "focus": "money", "text": "100달러짜리 지폐", "gold": [{"type": "money", "text": "100달러", "value": 10000}]}
+{"id": "m12", "focus": "money", "text": "회사원 3명이 참석", "gold": [], "note": "음성 사례: '사원'의 '사'는 수사가 아니다"}
+{"id": "m13", "focus": "money", "text": "출근길 만원 버스에 시달렸다", "gold": [], "fail": "동형이의어", "note": "'만원'(사람이 꽉 참)과 '만 원'(금액)은 글자가 같다"}
+{"id": "m14", "focus": "money", "text": "안전 3원칙을 지키자", "gold": [], "fail": "단어 경계", "note": "'3원'+'칙'으로 잘린다"}
+{"id": "m15", "focus": "money", "text": "총액이천만원", "gold": [{"type": "money", "text": "천만원", "value": 10000000}], "fail": "띄어쓰기 모호성", "note": "'총액이 천만원'인지 '총액 이천만원'인지 띄어쓰기 없이는 정할 수 없다. 조사 '이'가 붙는 쪽을 정답으로 둔다"}
+{"id": "m16", "focus": "money", "text": "입장료 삼만오천 원", "gold": [{"type": "money", "text": "삼만오천 원", "value": 35000}]}
+{"id": "m17", "focus": "money", "text": "시장 규모는 1.2만 달러", "gold": [{"type": "money", "text": "1.2만 달러", "value": 1200000}], "fail": "단위 조합", "note": "달러 패턴이 '만' 같은 한국어 큰 단위를 받지 않는다"}
+{"id": "u01", "focus": "url", "text": "링크: https://www.example.com/path?query=value", "gold": [{"type": "url", "text": "https://www.example.com/path?query=value", "value": "https://www.example.com/path?query=value"}]}
+{"id": "u02", "focus": "url", "text": "링크: <https://www.example.com/path?q=1>", "gold": [{"type": "url", "text": "https://www.example.com/path?q=1", "value": "https://www.example.com/path?q=1"}]}
+{"id": "u03", "focus": "url", "text": "www.naver.com 에서 검색", "gold": [{"type": "url", "text": "www.naver.com", "value": "http://www.naver.com"}]}
+{"id": "u04", "focus": "url", "text": "자세한 내용은 http://example.co.kr/notice.html.", "gold": [{"type": "url", "text": "http://example.co.kr/notice.html", "value": "http://example.co.kr/notice.html"}]}
+{"id": "u05", "focus": "url", "text": "개발 서버 http://dev.example.test:8080/api/v1", "gold": [{"type": "url", "text": "http://dev.example.test:8080/api/v1", "value": "http://dev.example.test:8080/api/v1"}]}
+{"id": "u06", "focus": "url", "text": "대소문자 섞인 HTTPS://Example.COM/Path", "gold": [{"type": "url", "text": "HTTPS://Example.COM/Path", "value": "https://example.com/Path"}]}
+{"id": "u07", "focus": "url", "text": "기본 포트 https://shop.example.com:443/cart", "gold": [{"type": "url", "text": "https://shop.example.com:443/cart", "value": "https://shop.example.com/cart"}]}
+{"id": "u08", "focus": "url", "text": "(참고: https://en.wikipedia.org/wiki/Regex_(disambiguation))", "gold": [{"type": "url", "text": "https://en.wikipedia.org/wiki/Regex_(disambiguation)", "value": "https://en.wikipedia.org/wiki/Regex_(disambiguation)"}]}
+{"id": "u09", "focus": "url", "text": "문서 https://docs.python.org/3/library/re.html#re.VERBOSE 참조", "gold": [{"type": "url", "text": "https://docs.python.org/3/library/re.html#re.VERBOSE", "value": "https://docs.python.org/3/library/re.html#re.VERBOSE"}]}
+{"id": "u10", "focus": "url", "text": "공식 사이트는 example.com 이고 첨부는 report.pdf", "gold": [{"type": "url", "text": "example.com", "value": "http://example.com"}], "fail": "스킴 없는 도메인", "note": "스킴·www 없는 도메인은 파일명(report.pdf)과 구별하기 어려워 잡지 않는다"}
+{"id": "u11", "focus": "url", "text": "https://ko.wikipedia.org/wiki/정규_표현식 참고", "gold": [{"type": "url", "text": "https://ko.wikipedia.org/wiki/정규_표현식", "value": "https://ko.wikipedia.org/wiki/정규_표현식"}], "fail": "한글 경로", "note": "URL 뒤에 붙는 조사를 떼려고 한글에서 멈추게 했더니 한글 경로가 잘린다"}
+{"id": "u12", "focus": "url", "text": "자료 ftp://files.example.org/pub/file.zip", "gold": [{"type": "url", "text": "ftp://files.example.org/pub/file.zip", "value": "ftp://files.example.org/pub/file.zip"}]}
+{"id": "u13", "focus": "url", "text": "공유기 설정 http://192.168.0.1/admin", "gold": [{"type": "url", "text": "http://192.168.0.1/admin", "value": "http://192.168.0.1/admin"}]}
+{"id": "u14", "focus": "url", "text": "문의 help@www.example.com", "gold": [{"type": "email", "text": "help@www.example.com", "value": "help@www.example.com"}], "note": "음성 사례(URL): 이메일 도메인의 www.를 URL로 읽으면 안 된다"}
+{"id": "x01", "focus": "mixed", "text": "문의: support@company.co.kr, 전화 02-1234-5678 일시: 2024년 3월 15일, 참가비: 50,000원", "gold": [{"type": "email", "text": "support@company.co.kr", "value": "support@company.co.kr"}, {"type": "phone", "text": "02-1234-5678", "value": "02-1234-5678"}, {"type": "date", "text": "2024년 3월 15일", "value": "2024-03-15"}, {"type": "money", "text": "50,000원", "value": 50000}], "note": "미션 결과 예시"}
+{"id": "x02", "focus": "mixed", "text": "예약 확인: 2024-05-01 19:00, 2인 120,000원, 문의 010-2222-3333, https://booking.example.com/r/123", "gold": [{"type": "date", "text": "2024-05-01", "value": "2024-05-01"}, {"type": "money", "text": "120,000원", "value": 120000}, {"type": "phone", "text": "010-2222-3333", "value": "010-2222-3333"}, {"type": "url", "text": "https://booking.example.com/r/123", "value": "https://booking.example.com/r/123"}]}
+{"id": "x03", "focus": "mixed", "text": "환불 요청합니다. 주문일 2024.04.02, 금액 $59.90, 연락처 contact@shop.com", "gold": [{"type": "date", "text": "2024.04.02", "value": "2024-04-02"}, {"type": "money", "text": "$59.90", "value": 5990}, {"type": "email", "text": "contact@shop.com", "value": "contact@shop.com"}]}
+{"id": "x04", "focus": "mixed", "text": "회의는 4월 3일 오후 2시, 자료는 www.team.org/docs 참고", "gold": [{"type": "date", "text": "4월 3일", "value": "--04-03"}, {"type": "url", "text": "www.team.org/docs", "value": "http://www.team.org/docs"}]}
+{"id": "x05", "focus": "mixed", "text": "아무 정보도 없는 평범한 문장입니다", "gold": []}
+{"id": "x06", "focus": "mixed", "text": "3,000원짜리 쿠폰을 2024년 1월 31일까지 user1@mail.net 으로 보내드립니다", "gold": [{"type": "money", "text": "3,000원", "value": 3000}, {"type": "date", "text": "2024년 1월 31일", "value": "2024-01-31"}, {"type": "email", "text": "user1@mail.net", "value": "user1@mail.net"}]}

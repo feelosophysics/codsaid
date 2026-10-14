@@ -1,0 +1,294 @@
+{
+ "n_sentences": 80,
+ "sentences_by_focus": {
+  "email": 13,
+  "phone": 15,
+  "date": 15,
+  "money": 17,
+  "url": 14,
+  "mixed": 6
+ },
+ "per_type": {
+  "email": {
+   "tp": 14,
+   "fp": 1,
+   "fn": 2,
+   "precision": 0.9333333333333333,
+   "recall": 0.875,
+   "f1": 0.9032258064516129,
+   "normalization_accuracy": 1.0,
+   "sentences": 13
+  },
+  "phone": {
+   "tp": 14,
+   "fp": 0,
+   "fn": 2,
+   "precision": 1.0,
+   "recall": 0.875,
+   "f1": 0.9333333333333333,
+   "normalization_accuracy": 1.0,
+   "sentences": 15
+  },
+  "date": {
+   "tp": 19,
+   "fp": 0,
+   "fn": 3,
+   "precision": 1.0,
+   "recall": 0.8636363636363636,
+   "f1": 0.9268292682926829,
+   "normalization_accuracy": 1.0,
+   "sentences": 15
+  },
+  "money": {
+   "tp": 17,
+   "fp": 3,
+   "fn": 2,
+   "precision": 0.85,
+   "recall": 0.8947368421052632,
+   "f1": 0.8717948717948718,
+   "normalization_accuracy": 1.0,
+   "sentences": 17
+  },
+  "url": {
+   "tp": 13,
+   "fp": 1,
+   "fn": 2,
+   "precision": 0.9285714285714286,
+   "recall": 0.8666666666666667,
+   "f1": 0.896551724137931,
+   "normalization_accuracy": 1.0,
+   "sentences": 14
+  }
+ },
+ "micro": {
+  "tp": 77,
+  "fp": 5,
+  "fn": 11,
+  "precision": 0.9390243902439024,
+  "recall": 0.875,
+  "f1": 0.9058823529411764
+ },
+ "errors": [
+  {
+   "id": "e10",
+   "text": "메일은 user at domain dot com 입니다",
+   "fail": "난독화 표기",
+   "note": "스팸 수집을 피하려고 @와 .을 글자로 풀어 쓴 주소",
+   "false_positive": [],
+   "missed": [
+    [
+     "email",
+     "user at domain dot com"
+    ]
+   ],
+   "wrong_value": []
+  },
+  {
+   "id": "e11",
+   "text": "한글 도메인 사용자@도메인.한국 으로 보내세요",
+   "fail": "국제화 도메인",
+   "note": "패턴이 ASCII만 허용한다",
+   "false_positive": [],
+   "missed": [
+    [
+     "email",
+     "사용자@도메인.한국"
+    ]
+   ],
+   "wrong_value": []
+  },
+  {
+   "id": "e12",
+   "text": "user..name@domain.com 은 형식 오류",
+   "fail": "형식 검증 부족",
+   "note": "로컬 파트에 점이 연속하면 RFC 5321 위반이지만 패턴은 허용한다",
+   "false_positive": [
+    [
+     "email",
+     "user..name@domain.com"
+    ]
+   ],
+   "missed": [],
+   "wrong_value": []
+  },
+  {
+   "id": "p12",
+   "text": "연락처는 공일공-일이삼사-오육칠팔입니다",
+   "fail": "한글 숫자 표기",
+   "note": "미션 결과 예시의 실패 사례",
+   "false_positive": [],
+   "missed": [
+    [
+     "phone",
+     "공일공-일이삼사-오육칠팔"
+    ]
+   ],
+   "wrong_value": []
+  },
+  {
+   "id": "p14",
+   "text": "콜센터 1544 - 1234",
+   "fail": "구분자 주변 공백",
+   "note": "대표번호 패턴은 하이픈을 붙여 쓴 형태만 받는다",
+   "false_positive": [],
+   "missed": [
+    [
+     "phone",
+     "1544 - 1234"
+    ]
+   ],
+   "wrong_value": []
+  },
+  {
+   "id": "d12",
+   "text": "미국식 표기 3/15/2024 도 있다",
+   "fail": "지원하지 않는 형식",
+   "note": "월/일/연 순서는 일/월/연과 구별할 수 없어 패턴에 넣지 않았다",
+   "false_positive": [],
+   "missed": [
+    [
+     "date",
+     "3/15/2024"
+    ]
+   ],
+   "wrong_value": []
+  },
+  {
+   "id": "d13",
+   "text": "기간은 2024년 3월 15일~20일",
+   "fail": "생략된 범위 끝",
+   "note": "범위 끝의 연·월이 생략되면 앞 날짜에서 물려받아야 한다",
+   "false_positive": [],
+   "missed": [
+    [
+     "date",
+     "20일"
+    ]
+   ],
+   "wrong_value": []
+  },
+  {
+   "id": "d14",
+   "text": "이천이십사년 삼월 십오일",
+   "fail": "한글 숫자 표기",
+   "note": "",
+   "false_positive": [],
+   "missed": [
+    [
+     "date",
+     "이천이십사년 삼월 십오일"
+    ]
+   ],
+   "wrong_value": []
+  },
+  {
+   "id": "m13",
+   "text": "출근길 만원 버스에 시달렸다",
+   "fail": "동형이의어",
+   "note": "'만원'(사람이 꽉 참)과 '만 원'(금액)은 글자가 같다",
+   "false_positive": [
+    [
+     "money",
+     "만원"
+    ]
+   ],
+   "missed": [],
+   "wrong_value": []
+  },
+  {
+   "id": "m14",
+   "text": "안전 3원칙을 지키자",
+   "fail": "단어 경계",
+   "note": "'3원'+'칙'으로 잘린다",
+   "false_positive": [
+    [
+     "money",
+     "3원"
+    ]
+   ],
+   "missed": [],
+   "wrong_value": []
+  },
+  {
+   "id": "m15",
+   "text": "총액이천만원",
+   "fail": "띄어쓰기 모호성",
+   "note": "'총액이 천만원'인지 '총액 이천만원'인지 띄어쓰기 없이는 정할 수 없다. 조사 '이'가 붙는 쪽을 정답으로 둔다",
+   "false_positive": [
+    [
+     "money",
+     "이천만원"
+    ]
+   ],
+   "missed": [
+    [
+     "money",
+     "천만원"
+    ]
+   ],
+   "wrong_value": []
+  },
+  {
+   "id": "m17",
+   "text": "시장 규모는 1.2만 달러",
+   "fail": "단위 조합",
+   "note": "달러 패턴이 '만' 같은 한국어 큰 단위를 받지 않는다",
+   "false_positive": [],
+   "missed": [
+    [
+     "money",
+     "1.2만 달러"
+    ]
+   ],
+   "wrong_value": []
+  },
+  {
+   "id": "u10",
+   "text": "공식 사이트는 example.com 이고 첨부는 report.pdf",
+   "fail": "스킴 없는 도메인",
+   "note": "스킴·www 없는 도메인은 파일명(report.pdf)과 구별하기 어려워 잡지 않는다",
+   "false_positive": [],
+   "missed": [
+    [
+     "url",
+     "example.com"
+    ]
+   ],
+   "wrong_value": []
+  },
+  {
+   "id": "u11",
+   "text": "https://ko.wikipedia.org/wiki/정규_표현식 참고",
+   "fail": "한글 경로",
+   "note": "URL 뒤에 붙는 조사를 떼려고 한글에서 멈추게 했더니 한글 경로가 잘린다",
+   "false_positive": [
+    [
+     "url",
+     "https://ko.wikipedia.org/wiki/"
+    ]
+   ],
+   "missed": [
+    [
+     "url",
+     "https://ko.wikipedia.org/wiki/정규_표현식"
+    ]
+   ],
+   "wrong_value": []
+  }
+ ],
+ "failure_types": {
+  "난독화 표기": 1,
+  "국제화 도메인": 1,
+  "형식 검증 부족": 1,
+  "한글 숫자 표기": 2,
+  "구분자 주변 공백": 1,
+  "지원하지 않는 형식": 1,
+  "생략된 범위 끝": 1,
+  "동형이의어": 1,
+  "단어 경계": 1,
+  "띄어쓰기 모호성": 1,
+  "단위 조합": 1,
+  "스킴 없는 도메인": 1,
+  "한글 경로": 1
+ }
+}

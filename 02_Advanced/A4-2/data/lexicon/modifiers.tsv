@@ -1,0 +1,62 @@
+# 강조어·약화어·부정어. 감성 사전과 같은 방식으로 문장에서 찾는다.
+# 열: term	kind	factor	match	note
+#  kind   : INT 강조어(점수 × factor), DIM 약화어(× factor), NEG_PRE 앞에서 꾸미는 부정어(안 좋다), NEG_POST 뒤에서 붙는 부정어(좋지 않다)
+#  match  : afterji=바로 앞이 '~지'일 때만 앞 감성어를 뒤집는다. glue=어절 전체이거나, 어절 처음에 붙어 바로 뒤에 감성어가 올 때만(개노잼, 안좋아). exact=어절 전체. start=어절 처음. noext=받침 붙은 형태 불인정
+# ───── 강조어 ─────
+너무	INT	1.5		너무
+정말	INT	1.5		정말(정말로 포함)
+진짜	INT	1.5		진짜
+매우	INT	1.5		매우
+아주	INT	1.5		아주
+완전	INT	1.5		완전
+엄청	INT	1.5		엄청
+굉장히	INT	1.5		굉장히
+무척	INT	1.5		무척
+대단히	INT	1.5		대단히
+몹시	INT	1.5		몹시
+제일	INT	1.5		제일
+가장	INT	1.5		가장
+최고로	INT	1.5		최고로('최고'보다 길어서 강조어로 읽힌다)
+진심	INT	1.3		진심(으로)
+되게	INT	1.3		되게
+상당히	INT	1.3		상당히
+꽤	INT	1.2	start	꽤
+참	INT	1.3	exact	참('참고', '참여'를 피하려고 어절 전체만)
+넘	INT	1.5	exact	너무의 줄임('넘어'를 피하려고 어절 전체만)
+존나	INT	1.5		속어 강조
+졸라	INT	1.5		속어 강조
+개	INT	1.5	glue	접두 강조(개쓰레기). '개봉', '개연성'은 뒤에 감성어가 없어 걸리지 않는다
+핵	INT	1.5	glue	접두 강조(핵노잼)
+존	INT	1.5	glue	접두 강조(존잼)
+졸	INT	1.5	glue	접두 강조(졸잼)
+더럽게	INT	1.5		재미 더럽게 없다
+# ───── 약화어 ─────
+좀	DIM	0.5	exact	좀('좀비'를 피하려고 어절 전체만)
+조금	DIM	0.5		조금
+약간	DIM	0.5		약간
+다소	DIM	0.5		다소
+살짝	DIM	0.5		살짝
+그다지	DIM	0.5		그다지
+그나마	DIM	0.5		그나마
+# ───── 앞 부정어: 바로 뒤 감성어를 뒤집는다 ─────
+안	NEG_PRE	-1	glue	안 좋다, 안좋아
+못	NEG_PRE	-1	start	못 믿겠다, 감동을 못느낌(어절 처음이면 뒤에 감성어가 없어도 부정어로 본다)
+# ───── 뒤 부정어: 앞 감성어를 뒤집는다. 두 개면 다시 뒤집혀 이중부정이 된다 ─────
+않	NEG_POST	-1		좋지 않다, 재밌지않음
+없	NEG_POST	-1		재미가 없다, 감동 없음
+아니	NEG_POST	-1		좋은 영화는 아니다(아닌·아닐·아님 포함)
+아냐	NEG_POST	-1		아냐
+아니면	BLOCK	0		차단: '또는'의 뜻
+안되	NEG_POST	-1		몰입이 안된다, 몰입이안됨
+안돼	NEG_POST	-1		안돼
+안하	NEG_POST	-1		추천 안하고싶음, 후회안합니다
+안해	NEG_POST	-1		안해
+안가	NEG_POST	-1	start	공감 안가는
+안들	NEG_POST	-1	start	맘에 안들어
+못하	NEG_POST	-1	afterji	재미있지 못하다. '~지' 없이 쓰면(연기 못함) 앞 감성어를 뒤집지 않고 고립 부정어가 된다
+못해	NEG_POST	-1	afterji	못해, 못했다
+지마	NEG_POST	-1	noext	보지마세요('지만'은 받침 때문에 걸리지 않는다)
+마세요	NEG_POST	-1	start+afterji	보지 마세요
+마시길	NEG_POST	-1	start+afterji	보지 마시길
+마라	NEG_POST	-1	start+noext+afterji	보지 마라
+말길	NEG_POST	-1	start+afterji	속지 말길
