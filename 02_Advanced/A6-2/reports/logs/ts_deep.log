@@ -1,0 +1,57 @@
+CPU 스레드 2개
+
+=== AAPL 종가 — 베이스라인 측정 2026-10-13T08:38:20+00:00 → 딥러닝 시작 2026-10-14T02:55:44+00:00 ===
+  LSTM·수준값(v1)             파라미터   4,513  Test MAE 6.0866±2.6235  High Bias + High Variance    (77초)
+    Train skill 1.472 (Naive=1, 0.95 이상이면 편향), Validation skill 1.685, 격차 0.213 (기준 0.1)
+  GRU·수준값(v1)              파라미터   3,393  Test MAE 9.3351±0.2047  High Bias + High Variance    (36초)
+    Train skill 2.129 (Naive=1, 0.95 이상이면 편향), Validation skill 2.292, 격차 0.163 (기준 0.1)
+  LSTM·변화량(v2)             파라미터   5,409  Test MAE 2.4321±0.0011  High Bias (Underfitting)     (14초)
+    Train skill 0.989 (Naive=1, 0.95 이상이면 편향), Validation skill 0.996, 격차 0.006 (기준 0.1)
+  GRU·변화량(v2)              파라미터   4,065  Test MAE 2.4417±0.0210  High Bias (Underfitting)     (34초)
+    Train skill 0.999 (Naive=1, 0.95 이상이면 편향), Validation skill 0.996, 격차 -0.003 (기준 0.1)
+  LSTM 은닉 2                파라미터      99  Test MAE 2.4474±0.0000  High Bias (Underfitting)     (4초)
+    Train skill 0.995 (Naive=1, 0.95 이상이면 편향), Validation skill 0.999, 격차 0.005 (기준 0.1)
+  LSTM 128×2 (규제 없음)       파라미터 202,881  Test MAE 4.3121±0.0000  High Variance (Overfitting)  (645초)
+    Train skill 0.019 (Naive=1, 0.95 이상이면 편향), Validation skill 2.947, 격차 2.928 (기준 0.1)
+  LSTM 128×2 + 규제          파라미터 202,881  Test MAE 2.4347±0.0051  High Bias (Underfitting)     (173초)
+    Train skill 0.996 (Naive=1, 0.95 이상이면 편향), Validation skill 0.998, 격차 0.001 (기준 0.1)
+  → Validation으로 고른 최종 모델: GRU·변화량(v2) (seed 2)
+    vs Naive         MAE -0.16%  RMSE -0.31%  MAPE -0.21%
+    vs SMA(5)        MAE +40.32%  RMSE +36.23%  MAPE +40.09%
+    vs SMA(10)       MAE +54.63%  RMSE +49.36%  MAPE +54.13%
+    vs SMA(20)       MAE +65.87%  RMSE +60.00%  MAPE +65.44%
+    vs EMA(0.1)      MAE +60.33%  RMSE +54.49%  MAPE +59.91%
+    vs EMA(0.3)      MAE +35.70%  RMSE +30.25%  MAPE +35.25%
+    vs EMA(0.5)      MAE +19.59%  RMSE +16.30%  MAPE +19.40%
+    vs LinearTrend   MAE +90.24%  RMSE +88.14%  MAPE +89.43%
+    vs LinearLag(5)  MAE +0.89%  RMSE +0.53%  MAPE +0.91%
+    Diebold-Mariano vs Naive: 통계량 +0.855, p=0.3928
+    Diebold-Mariano vs Naive: 통계량 +0.855, p=0.3928
+
+=== 서울 일평균 기온 — 베이스라인 측정 2026-10-13T08:38:21+00:00 → 딥러닝 시작 2026-10-14T03:12:07+00:00 ===
+  LSTM·수준값(v1)             파라미터   4,513  Test MAE 1.5349±0.0040  적정 (Good fit)                (145초)
+    Train skill 0.864 (Naive=1, 0.95 이상이면 편향), Validation skill 0.899, 격차 0.035 (기준 0.1)
+  GRU·수준값(v1)              파라미터   3,393  Test MAE 1.5414±0.0098  적정 (Good fit)                (259초)
+    Train skill 0.884 (Naive=1, 0.95 이상이면 편향), Validation skill 0.903, 격차 0.019 (기준 0.1)
+  LSTM·변화량(v2)             파라미터   5,921  Test MAE 1.3973±0.0127  적정 (Good fit)                (46초)
+    Train skill 0.497 (Naive=1, 0.95 이상이면 편향), Validation skill 0.593, 격차 0.095 (기준 0.1)
+  GRU·변화량(v2)              파라미터   4,449  Test MAE 1.3999±0.0092  적정 (Good fit)                (92초)
+    Train skill 0.546 (Naive=1, 0.95 이상이면 편향), Validation skill 0.595, 격차 0.049 (기준 0.1)
+  LSTM 은닉 2                파라미터     131  Test MAE 1.3925±0.0000  적정 (Good fit)                (29초)
+    Train skill 0.576 (Naive=1, 0.95 이상이면 편향), Validation skill 0.623, 격차 0.047 (기준 0.1)
+  LSTM 128×2 (규제 없음)       파라미터 204,929  Test MAE 1.7554±0.0000  High Variance (Overfitting)  (376초)
+    Train skill 0.008 (Naive=1, 0.95 이상이면 편향), Validation skill 0.895, 격차 0.887 (기준 0.1)
+  LSTM 128×2 + 규제          파라미터 204,929  Test MAE 1.4005±0.0108  적정 (Good fit)                (355초)
+    Train skill 0.552 (Naive=1, 0.95 이상이면 편향), Validation skill 0.595, 격차 0.044 (기준 0.1)
+  → Validation으로 고른 최종 모델: LSTM 128×2 + 규제 (seed 1)
+    vs Naive         MAE +15.33%  RMSE +15.93%
+    vs SMA(5)        MAE +37.20%  RMSE +36.84%
+    vs SMA(10)       MAE +42.06%  RMSE +41.71%
+    vs SMA(20)       MAE +49.84%  RMSE +47.81%
+    vs EMA(0.1)      MAE +46.05%  RMSE +44.27%
+    vs EMA(0.3)      MAE +30.43%  RMSE +30.18%
+    vs EMA(0.5)      MAE +24.49%  RMSE +24.60%
+    vs LinearTrend   MAE +85.38%  RMSE +82.69%
+    vs LinearLag(5)  MAE +9.33%  RMSE +10.17%
+    Diebold-Mariano vs Naive: 통계량 -5.310, p=0.0000
+    Diebold-Mariano vs LinearLag(5): 통계량 -3.512, p=0.0005

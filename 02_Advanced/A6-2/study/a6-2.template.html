@@ -1,0 +1,1194 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A6-2 성능 진단</title>
+<style>
+:root {
+  --bg: #f7f7f4; --card: #ffffff; --fg: #1d2125; --muted: #5d656e; --line: #dfe2e5;
+  --accent: #2563c9; --accent-soft: #e6eefb; --red: #c8402f; --red-soft: #fbe9e6;
+  --green: #23824a; --green-soft: #e3f3e9; --amber: #a86400; --amber-soft: #fbf0dc;
+  --purple: #7b3fb5; --code-bg: #f1f2f0; --plot-bg: #ffffff; --grid: #e4e7ea;
+  --radius: 12px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #15181b; --card: #1d2125; --fg: #e7e9eb; --muted: #9ba3ab; --line: #343a40;
+    --accent: #6ea2f5; --accent-soft: #1f2d45; --red: #f07b6a; --red-soft: #3d2420;
+    --green: #5cc58a; --green-soft: #1b3326; --amber: #e4a74a; --amber-soft: #3a2e17;
+    --purple: #b58be6; --code-bg: #24292e; --plot-bg: #1d2125; --grid: #2f353b;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #15181b; --card: #1d2125; --fg: #e7e9eb; --muted: #9ba3ab; --line: #343a40;
+  --accent: #6ea2f5; --accent-soft: #1f2d45; --red: #f07b6a; --red-soft: #3d2420;
+  --green: #5cc58a; --green-soft: #1b3326; --amber: #e4a74a; --amber-soft: #3a2e17;
+  --purple: #b58be6; --code-bg: #24292e; --plot-bg: #1d2125; --grid: #2f353b;
+}
+* { box-sizing: border-box; }
+html { scroll-padding-top: 64px; -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--fg);
+  font: 16px/1.7 "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", system-ui, sans-serif;
+  word-break: keep-all; overflow-wrap: anywhere;
+}
+header.top { padding: 28px 16px 8px; max-width: 860px; margin: 0 auto; }
+header.top h1 { font-size: 1.6rem; line-height: 1.3; margin: 0 0 6px; }
+header.top p { margin: 0; color: var(--muted); }
+nav.chips {
+  position: sticky; top: 0; z-index: 10; background: color-mix(in srgb, var(--bg) 92%, transparent);
+  backdrop-filter: blur(6px); border-bottom: 1px solid var(--line);
+}
+nav.chips .inner { max-width: 860px; margin: 0 auto; display: flex; gap: 6px; overflow-x: auto; padding: 8px 16px; scrollbar-width: thin; }
+nav.chips a {
+  flex: none; font-size: .85rem; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--line);
+  color: var(--fg); text-decoration: none; background: var(--card);
+}
+nav.chips a.on { background: var(--accent); color: #fff; border-color: var(--accent); }
+#themeBtn { flex: none; font-size: .85rem; border-radius: 999px; border: 1px solid var(--line); background: var(--card); color: var(--fg); padding: 4px 10px; cursor: pointer; }
+main { max-width: 860px; margin: 0 auto; padding: 8px 16px 80px; }
+section { margin: 28px 0 40px; }
+section > h2 { font-size: 1.35rem; line-height: 1.35; margin: 0 0 4px; }
+section > .lead { color: var(--muted); margin: 0 0 14px; }
+h3 { font-size: 1.08rem; margin: 22px 0 6px; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 16px; margin: 12px 0; }
+.widget { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; margin: 14px 0; }
+.widget > .wtitle { font-weight: 700; margin-bottom: 8px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.tag { font-size: .72rem; font-weight: 700; padding: 1px 8px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); }
+.tag.bonus { background: var(--amber-soft); color: var(--amber); }
+.tag.req { background: var(--green-soft); color: var(--green); }
+.note { border-left: 4px solid var(--accent); background: var(--accent-soft); padding: 10px 12px; border-radius: 0 8px 8px 0; margin: 12px 0; }
+.note.warn { border-color: var(--amber); background: var(--amber-soft); }
+.note.key { border-color: var(--green); background: var(--green-soft); }
+.note.red { border-color: var(--red); background: var(--red-soft); }
+.predict { border: 1px dashed var(--accent); border-radius: 8px; padding: 8px 12px; margin: 10px 0; font-size: .95rem; }
+.predict b { color: var(--accent); }
+.m { font-family: "Cambria Math", "STIX Two Math", "Times New Roman", serif; font-style: italic; white-space: nowrap; }
+.eq { font-family: "Cambria Math", "STIX Two Math", "Times New Roman", serif; font-size: 1.05rem; background: var(--code-bg); border-radius: 8px; padding: 10px 12px; margin: 10px 0; overflow-x: auto; white-space: nowrap; line-height: 1.9; }
+.eq .c { font-family: inherit; color: var(--muted); font-style: normal; font-size: .85rem; margin-left: 10px; }
+code, pre, .mono { font-family: "Cascadia Code", "D2Coding", Consolas, "SFMono-Regular", monospace; font-size: .86rem; }
+code { background: var(--code-bg); padding: 1px 5px; border-radius: 4px; }
+pre { background: var(--code-bg); border-radius: 8px; padding: 10px 12px; overflow-x: auto; line-height: 1.5; margin: 8px 0; }
+pre .ln { color: var(--muted); user-select: none; display: inline-block; min-width: 2.6em; }
+table { border-collapse: collapse; width: 100%; font-size: .9rem; margin: 8px 0; }
+.tablewrap { overflow-x: auto; }
+th, td { border-bottom: 1px solid var(--line); padding: 6px 8px; text-align: left; vertical-align: top; }
+th { color: var(--muted); font-weight: 600; white-space: nowrap; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+canvas { display: block; width: 100%; background: var(--plot-bg); border: 1px solid var(--line); border-radius: 8px; touch-action: manipulation; }
+.sq { aspect-ratio: 1 / 1; max-width: 460px; margin: 0 auto; }
+.wide { aspect-ratio: 16 / 10; }
+.short { aspect-ratio: 16 / 7; max-height: 300px; }
+.tiny { aspect-ratio: 16 / 5; max-height: 220px; }
+.controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px 14px; margin: 10px 0; }
+.controls label { font-size: .85rem; color: var(--muted); display: flex; flex-direction: column; gap: 2px; }
+.controls label .val { color: var(--fg); font-weight: 600; font-family: Consolas, monospace; }
+input[type=range] { width: 100%; accent-color: var(--accent); }
+input[type=number], select, input[type=text] {
+  width: 100%; font: inherit; font-size: .95rem; padding: 5px 8px; border-radius: 6px;
+  border: 1px solid var(--line); background: var(--bg); color: var(--fg);
+}
+.btns { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+button.b {
+  font: inherit; font-size: .88rem; padding: 6px 12px; border-radius: 8px; border: 1px solid var(--line);
+  background: var(--bg); color: var(--fg); cursor: pointer; min-height: 36px;
+}
+button.b.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+button.b:active { transform: translateY(1px); }
+.readout { font-family: Consolas, monospace; font-size: .85rem; background: var(--code-bg); border-radius: 8px; padding: 8px 10px; margin: 8px 0; white-space: pre; overflow-x: auto; line-height: 1.55; }
+@media (max-width: 560px) { .readout { font-size: .78rem; } table { font-size: .82rem; } }
+td.mono { white-space: nowrap; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+@media (max-width: 560px) { .grid2 { grid-template-columns: 1fr; } .grid2.keep { grid-template-columns: 1fr 1fr; } }
+.matrix-in { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; max-width: 220px; }
+.ok { color: var(--green); font-weight: 700; }
+.bad { color: var(--red); font-weight: 700; }
+.muted { color: var(--muted); }
+details { border: 1px solid var(--line); border-radius: 8px; padding: 6px 12px; margin: 8px 0; background: var(--card); }
+details > summary { cursor: pointer; font-weight: 600; }
+details[open] > summary { margin-bottom: 6px; }
+figure { margin: 14px 0; }
+figure img { width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--line); background: #fff; }
+figcaption { font-size: .88rem; color: var(--muted); margin-top: 4px; }
+.loop { width: 100%; height: auto; }
+.loop .stage { cursor: pointer; }
+.loop .stage rect { fill: var(--card); stroke: var(--line); stroke-width: 1.5; }
+.loop .stage:hover rect { stroke: var(--accent); }
+.loop text { fill: var(--fg); font-size: 13px; }
+.loop .sub { fill: var(--muted); font-size: 11px; }
+.loop .arrow { stroke: var(--muted); stroke-width: 1.6; fill: none; marker-end: url(#ah); }
+a { color: var(--accent); }
+.net { display: block; width: 100%; max-width: 520px; margin: 0 auto; }
+.net text { fill: var(--fg); font-size: 11px; font-family: Consolas, monospace; }
+.net .grad { fill: var(--red); }
+.net circle { fill: var(--card); stroke: var(--accent); stroke-width: 2; }
+.net line { stroke: var(--muted); stroke-width: 1.4; }
+.ws input { width: 7.5em; font-family: Consolas, monospace; }
+.ws td { vertical-align: middle; }
+.path-steps { counter-reset: s; list-style: none; padding: 0; }
+.path-steps > li { counter-increment: s; position: relative; padding: 10px 12px 10px 46px; border: 1px solid var(--line); border-radius: 10px; margin: 8px 0; background: var(--card); }
+.path-steps > li::before { content: counter(s); position: absolute; left: 12px; top: 10px; width: 24px; height: 24px; border-radius: 50%; background: var(--accent); color: #fff; font-weight: 700; font-size: .8rem; display: flex; align-items: center; justify-content: center; }
+.path-steps .m, .note .m { white-space: normal; }
+.kbd { font-family: Consolas, monospace; font-size: .8rem; border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; padding: 0 4px; }
+footer { color: var(--muted); font-size: .85rem; max-width: 860px; margin: 0 auto; padding: 0 16px 40px; }
+@media print { nav.chips, .widget .btns, #themeBtn { display: none; } section { break-inside: avoid-page; } }
+.cg { display: block; width: 100%; max-width: 640px; margin: 0 auto; }
+.cg text { fill: var(--fg); font-size: 12px; font-family: Consolas, monospace; }
+.cg text.op { font-size: 16px; font-weight: 700; }
+.cg text.grad { fill: var(--red); }
+.cg circle { fill: var(--card); stroke: var(--accent); stroke-width: 2; }
+.cg line { stroke: var(--muted); stroke-width: 1.6; }
+.cg line.fwd { stroke: var(--accent); stroke-width: 3.5; }
+.cg line.back { stroke: var(--red); stroke-width: 3.5; }
+.hex { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 12px; }
+.hexg { border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; background: var(--bg); min-width: 120px; }
+.hexb { font-family: Consolas, monospace; font-size: .9rem; color: var(--accent); }
+.hexl { font-size: .8rem; line-height: 1.4; margin-top: 2px; }
+.ws input[type=number] { width: 7.5em; }
+main p .m, main li .m, main details .m { white-space: normal; }
+.grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 14px 0; }
+@media (max-width: 700px) { .grid3 { grid-template-columns: 1fr; } }
+.card.stat { margin: 0; }
+.stat .k { font-size: .82rem; color: var(--muted); font-weight: 600; }
+.stat .v { font-size: 1.7rem; font-weight: 800; line-height: 1.25; font-variant-numeric: tabular-nums; }
+.stat .d { font-size: .84rem; color: var(--muted); line-height: 1.5; }
+.loop .stage text { pointer-events: none; }
+svg.arch { width: 100%; height: auto; max-width: 680px; display: block; margin: 8px auto; }
+svg.arch text { fill: var(--fg); font-size: 12px; }
+svg.arch text.h { font-weight: 700; font-size: 13px; }
+svg.arch text.s { fill: var(--muted); font-size: 11px; }
+svg.arch rect, svg.arch .grid rect { fill: var(--card); stroke: var(--muted); stroke-width: 1.3; }
+svg.arch rect.hl, svg.arch .grid rect.hl { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 2; }
+svg.arch .thin { stroke: var(--grid); stroke-width: 1; fill: none; }
+svg.arch .arrow { stroke: var(--muted); stroke-width: 1.6; fill: none; marker-end: url(#ah); color: var(--muted); }
+.blocks { display: flex; gap: 4px; margin: 10px 0; overflow-x: auto; }
+.blk { min-width: 62px; border: 1px solid var(--line); border-radius: 8px; padding: 6px 6px; font-size: .74rem; display: flex; flex-direction: column; background: var(--bg); color: var(--muted); }
+.blk b { color: var(--fg); font-size: .8rem; }
+.blk span { font-family: Consolas, monospace; }
+.blk i { font-style: normal; font-size: .7rem; }
+.blk.on { background: var(--green-soft); border-color: var(--green); color: var(--fg); }
+.egrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)); gap: 8px; margin: 10px 0; }
+.ecard { margin: 0; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--bg); }
+.ecard img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; display: block; border: 0; border-radius: 0; }
+.ecard figcaption { padding: 4px 6px; font-size: .74rem; line-height: 1.4; color: var(--fg); margin: 0; }
+tr.hl td { background: var(--accent-soft); }
+tr.leak td { background: var(--red-soft); }
+label.chk { font-size: .88rem; display: inline-flex; gap: 4px; align-items: center; border: 1px solid var(--line); border-radius: 8px; padding: 4px 8px; background: var(--bg); }
+</style>
+</head>
+<body>
+<header class="top">
+  <h1>A6-2 · AI가 어디서 틀리는지 찾아 고치기</h1>
+  <p>베이스라인을 먼저 세우고, 딥러닝을 적용하고, Train/Validation 격차로 편향과 분산을 진단하고, 틀린 사례를 직접 보고 원인을 태깅한 뒤, 처방의 효과를 숫자로 확인한다. 같은 사이클을 꽃 사진 분류와 주가·기온 예측에 적용한다.</p>
+</header>
+<nav class="chips" aria-label="장 이동"><div class="inner">
+  <a href="#start">0 사용법</a><a href="#big">1 큰 그림</a><a href="#baseline">2 베이스라인</a>
+  <a href="#rnn">3 시계열 딥러닝</a><a href="#diag">4 편향/분산</a><a href="#compare">5 몇 % 우수?</a>
+  <a href="#leak">6 데이터 누수</a><a href="#cnnrnn">7 CNN vs RNN</a><a href="#transfer">8 전이 학습</a>
+  <a href="#errors">9 오차 분석</a><a href="#hp">10 보너스: 탐색</a><a href="#attn">11 보너스: Attention</a>
+  <a href="#codemap">12 코드 지도</a><a href="#check">13 자기 점검</a><a href="#notes">14 해석 메모</a>
+  <button id="themeBtn" type="button" aria-label="밝기 테마 전환">테마</button>
+</div></nav>
+
+<main>
+
+<!-- ===================================================================== -->
+<section id="start">
+  <h2>0. 이 자료를 쓰는 법</h2>
+  <p class="lead">결론과 큰 그림을 먼저 보고, 그 결론을 만든 도구(베이스라인, 진단, 누수 방지, 오차 분석)로 내려가는 순서다. 모든 숫자는 이 저장소의 실험 결과 파일에서 빌드할 때 가져왔다.</p>
+  <ol class="path-steps">
+    <li><b>큰 그림 (15분)</b>: <a href="#big">1장</a>에서 성능 개선 사이클 4단계와 세 데이터의 결론을 읽는다. "딥러닝이 늘 이기는 건 아니다"라는 결론을 먼저 받아들이고 내려간다.</li>
+    <li><b>기준선 감각 (30분)</b>: <a href="#baseline">2장 베이스라인 실험실</a>에서 SMA 창과 EMA α를 바꿔 본다. 위젯의 <span class="predict" style="display:inline;padding:1px 6px"><b>예측</b></span> 상자에서 결과를 먼저 말해 보고 확인한다.</li>
+    <li><b>진단 (40분)</b>: <a href="#rnn">3장</a>에서 "수준값을 그대로 예측하면 왜 망가지는지"를 본 뒤, <a href="#diag">4장 진단기</a>로 실제 곡선 일곱 개를 하나씩 진단한다.</li>
+    <li><b>누수 (30분)</b>: <a href="#leak">6장 윈도우 실험실</a>에서 체크포인트를 하나씩 어겨 보고, 실제로 어겼을 때 점수가 얼마나 "좋아 보이는지" 확인한다.</li>
+    <li><b>이미지 트랙 (40분)</b>: <a href="#transfer">8장</a>에서 사진 수와 Freezing 범위의 관계를, <a href="#errors">9장</a>에서 오분류 사진을 태그별로 본다.</li>
+    <li><b>설명 연습</b>: <a href="#check">13장</a>의 미션 목표 6문항을 소리 내어 답해 본다.</li>
+  </ol>
+  <div class="note">용어는 미션 규칙대로 <b>Train / Validation / Test</b>만 쓴다. Validation은 모델·설정을 고르는 데 쓰고, Test는 고른 뒤 마지막에 한 번만 본다.</div>
+</section>
+
+<!-- ===================================================================== -->
+<section id="big">
+  <h2>1. 큰 그림: 성능 개선 사이클과 세 가지 결론</h2>
+  <p class="lead">미션의 두 트랙은 도메인이 다르지만 같은 순서를 따른다. 각 단계를 누르면 해당 장으로 간다.</p>
+  <svg class="loop" viewBox="0 0 640 210" role="img" aria-label="성능 개선 사이클 4단계">
+    <defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker></defs>
+    <g class="stage" data-go="#baseline"><rect x="10" y="20" width="140" height="70" rx="10"/><text x="80" y="50" text-anchor="middle">① 베이스라인</text><text class="sub" x="80" y="70" text-anchor="middle">Naive·SMA·EMA·선형</text></g>
+    <g class="stage" data-go="#rnn"><rect x="170" y="20" width="140" height="70" rx="10"/><text x="240" y="50" text-anchor="middle">② 딥러닝 적용</text><text class="sub" x="240" y="70" text-anchor="middle">LSTM·GRU / ResNet18</text></g>
+    <g class="stage" data-go="#diag"><rect x="330" y="20" width="140" height="70" rx="10"/><text x="400" y="50" text-anchor="middle">③ 진단·오차 분석</text><text class="sub" x="400" y="70" text-anchor="middle">편향/분산, 태깅</text></g>
+    <g class="stage" data-go="#compare"><rect x="490" y="20" width="140" height="70" rx="10"/><text x="560" y="50" text-anchor="middle">④ 개선·정량화</text><text class="sub" x="560" y="70" text-anchor="middle">처방 → 몇 % 나아졌나</text></g>
+    <path class="arrow" d="M150 55 H168" style="color:var(--muted)"/><path class="arrow" d="M310 55 H328" style="color:var(--muted)"/><path class="arrow" d="M470 55 H488" style="color:var(--muted)"/>
+    <path class="arrow" d="M560 92 V140 H80 V94" style="color:var(--muted)"/>
+    <text class="sub" x="320" y="158" text-anchor="middle">처방 후 다시 진단 — 데이터 누수가 없어야 이 사이클의 숫자를 믿을 수 있다</text>
+    <g class="stage" data-go="#leak"><rect x="230" y="170" width="180" height="34" rx="8"/><text x="320" y="192" text-anchor="middle">⑥ 누수 방지 (모든 단계의 전제)</text></g>
+  </svg>
+
+  <div class="grid3">
+    <div class="card stat"><div class="k">AAPL 종가 (트랙 B)</div>
+      <div class="v"><span data-v="ts.aapl.improvement.Naive.MAE" data-f="pct"></span></div>
+      <div class="d">최종 딥러닝 모델의 Test MAE가 Naive(전날 값)보다 이만큼 줄었다 (음수면 늘었다). Diebold-Mariano p = <span data-v="ts.aapl.dm.vs_naive.p_value" data-f="f3"></span></div></div>
+    <div class="card stat"><div class="k">서울 기온 (트랙 B 대조)</div>
+      <div class="v"><span data-v="ts.seoul.improvement.Naive.MAE" data-f="pct"></span></div>
+      <div class="d">Naive 대비 Test MAE 감소율. Validation으로 고른 최선의 베이스라인(<span data-v="ts.seoul.best_baseline"></span>) 대비 <span data-v="ts.seoul.bestImprovement" data-f="pct"></span></div></div>
+    <div class="card stat"><div class="k">꽃 8종 Few-shot (트랙 A)</div>
+      <div class="v"><span data-v="vision.mainRun.test" data-f="acc"></span></div>
+      <div class="d">주 모델(<span data-v="vision.mainRun.label"></span>, 클래스당 <span data-v="vision.mainRun.shots"></span>장) Test 정확도. 같은 조건의 직접 학습: <span data-v="vision.scratchRun.test" data-f="acc"></span></div></div>
+  </div>
+  <div class="note key" id="bigLesson"></div>
+</section>
+
+<!-- ===================================================================== -->
+<section id="baseline">
+  <h2>2. 베이스라인부터: "아무 학습 없이"가 얼마나 강한가</h2>
+  <p class="lead">미션 제약: 베이스라인은 딥러닝 학습 <b>전에</b> 구현하고 측정한다. 이 저장소는 <code>scripts/ts_deep.py</code>가 베이스라인 결과 파일과 측정 시각이 없으면 실행을 거부하게 만들어 이 순서를 강제한다.</p>
+  <div class="tablewrap"><table>
+    <tr><th>모델</th><th>예측식</th><th>의미</th></tr>
+    <tr><td>Naive</td><td class="mono">ŷ(t) = y(t−1)</td><td>내일도 오늘과 같다. 랜덤워크라면 이것이 최선이다</td></tr>
+    <tr><td>SMA(n)</td><td class="mono">ŷ(t) = (1/n)·Σ<sub>i=1..n</sub> y(t−i)</td><td>최근 n일 평균. n이 크면 매끄럽지만 늦다</td></tr>
+    <tr><td>EMA(α)</td><td class="mono">ŷ(t) = α·y(t−1) + (1−α)·ŷ(t−1)</td><td>최근 값일수록 큰 가중치. α=1이면 Naive</td></tr>
+    <tr><td>LinearTrend</td><td class="mono">ŷ(t) = a·t + b</td><td>Train 기간의 직선 추세를 연장한다</td></tr>
+    <tr><td>LinearLag(5)</td><td class="mono">ŷ(t) = Σ w<sub>k</sub>·y(t−k) + b</td><td>지연값 5개의 선형 결합 (AR 모형)</td></tr>
+  </table></div>
+  <div data-code="baselines.ema_path"></div>
+
+  <div class="widget" id="wBase">
+    <div class="wtitle">베이스라인 실험실 <span class="tag req">필수</span></div>
+    <div class="predict"><b>예측</b> AAPL에서 SMA 창을 5 → 20으로 늘리면 Test MAE는? 기온에서는? 먼저 답하고 움직여 보자.</div>
+    <div class="controls">
+      <label>데이터<select id="bSeries"><option value="aapl">AAPL 종가</option><option value="seoul">서울 기온</option></select></label>
+      <label>모델<select id="bModel"><option value="naive">Naive</option><option value="sma">SMA(n)</option><option value="ema">EMA(α)</option><option value="trend">LinearTrend</option><option value="lag">LinearLag(p)</option></select></label>
+      <label>n / p <span class="val" id="bNv">20</span><input type="range" id="bN" min="1" max="60" value="20"></label>
+      <label>α <span class="val" id="bAv">0.30</span><input type="range" id="bA" min="0.02" max="1" step="0.01" value="0.3"></label>
+    </div>
+    <canvas id="bCanvas" class="short" aria-label="Test 구간 실제값과 베이스라인 예측"></canvas>
+    <div class="readout" id="bOut"></div>
+    <p class="muted" style="font-size:.85rem">파란 선: 실제값, 빨간 선: 선택한 베이스라인, 회색 점선: 최종 딥러닝 모델. Test 구간 마지막 120일을 그린다. 계산은 이 페이지의 JavaScript가 Python과 같은 식으로 다시 한다(검증 도구가 두 결과를 대조한다).</p>
+  </div>
+  <div class="tablewrap" id="baseTable"></div>
+  <details><summary>왜 '최선의 베이스라인'도 Validation으로 고르나</summary>
+    <p>Test 성적을 보고 베이스라인을 고르면, 비교 상대를 Test에 맞춰 고른 셈이 된다. 그래서 베이스라인 9개 중 Validation MAE가 가장 낮은 것을 "최선"으로 정하고, 딥러닝도 Validation으로 고른 뒤 둘을 Test에서 한 번 비교한다.</p></details>
+</section>
+
+<!-- ===================================================================== -->
+<section id="rnn">
+  <h2>3. 시계열 딥러닝: 무엇을 예측하게 할 것인가</h2>
+  <p class="lead">LSTM·GRU는 과거 30일 창을 한 칸씩 읽으며 은닉 상태에 요약을 쌓는다. 같은 모델이라도 <b>무엇을 입력하고 무엇을 출력하게 하느냐</b>가 성능을 가장 크게 바꿨다.</p>
+  <div class="grid2">
+    <div class="card"><b>v1 수준값</b> (흔한 튜토리얼 방식)<br>입력: 종가 하나를 MinMax로 [0,1]에 맞춘 30일<br>출력: 다음 날 종가(정규화)<br><span class="muted">Train에서 본 가격 범위를 벗어나면 외삽해야 한다.</span></div>
+    <div class="card"><b>v2 변화량</b> (이 저장소의 개선안)<br>입력: 수익률·변동폭·거래량 변화·이동평균 괴리 등 8개(기온은 12개)<br>출력: 다음 날 변화량 (주가는 로그 수익률)<br><span class="muted">가격 수준과 무관한 양이라 범위 밖으로 나가지 않는다.</span></div>
+  </div>
+
+  <div class="widget" id="wExtra">
+    <div class="wtitle">MinMax 외삽 보기 <span class="tag">원리</span></div>
+    <div class="predict"><b>예측</b> AAPL의 Test 구간 종가를 Train 기준 MinMax로 바꾸면 값이 어디까지 올라갈까?</div>
+    <div class="controls">
+      <label>데이터<select id="xSeries"><option value="aapl">AAPL 종가</option><option value="seoul">서울 기온</option></select></label>
+      <label>Scaler fit 구간<select id="xFit"><option value="train">Train만 (올바름)</option><option value="all">전체 기간 (누수)</option></select></label>
+    </div>
+    <canvas id="xCanvas" class="short" aria-label="정규화한 수준값과 0~1 범위"></canvas>
+    <div class="readout" id="xOut"></div>
+  </div>
+  <div data-fig="ts_aapl_prediction"></div>
+  <div class="note warn" id="levelNote"></div>
+  <div data-code="models.RNNForecaster"></div>
+  <div data-fig="ts_seoul_prediction"></div>
+</section>
+
+<!-- ===================================================================== -->
+<section id="diag">
+  <h2>4. 편향/분산 진단: 두 곡선의 높이와 격차</h2>
+  <p class="lead">Train 손실이 높으면 <b>편향</b>(모델이 학습 데이터조차 못 맞춘다), Validation 손실이 Train보다 크게 높으면 <b>분산</b>(학습 데이터에만 맞췄다)이다.</p>
+  <div class="tablewrap"><table>
+    <tr><th>상태</th><th>Train Loss</th><th>Validation Loss</th><th>처방</th></tr>
+    <tr><td>High Bias</td><td>높음</td><td>높음 (Train과 비슷)</td><td>모델 복잡도↑, 학습 더 오래, 입력 피처 보강</td></tr>
+    <tr><td>High Variance</td><td>낮음</td><td>높음 (큰 격차)</td><td>정규화(Dropout·Weight decay·조기 종료), 데이터↑, 학습 범위 축소</td></tr>
+  </table></div>
+  <div class="note"><b>'높다'의 기준이 필요하다.</b> 꽃 사진은 사람이 거의 틀리지 않으니 기준 오류율을 0으로 둔다. 주가·기온은 구간마다 변동성이 달라 손실 크기를 그대로 비교할 수 없다. 그래서 같은 구간 Naive 손실로 나눈 <b>skill = 모델 MSE ÷ Naive MSE</b>를 쓴다. skill이 1이면 "전날 값"과 같은 실력이다.</div>
+  <div data-code="diagnosis.diagnose_forecast"></div>
+
+  <div class="widget" id="wDiag">
+    <div class="wtitle">진단기 <span class="tag req">필수</span></div>
+    <div class="controls">
+      <label>종류<select id="dKind"><option value="forecast">시계열 (skill)</option><option value="class">분류 (오류율)</option></select></label>
+      <label>Train <span class="val" id="dTv"></span><input type="range" id="dT" min="0" max="1.6" step="0.01" value="0.6"></label>
+      <label>Validation <span class="val" id="dVv"></span><input type="range" id="dV" min="0" max="1.6" step="0.01" value="0.9"></label>
+    </div>
+    <div class="readout" id="dOut"></div>
+    <h3>실제 곡선 진단하기</h3>
+    <div class="controls">
+      <label>데이터<select id="cSeries"><option value="aapl">AAPL 종가</option><option value="seoul">서울 기온</option><option value="vision">꽃 사진</option></select></label>
+      <label>실험<select id="cExp"></select></label>
+    </div>
+    <div class="predict"><b>예측</b> 곡선을 보기 전에 상태를 먼저 말해 보자. "LSTM 128×2 (규제 없음)"은 어떤 모양일까?</div>
+    <canvas id="cCanvas" class="short" aria-label="Train과 Validation 손실 곡선"></canvas>
+    <div class="readout" id="cOut"></div>
+  </div>
+  <div data-fig="ts_aapl_loss_curves"></div>
+  <div data-fig="ts_seoul_loss_curves"></div>
+  <div class="note key" id="diagLesson"></div>
+</section>
+
+<!-- ===================================================================== -->
+<section id="compare">
+  <h2>5. 딥러닝은 베이스라인보다 몇 % 우수한가</h2>
+  <p class="lead">개선율 = (베이스라인 오차 − 딥러닝 오차) ÷ 베이스라인 오차 × 100. 양수면 딥러닝이 낫다. 모든 모델은 같은 Test 구간(시점 번호와 실제값의 해시가 같음)에서 평가했다.</p>
+  <div class="controls" style="max-width:320px"><label>데이터<select id="kSeries"><option value="aapl">AAPL 종가</option><option value="seoul">서울 기온</option></select></label></div>
+  <div class="tablewrap" id="kTable"></div>
+  <div class="readout" id="kDm"></div>
+  <details><summary>Diebold-Mariano 검정이 왜 필요한가</summary>
+    <p>Test MAE가 0.1% 낮다고 "우수하다"고 말할 수는 없다. 날마다의 오차 제곱 차이 d(t) = e<sub>딥러닝</sub>(t)² − e<sub>Naive</sub>(t)²의 평균이 0과 다른지를 t-검정처럼 확인한다. 통계량이 음수면 딥러닝 손실이 작고, p값이 0.05보다 크면 "두 예측의 정확도가 같다"를 기각하지 못한다. 즉 차이가 우연일 수 있다.</p>
+    <div data-code="metrics.diebold_mariano"></div></details>
+  <div data-fig="ts_aapl_baseline_bars"></div>
+  <div data-fig="ts_seoul_baseline_bars"></div>
+  <div class="note key" id="compareLesson"></div>
+</section>
+
+<!-- ===================================================================== -->
+<section id="leak">
+  <h2>6. 데이터 누수: 미래가 학습에 새어 들어가는 네 구간</h2>
+  <p class="lead">누수가 있으면 Test 점수가 실제 실력보다 좋게 나온다. 그래서 누수는 "점수가 이상하게 좋을 때" 가장 먼저 의심한다.</p>
+  <div class="tablewrap"><table>
+    <tr><th>No</th><th>체크 항목</th><th>이 저장소의 근거</th><th>검사</th></tr>
+    <tr><td>1</td><td>시간순 분할 (shuffle 금지)</td><td>예측 대상 시점을 앞에서부터 7:1:2로 자른다. Train 안의 미니배치 순서만 섞는다</td><td class="mono">test_1_…</td></tr>
+    <tr><td>2</td><td>Scaler.fit은 Train만</td><td>Scaler 통계는 Train 구간 날짜 행으로만 계산한다</td><td class="mono">test_2_…</td></tr>
+    <tr><td>3</td><td>윈도우에 미래 없음</td><td>시점 t의 입력은 t−L … t−1 행뿐이다</td><td class="mono">test_3_…</td></tr>
+    <tr><td>4</td><td>피처는 분할 전에 생성</td><td>모든 피처가 후행 창(rolling·ewm·diff)이라 그날까지의 값만 쓴다. d일 이후 값을 바꿔도 d일 이전 피처가 그대로임을 검사한다</td><td class="mono">test_4_…</td></tr>
+  </table></div>
+  <div data-code="data.window_indices"></div>
+
+  <div class="widget" id="wLeak">
+    <div class="wtitle">윈도우·분할 실험실 <span class="tag req">필수</span></div>
+    <div class="predict"><b>예측</b> "중심 이동평균"은 어느 칸을 읽을까? 체크하기 전에 손가락으로 짚어 보자.</div>
+    <div class="controls">
+      <label>예측 시점 t <span class="val" id="lTv"></span><input type="range" id="lT" min="12" max="47" value="30"></label>
+      <label>창 길이 L <span class="val" id="lLv"></span><input type="range" id="lL" min="2" max="10" value="5"></label>
+    </div>
+    <div class="btns" role="group" aria-label="누수 위반 선택">
+      <label class="chk"><input type="checkbox" id="lShuffle"> ① 섞어서 분할</label>
+      <label class="chk"><input type="checkbox" id="lScaler"> ② 전체로 Scaler fit</label>
+      <label class="chk"><input type="checkbox" id="lLook"> ③ 창에 t 포함</label>
+      <label class="chk"><input type="checkbox" id="lCenter"> ④ 중심 이동평균 피처</label>
+    </div>
+    <canvas id="lCanvas" class="tiny" aria-label="시간 축의 분할과 입력 창"></canvas>
+    <div class="readout" id="lOut"></div>
+  </div>
+  <h3>실제로 어겨 보면</h3>
+  <p>AAPL에서 정상 설정과 한 가지씩만 다르게 학습했다 (<code>scripts/ts_leakage.py</code>).</p>
+  <div class="tablewrap" id="leakTable"></div>
+  <div class="note warn" id="leakLesson"></div>
+  <div data-fig="ts_leakage_demo"></div>
+  <details><summary>Close와 Adj Close: 데이터 공급 단계의 누수</summary>
+    <p>yfinance의 Adj Close는 나중에 지급된 배당까지 과거 가격에 소급 반영한다. 2018년의 Adj Close에는 2018년 시점에는 알 수 없던 정보가 섞여 있다. 그래서 예측 대상은 주식 분할만 반영한 Close로 했다. 2020년 4:1 분할 때문에 원래 가격은 쓸 수 없다.</p></details>
+</section>
+
+<!-- ===================================================================== -->
+<section id="cnnrnn">
+  <h2>7. CNN과 RNN: 무엇을 '공유'하느냐의 차이</h2>
+  <p class="lead">둘 다 같은 가중치를 여러 위치에서 재사용한다. CNN은 <b>공간</b>에서, RNN은 <b>시간</b>에서 재사용한다.</p>
+  <svg class="arch" viewBox="0 0 640 230" role="img" aria-label="CNN과 RNN 구조 비교">
+    <text x="150" y="18" text-anchor="middle" class="h">CNN (꽃 사진)</text>
+    <g class="grid">
+      <rect x="40" y="30" width="120" height="120"/>
+      <rect x="60" y="50" width="40" height="40" class="hl"/>
+      <path d="M40 70 H160 M40 110 H160 M80 30 V150 M120 30 V150" class="thin"/>
+    </g>
+    <path class="arrow" d="M165 90 H205"/>
+    <rect x="210" y="55" width="60" height="70" class="box"/><text x="240" y="95" text-anchor="middle">특징 맵</text>
+    <text x="150" y="175" text-anchor="middle" class="s">같은 3×3 필터가 사진 위를 미끄러진다</text>
+    <text x="150" y="193" text-anchor="middle" class="s">→ 위치가 바뀌어도 같은 무늬를 찾는다</text>
+    <text x="150" y="211" text-anchor="middle" class="s">입력: 순서 없는 2차원 격자</text>
+    <text x="470" y="18" text-anchor="middle" class="h">RNN·LSTM (주가·기온)</text>
+    <g>
+      <rect x="340" y="70" width="44" height="36" class="box"/><rect x="408" y="70" width="44" height="36" class="box"/>
+      <rect x="476" y="70" width="44" height="36" class="box"/><rect x="560" y="70" width="44" height="36" class="box hl"/>
+      <text x="362" y="93" text-anchor="middle">h₁</text><text x="430" y="93" text-anchor="middle">h₂</text><text x="498" y="93" text-anchor="middle">h₃</text><text x="582" y="93" text-anchor="middle">h_T</text>
+      <path class="arrow" d="M384 88 H406"/><path class="arrow" d="M452 88 H474"/><path class="arrow" d="M520 88 H558" stroke-dasharray="4 3"/>
+      <text x="362" y="140" text-anchor="middle" class="s">x(t−30)</text><text x="430" y="140" text-anchor="middle" class="s">x(t−29)</text><text x="498" y="140" text-anchor="middle" class="s">…</text><text x="582" y="140" text-anchor="middle" class="s">x(t−1)</text>
+      <path class="arrow" d="M362 128 V108"/><path class="arrow" d="M430 128 V108"/><path class="arrow" d="M582 128 V108"/>
+      <path class="arrow" d="M582 68 V44"/><text x="582" y="38" text-anchor="middle">ŷ(t)</text>
+    </g>
+    <text x="470" y="175" text-anchor="middle" class="s">같은 셀이 하루씩 읽으며 은닉 상태를 넘긴다</text>
+    <text x="470" y="193" text-anchor="middle" class="s">→ 순서와 시간 간격을 안다</text>
+    <text x="470" y="211" text-anchor="middle" class="s">입력: 순서가 있는 1차원 수열</text>
+  </svg>
+  <div class="tablewrap"><table>
+    <tr><th></th><th>CNN (ResNet18)</th><th>RNN (LSTM·GRU)</th></tr>
+    <tr><td>공유하는 축</td><td>공간 (가로·세로)</td><td>시간 (스텝)</td></tr>
+    <tr><td>귀납 편향</td><td>지역성, 이동 불변성</td><td>순서, 과거 → 현재의 인과</td></tr>
+    <tr><td>이 미션의 입력</td><td>160×160×3 꽃 사진</td><td>30일 × 피처 8개(기온 12개)</td></tr>
+    <tr><td>사전학습 활용</td><td>ImageNet 가중치를 그대로 가져와 전이</td><td>사용하지 않음 (도메인별 시계열이 제각각)</td></tr>
+    <tr><td>어울리는 도메인</td><td>이미지, 스펙트로그램, 격자 센서</td><td>주가·센서·로그 같은 순차 데이터, 텍스트</td></tr>
+    <tr><td>약점</td><td>먼 위치 관계는 깊이를 쌓아야 본다</td><td>긴 시퀀스에서 앞쪽 정보가 희미해진다 → <a href="#attn">Attention</a></td></tr>
+  </table></div>
+</section>
+
+<!-- ===================================================================== -->
+<section id="transfer">
+  <h2>8. 전이 학습: 사진이 적을수록 덜 건드린다</h2>
+  <p class="lead">ImageNet 120만 장으로 배운 ResNet18의 특징을 빌려 온다. 남은 질문은 <b>어디까지 얼리고 어디부터 다시 학습하느냐</b>다.</p>
+  <div class="widget" id="wFreeze">
+    <div class="wtitle">Layer Freezing 탐색기 <span class="tag req">필수</span></div>
+    <div class="controls">
+      <label>전략<select id="fStrat"><option value="linear_probe">Linear Probing (fc만)</option><option value="partial">부분 미세 조정 (layer4+fc)</option><option value="full">전체 Fine-tuning</option><option value="scratch">직접 학습 (무작위 초기화)</option></select></label>
+    </div>
+    <div id="fBlocks" class="blocks" aria-label="ResNet18 블록"></div>
+    <div class="readout" id="fOut"></div>
+    <canvas id="fCanvas" class="short" aria-label="사진 수별 Test 정확도"></canvas>
+  </div>
+  <div data-code="vmodels.TransferNet"></div>
+  <div class="note key" id="freezeLesson"></div>
+  <div data-fig="vision_shots_strategy"></div>
+  <div data-fig="vision_loss_curves"></div>
+  <details><summary>얼린 층의 BatchNorm을 eval로 두는 이유</summary>
+    <p>BatchNorm은 학습 모드에서 미니배치의 평균·분산으로 정규화하고 이동 평균을 갱신한다. 사진 16장짜리 미니배치 통계로 ImageNet에서 쌓은 통계를 덮어쓰면, 가중치를 얼렸어도 층의 출력이 바뀐다. 그래서 <code>TransferNet.train()</code>은 얼린 블록을 eval 모드로 되돌린다.</p></details>
+</section>
+
+<!-- ===================================================================== -->
+<section id="errors">
+  <h2>9. 오차 분석: 틀린 사진을 직접 보고 원인을 단다</h2>
+  <p class="lead">정확도 숫자는 "얼마나" 틀리는지만 알려 준다. "왜" 틀리는지는 틀린 사례를 사람이 직접 봐야 안다 (Human-in-the-loop).</p>
+  <div class="note" id="errorScope"></div>
+  <div class="tablewrap"><table>
+    <tr><th>태그</th><th>예시</th><th>개선 방향</th></tr>
+    <tr><td>데이터 품질</td><td>어두운 조명, 흐림, 해상도 부족, 워터마크</td><td>밝기·대비 증강</td></tr>
+    <tr><td>배경/잡음</td><td>복잡한 배경, 가림, 작은 꽃</td><td>크롭·가림 증강</td></tr>
+    <tr><td>클래스 유사성</td><td>색·형태가 비슷한 꽃, 피기 전 상태</td><td>특징 학습 강화 (더 깊이 미세 조정, 해상도↑)</td></tr>
+    <tr><td>라벨 오류</td><td>원본 라벨이 의심스러움</td><td>데이터 정제</td></tr>
+    <tr><td>모델 한계</td><td>신뢰도는 높은데 틀림, 변별력 부족</td><td>모델 구조 변경</td></tr>
+  </table></div>
+  <div class="widget" id="wErr">
+    <div class="wtitle">오분류 갤러리 <span class="tag req">필수</span></div>
+    <div class="btns" id="eTags" role="group" aria-label="태그 필터"></div>
+    <div id="eGrid" class="egrid"></div>
+    <div class="readout" id="eOut"></div>
+  </div>
+  <details><summary>오차 분석표 전체 (<span data-v="vision.errors.length"></span>건)</summary><div class="tablewrap" id="eTable"></div></details>
+  <div data-fig="vision_error_tags"></div>
+  <h3>처방과 효과</h3>
+  <div class="tablewrap" id="improveTable"></div>
+  <div class="note key" id="improveLesson"></div>
+  <div data-fig="vision_confusion"></div>
+</section>
+
+<!-- ===================================================================== -->
+<section id="hp">
+  <h2>10. 보너스 1: Grid 대신 Random Search, 그리고 Coarse-to-Fine</h2>
+  <p class="lead">하이퍼파라미터가 여러 개일 때 실제로 성능을 좌우하는 것은 보통 한두 개다. Grid는 중요한 축의 값을 몇 개밖에 시험하지 못한다.</p>
+  <div class="widget" id="wGrid">
+    <div class="wtitle">같은 예산 9회: Grid vs Random <span class="tag bonus">보너스</span></div>
+    <div class="predict"><b>예측</b> x만 중요하고 y는 거의 상관없는 함수다. 9번 시험할 때 x의 서로 다른 값을 몇 개나 볼 수 있을까?</div>
+    <div class="btns"><button class="b primary" id="gRun" type="button">Random 다시 뽑기</button></div>
+    <div class="grid2 keep"><canvas id="gGrid" class="sq" aria-label="Grid Search 9점"></canvas><canvas id="gRand" class="sq" aria-label="Random Search 9점"></canvas></div>
+    <div class="readout" id="gOut"></div>
+  </div>
+  <div class="widget" id="wHp">
+    <div class="wtitle">실제 탐색 결과 (서울 기온 LSTM) <span class="tag bonus">보너스</span></div>
+    <div class="controls"><label>하이퍼파라미터<select id="hParam"></select></label></div>
+    <canvas id="hCanvas" class="short" aria-label="하이퍼파라미터 값과 Validation skill"></canvas>
+    <div class="readout" id="hOut"></div>
+  </div>
+  <div data-code="hp.narrow"></div>
+  <div data-fig="bonus_hparam_search"></div>
+  <div class="note key" id="hpLesson"></div>
+</section>
+
+<!-- ===================================================================== -->
+<section id="attn">
+  <h2>11. 보너스 2: Attention — 마지막 상태 하나에만 기대지 않기</h2>
+  <p class="lead">LSTM은 30일을 다 읽은 뒤 마지막 은닉 상태 h_T 하나로 예측한다. Attention은 h_1…h_T 전부에 가중치 a_i를 매겨 문맥 c = Σ a_i·h_i를 다시 만든다. 가중치를 보면 모델이 어느 날을 봤는지도 알 수 있다.</p>
+  <div class="eq">e_i = vᵀ·tanh(W·h_i + U·h_T) <span class="c">점수</span><br>a_i = softmax(e)_i <span class="c">합이 1</span><br>ŷ = head([Σ a_i·h_i ; h_T]) <span class="c">문맥 + 마지막 상태</span></div>
+  <div class="widget" id="wAttn">
+    <div class="wtitle">Attention 가중치 보기 <span class="tag bonus">보너스</span></div>
+    <div class="controls">
+      <label>데이터<select id="aSeries"><option value="aapl">AAPL 종가</option><option value="seoul">서울 기온</option></select></label>
+      <label>창<select id="aWin"><option value="30">30일</option><option value="90">90일</option></select></label>
+    </div>
+    <canvas id="aCanvas" class="short" aria-label="lag별 평균 Attention 가중치"></canvas>
+    <div class="tablewrap" id="aTable"></div>
+  </div>
+  <div data-fig="bonus_attention"></div>
+  <div class="note key" id="attnLesson"></div>
+</section>
+
+<!-- ===================================================================== -->
+<section id="codemap">
+  <h2>12. 코드 지도: 요구 사항 → 코드 → 검사 → 결과</h2>
+  <div class="tablewrap"><table>
+    <tr><th>요구 사항</th><th>코드</th><th>검사</th><th>결과물</th></tr>
+    <tr><td>전이 학습·시계열 소스</td><td><code>src/perfdiag/vision/</code>, <code>src/perfdiag/timeseries/</code></td><td><code>Models</code></td><td>-</td></tr>
+    <tr><td>성능 진단 리포트</td><td><code>diagnosis.py</code>, <code>ts_deep.py</code>, <code>vision_transfer.py</code></td><td><code>Diagnosis</code></td><td><code>reports/DIAGNOSIS_REPORT.md</code></td></tr>
+    <tr><td>오차 분석표 30건+</td><td><code>tools/build_tagging_page.py</code>, <code>vision_error_analysis.py</code></td><td><code>ErrorAnalysis</code></td><td><code>reports/ERROR_ANALYSIS.md</code></td></tr>
+    <tr><td>베이스라인 비교</td><td><code>ts_baselines.py</code> → <code>ts_deep.py</code></td><td><code>TimeSeriesResults</code></td><td><code>reports/BASELINE_COMPARISON.md</code></td></tr>
+    <tr><td>시각화 4종</td><td><code>ts_figures.py</code>, <code>vision_figures.py</code>, <code>vision_error_analysis.py</code></td><td>-</td><td><code>figures/</code></td></tr>
+    <tr><td>누수 방지 근거</td><td><code>timeseries/data.py</code>, <code>ts_leakage.py</code></td><td><code>TimeSeriesLeakage</code></td><td><code>reports/LEAKAGE.md</code></td></tr>
+    <tr><td>보너스</td><td><code>bonus_hparam_search.py</code>, <code>bonus_attention.py</code></td><td>-</td><td><code>reports/BONUS.md</code></td></tr>
+  </table></div>
+  <div data-code="data.make_dataset"></div>
+  <div data-code="data.build_features"></div>
+  <div data-code="data.Prepared.train_rows"></div>
+  <div data-code="deep.require_baselines"></div>
+  <div data-code="train.fit"></div>
+  <div data-code="diagnosis.diagnose_classification"></div>
+  <div data-code="vtrain.AUGMENTATIONS"></div>
+  <div data-code="transfer.analysis_models"></div>
+  <div data-code="baselines.sma"></div>
+  <div data-code="baselines.linear_lag"></div>
+  <div data-code="data.chronological_split"></div>
+  <div data-code="hp.importance"></div>
+</section>
+
+<!-- ===================================================================== -->
+<section id="check">
+  <h2>13. 자기 점검: 미션 목표 여섯 가지</h2>
+  <p class="lead">답을 펼치기 전에 이 저장소의 숫자를 들어 설명해 본다.</p>
+  <details><summary>1. Train/Validation/Test 손실 차이로 높은 편향과 높은 분산을 어떻게 진단하나?</summary><div id="q1"></div></details>
+  <details><summary>2. 데이터 크기에 따라 Fine-tuning 범위(Layer Freezing)를 어떻게 정하나?</summary><div id="q2"></div></details>
+  <details><summary>3. CNN과 RNN의 구조 차이와 적용 도메인은?</summary><div><p>CNN은 같은 필터를 공간 위치마다 재사용해 지역 무늬를 찾고 위치 이동에 강하다. 사진·격자형 데이터에 맞다. RNN은 같은 셀을 시간 스텝마다 재사용하고 은닉 상태로 과거를 요약해 순서를 다룬다. 주가·센서·텍스트처럼 순서가 의미인 데이터에 맞다. 이 미션에서 CNN은 ImageNet 사전학습을 빌려 올 수 있었지만, 시계열은 처음부터 학습했다.</p></div></details>
+  <details><summary>4. 오차 분석으로 실패 패턴을 찾고 증강 전략을 어떻게 세우나?</summary><div id="q4"></div></details>
+  <details><summary>5. 딥러닝과 베이스라인의 성능 차이를 어떻게 정량화·해석하나?</summary><div id="q5"></div></details>
+  <details><summary>6. 시계열에서 누수가 생기는 구간과 방지 원칙은?</summary><div><p>(1) 무작위 분할: Test 날짜 사이사이가 Train에 들어가 보간 문제가 된다 → 시간순 분할. (2) 전처리: 전체 기간으로 Scaler를 fit하면 Test의 범위·평균이 학습에 들어간다 → Train 행으로만 fit. (3) 윈도우: 입력에 t가 들어가면 정답을 보는 셈이다 → t−L … t−1. (4) 피처: 중심 이동평균처럼 앞뒤를 보는 창은 미래를 담는다 → 후행 창만 쓰고, 분할 전에 만들되 그 근거를 문서로 남긴다. 추가로 Test는 모델·하이퍼파라미터 선택에 쓰지 않고, 배당 소급 조정된 가격도 피한다.</p></div></details>
+</section>
+
+<!-- ===================================================================== -->
+<section id="notes">
+  <h2>14. 해석 메모: 미션 문장을 이렇게 읽었다</h2>
+  <div class="tablewrap"><table>
+    <tr><th>미션 문장·상황</th><th>이 저장소의 선택</th><th>이유</th></tr>
+    <tr><td>Flowers102 (TorchVision)</td><td>같은 이미지·라벨의 Hugging Face 미러를 커밋 해시와 SHA-256으로 고정해 받는다</td><td>공식 서버가 이 환경에서 초당 약 20KB였다</td></tr>
+    <tr><td>클래스당 50장 미만</td><td>데이지형 꽃 8종, Train 5·10·20장, Validation 10장, Test 나머지</td><td>모양이 비슷한 꽃을 골라 클래스 유사성 오류가 나오게 했다</td></tr>
+    <tr><td>오차 분석표 최소 30건</td><td id="noteErrors"></td><td>주 모델 하나로는 30건이 안 될 수 있어서, 분석할 실패 사례를 모으는 규칙을 미리 정했다</td></tr>
+    <tr><td>사람이 직접 확인</td><td>Claude가 사진을 보고 태그 초안을 달고, 사용자가 태깅 도구에서 검수한다. 표에 작성자·검수자를 남긴다</td><td id="noteReview"></td></tr>
+    <tr><td>MAPE로 비교</td><td>AAPL은 MAE·RMSE·MAPE, 기온은 MAE·RMSE</td><td>기온은 0℃를 지나 MAPE가 발산한다</td></tr>
+    <tr><td>입력 크기</td><td>160px</td><td>CPU에서 224px보다 약 2배 빠르다. 처방 실험에서 224px도 시험했다</td></tr>
+    <tr><td>피처 생성은 분할 전에</td><td>전체 시계열에서 후행 창으로 만든다</td><td>후행 창은 미래를 쓰지 않으므로, 분할 전에 만들어도 누수가 없다. 이를 테스트로 확인한다</td></tr>
+  </table></div>
+</section>
+</main>
+<footer>A6-2 학습 자료 · <code>tools/build_study_guide.py</code>로 생성 · 숫자·곡선·사진·코드 발췌는 빌드 시점의 저장소 결과에서 가져왔다.</footer>
+<script>
+/* 결과에 따라 달라지는 해설: 빌드 시점의 DATA를 읽어 문장을 만든다 */
+function narrate(D) {
+  const set = (id, html) => { const el = document.getElementById(id); if (el) el.innerHTML = html; };
+  const p2 = v => (v >= 0 ? "+" : "−") + Math.abs(v).toFixed(2) + "%";
+  const a1 = v => (v * 100).toFixed(1) + "%";
+  const n4 = v => v.toFixed(4);
+  const A = D.ts.aapl, S = D.ts.seoul, V = D.vision;
+  const ex = (s, k) => s.experiments[k];
+  const mae = (s, k) => ex(s, k).test_summary.MAE.mean;
+  const same = s => Math.abs(s.improvement.Naive.MAE) < 1 && s.dm.vs_naive.p_value >= 0.05;
+  const main = V.runs.find(r => r.is_main), top = main.shots;
+  const scratch = V.runs.find(r => r.strategy === "scratch" && r.shots === top);
+  const shots = [...new Set(V.runs.map(r => r.shots))].sort((a, b) => a - b);
+  const bestAt = s => V.runs.filter(r => r.shots === s && r.strategy !== "scratch").sort((a, b) => b.validation - a.validation || a.validation_loss - b.validation_loss)[0];
+
+  /* 1장 */
+  set("bigLesson", `<b>세 가지 결론.</b> ① AAPL: ${same(A)
+      ? `최종 LSTM·GRU는 Naive(전날 값)와 통계적으로 구별되지 않는다(MAE ${p2(A.improvement.Naive.MAE)}, p = ${A.dm.vs_naive.p_value.toFixed(3)}). 주가의 다음 날 변화는 과거 가격으로 거의 예측되지 않는다.`
+      : `최종 모델의 Naive 대비 MAE 개선율은 ${p2(A.improvement.Naive.MAE)}(p = ${A.dm.vs_naive.p_value.toFixed(3)})다.`}
+    ② 서울 기온: 같은 코드가 Naive보다 ${p2(S.improvement.Naive.MAE)}, 최선의 베이스라인(${S.best_baseline})보다 ${p2(S.bestImprovement)} 낫다. 계절성과 기상 변수 사이에 배울 구조가 있기 때문이다.
+    ③ 꽃: 사진 ${top}장으로 직접 학습하면 Test ${a1(scratch.test)}, ImageNet 사전학습을 빌리면 ${a1(main.test)}다. "딥러닝이 이기는가"는 데이터에 배울 구조가 있는지, 그 구조를 배울 만큼 데이터나 사전 지식이 있는지에 달려 있다.`);
+
+  /* 3장 */
+  const lv = ex(A, "lstm_level"), dl = ex(A, "lstm_delta");
+  set("levelNote", `AAPL v1(수준값) LSTM의 Test MAE는 ${n4(mae(A, "lstm_level"))} ± ${n4(lv.test_summary.MAE.std)}로 Naive ${n4(A.baselines.Naive.test.MAE)}보다 크게 나쁘다. seed마다 편차도 크다.
+    Train skill이 ${lv.diagnosis.train.toFixed(2)}라서 <b>Train에서도</b> 전날 값보다 못하다. 그래서 모델을 키우는 것으로는 고쳐지지 않는다.
+    v2(변화량)로 바꾸자 ${n4(mae(A, "lstm_delta"))}가 됐다(${p2((mae(A, "lstm_level") - mae(A, "lstm_delta")) / mae(A, "lstm_level") * 100)}).
+    아래 그림의 세 번째 패널에서 v1 예측(빨강)이 실제(파랑)를 늦게 따라가고 높은 가격대에서 아래로 처지는 모습을 확인할 수 있다.`);
+
+  /* 4장 */
+  const big = ex(A, "probe_large"), reg = ex(A, "probe_regularized");
+  set("diagLesson", `<b>AAPL 진단 요약.</b> v2 LSTM은 ${dl.diagnosis.label}(Train skill ${dl.diagnosis.train.toFixed(3)})다.
+    처방대로 복잡도를 올린 128×2층은 Train skill이 ${big.diagnosis.train.toFixed(3)}까지 내려갔지만, Validation은 ${big.diagnosis.validation.toFixed(3)}로 나빠져 ${big.diagnosis.label}가 됐다(Test MAE ${n4(mae(A, "probe_large"))}).
+    정규화를 더하면 ${reg.diagnosis.label}로 돌아오고 Test MAE는 ${n4(mae(A, "probe_regularized"))}이다.
+    즉 이 '편향'은 모델이 작아서 생긴 것이 아니다. 데이터에 예측 가능한 신호가 거의 없어서 생긴 것이다(Bayes 오차가 Naive 수준).
+    편향을 판단할 때는 "Train 손실이 높다"에서 멈추지 말고, <b>도달 가능한 최저 오차(Bayes 오차)</b>와 비교해야 한다.
+    서울 기온의 v2 LSTM은 ${ex(S, "lstm_delta").diagnosis.label}(Train skill ${ex(S, "lstm_delta").diagnosis.train.toFixed(3)}, Validation ${ex(S, "lstm_delta").diagnosis.validation.toFixed(3)})다.`);
+
+  /* 5장 */
+  set("compareLesson", same(A)
+    ? `<b>AAPL에서는 "딥러닝이 베이스라인보다 우수하다"가 증명되지 않았다.</b> 그렇다고 실험이 실패한 것은 아니다. 베이스라인을 먼저 측정했기 때문에 이 사실을 알 수 있었다.
+       v1처럼 잘못 설계한 모델은 그래프로는 그럴듯해 보이지만 Naive보다 ${p2(-A.improvement.Naive.MAE)} 나쁘다(그림의 회색 점선과 비교).
+       반면 서울 기온에서는 ${p2(S.improvement.Naive.MAE)}이고 DM p = ${S.dm.vs_naive.p_value.toExponential(1)}이어서, 우연으로 보기 어려운 개선이다.`
+    : `AAPL 최종 모델은 Naive 대비 ${p2(A.improvement.Naive.MAE)}, 서울 기온은 ${p2(S.improvement.Naive.MAE)}다.`);
+
+  /* 6장 */
+  const lk = D.leakage, gains = Object.values(lk).filter(v => v.violates_check).map(v => {
+    const base = v.mode === "level" ? lk.correct_level.test.MAE : lk.correct_delta.test.MAE;
+    return [v.label, (base - v.test.MAE) / base * 100]; }).sort((a, b) => b[1] - a[1]);
+  set("leakLesson", `가장 극적인 것은 <b>${gains[0][0]}</b>다. 정상 설정보다 Test MAE가 ${gains[0][1].toFixed(1)}% 줄었다.
+    이런 점수는 운영에서 재현되지 않는다. 예측하는 순간에는 그 정보가 아직 없기 때문이다. "베이스라인보다 훨씬 좋다"는 결과가 나오면 먼저 이 네 가지를 확인한다.`);
+
+  /* 8장 */
+  const pick = (sh, k) => V.runs.find(r => r.shots === sh && r.strategy === k);
+  const ftBest = sh => Math.max(pick(sh, "partial").validation, pick(sh, "full").validation);
+  set("freezeLesson", `<b>사진 수별 Validation 최선</b>: ${shots.map(s => `${s}장 → ${bestAt(s).label} (${a1(bestAt(s).validation)})`).join(" · ")}.<br>
+    교과서 규칙은 "사진이 아주 적으면 분류기만(Linear Probing)"이다. 하지만 이 데이터에서 LP는 어느 사진 수에서도 최선이 아니었다.
+    LP와 몸통까지 학습한 최선의 차이는 ${shots.map(s => `${s}장 ${a1(pick(s, "linear_probe").validation)} vs ${a1(ftBest(s))}`).join(", ")}이고, 5장에서 가장 컸다.
+    ImageNet에는 민들레·머위 같은 클래스가 없어서 마지막 블록을 다듬어야 둘을 가를 수 있다(도메인 차이).
+    몸통 학습률 1e-4와 짧은 학습 자체가 규제로 작용해, 5장에서도 미세 조정이 무너지지 않았다.
+    즉 최적 범위는 데이터 크기와 <b>사전학습 도메인과의 거리</b>로 함께 정해진다. Validation이 ${V.validation_size}장이라 1장이 ${(100 / V.validation_size).toFixed(2)}%p라는 점도 함께 기억하자.
+    직접 학습은 같은 ${top}장에서 ${a1(scratch.test)}로, 1,100만 개 파라미터를 사진 ${top * 8}장으로 처음부터 배울 수 없음을 보여 준다.`);
+
+  /* 9장 */
+  const st = V.stats;
+  set("errorScope", `주 모델(${main.name}, ${main.label})의 Test 오분류는 ${V.main.errors}건이다.
+    ${V.analysis_models.length > 1 ? `미션 기준인 30건을 채우려고, 같은 Test 사진에서 ${V.analysis_models.slice(1).join(", ")} 모델의 오분류를 합쳤다. ` : ""}
+    분석 대상은 ${st.n_errors}장이다. 각 사진의 '틀린 모델'을 기록했다. 여러 모델이 함께 틀린 사진일수록 데이터 쪽 원인일 가능성이 크다.
+    <b>검수 상태: ${st.reviewed}/${st.n_errors}건.</b> ${st.reviewed < st.n_errors ? "나머지는 Claude가 사진을 직접 보고 단 초안이고, 사용자 검수를 기다린다." : "모두 사용자가 검수했다."}`);
+  const im = V.improve;
+  const change = im ? [im.after.strategy !== im.before.strategy ? `미세 조정 범위 ${im.before.strategy} → ${im.after.strategy}` : "",
+    im.after.image_size !== im.before.image_size ? `입력 해상도 ${im.before.image_size} → ${im.after.image_size}px` : "",
+    im.after.augmentation !== im.before.augmentation ? `증강 ${im.before.augmentation} → ${im.after.augmentation}` : ""].filter(Boolean).join(", ") : "";
+  if (im) set("improveLesson", `주 원인 <b>${im.dominant_tag}</b>(${(st.primary[im.dominant_tag].share * 100).toFixed(0)}%)에 맞춰 '특징 학습 강화' 처방(${change})을 적용했다. 머위의 비늘 줄기처럼 작고 세밀한 구별 단서를 더 잘 보게 하려는 것이다.
+    Test 정확도(seed 3개 평균)는 ${a1(im.before_test_accuracy.mean)} → ${a1(im.after_test_accuracy.mean)} (${im.gain_points >= 0 ? "+" : "−"}${Math.abs(im.gain_points).toFixed(1)}%p)이다.
+    ${Math.abs(im.gain_points) < (im.before_test_accuracy.std + im.after_test_accuracy.std) * 100
+      ? "변화가 seed 간 표준편차 수준이라 '확실히 나아졌다'고 말하기 어렵다. Test 325장에서 1장은 0.3%p다."
+      : "변화가 seed 간 표준편차보다 크다. 대가로 학습 시간은 약 1.7배가 됐다."}`);
+
+  /* 10·11장 */
+  const H = D.bonus.hparam;
+  if (H) {
+    const imp = Object.entries(H.importance).sort((a, b) => b[1].eta_squared - a[1].eta_squared);
+    const fin = H.final.test_summary.MAE.mean, def = H.default.test_summary.MAE.mean;
+    set("hpLesson", `가장 영향이 큰 하이퍼파라미터는 <b>${imp[0][0]}</b>(η² ${imp[0][1].eta_squared.toFixed(2)})이고, 그다음은 ${imp[1][0]}(η² ${imp[1][1].eta_squared.toFixed(2)})다.
+      탐색으로 찾은 설정을 seed 3개로 다시 학습한 Test MAE는 ${n4(fin)}이다. 기본 설정은 ${n4(def)}이었다(${p2((def - fin) / def * 100)}).
+      ${Math.abs(def - fin) / def < 0.01 ? "기본 설정이 이미 좋은 구역에 있었다. 탐색의 가치는 점수를 올리는 데 그치지 않고, '이 정도면 됐다'는 근거를 남기는 데도 있다." : ""}`);
+  }
+  const AT = D.bonus.attention;
+  if (AT) {
+    const m = (s, k) => M.mean(AT[s][k].test_skill);
+    set("attnLesson", ["aapl", "seoul"].map(s => `${D.ts[s].title}: 창 30일 LSTM ${m(s, "lstm_30").toFixed(3)} → +Attention ${m(s, "lstm_attention_30").toFixed(3)}, 창 90일 LSTM ${m(s, "lstm_90").toFixed(3)} → +Attention ${m(s, "lstm_attention_90").toFixed(3)}, Transformer(90) ${m(s, "transformer_90").toFixed(3)}`).join("<br>")
+      + `<br>(숫자는 Test skill = MSE/Naive, 낮을수록 좋다.)<br>` + ["aapl", "seoul"].map(s => {
+        const w = AT[s].lstm_attention_30.attention_mean, ratio = Math.max(...w) / Math.min(...w), oldest = w[0] === Math.max(...w);
+        return `${D.ts[s].title} 창 30일의 가중치 최대/최소 비는 ${ratio.toFixed(2)}이다. ` + (ratio < 1.2
+          ? "거의 균등하다. Attention이 고를 만한 정보를 찾지 못했다는 뜻이고, 예측이 Naive에 머문 결과와 같은 이야기다."
+          : oldest ? "가장 오래된 날에 가중치가 몰렸다. 최근 정보는 마지막 은닉 상태 h_T가 이미 담고 있으므로, Attention은 '한 달 전 기준점'처럼 h_T에 없는 정보를 따로 가져오는 데 쓰였다."
+          : "특정 날에 가중치가 몰렸다.");
+      }).join("<br>") + `<br>정리하면, 이 두 시계열에서는 Attention이 정확도를 올리지 못했다. 30~90일은 LSTM이 감당할 만한 길이이고, 데이터에 '먼 과거의 특정 시점'이 중요한 구조가 없다. Attention의 이점은 시퀀스가 훨씬 길거나(문장·로그) 중요한 위치가 예제마다 다를 때 커진다.`);
+  }
+
+  /* 13장 자기 점검 */
+  set("q1", `<p>Train 손실 자체가 기준선(사람 수준·Naive)보다 높으면 편향이다. Validation이 Train보다 크게 높으면 분산이다.
+    이 저장소의 예: AAPL 128×2층(규제 없음)은 Train skill ${big.diagnosis.train.toFixed(2)}, Validation ${big.diagnosis.validation.toFixed(2)}로 분산이다.
+    꽃 ${main.name}는 Train ${a1(main.train)}, Validation ${a1(main.validation)}로 분산이다.
+    처방은 각각 정규화·데이터↑와 Freezing·증강이다. 주의할 점이 있다. AAPL v2처럼 Train skill이 1에 가까워도, 그 원인이 데이터의 예측 불가능성(Bayes 오차)이면 모델을 키워도 낫지 않는다.</p>`);
+  set("q2", `<p>출발점은 "사진이 적을수록 학습하는 파라미터를 줄인다"이다. 하지만 사전학습 도메인과 얼마나 먼지도 함께 본다.
+    이 실험의 Validation 최선은 ${shots.map(s => `${s}장: ${bestAt(s).label}`).join(", ")}이었다. Linear Probing(4,104개만 학습)은 어느 사진 수에서도 최선이 아니었다.
+    ImageNet에 없는 민들레·머위를 가르려면 layer4의 특징을 다듬어야 했기 때문이다.
+    실무 절차는 다음과 같다. (1) LP로 기준선을 잡는다. (2) layer4+fc를 푼다. 몸통 학습률은 분류기의 1/10, 얼린 BatchNorm은 고정한다. (3) 사진이 늘거나 Validation 격차가 작으면 전체로 넓힌다. (4) 각 단계를 Validation으로 비교한다.</p>`);
+  set("q4", `<p>오분류 ${st.n_errors}장을 직접 보니 주 원인은 ${Object.entries(st.primary).filter(([, v]) => v.count).sort((a, b) => b[1].count - a[1].count).map(([k, v]) => `${k} ${v.count}건`).join(", ")}이었다.
+    자주 틀린 쌍은 ${Object.keys(st.pairs).slice(0, 3).map(p => p.split(" → ").map(c => V.ko[c] || c).join("→")).join(", ")}다.
+    태그별 개선 방향(증강·정제·구조 변경)을 정하고, 가장 많은 원인에 먼저 처방한다. 처방 효과는 seed 여러 개로 잰다.
+    ${im ? `이번 처방(${change})은 ${im.gain_points >= 0 ? "+" : "−"}${Math.abs(im.gain_points).toFixed(1)}%p였다.` : ""}</p>`);
+  set("q5", `<p>같은 Test 구간에서 MAE·RMSE·MAPE를 재고 (베이스라인 − 모델) ÷ 베이스라인으로 개선율을 낸다. 비교 상대인 '최선의 베이스라인'도 Validation으로 고른다.
+    차이가 우연인지는 Diebold-Mariano 검정으로 본다. 결과는 AAPL Naive 대비 ${p2(A.improvement.Naive.MAE)}(p = ${A.dm.vs_naive.p_value.toFixed(3)}), 서울 기온 ${p2(S.improvement.Naive.MAE)}(p = ${S.dm.vs_naive.p_value.toExponential(1)})다.
+    해석: 주가처럼 랜덤워크에 가까운 데이터에서는 Naive가 사실상 최적이다. 딥러닝은 데이터에 구조가 있을 때만 이긴다.</p>`);
+
+  /* 14장 */
+  set("noteErrors", `주 모델 오분류 ${V.main.errors}건${V.analysis_models.length > 1 ? `에 ${V.analysis_models.slice(1).join(", ")}의 오분류를 더해 ${st.n_errors}장` : ""}`);
+  set("noteReview", st.reviewed < st.n_errors ? `현재 ${st.reviewed}/${st.n_errors}건 검수 완료. 미검수 행은 표에 '미검수'로 표시한다` : "모두 검수 완료");
+}
+</script>
+<script id="mathlib">
+/* Python(perfdiag)과 같은 식을 JavaScript로 다시 쓴 계산 모음. tools/verify_study_guide.py가 Node.js로 실행해 대조한다. */
+var MathLib = (() => {
+  const mean = a => a.reduce((s, v) => s + v, 0) / a.length;
+  const mae = (y, p) => mean(y.map((v, i) => Math.abs(v - p[i])));
+  const rmse = (y, p) => Math.sqrt(mean(y.map((v, i) => (v - p[i]) ** 2)));
+  const mape = (y, p) => mean(y.map((v, i) => Math.abs((v - p[i]) / v))) * 100;
+  const range = (a, b) => Array.from({ length: b - a + 1 }, (_, i) => a + i);   // a..b 포함
+  const naive = (y, t) => t.map(k => y[k - 1]);
+  function sma(y, t, n) {
+    const c = [0]; y.forEach(v => c.push(c[c.length - 1] + v));
+    return t.map(k => (c[k] - c[k - n]) / n);
+  }
+  function emaPath(y, a) { const s = [y[0]]; for (let k = 1; k < y.length; k++) s.push(a * y[k - 1] + (1 - a) * s[k - 1]); return s; }
+  const ema = (y, t, a) => { const s = emaPath(y, a); return t.map(k => s[k]); };
+  /* 최소제곱: 수정 Gram-Schmidt QR로 푼다 (정규방정식보다 안정적) */
+  function lstsq(X, b) {
+    const m = X.length, n = X[0].length, Q = X.map(r => r.slice()), R = Array.from({ length: n }, () => new Array(n).fill(0));
+    for (let j = 0; j < n; j++) {
+      for (let i = 0; i < j; i++) { let d = 0; for (let k = 0; k < m; k++) d += Q[k][i] * Q[k][j]; R[i][j] = d; for (let k = 0; k < m; k++) Q[k][j] -= d * Q[k][i]; }
+      let nrm = 0; for (let k = 0; k < m; k++) nrm += Q[k][j] ** 2; nrm = Math.sqrt(nrm); R[j][j] = nrm;
+      for (let k = 0; k < m; k++) Q[k][j] /= nrm;
+    }
+    const qb = new Array(n).fill(0); for (let j = 0; j < n; j++) for (let k = 0; k < m; k++) qb[j] += Q[k][j] * b[k];
+    const w = new Array(n).fill(0);
+    for (let j = n - 1; j >= 0; j--) { let s = qb[j]; for (let i = j + 1; i < n; i++) s -= R[j][i] * w[i]; w[j] = s / R[j][j]; }
+    return w;
+  }
+  function linearTrend(y, train, t) {
+    const w = lstsq(train.map(k => [k, 1]), train.map(k => y[k]));
+    return t.map(k => w[0] * k + w[1]);
+  }
+  function linearLag(y, train, t, p = 5) {
+    const row = k => { const r = []; for (let j = 1; j <= p; j++) r.push(y[k - j]); r.push(1); return r; };
+    const w = lstsq(train.map(row), train.map(k => y[k]));
+    return t.map(k => row(k).reduce((s, v, j) => s + v * w[j], 0));
+  }
+  function predict(y, splits, model, param, t) {
+    const train = range(splits.train[0], splits.train[1]);
+    if (model === "naive") return naive(y, t);
+    if (model === "sma") return sma(y, t, param);
+    if (model === "ema") return ema(y, t, param);
+    if (model === "trend") return linearTrend(y, train, t);
+    if (model === "lag") return linearLag(y, train, t, param);
+    throw new Error(model);
+  }
+  function metrics(y, p, withMape) { return { MAE: mae(y, p), RMSE: rmse(y, p), MAPE: withMape ? mape(y, p) : null }; }
+  /* 미션 파라미터 가이드의 베이스라인 9개 (Python all_baselines와 같은 이름) */
+  const BASELINES = [["Naive", "naive", 0], ["SMA(5)", "sma", 5], ["SMA(10)", "sma", 10], ["SMA(20)", "sma", 20],
+    ["EMA(0.1)", "ema", 0.1], ["EMA(0.3)", "ema", 0.3], ["EMA(0.5)", "ema", 0.5], ["LinearTrend", "trend", 0], ["LinearLag(5)", "lag", 5]];
+  function baselineTable(series) {
+    const out = {};
+    BASELINES.forEach(([name, model, param]) => {
+      out[name] = {};
+      ["train", "validation", "test"].forEach(split => {
+        const t = range(series.splits[split][0], series.splits[split][1]);
+        out[name][split] = metrics(t.map(k => series.y[k]), predict(series.y, series.splits, model, param, t), series.with_mape);
+      });
+    });
+    return out;
+  }
+  /* diagnosis.py와 같은 규칙 */
+  const LABELS = { high_bias: "High Bias (Underfitting)", high_variance: "High Variance (Overfitting)",
+    high_bias_and_variance: "High Bias + High Variance", good_fit: "적정 (Good fit)" };
+  function classify(bias, gap, biasTol, gapTol) {
+    const hb = bias > biasTol, hv = gap > gapTol;
+    return hb && hv ? "high_bias_and_variance" : hb ? "high_bias" : hv ? "high_variance" : "good_fit";
+  }
+  function diagnoseClassification(trainErr, valErr, human = 0, biasTol = 0.05, gapTol = 0.05) {
+    const bias = trainErr - human, gap = valErr - trainErr;
+    return { state: classify(bias, gap, biasTol, gapTol), avoidable_bias: bias, variance_gap: gap };
+  }
+  function diagnoseForecast(trainLoss, valLoss, trainNaive, valNaive, biasTol = 0.95, gapTol = 0.10) {
+    const st = trainLoss / trainNaive, sv = valLoss / valNaive, bias = st - biasTol, gap = sv - st;
+    return { state: classify(bias, gap, 0, gapTol), train: st, validation: sv, avoidable_bias: bias, variance_gap: gap };
+  }
+  const improvement = (base, model) => (base - model) / base * 100;
+  function minmax(values, fitIdx) {
+    let lo = Infinity, hi = -Infinity; fitIdx.forEach(k => { lo = Math.min(lo, values[k]); hi = Math.max(hi, values[k]); });
+    return values.map(v => (v - lo) / (hi - lo));
+  }
+  return { mean, mae, rmse, mape, range, naive, sma, emaPath, ema, lstsq, linearTrend, linearLag, predict, metrics,
+           BASELINES, baselineTable, LABELS, diagnoseClassification, diagnoseForecast, improvement, minmax };
+})();
+</script>
+<script>const DATA = /*__DATA__*/null;</script>
+<script>
+"use strict";
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const cssv = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const esc = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+const M = MathLib;
+function num(v, d = 3) {
+  if (v === null || v === undefined || !Number.isFinite(v)) return "—";
+  const s = v.toFixed(d); return s.startsWith("-") ? "−" + s.slice(1) : s;
+}
+const pct = v => (v === null || v === undefined) ? "—" : (v >= 0 ? "+" : "−") + Math.abs(v).toFixed(2) + "%";
+const acc = v => (v * 100).toFixed(1) + "%";
+const renderers = [];
+function onResize(fn) { renderers.push(fn); fn(); }
+let rT; window.addEventListener("resize", () => { clearTimeout(rT); rT = setTimeout(() => renderers.forEach(f => f()), 120); });
+
+function plot(canvas, xmin, xmax, ymin, ymax, pad = { l: 46, r: 10, t: 10, b: 24 }) {
+  const dpr = window.devicePixelRatio || 1, w = canvas.clientWidth, h = canvas.clientHeight || w * 0.45;
+  canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
+  const ctx = canvas.getContext("2d"); ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, w, h);
+  if (xmax === xmin) xmax = xmin + 1; if (ymax === ymin) ymax = ymin + 1;
+  const X = x => pad.l + (x - xmin) / (xmax - xmin) * (w - pad.l - pad.r);
+  const Y = y => h - pad.b - (y - ymin) / (ymax - ymin) * (h - pad.t - pad.b);
+  return { ctx, w, h, X, Y, xmin, xmax, ymin, ymax, pad };
+}
+function ticks(a, b, n = 5) {
+  const step = Math.pow(10, Math.floor(Math.log10((b - a) / n))), err = (b - a) / n / step;
+  const s = step * (err >= 7.5 ? 10 : err >= 3.5 ? 5 : err >= 1.5 ? 2 : 1), out = [];
+  for (let v = Math.ceil(a / s) * s; v <= b + 1e-12; v += s) out.push(+v.toFixed(10));
+  return out;
+}
+function frame(P, xt, yt, xf = String, yf = String) {
+  const { ctx, X, Y, w, h, pad } = P;
+  ctx.lineWidth = 1; ctx.strokeStyle = cssv("--grid"); ctx.fillStyle = cssv("--muted"); ctx.font = "10px sans-serif";
+  ctx.beginPath(); xt.forEach(x => { ctx.moveTo(X(x), pad.t); ctx.lineTo(X(x), h - pad.b); });
+  yt.forEach(y => { ctx.moveTo(pad.l, Y(y)); ctx.lineTo(w - pad.r, Y(y)); }); ctx.stroke();
+  ctx.textAlign = "center"; xt.forEach(x => ctx.fillText(xf(x), X(x), h - pad.b + 13));
+  ctx.textAlign = "right"; yt.forEach(y => ctx.fillText(yf(y), pad.l - 4, Y(y) + 3)); ctx.textAlign = "left";
+  ctx.strokeStyle = cssv("--muted"); ctx.strokeRect(pad.l, pad.t, w - pad.l - pad.r, h - pad.t - pad.b);
+}
+function line(P, xs, ys, color, width = 2, dash = []) {
+  const { ctx, X, Y } = P; ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = width; ctx.setLineDash(dash);
+  ctx.beginPath(); let on = false;
+  xs.forEach((x, i) => { const y = ys[i]; if (!Number.isFinite(y)) { on = false; return; }
+    const py = Math.max(-1e4, Math.min(1e4, Y(y))); if (on) ctx.lineTo(X(x), py); else { ctx.moveTo(X(x), py); on = true; } });
+  ctx.stroke(); ctx.restore();
+}
+function hline(P, y, color, dash = [4, 3]) { line(P, [P.xmin, P.xmax], [y, y], color, 1, dash); }
+function legend(P, items) {
+  const { ctx } = P; ctx.font = "11px sans-serif"; let x = P.pad.l + 6;
+  items.forEach(([text, color, dash]) => {
+    ctx.strokeStyle = color; ctx.lineWidth = 2; ctx.setLineDash(dash || []); ctx.beginPath(); ctx.moveTo(x, P.pad.t + 9); ctx.lineTo(x + 16, P.pad.t + 9); ctx.stroke();
+    ctx.setLineDash([]); ctx.fillStyle = cssv("--fg"); ctx.fillText(text, x + 20, P.pad.t + 13); x += 28 + ctx.measureText(text).width;
+  });
+}
+const get = (obj, path) => path.split(".").reduce((o, k) => (o == null ? undefined : o[k]), obj);
+
+/* ---------- 파생 값 (본문 data-v에서 쓴다) ---------- */
+if (DATA) {
+  for (const s of Object.values(DATA.ts)) s.bestImprovement = s.improvement[s.best_baseline].MAE;
+  DATA.vision.mainRun = DATA.vision.runs.find(r => r.is_main);
+  const top = Math.max(...DATA.vision.runs.map(r => r.shots));
+  DATA.vision.scratchRun = DATA.vision.runs.find(r => r.strategy === "scratch" && r.shots === top) || {};
+}
+
+/* ---------- 테마 · 내비게이션 · 발췌 · 그림 · 바인딩 ---------- */
+(() => {
+  const btn = $("#themeBtn");
+  try { const t = localStorage.getItem("a62-theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+  btn.addEventListener("click", () => {
+    const cur = document.documentElement.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    const next = cur === "dark" ? "light" : "dark"; document.documentElement.dataset.theme = next;
+    try { localStorage.setItem("a62-theme", next); } catch (e) {}
+    renderers.forEach(f => f());
+  });
+  $$(".loop .stage").forEach(g => g.addEventListener("click", () => $(g.dataset.go).scrollIntoView({ behavior: "smooth" })));
+  const links = $$("nav.chips a"), map = new Map(links.map(a => [a.getAttribute("href").slice(1), a]));
+  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { links.forEach(a => a.classList.remove("on"));
+    const a = map.get(e.target.id); if (a) { a.classList.add("on"); a.scrollIntoView({ block: "nearest", inline: "center" }); } } }), { rootMargin: "-45% 0px -50% 0px" });
+  $$("main > section").forEach(s => io.observe(s));
+  if (!DATA) return;
+  $$("[data-code]").forEach(el => {
+    const c = DATA.code[el.dataset.code]; if (!c) return;
+    el.innerHTML = `<details><summary><code>${esc(c.file)}</code> · ${esc(c.name)} <span class="muted">(${c.start}–${c.end}행)</span></summary><pre>${
+      c.text.split("\n").map((l, i) => `<span class="ln">${c.start + i}</span>${esc(l)}`).join("\n")}</pre></details>`;
+  });
+  $$("[data-fig]").forEach(el => {
+    const f = DATA.fig[el.dataset.fig]; if (!f) { el.remove(); return; }
+    el.innerHTML = `<figure><img loading="lazy" src="${f.src}" alt="${esc(f.caption)}"><figcaption><code>${esc(f.file)}</code>: ${esc(f.caption)}</figcaption></figure>`;
+  });
+  const F = { pct, acc, f2: v => num(v, 2), f3: v => num(v, 3), f4: v => num(v, 4), int: v => String(Math.round(v)) };
+  $$("[data-v]").forEach(el => { const v = get(DATA, el.dataset.v); el.textContent = v === undefined ? "?" : (F[el.dataset.f] || String)(v); });
+})();
+
+/* ---------- 2. 베이스라인 실험실 ---------- */
+(() => {
+  if (!DATA) return;
+  const s = $("#bSeries"), m = $("#bModel"), n = $("#bN"), a = $("#bA");
+  function draw() {
+    const ser = DATA.ts[s.value], model = m.value, N = +n.value, A = +a.value;
+    $("#bNv").textContent = N; $("#bAv").textContent = A.toFixed(2);
+    n.disabled = !(model === "sma" || model === "lag"); a.disabled = model !== "ema";
+    const param = model === "ema" ? A : N;
+    const out = [];
+    ["validation", "test"].forEach(split => {
+      const t = M.range(ser.splits[split][0], ser.splits[split][1]);
+      const met = M.metrics(t.map(k => ser.y[k]), M.predict(ser.y, ser.splits, model, param, t), ser.with_mape);
+      out.push(`${split === "test" ? "Test      " : "Validation"}  MAE ${num(met.MAE, 4)}  RMSE ${num(met.RMSE, 4)}${ser.with_mape ? "  MAPE " + num(met.MAPE, 3) + "%" : ""}`);
+      if (split === "test") {
+        const fin = ser.final_test;
+        out.push(`최종 딥러닝(${ser.experiments[ser.final].label}) Test MAE ${num(fin.MAE, 4)} → 이 베이스라인 대비 ${pct(M.improvement(met.MAE, fin.MAE))}`);
+      }
+    });
+    $("#bOut").textContent = out.join("\n");
+    const t = M.range(ser.splits.test[1] - 119, ser.splits.test[1]);
+    const yv = t.map(k => ser.y[k]), pv = M.predict(ser.y, ser.splits, model, param, t);
+    const off = ser.splits.test[0], dl = t.map(k => ser.test_pred_final[k - off]);
+    const all = yv.concat(pv, dl).filter(Number.isFinite), lo = Math.min(...all), hi = Math.max(...all), padY = (hi - lo) * 0.08;
+    const P = plot($("#bCanvas"), 0, t.length - 1, lo - padY, hi + padY);
+    frame(P, ticks(0, t.length - 1, 6), ticks(lo - padY, hi + padY, 4), i => ser.dates[t[Math.round(i)]]?.slice(5) || "", v => num(v, 0));
+    line(P, t.map((_, i) => i), dl, cssv("--muted"), 1.2, [4, 3]);
+    line(P, t.map((_, i) => i), yv, cssv("--accent"), 1.8);
+    line(P, t.map((_, i) => i), pv, cssv("--red"), 1.4);
+    legend(P, [["실제", cssv("--accent")], ["베이스라인", cssv("--red")], ["딥러닝", cssv("--muted"), [4, 3]]]);
+  }
+  [s, m, n, a].forEach(el => el.addEventListener("input", draw));
+  onResize(draw);
+  /* 결과 표: 두 데이터의 베이스라인 9개 */
+  const rows = M.BASELINES.map(([name]) => `<tr><td>${name}</td>${["aapl", "seoul"].map(k => {
+    const b = DATA.ts[k].baselines[name], best = DATA.ts[k].best_baseline === name;
+    return `<td class="num">${num(b.validation.MAE, 3)}</td><td class="num${best ? " ok" : ""}">${num(b.test.MAE, 3)}</td>`; }).join("")}</tr>`).join("");
+  $("#baseTable").innerHTML = `<table><tr><th rowspan="2">베이스라인</th><th colspan="2">AAPL (USD)</th><th colspan="2">서울 기온 (°C)</th></tr>
+    <tr><th class="num">Validation MAE</th><th class="num">Test MAE</th><th class="num">Validation MAE</th><th class="num">Test MAE</th></tr>${rows}</table>
+    <p class="muted" style="font-size:.85rem">초록 = Validation MAE로 고른 최선의 베이스라인. 계산: <code>scripts/ts_baselines.py</code></p>`;
+})();
+
+/* ---------- 3. MinMax 외삽 ---------- */
+(() => {
+  if (!DATA) return;
+  function draw() {
+    const ser = DATA.ts[$("#xSeries").value], fit = $("#xFit").value;
+    const start = ser.first_target - 90, end = ser.splits.test[1];
+    const idx = fit === "train" ? M.range(start, ser.splits.train[1]) : M.range(start, end);
+    const scaled = M.minmax(ser.y, idx);
+    const xs = M.range(start, end), ys = xs.map(k => scaled[k]);
+    const lo = Math.min(-0.05, ...ys), hi = Math.max(1.05, ...ys);
+    const P = plot($("#xCanvas"), start, end, lo, hi);
+    frame(P, ticks(start, end, 5), ticks(lo, hi, 5), i => ser.dates[Math.round(i)]?.slice(0, 4) || "", v => num(v, 1));
+    const { ctx, X, Y } = P;
+    ctx.fillStyle = cssv("--accent-soft"); ctx.fillRect(X(start), Y(1), X(end) - X(start), Y(0) - Y(1));
+    [["validation", "--amber"], ["test", "--red"]].forEach(([sp, c]) => { ctx.fillStyle = cssv(c); ctx.globalAlpha = 0.08;
+      ctx.fillRect(X(ser.splits[sp][0]), P.pad.t, X(ser.splits[sp][1]) - X(ser.splits[sp][0]), P.h - P.pad.t - P.pad.b); ctx.globalAlpha = 1; });
+    line(P, xs, ys, cssv("--accent"), 1.3);
+    const tIdx = M.range(ser.splits.test[0], ser.splits.test[1]), tv = tIdx.map(k => scaled[k]);
+    const over = tv.filter(v => v > 1 || v < 0).length;
+    $("#xOut").textContent = `Test 구간 정규화 값: 최소 ${num(Math.min(...tv), 3)}, 최대 ${num(Math.max(...tv), 3)}\n` +
+      `[0, 1] 밖으로 나간 Test 날: ${over} / ${tv.length}일 (${(over / tv.length * 100).toFixed(1)}%)\n` +
+      (fit === "all" ? "전체 기간으로 fit하면 Test도 [0,1] 안에 들어온다. 하지만 이것은 Test의 최댓값을 미리 본 누수다." :
+        "Train 범위(파란 띠) 밖의 값은 LSTM이 학습 중 한 번도 본 적 없는 입력·출력이다.");
+  }
+  ["#xSeries", "#xFit"].forEach(s => $(s).addEventListener("input", draw));
+  onResize(draw);
+})();
+
+/* ---------- 4. 진단기와 실제 곡선 ---------- */
+(() => {
+  if (!DATA) return;
+  const kind = $("#dKind"), T = $("#dT"), V = $("#dV");
+  function diag() {
+    const forecast = kind.value === "forecast", t = +T.value, v = +V.value;
+    $("#dTv").textContent = t.toFixed(2); $("#dVv").textContent = v.toFixed(2);
+    const r = forecast ? M.diagnoseForecast(t, v, 1, 1) : M.diagnoseClassification(t, v);
+    $("#dOut").textContent = (forecast
+      ? `skill: Train ${t.toFixed(2)}, Validation ${v.toFixed(2)} (Naive = 1.00)\n편향 기준: Train skill ≥ 0.95 → 학습 구간에서도 '전날 값'보다 5% 넘게 낫지 못함\n`
+      : `오류율: Train ${t.toFixed(2)}, Validation ${v.toFixed(2)} (사람 수준 = 0)\n편향 기준: Train 오류율 > 0.05\n`) +
+      `격차(Validation − Train) = ${num(r.variance_gap, 3)} (기준 ${forecast ? "0.10" : "0.05"})\n→ ${M.LABELS[r.state]}`;
+  }
+  kind.addEventListener("input", () => { T.max = V.max = kind.value === "forecast" ? 1.6 : 1; diag(); });
+  [T, V].forEach(el => el.addEventListener("input", diag)); diag();
+
+  const cs = $("#cSeries"), ce = $("#cExp");
+  function fill() {
+    const v = cs.value;
+    ce.innerHTML = v === "vision"
+      ? DATA.vision.runs.map((r, i) => `<option value="${i}">${esc(r.name)} · ${esc(r.label)}</option>`).join("")
+      : Object.entries(DATA.ts[v].experiments).map(([k, e]) => `<option value="${k}">${esc(e.label)}</option>`).join("");
+    if (v !== "vision") ce.value = "probe_large"; else ce.value = String(DATA.vision.runs.findIndex(r => r.is_main));
+    curve();
+  }
+  function curve() {
+    let tr, va, best, naive = null, label, extra;
+    if (cs.value === "vision") {
+      const r = DATA.vision.runs[+ce.value]; tr = r.history.train; va = r.history.validation; best = r.history.best_epoch;
+      label = `${r.name} ${r.label}`;
+      extra = `Train 정확도 ${acc(r.train)}, Validation ${acc(r.validation)}, Test ${acc(r.test)}\n학습 파라미터 ${r.trainable.toLocaleString()} / ${r.total.toLocaleString()}\n` +
+        `회피 가능 편향 ${num(r.diagnosis.avoidable_bias, 3)}, 격차 ${num(r.diagnosis.variance_gap, 3)} → ${r.diagnosis.label}\n처방: ${r.diagnosis.remedy}`;
+    } else {
+      const e = DATA.ts[cs.value].experiments[ce.value]; tr = e.history.train; va = e.history.validation; best = e.history.best_epoch; naive = e.naive;
+      label = e.label;
+      extra = `${e.diagnosis.rule}\n→ ${e.diagnosis.label}\n처방: ${e.diagnosis.remedy}\nTest MAE ${num(e.test_summary.MAE.mean, 4)} ± ${num(e.test_summary.MAE.std, 4)} (seed ${e.seeds}개)`;
+    }
+    const all = tr.concat(va, naive ? [naive.train, naive.validation] : []).filter(v => v > 0);
+    const lo = Math.log10(Math.min(...all)) - 0.1, hi = Math.log10(Math.max(...all)) + 0.1;
+    const P = plot($("#cCanvas"), 1, tr.length, lo, hi), xs = tr.map((_, i) => i + 1);
+    frame(P, ticks(1, tr.length, 6), ticks(lo, hi, 4), String, v => "1e" + v.toFixed(1));
+    if (naive) { hline(P, Math.log10(naive.train), cssv("--accent")); hline(P, Math.log10(naive.validation), cssv("--red")); }
+    line(P, [best, best], [lo, hi], cssv("--muted"), 1, [2, 3]);
+    line(P, xs, tr.map(Math.log10), cssv("--accent"), 2);
+    line(P, xs, va.map(Math.log10), cssv("--red"), 2);
+    legend(P, [["Train", cssv("--accent")], ["Validation", cssv("--red")]].concat(naive ? [["Naive", cssv("--muted"), [4, 3]]] : []));
+    $("#cOut").textContent = `${label}\n${extra}`;
+  }
+  cs.addEventListener("input", fill); ce.addEventListener("input", curve);
+  fill(); renderers.push(curve);
+})();
+
+/* ---------- 5. 개선율 표 ---------- */
+(() => {
+  if (!DATA) return;
+  function draw() {
+    const ser = DATA.ts[$("#kSeries").value], fin = ser.final_test;
+    const keys = ser.with_mape ? ["MAE", "RMSE", "MAPE"] : ["MAE", "RMSE"];
+    const head = `<tr><th>모델</th>${keys.map(k => `<th class="num">Test ${k}</th>`).join("")}${keys.map(k => `<th class="num">딥러닝 개선율 (${k})</th>`).join("")}</tr>`;
+    const rows = Object.entries(ser.baselines).map(([name, b]) => `<tr${name === ser.best_baseline ? ' class="hl"' : ""}><td>${name}</td>${
+      keys.map(k => `<td class="num">${num(b.test[k], k === "MAPE" ? 3 : 4)}</td>`).join("")}${
+      keys.map(k => { const v = ser.improvement[name][k]; return `<td class="num ${v > 0 ? "ok" : "bad"}">${pct(v)}</td>`; }).join("")}</tr>`).join("");
+    const deepRows = Object.entries(ser.experiments).filter(([, e]) => e.role === "candidate").map(([k, e]) =>
+      `<tr${k === ser.final ? ' class="hl"' : ""}><td>${esc(e.label)}${k === ser.final ? " ★" : ""}</td>${keys.map(m => {
+        const s = e.test_summary[m]; return `<td class="num">${num(s.mean, m === "MAPE" ? 3 : 4)}<span class="muted"> ±${num(s.std, m === "MAPE" ? 3 : 4)}</span></td>`; }).join("")}<td colspan="${keys.length}" class="muted">Validation MAE ${num(e.validation_mae, 4)}</td></tr>`).join("");
+    $("#kTable").innerHTML = `<table>${head}${rows}<tr><th colspan="${1 + 2 * keys.length}">딥러닝 후보 (seed 평균 ± 표준편차, ★ = Validation MAE로 고른 최종 모델의 대표 seed)</th></tr>${deepRows}</table>`;
+    const dm = ser.dm;
+    $("#kDm").textContent = `최종 모델 Test: MAE ${num(fin.MAE, 4)}, RMSE ${num(fin.RMSE, 4)}${fin.MAPE !== null ? ", MAPE " + num(fin.MAPE, 3) + "%" : ""}\n` +
+      `Diebold-Mariano vs Naive: 통계량 ${num(dm.vs_naive.statistic, 3)}, p = ${num(dm.vs_naive.p_value, 4)}\n` +
+      `Diebold-Mariano vs ${dm.vs_best_baseline.model} (Validation 최선 베이스라인): 통계량 ${num(dm.vs_best_baseline.statistic, 3)}, p = ${num(dm.vs_best_baseline.p_value, 4)}`;
+  }
+  $("#kSeries").addEventListener("input", draw); draw();
+})();
+
+/* ---------- 6. 윈도우·분할 실험실 ---------- */
+(() => {
+  if (!DATA) return;
+  const N = 50, cut1 = 35, cut2 = 40;
+  const order = (() => { let s = 7; const a = M.range(12, N - 1); for (let i = a.length - 1; i > 0; i--) { s = (s * 16807) % 2147483647; const j = s % (i + 1); [a[i], a[j]] = [a[j], a[i]]; } return a; })();
+  function draw() {
+    const t = +$("#lT").value, L = +$("#lL").value, sh = $("#lShuffle").checked, sc = $("#lScaler").checked,
+      look = $("#lLook").checked, cen = $("#lCenter").checked;
+    $("#lTv").textContent = t; $("#lLv").textContent = L;
+    const split = k => { if (k < 12) return "warm"; if (!sh) return k < cut1 ? "train" : k < cut2 ? "validation" : "test";
+      const pos = order.indexOf(k), n = order.length; return pos < n * 0.7 ? "train" : pos < n * 0.8 ? "validation" : "test"; };
+    const P = plot($("#lCanvas"), 0, N, 0, 3, { l: 6, r: 6, t: 6, b: 18 }), { ctx, X, Y } = P, cw = X(1) - X(0);
+    const inWin = k => look ? (k > t - L && k <= t) : (k >= t - L && k < t);
+    const future = new Set();
+    for (let k = 0; k < N; k++) {
+      const sp = split(k), color = { warm: "--grid", train: "--accent", validation: "--amber", test: "--red" }[sp];
+      ctx.fillStyle = cssv(color); ctx.globalAlpha = 0.35; ctx.fillRect(X(k) + 1, Y(1), cw - 2, Y(0) - Y(1)); ctx.globalAlpha = 1;
+      if (inWin(k)) { ctx.fillStyle = cssv("--accent"); ctx.fillRect(X(k) + 1, Y(2), cw - 2, Y(1) - Y(2) - 2); if (k >= t) future.add(k); }
+      if (cen && inWin(k)) for (let d = 1; d <= 2; d++) if (k + d >= t) future.add(k + d);
+    }
+    future.forEach(k => { ctx.fillStyle = cssv("--red"); ctx.fillRect(X(k) + 1, Y(2.9), cw - 2, Y(2) - Y(2.9) - 2); });
+    ctx.strokeStyle = cssv("--fg"); ctx.lineWidth = 2; ctx.strokeRect(X(t) + 1, Y(2.95), cw - 2, Y(0) - Y(2.95));
+    ctx.fillStyle = cssv("--muted"); ctx.font = "10px sans-serif"; ctx.textAlign = "center";
+    for (let k = 0; k <= N; k += 10) ctx.fillText(k, X(k), P.h - 5);
+    const tSplit = split(t), trainAfter = sh && M.range(t + 1, N - 1).some(k => split(k) === "train") && tSplit !== "train";
+    const msgs = [`t = ${t} (${{ train: "Train", validation: "Validation", test: "Test", warm: "준비 구간" }[tSplit]}) · 입력 행 ${look ? `${t - L + 1} … ${t}` : `${t - L} … ${t - 1}`}`];
+    if (look) msgs.push("③ 위반: 입력 창에 예측 대상 t 자신이 들어 있다 (빨간 칸). 그날 수익률이 곧 정답이다.");
+    if (cen) msgs.push("④ 위반: 중심 이동평균(창 5)은 각 날의 앞뒤 2일을 평균한다. 입력 끝의 피처가 t, t+1을 담는다.");
+    if (sh) msgs.push("① 위반: 시점이 무작위로 흩어져 Test 날짜 바로 앞뒤가 Train에 있다." + (trainAfter ? " 지금 t보다 뒤의 날짜도 Train에 있다." : ""));
+    if (sc) msgs.push("② 위반: Scaler 최소·최대에 Validation·Test 값이 들어간다 (3장 외삽 위젯에서 '전체 기간'을 고른 것과 같다).");
+    if (!(look || cen || sh || sc)) msgs.push("정상: 입력은 모두 t보다 앞이고, 분할은 시간순이다.");
+    $("#lOut").textContent = msgs.join("\n");
+  }
+  ["#lT", "#lL", "#lShuffle", "#lScaler", "#lLook", "#lCenter"].forEach(s => $(s).addEventListener("input", draw));
+  onResize(draw);
+  const lk = DATA.leakage, base = { level: lk.correct_level.test.MAE, delta: lk.correct_delta.test.MAE };
+  $("#leakTable").innerHTML = `<table><tr><th>설정</th><th>어긴 체크</th><th class="num">Test MAE</th><th class="num">Test MAPE</th><th class="num">정상 대비</th></tr>${
+    Object.values(lk).map(v => `<tr${v.violates_check ? ' class="leak"' : ""}><td>${esc(v.label)}</td><td>${v.violates_check || "-"}</td><td class="num">${num(v.test.MAE, 3)}</td><td class="num">${num(v.test.MAPE, 3)}%</td><td class="num">${
+      v.violates_check ? pct(M.improvement(base[v.mode], v.test.MAE)) : "기준"}</td></tr>`).join("")}</table>
+    <p class="muted" style="font-size:.85rem">'정상 대비'는 같은 모드(v1 수준값 / v2 변화량)의 정상 설정보다 Test MAE가 몇 % 줄었는지다. ①은 Test 날짜 자체가 달라 엄밀한 비교는 아니다.</p>`;
+})();
+
+/* ---------- 8. Layer Freezing 탐색기 ---------- */
+(() => {
+  if (!DATA) return;
+  const V = DATA.vision, blocks = Object.keys(V.blocks);
+  const TRAIN = { scratch: blocks, linear_probe: ["fc"], partial: ["layer4", "fc"], full: blocks };
+  const COLORS = { linear_probe: "--accent", partial: "--green", full: "--amber", scratch: "--red" };
+  function draw() {
+    const st = $("#fStrat").value, tr = new Set(TRAIN[st]);
+    const total = blocks.reduce((s, b) => s + V.blocks[b], 0), n = blocks.filter(b => tr.has(b)).reduce((s, b) => s + V.blocks[b], 0);
+    $("#fBlocks").innerHTML = blocks.map(b => `<div class="blk ${tr.has(b) ? "on" : ""}" style="flex:${Math.max(0.6, Math.log10(V.blocks[b] + 10))}">
+      <b>${b}</b><span>${V.blocks[b].toLocaleString()}</span><i>${tr.has(b) ? (st === "scratch" ? "무작위 → 학습" : "학습") : "얼림 (ImageNet)"}</i></div>`).join("");
+    const runs = V.runs.filter(r => r.strategy === st).sort((a, b) => a.shots - b.shots);
+    $("#fOut").textContent = `학습하는 파라미터 ${n.toLocaleString()} / ${total.toLocaleString()} (${(n / total * 100).toFixed(2)}%)\n` +
+      runs.map(r => `클래스당 ${String(r.shots).padStart(2)}장: Train ${acc(r.train)}  Validation ${acc(r.validation)}  Test ${acc(r.test)}  → ${r.diagnosis.label}`).join("\n");
+    const shots = [...new Set(V.runs.map(r => r.shots))].sort((a, b) => a - b);
+    const P = plot($("#fCanvas"), shots[0] - 1, shots[shots.length - 1] + 1, 0, 1);
+    frame(P, shots, [0, 0.25, 0.5, 0.75, 1], String, v => (v * 100) + "%");
+    Object.keys(TRAIN).forEach(s => {
+      const rs = V.runs.filter(r => r.strategy === s).sort((a, b) => a.shots - b.shots); if (!rs.length) return;
+      line(P, rs.map(r => r.shots), rs.map(r => r.test), cssv(COLORS[s]), s === st ? 3.5 : 1.3);
+      rs.forEach(r => { P.ctx.fillStyle = cssv(COLORS[s]); P.ctx.beginPath(); P.ctx.arc(P.X(r.shots), P.Y(r.test), s === st ? 5 : 3, 0, 7); P.ctx.fill(); });
+    });
+    legend(P, [["LP", cssv("--accent")], ["부분", cssv("--green")], ["전체", cssv("--amber")], ["직접", cssv("--red")]]);
+    P.ctx.fillStyle = cssv("--muted"); P.ctx.fillText("x: 클래스당 Train 사진 수, y: Test 정확도", P.pad.l + 6, P.h - P.pad.b - 6);
+  }
+  $("#fStrat").addEventListener("input", draw); onResize(draw);
+})();
+
+/* ---------- 9. 오분류 갤러리 ---------- */
+(() => {
+  if (!DATA) return;
+  const V = DATA.vision, tags = ["전체", "데이터 품질", "배경/잡음", "클래스 유사성", "라벨 오류", "모델 한계"];
+  let cur = "전체";
+  const ko = n => V.ko[n] || n;
+  $("#eTags").innerHTML = tags.map(t => { const c = t === "전체" ? V.errors.length : V.errors.filter(e => e.primary_tag === t).length;
+    return `<button class="b${t === cur ? " primary" : ""}" type="button" data-tag="${t}" ${c ? "" : "disabled"}>${t} ${c}</button>`; }).join("");
+  function draw() {
+    $$("#eTags button").forEach(b => b.classList.toggle("primary", b.dataset.tag === cur));
+    const list = V.errors.filter(e => cur === "전체" || e.primary_tag === cur);
+    $("#eGrid").innerHTML = list.map(e => `<figure class="ecard"><img src="${e.thumb}" alt="${esc(ko(e.true))}를 ${esc(ko(e.pred))}로 오분류">
+      <figcaption><b>#${e.no}</b> ${esc(ko(e.true))} → <span class="bad">${esc(ko(e.pred))}</span><br>신뢰도 ${num(e.confidence, 2)} · ${esc(e.primary_tag)}${e.detail ? "<br><span class=\"muted\">" + esc(e.detail.replace(/;/g, ", ")) + "</span>" : ""}${
+        e.note ? `<br><span class="muted">${esc(e.note)}</span>` : ""}</figcaption></figure>`).join("");
+    const st = V.stats;
+    $("#eOut").textContent = `오분류 ${st.n_errors}건 · 검수 완료 ${st.reviewed}건 · 작성자 ${Object.entries(st.tagged_by).map(([k, v]) => k + " " + v).join(", ")}\n` +
+      Object.entries(st.primary).map(([k, v]) => `${k.padEnd(7, " ")} ${String(v.count).padStart(3)}건 (${(v.share * 100).toFixed(0)}%)${v.mean_confidence !== null ? "  평균 신뢰도 " + num(v.mean_confidence, 2) : ""}`).join("\n");
+  }
+  $("#eTags").addEventListener("click", e => { const b = e.target.closest("button"); if (b && !b.disabled) { cur = b.dataset.tag; draw(); } });
+  draw();
+  $("#eTable").innerHTML = `<table><tr><th>번호</th><th>파일명</th><th>실제 → 예측</th><th class="num">신뢰도</th><th>실패 원인 태그</th><th>틀린 모델</th><th>작성/검수</th></tr>${
+    V.errors.map(e => `<tr><td>${e.no}</td><td class="mono">${esc(e.file)}</td><td>${esc(ko(e.true))} → ${esc(ko(e.pred))}</td><td class="num">${num(e.confidence, 2)}</td><td>${esc(e.primary_tag)}${e.detail ? " · " + esc(e.detail.replace(/;/g, ", ")) : ""}</td><td>${esc(e.wrong_models)}</td><td>${esc(e.tagged_by)}${e.reviewed_by ? " / " + esc(e.reviewed_by) : " / <span class=\"bad\">미검수</span>"}</td></tr>`).join("")}</table>`;
+  const im = V.improve;
+  if (im) {
+    const rows = ["before", "after"].map(k => { const r = im.runs[k], cfg = im[k];
+      return `<tr><td>${k === "before" ? "처방 전" : "처방 후"}</td><td>${esc(cfg.strategy)} · ${esc(cfg.augmentation)} · ${cfg.image_size}px</td><td class="num">${
+        r.map(x => acc(x.test)).join(" / ")}</td><td class="num">${acc(im[k + "_test_accuracy"].mean)} ± ${(im[k + "_test_accuracy"].std * 100).toFixed(1)}%p</td></tr>`; }).join("");
+    $("#improveTable").innerHTML = `<table><tr><th></th><th>설정</th><th class="num">Test 정확도 (seed 0/1/2)</th><th class="num">평균 ± 표준편차</th></tr>${rows}</table>
+      <p class="muted" style="font-size:.85rem">주 원인 태그 '${esc(im.dominant_tag)}' → 특징 학습 강화. 분석 대상 오분류 사진을 맞힌 수(seed 0, 처방 전→후/전체): ${
+      Object.entries(im.fixed_by_tag).map(([k, v]) => `${k} ${v.before_correct}→${v.after_correct}/${v.total}`).join(", ")}</p>`;
+  }
+})();
+
+/* ---------- 10. Grid vs Random ---------- */
+(() => {
+  const f = (x, y) => Math.exp(-((x - 0.73) ** 2) / 0.006) + 0.05 * Math.sin(6 * y);   // x만 중요
+  let seed = 3;
+  const rnd = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
+  let pts;
+  function sample() { pts = Array.from({ length: 9 }, () => [rnd(), rnd()]); }
+  const grid = [0.2, 0.5, 0.8].flatMap(x => [0.2, 0.5, 0.8].map(y => [x, y]));
+  function panel(canvas, ps, title) {
+    const P = plot(canvas, 0, 1, 0, 1, { l: 24, r: 8, t: 22, b: 22 }), { ctx, X, Y } = P;
+    for (let i = 0; i < 40; i++) for (let j = 0; j < 40; j++) { const v = f((i + 0.5) / 40, (j + 0.5) / 40);
+      ctx.fillStyle = cssv("--accent"); ctx.globalAlpha = Math.max(0, v) * 0.55; ctx.fillRect(X(i / 40), Y((j + 1) / 40), X(1 / 40) - X(0) + 0.5, Y(0) - Y(1 / 40) + 0.5); }
+    ctx.globalAlpha = 1; frame(P, [0, 0.5, 1], [0, 0.5, 1], v => "x " + v, v => String(v));
+    const best = ps.reduce((b, p) => f(...p) > f(...b) ? p : b);
+    ps.forEach(p => { ctx.fillStyle = p === best ? cssv("--red") : cssv("--fg"); ctx.beginPath(); ctx.arc(X(p[0]), Y(p[1]), p === best ? 6 : 4, 0, 7); ctx.fill();
+      ctx.strokeStyle = cssv("--muted"); ctx.setLineDash([2, 3]); ctx.beginPath(); ctx.moveTo(X(p[0]), Y(0)); ctx.lineTo(X(p[0]), Y(0) + 6); ctx.stroke(); ctx.setLineDash([]); });
+    ctx.fillStyle = cssv("--fg"); ctx.font = "12px sans-serif"; ctx.fillText(title, 26, 15);
+    return { distinct: new Set(ps.map(p => p[0].toFixed(3))).size, best: f(...best) };
+  }
+  function draw() {
+    const g = panel($("#gGrid"), grid, "Grid 3×3"), r = panel($("#gRand"), pts, "Random 9회");
+    $("#gOut").textContent = `중요한 축 x에서 시험한 서로 다른 값: Grid ${g.distinct}개, Random ${r.distinct}개\n` +
+      `찾은 최고 점수(최대 약 1.05): Grid ${num(g.best, 3)}, Random ${num(r.best, 3)}\n` +
+      `Grid는 y를 바꾸는 데 예산의 2/3를 쓰지만 y는 거의 영향이 없다. Random은 9번 모두 x의 새 값을 시험한다.`;
+  }
+  sample(); $("#gRun").addEventListener("click", () => { sample(); draw(); }); onResize(draw);
+})();
+
+(() => {
+  if (!DATA || !DATA.bonus.hparam) { $("#wHp").remove(); return; }
+  const H = DATA.bonus.hparam, names = Object.keys(H.space), logp = new Set(["lr", "hidden", "weight_decay"]);
+  $("#hParam").innerHTML = names.map(n => `<option>${n}</option>`).join("");
+  function draw() {
+    const n = $("#hParam").value, tr = H.trials, xs = tr.map(t => t.params[n]), ys = tr.map(t => t.validation_skill);
+    const tx = v => logp.has(n) ? Math.log10(v) : v;
+    let lo = Math.min(...xs.map(tx)), hi = Math.max(...xs.map(tx)); const pad = (hi - lo) * 0.08 || 0.5; lo -= pad; hi += pad;
+    const ylo = Math.min(...ys) - 0.01, yhi = Math.max(...ys) + 0.01;
+    const P = plot($("#hCanvas"), lo, hi, ylo, yhi);
+    frame(P, ticks(lo, hi, 5), ticks(ylo, yhi, 4), v => logp.has(n) ? "1e" + v.toFixed(1) : num(v, 2), v => num(v, 2));
+    tr.forEach(t => { P.ctx.fillStyle = t.stage === "fine" ? cssv("--red") : cssv("--accent"); P.ctx.globalAlpha = 0.8;
+      P.ctx.beginPath(); P.ctx.arc(P.X(tx(t.params[n])), P.Y(t.validation_skill), t === tr.find(x => x.trial === H.best.trial) ? 7 : 4, 0, 7); P.ctx.fill(); });
+    P.ctx.globalAlpha = 1;
+    legend(P, [["1단계 Coarse", cssv("--accent")], ["2단계 Fine", cssv("--red")]]);
+    const imp = H.importance[n], fine = H.fine_space[n];
+    $("#hOut").textContent = `${n}: 중요도 η² = ${num(imp.eta_squared, 3)}, Spearman ρ = ${num(imp.spearman, 3)}\n` +
+      `1단계 범위 ${JSON.stringify(H.space[n][1])} → 2단계 범위 ${JSON.stringify(fine[1].map(v => +(+v).toPrecision(3)))}\n` +
+      `최적 trial #${H.best.trial}: ${Object.entries(H.best.params).map(([k, v]) => k + "=" + (typeof v === "number" && !Number.isInteger(v) ? (+v).toPrecision(3) : v)).join(", ")}`;
+  }
+  $("#hParam").addEventListener("input", draw); onResize(draw);
+})();
+
+/* ---------- 11. Attention ---------- */
+(() => {
+  if (!DATA || !DATA.bonus.attention) { $("#wAttn").remove(); return; }
+  const A = DATA.bonus.attention;
+  function draw() {
+    const s = $("#aSeries").value, w = +$("#aWin").value, res = A[s], wts = res[`lstm_attention_${w}`].attention_mean;
+    const lags = wts.map((_, i) => w - i), hi = Math.max(...wts) * 1.1;
+    const P = plot($("#aCanvas"), w + 0.5, 0.5, 0, hi), { ctx, X, Y } = P;
+    frame(P, ticks(1, w, 6), ticks(0, hi, 4), String, v => num(v, 3));
+    wts.forEach((v, i) => { ctx.fillStyle = cssv("--accent"); ctx.fillRect(X(lags[i] + 0.4), Y(v), X(lags[i] - 0.4) - X(lags[i] + 0.4), Y(0) - Y(v)); });
+    hline(P, 1 / w, cssv("--red"));
+    ctx.fillStyle = cssv("--muted"); ctx.fillText("x: 며칠 전(lag), 오른쪽이 예측 직전 · 빨간 점선: 균등 가중치 1/창", P.pad.l + 6, P.pad.t + 12);
+    $("#aTable").innerHTML = `<table><tr><th>모델</th><th>창</th><th class="num">파라미터</th><th class="num">Test MAE (seed 3개)</th><th class="num">Test skill</th></tr>${
+      Object.values(res).map(v => `<tr><td>${esc(v.label)}</td><td>${v.window}</td><td class="num">${v.parameters.toLocaleString()}</td><td class="num">${num(M.mean(v.test_mae), 4)} ± ${num(Math.sqrt(M.mean(v.test_mae.map(x => (x - M.mean(v.test_mae)) ** 2))), 4)}</td><td class="num">${num(M.mean(v.test_skill), 3)}</td></tr>`).join("")}</table>`;
+  }
+  ["#aSeries", "#aWin"].forEach(s => $(s).addEventListener("input", draw)); onResize(draw);
+})();
+
+/* ---------- 결과에 따라 달라지는 해설 ---------- */
+(() => { if (DATA && typeof narrate === "function") narrate(DATA); })();
+</script>
+</body>
+</html>

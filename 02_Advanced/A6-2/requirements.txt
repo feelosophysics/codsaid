@@ -1,0 +1,14 @@
+# uv 없이 설치할 때 쓰는 사본이다. 원본은 pyproject.toml이다.
+# GPU가 없으면 CPU 빌드를 받는다: pip install -r requirements.txt --extra-index-url https://download.pytorch.org/whl/cpu
+numpy>=1.26
+pandas>=2.1
+matplotlib>=3.8
+scipy>=1.11
+pillow>=10
+pyarrow>=15
+torch>=2.4
+torchvision>=0.19
+yfinance>=0.2.50
+requests>=2.31
+# perfdiag 패키지 자체 (src/perfdiag, 편집 가능 설치)
+-e .

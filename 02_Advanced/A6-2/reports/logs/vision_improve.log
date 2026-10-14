@@ -1,0 +1,12 @@
+주 원인 '클래스 유사성' → 처방 'deeper'
+  before seed 0: Train 1.000  Validation 0.988  Test 0.975  (334초)
+  before seed 1: Train 1.000  Validation 1.000  Test 0.978  (326초)
+  before seed 2: Train 1.000  Validation 0.988  Test 0.982  (310초)
+  after  seed 0: Train 1.000  Validation 0.988  Test 0.991  (562초)
+  after  seed 1: Train 1.000  Validation 0.988  Test 0.994  (561초)
+  after  seed 2: Train 1.000  Validation 0.988  Test 0.991  (1733초)
+Test 정확도 0.978±0.003 → 0.992±0.001 (+1.3%p)
+  분석 대상 오분류 사진 중 맞힌 수 — 클래스 유사성: 처방 전 21/26, 처방 후 23/26
+  분석 대상 오분류 사진 중 맞힌 수 — 배경/잡음: 처방 전 9/10, 처방 후 10/10
+  분석 대상 오분류 사진 중 맞힌 수 — 모델 한계: 처방 전 2/2, 처방 후 2/2
+  분석 대상 오분류 사진 중 맞힌 수 — 데이터 품질: 처방 전 2/4, 처방 후 4/4

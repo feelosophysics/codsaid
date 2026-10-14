@@ -1,0 +1,32 @@
+[project]
+name = "perfdiag"
+version = "0.1.0"
+description = "A6-2 성능 진단: Few-shot 전이 학습(Flowers102)과 시계열 예측(AAPL·서울 기온)의 편향/분산 진단·오차 분석·베이스라인 비교"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "numpy>=1.26",
+    "pandas>=2.1",
+    "matplotlib>=3.8",
+    "scipy>=1.11",
+    "pillow>=10",
+    "torch>=2.4",
+    "torchvision>=0.19",
+    "yfinance>=0.2.50",
+    "requests>=2.31",
+    "pyarrow>=25.0.1",
+]
+
+[build-system]
+requires = ["uv_build>=0.9,<0.13"]
+build-backend = "uv_build"
+
+# GPU가 없는 노트북 기준이다. CUDA 빌드(약 2.5GB) 대신 CPU 빌드(약 200MB)를 받는다.
+[tool.uv.sources]
+torch = [{ index = "pytorch-cpu" }]
+torchvision = [{ index = "pytorch-cpu" }]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true

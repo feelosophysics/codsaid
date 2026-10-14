@@ -1,0 +1,309 @@
+CPU 스레드 6개, 클래스 8개, Validation 80장, Test 325장
+
+[shots 5] Linear Probing(fc만) — Train 40장, 40 epoch
+    epoch  1  Train loss 1.163 err 0.525 | Validation loss 1.513 err 0.600
+    epoch  2  Train loss 1.242 err 0.425 | Validation loss 2.123 err 0.512
+    epoch  3  Train loss 0.540 err 0.175 | Validation loss 1.341 err 0.312
+    epoch  4  Train loss 0.233 err 0.025 | Validation loss 0.820 err 0.338
+    epoch  5  Train loss 0.059 err 0.000 | Validation loss 0.493 err 0.200
+    epoch  6  Train loss 0.085 err 0.025 | Validation loss 0.676 err 0.275
+    epoch  7  Train loss 0.069 err 0.000 | Validation loss 0.717 err 0.263
+    epoch  8  Train loss 0.038 err 0.000 | Validation loss 0.645 err 0.200
+    epoch  9  Train loss 0.019 err 0.000 | Validation loss 0.550 err 0.175
+    epoch 10  Train loss 0.012 err 0.000 | Validation loss 0.484 err 0.175
+    epoch 11  Train loss 0.008 err 0.000 | Validation loss 0.467 err 0.163
+    epoch 12  Train loss 0.007 err 0.000 | Validation loss 0.482 err 0.175
+    epoch 13  Train loss 0.006 err 0.000 | Validation loss 0.500 err 0.175
+    epoch 14  Train loss 0.005 err 0.000 | Validation loss 0.514 err 0.175
+    epoch 15  Train loss 0.005 err 0.000 | Validation loss 0.512 err 0.150
+    epoch 16  Train loss 0.004 err 0.000 | Validation loss 0.499 err 0.150
+    epoch 17  Train loss 0.003 err 0.000 | Validation loss 0.476 err 0.150
+    epoch 18  Train loss 0.003 err 0.000 | Validation loss 0.455 err 0.150
+    epoch 19  Train loss 0.002 err 0.000 | Validation loss 0.439 err 0.138
+    epoch 20  Train loss 0.002 err 0.000 | Validation loss 0.421 err 0.138
+    epoch 21  Train loss 0.002 err 0.000 | Validation loss 0.408 err 0.138
+    epoch 22  Train loss 0.002 err 0.000 | Validation loss 0.400 err 0.138
+    epoch 23  Train loss 0.002 err 0.000 | Validation loss 0.395 err 0.138
+    epoch 24  Train loss 0.002 err 0.000 | Validation loss 0.390 err 0.138
+    epoch 25  Train loss 0.002 err 0.000 | Validation loss 0.385 err 0.138
+    epoch 26  Train loss 0.002 err 0.000 | Validation loss 0.385 err 0.138
+    epoch 27  Train loss 0.002 err 0.000 | Validation loss 0.387 err 0.138
+    epoch 28  Train loss 0.002 err 0.000 | Validation loss 0.390 err 0.150
+    epoch 29  Train loss 0.001 err 0.000 | Validation loss 0.394 err 0.150
+    epoch 30  Train loss 0.001 err 0.000 | Validation loss 0.393 err 0.150
+    epoch 31  Train loss 0.001 err 0.000 | Validation loss 0.389 err 0.138
+    epoch 32  Train loss 0.001 err 0.000 | Validation loss 0.385 err 0.138
+    epoch 33  Train loss 0.001 err 0.000 | Validation loss 0.384 err 0.138
+    epoch 34  Train loss 0.001 err 0.000 | Validation loss 0.383 err 0.138
+    epoch 35  Train loss 0.001 err 0.000 | Validation loss 0.387 err 0.138
+    epoch 36  Train loss 0.001 err 0.000 | Validation loss 0.391 err 0.138
+    epoch 37  Train loss 0.001 err 0.000 | Validation loss 0.391 err 0.138
+    epoch 38  Train loss 0.001 err 0.000 | Validation loss 0.393 err 0.138
+    epoch 39  Train loss 0.001 err 0.000 | Validation loss 0.393 err 0.138
+    epoch 40  Train loss 0.001 err 0.000 | Validation loss 0.391 err 0.138
+  → Train 정확도 1.000, Validation 0.863, Test 0.923 | 학습 파라미터 4,104 | High Variance (Overfitting) (100초)
+
+[shots 5] 부분 미세 조정(layer4+fc) — Train 40장, 30 epoch
+    epoch  1  Train loss 1.177 err 0.275 | Validation loss 1.493 err 0.550
+    epoch  2  Train loss 0.405 err 0.050 | Validation loss 0.943 err 0.312
+    epoch  3  Train loss 0.108 err 0.000 | Validation loss 0.623 err 0.200
+    epoch  4  Train loss 0.031 err 0.000 | Validation loss 0.454 err 0.113
+    epoch  5  Train loss 0.011 err 0.000 | Validation loss 0.365 err 0.100
+    epoch  6  Train loss 0.006 err 0.000 | Validation loss 0.317 err 0.100
+    epoch  7  Train loss 0.004 err 0.000 | Validation loss 0.286 err 0.087
+    epoch  8  Train loss 0.002 err 0.000 | Validation loss 0.265 err 0.087
+    epoch  9  Train loss 0.002 err 0.000 | Validation loss 0.264 err 0.075
+    epoch 10  Train loss 0.001 err 0.000 | Validation loss 0.257 err 0.075
+    epoch 11  Train loss 0.001 err 0.000 | Validation loss 0.258 err 0.075
+    epoch 12  Train loss 0.001 err 0.000 | Validation loss 0.251 err 0.075
+    epoch 13  Train loss 0.001 err 0.000 | Validation loss 0.255 err 0.087
+    epoch 14  Train loss 0.001 err 0.000 | Validation loss 0.268 err 0.075
+    epoch 15  Train loss 0.001 err 0.000 | Validation loss 0.273 err 0.062
+    epoch 16  Train loss 0.001 err 0.000 | Validation loss 0.280 err 0.062
+    epoch 17  Train loss 0.001 err 0.000 | Validation loss 0.285 err 0.062
+    epoch 18  Train loss 0.001 err 0.000 | Validation loss 0.278 err 0.062
+    epoch 19  Train loss 0.001 err 0.000 | Validation loss 0.275 err 0.062
+    epoch 20  Train loss 0.001 err 0.000 | Validation loss 0.272 err 0.062
+    epoch 21  Train loss 0.000 err 0.000 | Validation loss 0.271 err 0.062
+    epoch 22  Train loss 0.001 err 0.000 | Validation loss 0.265 err 0.075
+    epoch 23  Train loss 0.001 err 0.000 | Validation loss 0.266 err 0.075
+    epoch 24  Train loss 0.000 err 0.000 | Validation loss 0.256 err 0.062
+    epoch 25  Train loss 0.000 err 0.000 | Validation loss 0.259 err 0.075
+    epoch 26  Train loss 0.000 err 0.000 | Validation loss 0.252 err 0.075
+    epoch 27  Train loss 0.000 err 0.000 | Validation loss 0.252 err 0.075
+    epoch 28  Train loss 0.000 err 0.000 | Validation loss 0.246 err 0.075
+    epoch 29  Train loss 0.000 err 0.000 | Validation loss 0.248 err 0.075
+    epoch 30  Train loss 0.000 err 0.000 | Validation loss 0.246 err 0.062
+  → Train 정확도 1.000, Validation 0.925, Test 0.942 | 학습 파라미터 8,397,832 | High Variance (Overfitting) (91초)
+
+[shots 5] 전체 Fine-tuning — Train 40장, 30 epoch
+    epoch  1  Train loss 1.201 err 0.275 | Validation loss 1.508 err 0.500
+    epoch  2  Train loss 0.474 err 0.000 | Validation loss 0.983 err 0.287
+    epoch  3  Train loss 0.118 err 0.000 | Validation loss 0.628 err 0.212
+    epoch  4  Train loss 0.028 err 0.000 | Validation loss 0.446 err 0.125
+    epoch  5  Train loss 0.009 err 0.000 | Validation loss 0.347 err 0.087
+    epoch  6  Train loss 0.005 err 0.000 | Validation loss 0.288 err 0.075
+    epoch  7  Train loss 0.003 err 0.000 | Validation loss 0.256 err 0.075
+    epoch  8  Train loss 0.002 err 0.000 | Validation loss 0.232 err 0.100
+    epoch  9  Train loss 0.001 err 0.000 | Validation loss 0.225 err 0.087
+    epoch 10  Train loss 0.001 err 0.000 | Validation loss 0.213 err 0.087
+    epoch 11  Train loss 0.001 err 0.000 | Validation loss 0.212 err 0.087
+    epoch 12  Train loss 0.001 err 0.000 | Validation loss 0.188 err 0.075
+    epoch 13  Train loss 0.001 err 0.000 | Validation loss 0.187 err 0.062
+    epoch 14  Train loss 0.001 err 0.000 | Validation loss 0.191 err 0.050
+    epoch 15  Train loss 0.001 err 0.000 | Validation loss 0.201 err 0.075
+    epoch 16  Train loss 0.001 err 0.000 | Validation loss 0.209 err 0.075
+    epoch 17  Train loss 0.001 err 0.000 | Validation loss 0.220 err 0.087
+    epoch 18  Train loss 0.000 err 0.000 | Validation loss 0.217 err 0.075
+    epoch 19  Train loss 0.000 err 0.000 | Validation loss 0.220 err 0.075
+    epoch 20  Train loss 0.000 err 0.000 | Validation loss 0.222 err 0.075
+    epoch 21  Train loss 0.000 err 0.000 | Validation loss 0.214 err 0.075
+    epoch 22  Train loss 0.000 err 0.000 | Validation loss 0.212 err 0.075
+    epoch 23  Train loss 0.001 err 0.000 | Validation loss 0.212 err 0.062
+    epoch 24  Train loss 0.000 err 0.000 | Validation loss 0.211 err 0.062
+    epoch 25  Train loss 0.000 err 0.000 | Validation loss 0.218 err 0.062
+    epoch 26  Train loss 0.000 err 0.000 | Validation loss 0.219 err 0.050
+    epoch 27  Train loss 0.000 err 0.000 | Validation loss 0.227 err 0.075
+    epoch 28  Train loss 0.000 err 0.000 | Validation loss 0.224 err 0.075
+    epoch 29  Train loss 0.000 err 0.000 | Validation loss 0.228 err 0.075
+    epoch 30  Train loss 0.000 err 0.000 | Validation loss 0.222 err 0.075
+  → Train 정확도 1.000, Validation 0.938, Test 0.914 | 학습 파라미터 11,180,616 | High Variance (Overfitting) (343초)
+
+[shots 10] Linear Probing(fc만) — Train 80장, 30 epoch
+    epoch  1  Train loss 1.183 err 0.400 | Validation loss 1.490 err 0.450
+    epoch  2  Train loss 0.451 err 0.175 | Validation loss 0.850 err 0.263
+    epoch  3  Train loss 0.104 err 0.000 | Validation loss 0.400 err 0.125
+    epoch  4  Train loss 0.063 err 0.000 | Validation loss 0.340 err 0.125
+    epoch  5  Train loss 0.050 err 0.000 | Validation loss 0.374 err 0.163
+    epoch  6  Train loss 0.022 err 0.000 | Validation loss 0.344 err 0.125
+    epoch  7  Train loss 0.018 err 0.000 | Validation loss 0.285 err 0.138
+    epoch  8  Train loss 0.010 err 0.000 | Validation loss 0.232 err 0.113
+    epoch  9  Train loss 0.007 err 0.000 | Validation loss 0.208 err 0.113
+    epoch 10  Train loss 0.007 err 0.000 | Validation loss 0.211 err 0.087
+    epoch 11  Train loss 0.006 err 0.000 | Validation loss 0.224 err 0.087
+    epoch 12  Train loss 0.006 err 0.000 | Validation loss 0.238 err 0.113
+    epoch 13  Train loss 0.005 err 0.000 | Validation loss 0.223 err 0.113
+    epoch 14  Train loss 0.004 err 0.000 | Validation loss 0.199 err 0.100
+    epoch 15  Train loss 0.005 err 0.000 | Validation loss 0.198 err 0.100
+    epoch 16  Train loss 0.004 err 0.000 | Validation loss 0.202 err 0.100
+    epoch 17  Train loss 0.004 err 0.000 | Validation loss 0.183 err 0.087
+    epoch 18  Train loss 0.007 err 0.000 | Validation loss 0.189 err 0.062
+    epoch 19  Train loss 0.006 err 0.000 | Validation loss 0.203 err 0.100
+    epoch 20  Train loss 0.005 err 0.000 | Validation loss 0.229 err 0.100
+    epoch 21  Train loss 0.004 err 0.000 | Validation loss 0.240 err 0.113
+    epoch 22  Train loss 0.003 err 0.000 | Validation loss 0.227 err 0.113
+    epoch 23  Train loss 0.004 err 0.000 | Validation loss 0.206 err 0.100
+    epoch 24  Train loss 0.003 err 0.000 | Validation loss 0.194 err 0.100
+    epoch 25  Train loss 0.003 err 0.000 | Validation loss 0.239 err 0.100
+    epoch 26  Train loss 0.003 err 0.000 | Validation loss 0.233 err 0.087
+    epoch 27  Train loss 0.003 err 0.000 | Validation loss 0.203 err 0.087
+    epoch 28  Train loss 0.003 err 0.000 | Validation loss 0.190 err 0.087
+    epoch 29  Train loss 0.003 err 0.000 | Validation loss 0.195 err 0.087
+    epoch 30  Train loss 0.002 err 0.000 | Validation loss 0.191 err 0.087
+  → Train 정확도 1.000, Validation 0.912, Test 0.954 | 학습 파라미터 4,104 | High Variance (Overfitting) (231초)
+
+[shots 10] 부분 미세 조정(layer4+fc) — Train 80장, 25 epoch
+    epoch  1  Train loss 0.787 err 0.100 | Validation loss 1.011 err 0.237
+    epoch  2  Train loss 0.200 err 0.037 | Validation loss 0.498 err 0.125
+    epoch  3  Train loss 0.048 err 0.000 | Validation loss 0.270 err 0.087
+    epoch  4  Train loss 0.014 err 0.000 | Validation loss 0.168 err 0.050
+    epoch  5  Train loss 0.006 err 0.000 | Validation loss 0.136 err 0.037
+    epoch  6  Train loss 0.004 err 0.000 | Validation loss 0.126 err 0.037
+    epoch  7  Train loss 0.003 err 0.000 | Validation loss 0.122 err 0.037
+    epoch  8  Train loss 0.002 err 0.000 | Validation loss 0.121 err 0.037
+    epoch  9  Train loss 0.002 err 0.000 | Validation loss 0.120 err 0.037
+    epoch 10  Train loss 0.001 err 0.000 | Validation loss 0.120 err 0.050
+    epoch 11  Train loss 0.001 err 0.000 | Validation loss 0.118 err 0.050
+    epoch 12  Train loss 0.001 err 0.000 | Validation loss 0.117 err 0.037
+    epoch 13  Train loss 0.001 err 0.000 | Validation loss 0.114 err 0.037
+    epoch 14  Train loss 0.001 err 0.000 | Validation loss 0.115 err 0.037
+    epoch 15  Train loss 0.001 err 0.000 | Validation loss 0.119 err 0.037
+    epoch 16  Train loss 0.001 err 0.000 | Validation loss 0.126 err 0.037
+    epoch 17  Train loss 0.001 err 0.000 | Validation loss 0.124 err 0.037
+    epoch 18  Train loss 0.001 err 0.000 | Validation loss 0.131 err 0.037
+    epoch 19  Train loss 0.001 err 0.000 | Validation loss 0.136 err 0.037
+    epoch 20  Train loss 0.001 err 0.000 | Validation loss 0.137 err 0.037
+    epoch 21  Train loss 0.001 err 0.000 | Validation loss 0.139 err 0.037
+    epoch 22  Train loss 0.001 err 0.000 | Validation loss 0.137 err 0.037
+    epoch 23  Train loss 0.001 err 0.000 | Validation loss 0.135 err 0.037
+    epoch 24  Train loss 0.000 err 0.000 | Validation loss 0.129 err 0.037
+    epoch 25  Train loss 0.000 err 0.000 | Validation loss 0.129 err 0.037
+  → Train 정확도 1.000, Validation 0.963, Test 0.978 | 학습 파라미터 8,397,832 | 적정 (Good fit) (128초)
+
+[shots 10] 전체 Fine-tuning — Train 80장, 25 epoch
+    epoch  1  Train loss 0.942 err 0.200 | Validation loss 1.157 err 0.375
+    epoch  2  Train loss 0.281 err 0.050 | Validation loss 0.628 err 0.188
+    epoch  3  Train loss 0.079 err 0.000 | Validation loss 0.354 err 0.087
+    epoch  4  Train loss 0.022 err 0.000 | Validation loss 0.194 err 0.037
+    epoch  5  Train loss 0.008 err 0.000 | Validation loss 0.140 err 0.037
+    epoch  6  Train loss 0.004 err 0.000 | Validation loss 0.121 err 0.037
+    epoch  7  Train loss 0.002 err 0.000 | Validation loss 0.116 err 0.037
+    epoch  8  Train loss 0.002 err 0.000 | Validation loss 0.111 err 0.037
+    epoch  9  Train loss 0.001 err 0.000 | Validation loss 0.107 err 0.037
+    epoch 10  Train loss 0.001 err 0.000 | Validation loss 0.105 err 0.037
+    epoch 11  Train loss 0.001 err 0.000 | Validation loss 0.101 err 0.037
+    epoch 12  Train loss 0.001 err 0.000 | Validation loss 0.100 err 0.037
+    epoch 13  Train loss 0.001 err 0.000 | Validation loss 0.100 err 0.037
+    epoch 14  Train loss 0.001 err 0.000 | Validation loss 0.101 err 0.037
+    epoch 15  Train loss 0.001 err 0.000 | Validation loss 0.095 err 0.025
+    epoch 16  Train loss 0.001 err 0.000 | Validation loss 0.092 err 0.025
+    epoch 17  Train loss 0.001 err 0.000 | Validation loss 0.093 err 0.025
+    epoch 18  Train loss 0.001 err 0.000 | Validation loss 0.090 err 0.025
+    epoch 19  Train loss 0.001 err 0.000 | Validation loss 0.091 err 0.025
+    epoch 20  Train loss 0.001 err 0.000 | Validation loss 0.091 err 0.025
+    epoch 21  Train loss 0.001 err 0.000 | Validation loss 0.092 err 0.025
+    epoch 22  Train loss 0.000 err 0.000 | Validation loss 0.093 err 0.025
+    epoch 23  Train loss 0.000 err 0.000 | Validation loss 0.093 err 0.025
+    epoch 24  Train loss 0.000 err 0.000 | Validation loss 0.089 err 0.037
+    epoch 25  Train loss 0.000 err 0.000 | Validation loss 0.088 err 0.037
+  → Train 정확도 1.000, Validation 0.963, Test 0.982 | 학습 파라미터 11,180,616 | 적정 (Good fit) (211초)
+
+[shots 20] Linear Probing(fc만) — Train 160장, 25 epoch
+    epoch  1  Train loss 0.530 err 0.194 | Validation loss 0.670 err 0.250
+    epoch  2  Train loss 0.152 err 0.025 | Validation loss 0.342 err 0.100
+    epoch  3  Train loss 0.042 err 0.000 | Validation loss 0.151 err 0.050
+    epoch  4  Train loss 0.026 err 0.000 | Validation loss 0.133 err 0.025
+    epoch  5  Train loss 0.020 err 0.000 | Validation loss 0.166 err 0.087
+    epoch  6  Train loss 0.018 err 0.000 | Validation loss 0.136 err 0.062
+    epoch  7  Train loss 0.014 err 0.000 | Validation loss 0.127 err 0.062
+    epoch  8  Train loss 0.011 err 0.000 | Validation loss 0.121 err 0.075
+    epoch  9  Train loss 0.012 err 0.000 | Validation loss 0.155 err 0.087
+    epoch 10  Train loss 0.009 err 0.000 | Validation loss 0.108 err 0.025
+    epoch 11  Train loss 0.009 err 0.000 | Validation loss 0.136 err 0.075
+    epoch 12  Train loss 0.008 err 0.000 | Validation loss 0.133 err 0.075
+    epoch 13  Train loss 0.008 err 0.000 | Validation loss 0.104 err 0.037
+    epoch 14  Train loss 0.011 err 0.000 | Validation loss 0.174 err 0.075
+    epoch 15  Train loss 0.015 err 0.000 | Validation loss 0.123 err 0.013
+    epoch 16  Train loss 0.020 err 0.006 | Validation loss 0.236 err 0.075
+    epoch 17  Train loss 0.007 err 0.000 | Validation loss 0.132 err 0.062
+    epoch 18  Train loss 0.006 err 0.000 | Validation loss 0.111 err 0.037
+    epoch 19  Train loss 0.008 err 0.000 | Validation loss 0.175 err 0.075
+    epoch 20  Train loss 0.004 err 0.000 | Validation loss 0.117 err 0.062
+    epoch 21  Train loss 0.004 err 0.000 | Validation loss 0.114 err 0.050
+    epoch 22  Train loss 0.004 err 0.000 | Validation loss 0.135 err 0.062
+    epoch 23  Train loss 0.004 err 0.000 | Validation loss 0.141 err 0.062
+    epoch 24  Train loss 0.011 err 0.000 | Validation loss 0.153 err 0.050
+    epoch 25  Train loss 0.006 err 0.000 | Validation loss 0.174 err 0.075
+  → Train 정확도 1.000, Validation 0.963, Test 0.957 | 학습 파라미터 4,104 | 적정 (Good fit) (171초)
+
+[shots 20] 부분 미세 조정(layer4+fc) — Train 160장, 20 epoch
+    epoch  1  Train loss 0.330 err 0.056 | Validation loss 0.521 err 0.175
+    epoch  2  Train loss 0.045 err 0.000 | Validation loss 0.164 err 0.037
+    epoch  3  Train loss 0.013 err 0.000 | Validation loss 0.101 err 0.013
+    epoch  4  Train loss 0.005 err 0.000 | Validation loss 0.087 err 0.025
+    epoch  5  Train loss 0.003 err 0.000 | Validation loss 0.080 err 0.037
+    epoch  6  Train loss 0.002 err 0.000 | Validation loss 0.089 err 0.037
+    epoch  7  Train loss 0.002 err 0.000 | Validation loss 0.099 err 0.037
+    epoch  8  Train loss 0.001 err 0.000 | Validation loss 0.102 err 0.037
+    epoch  9  Train loss 0.001 err 0.000 | Validation loss 0.101 err 0.037
+    epoch 10  Train loss 0.001 err 0.000 | Validation loss 0.121 err 0.037
+    epoch 11  Train loss 0.001 err 0.000 | Validation loss 0.110 err 0.037
+    epoch 12  Train loss 0.001 err 0.000 | Validation loss 0.102 err 0.037
+    epoch 13  Train loss 0.001 err 0.000 | Validation loss 0.103 err 0.037
+    epoch 14  Train loss 0.001 err 0.000 | Validation loss 0.102 err 0.037
+    epoch 15  Train loss 0.000 err 0.000 | Validation loss 0.103 err 0.037
+    epoch 16  Train loss 0.000 err 0.000 | Validation loss 0.107 err 0.050
+    epoch 17  Train loss 0.000 err 0.000 | Validation loss 0.111 err 0.050
+    epoch 18  Train loss 0.000 err 0.000 | Validation loss 0.107 err 0.037
+    epoch 19  Train loss 0.000 err 0.000 | Validation loss 0.101 err 0.037
+    epoch 20  Train loss 0.000 err 0.000 | Validation loss 0.102 err 0.037
+  → Train 정확도 1.000, Validation 0.963, Test 0.982 | 학습 파라미터 8,397,832 | 적정 (Good fit) (165초)
+
+[shots 20] 전체 Fine-tuning — Train 160장, 20 epoch
+    epoch  1  Train loss 0.354 err 0.075 | Validation loss 0.549 err 0.175
+    epoch  2  Train loss 0.037 err 0.000 | Validation loss 0.158 err 0.050
+    epoch  3  Train loss 0.007 err 0.000 | Validation loss 0.089 err 0.025
+    epoch  4  Train loss 0.004 err 0.000 | Validation loss 0.062 err 0.013
+    epoch  5  Train loss 0.003 err 0.000 | Validation loss 0.053 err 0.013
+    epoch  6  Train loss 0.001 err 0.000 | Validation loss 0.047 err 0.013
+    epoch  7  Train loss 0.001 err 0.000 | Validation loss 0.053 err 0.013
+    epoch  8  Train loss 0.001 err 0.000 | Validation loss 0.055 err 0.013
+    epoch  9  Train loss 0.001 err 0.000 | Validation loss 0.055 err 0.013
+    epoch 10  Train loss 0.001 err 0.000 | Validation loss 0.040 err 0.025
+    epoch 11  Train loss 0.000 err 0.000 | Validation loss 0.048 err 0.025
+    epoch 12  Train loss 0.001 err 0.000 | Validation loss 0.062 err 0.013
+    epoch 13  Train loss 0.000 err 0.000 | Validation loss 0.069 err 0.013
+    epoch 14  Train loss 0.000 err 0.000 | Validation loss 0.067 err 0.013
+    epoch 15  Train loss 0.000 err 0.000 | Validation loss 0.058 err 0.013
+    epoch 16  Train loss 0.000 err 0.000 | Validation loss 0.056 err 0.013
+    epoch 17  Train loss 0.000 err 0.000 | Validation loss 0.077 err 0.013
+    epoch 18  Train loss 0.001 err 0.000 | Validation loss 0.114 err 0.050
+    epoch 19  Train loss 0.002 err 0.000 | Validation loss 0.168 err 0.050
+    epoch 20  Train loss 0.000 err 0.000 | Validation loss 0.022 err 0.013
+  → Train 정확도 1.000, Validation 0.988, Test 0.975 | 학습 파라미터 11,180,616 | 적정 (Good fit) (260초)
+
+[shots 20] 직접 학습(무작위 초기화) — Train 160장, 30 epoch
+    epoch  1  Train loss 15.526 err 0.875 | Validation loss 15.215 err 0.875
+    epoch  2  Train loss 5.224 err 0.562 | Validation loss 5.459 err 0.600
+    epoch  3  Train loss 1.620 err 0.463 | Validation loss 1.536 err 0.463
+    epoch  4  Train loss 1.339 err 0.431 | Validation loss 1.639 err 0.562
+    epoch  5  Train loss 1.698 err 0.400 | Validation loss 2.067 err 0.475
+    epoch  6  Train loss 0.769 err 0.212 | Validation loss 0.833 err 0.225
+    epoch  7  Train loss 0.509 err 0.163 | Validation loss 0.992 err 0.338
+    epoch  8  Train loss 0.639 err 0.212 | Validation loss 0.767 err 0.225
+    epoch  9  Train loss 0.694 err 0.250 | Validation loss 0.861 err 0.250
+    epoch 10  Train loss 1.486 err 0.412 | Validation loss 1.874 err 0.487
+    epoch 11  Train loss 0.541 err 0.200 | Validation loss 0.738 err 0.250
+    epoch 12  Train loss 0.435 err 0.181 | Validation loss 0.742 err 0.237
+    epoch 13  Train loss 0.728 err 0.206 | Validation loss 1.187 err 0.300
+    epoch 14  Train loss 0.833 err 0.188 | Validation loss 1.065 err 0.325
+    epoch 15  Train loss 1.052 err 0.319 | Validation loss 1.290 err 0.362
+    epoch 16  Train loss 0.741 err 0.212 | Validation loss 1.101 err 0.325
+    epoch 17  Train loss 0.374 err 0.144 | Validation loss 0.629 err 0.212
+    epoch 18  Train loss 0.408 err 0.138 | Validation loss 0.656 err 0.237
+    epoch 19  Train loss 0.261 err 0.087 | Validation loss 0.733 err 0.263
+    epoch 20  Train loss 0.182 err 0.050 | Validation loss 0.773 err 0.225
+    epoch 21  Train loss 0.463 err 0.181 | Validation loss 0.891 err 0.312
+    epoch 22  Train loss 0.134 err 0.044 | Validation loss 0.469 err 0.150
+    epoch 23  Train loss 0.126 err 0.044 | Validation loss 0.394 err 0.200
+    epoch 24  Train loss 0.334 err 0.113 | Validation loss 0.747 err 0.225
+    epoch 25  Train loss 0.214 err 0.081 | Validation loss 0.574 err 0.150
+    epoch 26  Train loss 0.393 err 0.150 | Validation loss 0.794 err 0.300
+    epoch 27  Train loss 0.363 err 0.106 | Validation loss 1.324 err 0.287
+    epoch 28  Train loss 0.391 err 0.119 | Validation loss 0.785 err 0.200
+    epoch 29  Train loss 0.208 err 0.075 | Validation loss 0.717 err 0.212
+    epoch 30  Train loss 0.622 err 0.163 | Validation loss 1.100 err 0.300
+  → Train 정확도 0.956, Validation 0.800, Test 0.852 | 학습 파라미터 11,180,616 | High Variance (Overfitting) (394초)
+
+주 모델: shots 20 전체 Fine-tuning — Test 정확도 0.975, 오분류 8건
+오차 분석 대상 모델: 20장·전체, 20장·부분, 20장·LP, 10장·전체, 10장·부분, 10장·LP, 5장·전체 → 오분류 이미지 42장 → results/vision_errors.csv
