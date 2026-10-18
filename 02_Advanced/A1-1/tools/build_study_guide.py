@@ -34,7 +34,7 @@ EXCERPTS = {
     "score": ("src/pipeline.py", "        for variable, ascending, score in", "        result[\"rfm_score\"] ="),
     "segment": ("src/pipeline.py", "        vip_cutoff =", '                                       ["Inactive", "New", "VIP", "Loyal"], default="Regular")'),
     "summary": ("src/pipeline.py", "    def segment_summary(", "        return summary"),
-    "sample": ("src/sample_data.py", "    # Broadcasting constructs", "    images = np.clip"),
+    "sample": ("src/sample_data.py", "    # [이미지 생성]", "    images = np.clip"),
     "test": ("tests/test_pipeline.py", "    def test_rfm_counts_orders_not_lines", '        self.assertEqual(rfm.loc["C", "segment"], "New")'),
     "chart": ("src/report.py", '    valid = df.customer_id', '    monthly = monthly.reindex'),
 }
@@ -100,6 +100,21 @@ def calculations(analyzer):
             "iqr_cases": iqrs, "image_cases": images, "imputation_cases": imputation}
 
 
+def render_learning_note(key, note):
+    """학습 설명 원본을 문법·변화·이유·예제·확인 질문으로 표시한다."""
+    esc = html.escape
+    paragraphs = "".join(f'<p><strong>{label}</strong><br>{esc(note[field])}</p>'
+                         for field, label in [("syntax", "문법을 읽기"),
+                                              ("data", "데이터의 변화"),
+                                              ("why", "이 코드가 필요한 이유")])
+    return (f'<aside class="panel learning-note" id="learning-{key}">'
+            f'<h3>{esc(note["title"])}</h3>{paragraphs}'
+            f'<p class="sub">별도의 작은 설명 예제 · 기본 합성 데이터의 실제 결과와 구분해서 읽으세요.</p>'
+            f'<pre class="learning-example">{esc(note["example"])}</pre>'
+            f'<p><strong>스스로 설명해보기</strong><br>{esc(note["question"])}</p>'
+            f'<details><summary>설명 예시 펼치기</summary><p>{esc(note["answer"])}</p></details></aside>')
+
+
 def main():
     STUDY.mkdir(parents=True, exist_ok=True)
     sources, manifest = {}, {"date": datetime.now(timezone(timedelta(hours=9))).date().isoformat(), "mission": "A1-1",
@@ -114,6 +129,15 @@ def main():
                          "sha256": digest(data, text=True)}
         manifest["files"][file] = digest(data, text=True)
     template = (STUDY / "a1-1.template.html").read_text(encoding="utf-8")
+    template = template.replace("@@GENERATED_DATE@@", manifest["date"])
+    notes = json.loads((STUDY / "learning-notes.json").read_text(encoding="utf-8"))
+    for key, note in notes.items():
+        marker = f"@@LEARNING:{key}@@"
+        if template.count(marker) != 1:
+            raise RuntimeError(f"Expected one learning-note marker: {key}")
+        template = template.replace(marker, render_learning_note(key, note))
+    for file in ["study/learning-notes.json", "study/a1-1.template.html", "tools/build_study_guide.py"]:
+        manifest["files"][file] = digest((ROOT / file).read_bytes(), text=True)
     for name, (file, begin, end) in EXCERPTS.items():
         lines = sources[file]["text"].splitlines()
         start = next(i for i, line in enumerate(lines) if line.startswith(begin))

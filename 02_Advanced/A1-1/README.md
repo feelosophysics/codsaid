@@ -6,6 +6,23 @@
 
 필수 구현과 선택 보너스 3종(NumPy 이미지 피처, 가입 월별 코호트, Plotly RFM 탐색), 실행 검증, HTML 학습 자료를 제공한다.
 
+## 주석과 함께 학습하기
+
+Python과 AI 개념을 처음 익히는 독자를 위해 `src/`의 모든 함수·클래스에
+**한국어 Google 스타일 docstring**과 학습용 주석을 붙였다. 함수의 목적·입력·반환·오류는
+docstring에서, 새 문법·데이터 모양 변화·선택 이유는 해당 코드 옆에서 읽는다.
+이 미션은 데이터 준비와 통계·규칙 기반 RFM 분석이며 예측 모델을 학습하지 않는다.
+
+1. [`study/a1-1.html`](study/a1-1.html)의 **01 전체 흐름 → 03 Class와 Python 읽기**로 시작한다.
+2. 02–08에서 작은 표·배열 예제와 실제 코드를 연결한다. 각 장의 **문법·데이터 변화·존재 이유** 설명과 확인 질문을 함께 읽는다.
+3. [`src/run_analysis.py`](src/run_analysis.py)의 호출 순서를 지도 삼아 [`src/pipeline.py`](src/pipeline.py)의 같은 이름 메서드를 찾는다.
+4. [`notebooks/analysis_report.ipynb`](notebooks/analysis_report.ipynb)를 위에서 아래로 읽거나 실행해 결과와 해석을 확인한다.
+5. [`src/report.py`](src/report.py)의 차트·해석, [`src/sample_data.py`](src/sample_data.py)의 생성 조건, [`src/bonus.py`](src/bonus.py)의 확장을 읽는다.
+
+한 번에 모두 외우기보다 **입력의 한 행/축 → 연산 후 모양 → 이 단계의 존재 이유**를
+말로 설명해본다. 함수 설명을 보완한 상태와 학습자가 이해한 상태는 구분한다.
+학습자료 구성과 재생성은 [`study/README.md`](study/README.md)를 참고한다.
+
 ## 실행
 
 현재 고정한 라이브러리는 **Python 3.12 이상**이 필요하다. 검증 환경은 Windows, Python 3.12.14다. 이 README가 있는 A1-1 폴더에서 실행한다.

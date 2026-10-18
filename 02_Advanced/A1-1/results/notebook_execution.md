@@ -4,9 +4,9 @@
 
 - 재현 명령: A1-1 폴더에서 `uv run python tools/execute_notebook.py`
 - 실행 노트북: [analysis_report.ipynb](../notebooks/analysis_report.ipynb)
-- 시작: 2026-10-15 00:26:07 KST (UTC+09:00)
-- 완료: 2026-10-15 00:26:13 KST (UTC+09:00)
-- 소요 시간: 6.20초
+- 시작: 2026-10-15 19:27:23 KST (UTC+09:00)
+- 완료: 2026-10-15 19:27:29 KST (UTC+09:00)
+- 소요 시간: 6.22초
 - 실행 환경: Windows, Python 3.12.14
 - 코드 셀: 18개, 실행 완료: 18개, 오류 출력: 0개
 - PNG 출력: 8개
@@ -60,15 +60,15 @@ UTF-8 텍스트는 CRLF를 LF로 정규화하고 `.npy`는 원래 바이트를 �
 | `data/sample/products.csv` | `c6244b515c15d5f911bca26425cc5187c01207b15d8426f5b8c5ca8dc37c2189` |
 | `data/sample/transactions.csv` | `ede38d02ea9b4281a1adec27ccc3bb41a2ef22724bb99aaf4a27a7c091f8d995` |
 | `pyproject.toml` | `3bde2c0a522611781ef4d1758b7d16656d69266e672b31897ad9f678b67ca3db` |
-| `src/__init__.py` | `aec430778cbc743f2605be797f9774dae890efe90bda7b89c8551f929294eeca` |
-| `src/bonus.py` | `051cfbf5cc694596ca1ae23cbec06f702ce877f7f72ed9459b2e1ec770744c18` |
-| `src/pipeline.py` | `824f56822208bbf5df1d64fc80c5389d2db47bc4211f2b3cf7517054fb1a4a67` |
-| `src/report.py` | `05e5f47f971ff883f9706a992a773788d2f61b9d92e05db7910cb41d2c9a1c35` |
-| `src/run_analysis.py` | `2f15861f7665717a882d4b30b30eb6b1b3976620b3a1c1c7b9c15fa994a10cd9` |
-| `src/sample_data.py` | `8c42895ce288be822605e5120d756193945db01ad89a5a64e7705858b1e4df4e` |
+| `src/__init__.py` | `57cd1c69493c6861aaa044240fbd3f173060dedb103a2c76930c19b2c0c20a51` |
+| `src/bonus.py` | `c5885c7a9de0db8d989eb094ea0e58341ffa736ad7feafe3c8d46a486116e559` |
+| `src/pipeline.py` | `ddf7f72752b1b544a6ccd65b5c714eb291de4738b69c48554475c36c2bd9394a` |
+| `src/report.py` | `9dd34a26353103801d5e0e4523bbb35a1b1a66065077aa207b1dceceeaf1eb04` |
+| `src/run_analysis.py` | `9ee343dd3b2bb34feb527b92c8f79445849c7f4d6f5b96f3f076db82c12feab2` |
+| `src/sample_data.py` | `833e500a8357bd6c161c9747adb24aa048d98f0cfaf453801287f693fdf5cec0` |
 | `tools/execute_notebook.py` | `76cd01596ad045ab90c40b2edddc5ed00d33cd7a629024e5201544cc7bae830d` |
 | `uv.lock` | `f69b2cbd5ca635e27927948e890a9ede9b9d71fece16f147bf136f86fc159b86` |
-| `notebooks/analysis_report.ipynb` | `542134a191f3f248821dc3cd5d81559a978725d25e9954ddf77a62da38b5063f` |
+| `notebooks/analysis_report.ipynb` | `c955cf4880983dbbd10a5d0a67ca412c338c3a5917b34a1eb6ff3dc2cf02d06c` |
 
 ## 확인 범위
 

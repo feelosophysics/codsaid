@@ -3,13 +3,16 @@
   "mission": "A1-1",
   "hash_mode": "UTF-8 text: CRLF normalized to LF; binary: exact bytes",
   "files": {
-    "src/run_analysis.py": "2f15861f7665717a882d4b30b30eb6b1b3976620b3a1c1c7b9c15fa994a10cd9",
-    "src/pipeline.py": "824f56822208bbf5df1d64fc80c5389d2db47bc4211f2b3cf7517054fb1a4a67",
-    "src/sample_data.py": "8c42895ce288be822605e5120d756193945db01ad89a5a64e7705858b1e4df4e",
-    "src/report.py": "05e5f47f971ff883f9706a992a773788d2f61b9d92e05db7910cb41d2c9a1c35",
+    "src/run_analysis.py": "9ee343dd3b2bb34feb527b92c8f79445849c7f4d6f5b96f3f076db82c12feab2",
+    "src/pipeline.py": "ddf7f72752b1b544a6ccd65b5c714eb291de4738b69c48554475c36c2bd9394a",
+    "src/sample_data.py": "833e500a8357bd6c161c9747adb24aa048d98f0cfaf453801287f693fdf5cec0",
+    "src/report.py": "9dd34a26353103801d5e0e4523bbb35a1b1a66065077aa207b1dceceeaf1eb04",
     "tests/test_pipeline.py": "1a4528741f63f25ada1afd89fdeb8d26f964fe78d90d2d7df54e15cab898985e",
-    "src/bonus.py": "051cfbf5cc694596ca1ae23cbec06f702ce877f7f72ed9459b2e1ec770744c18",
+    "src/bonus.py": "c5885c7a9de0db8d989eb094ea0e58341ffa736ad7feafe3c8d46a486116e559",
     "tests/test_bonus.py": "28c79d9f5378c3892ef10e2a68c209627d4b0a5c6ee4e756c9168c0f2154adc9",
+    "study/learning-notes.json": "0013bb34693467fb44b4b49199ab215ab6f08618052e44789988ed981e37530c",
+    "study/a1-1.template.html": "05e956321ac3ba257a7f3ac08f4cc48d555d5b76ba713beb5e6880b38e07eb68",
+    "tools/build_study_guide.py": "17933b060013f67091d30cd04c4bff5171dfc87483c316e49c838e49bc56af5a",
     "results/bonus/image_features.png": "2a2dd3b2f1516d3a2e5da2574b3b46ec6dbb603009713167efd550cf87a20af8",
     "results/bonus/cohort_retention.png": "4c24fce555fdb8451fe613777d05668c29a038a1bc275a662ba9e90116478397",
     "results/bonus/image_features.csv": "377110a0baf18a460dc6b1c7fc74f9296abaca32f1fef274b8356d691a4dfa45",
@@ -35,99 +38,99 @@
   "excerpts": {
     "flow": {
       "file": "src/run_analysis.py",
-      "start": 10,
-      "end": 24,
-      "text": "def run_analysis(data_dir, output_dir, reference_date=None, include_bonus=True,\n                 customers_path=None, observation_end=None):\n    data_dir = Path(data_dir)\n    analyzer = DataAnalyzer(data_dir / \"transactions.csv\")\n    analyzer.load_data()\n    analyzer.handle_missing_values()\n    analyzer.engineer_features()\n    analyzer.detect_outliers(\"shipping_days\")\n    analyzer.detect_outliers(\"unit_price\")\n    analyzer.calculate_rfm(reference_date=reference_date)\n    write_report(analyzer, output_dir)\n    if include_bonus:\n        from .bonus import write_bonus\n        analyzer.audit['bonus'] = write_bonus(analyzer, output_dir, customers_path, observation_end)\n    return analyzer"
+      "start": 15,
+      "end": 53,
+      "text": "def run_analysis(data_dir, output_dir, reference_date=None, include_bonus=True,\n                 customers_path=None, observation_end=None):\n    \"\"\"분석 단계를 순서대로 실행하고 결과 파일과 분석 객체를 만든다.\n\n    Args:\n        data_dir (str | pathlib.Path): 거래·상품·이미지 입력 폴더.\n        output_dir (str | pathlib.Path): 결과를 저장할 폴더.\n        reference_date (str | None): RFM 기준일. 생략하면 마지막 구매 다음 날.\n        include_bonus (bool): 이미지 고급 피처·가입 코호트·Plotly도 실행할지 여부.\n        customers_path (str | pathlib.Path | None): 보너스용 가입 고객 CSV 경로.\n        observation_end (str | None): 코호트 데이터 수집이 끝난 날짜.\n\n    Returns:\n        DataAnalyzer: 처리된 표·RFM·audit을 보관한 객체.\n            보너스 실행 시 df에 보너스 피처도 추가된다.\n\n    Raises:\n        ValueError: 데이터나 분석 옵션이 각 단계의 입력 조건에 맞지 않는 경우.\n        OSError: 입력을 읽거나 결과 파일을 저장할 수 없는 경우.\n    \"\"\"\n    data_dir = Path(data_dir)\n    # 클래스 이름 뒤 ()로 객체를 만든다. 생성만으로 파일을 읽지는 않는다.\n    analyzer = DataAnalyzer(data_dir / \"transactions.csv\")\n    # 메서드(객체의 기능)를 호출하며 앞 단계의 결과를 다음 단계가 사용한다.\n    # 이 순서가 전체 코드를 이해하는 지도다. 구현 세부는 pipeline.py에 있다.\n    analyzer.load_data()\n    analyzer.handle_missing_values()\n    analyzer.engineer_features()\n    analyzer.detect_outliers(\"shipping_days\")\n    analyzer.detect_outliers(\"unit_price\")\n    analyzer.calculate_rfm(reference_date=reference_date)\n    # 필수 보고서를 먼저 저장해 22컬럼 결과와 필수 차트 6종을 만든다.\n    # 보너스는 이후 df에 피처를 더하고 별도의 bonus 폴더에 저장한다.\n    write_report(analyzer, output_dir)\n    if include_bonus:\n        # 필요한 경우에 import한다. 앞의 .은 같은 src 패키지 안이라는 뜻이다.\n        from .bonus import write_bonus\n        analyzer.audit['bonus'] = write_bonus(analyzer, output_dir, customers_path, observation_end)\n    return analyzer"
     },
     "state": {
       "file": "src/pipeline.py",
-      "start": 28,
-      "end": 38,
-      "text": "    def __init__(self, data_path, products_path=None, images_path=None):\n        self.data_path = Path(data_path)\n        base = self.data_path.parent\n        self.products_path = Path(products_path) if products_path else base / \"products.csv\"\n        self.images_path = Path(images_path) if images_path else base / \"images.npy\"\n        self.df = None\n        self.raw_df = None\n        self.products = None\n        self.images = None\n        self.rfm = None\n        self.audit = {}"
+      "start": 64,
+      "end": 87,
+      "text": "    def __init__(self, data_path, products_path=None, images_path=None):\n        \"\"\"입력 파일 위치와 빈 분석 상태를 준비한다. 파일은 아직 읽지 않는다.\n\n        Args:\n            data_path (str | pathlib.Path): 거래 CSV 경로.\n            products_path (str | pathlib.Path | None): 상품 CSV 경로.\n                생략하면 거래 파일과 같은 폴더의 products.csv를 사용한다.\n            images_path (str | pathlib.Path | None): 이미지 NPY 경로.\n                생략하면 같은 폴더의 images.npy를 사용한다.\n        \"\"\"\n        # self는 현재 객체 자신이다. self.이름은 여러 메서드가 함께 쓰는 상태다.\n        # Path는 문자열 경로를 다루기 쉽게 바꾸며 / 연산자로 경로를 이어 붙인다.\n        self.data_path = Path(data_path)\n        base = self.data_path.parent\n        # A if 조건 else B: 조건에 따라 A나 B를 선택하는 표현식이다.\n        self.products_path = Path(products_path) if products_path else base / \"products.csv\"\n        self.images_path = Path(images_path) if images_path else base / \"images.npy\"\n        # None은 '아직 없음'이다. 빈 표와 구분해 처리 순서를 검사할 수 있다.\n        self.df = None\n        self.raw_df = None\n        self.products = None\n        self.images = None\n        self.rfm = None\n        self.audit = {}"
     },
     "join": {
       "file": "src/pipeline.py",
-      "start": 78,
-      "end": 84,
-      "text": "        overlap = (set(transactions.columns) & set(products.columns)) - {\"product_id\"}\n        if overlap:\n            raise ValueError(f\"Overlapping table columns: {sorted(overlap)}\")\n        joined = transactions.merge(products, on=\"product_id\", how=\"left\", validate=\"many_to_one\", indicator=True)\n        if (joined[\"_merge\"] != \"both\").any():\n            raise ValueError(\"Every transaction must reference a known product_id\")\n        self.images = np.load(self.images_path, allow_pickle=False)"
+      "start": 167,
+      "end": 177,
+      "text": "        overlap = (set(transactions.columns) & set(products.columns)) - {\"product_id\"}\n        if overlap:\n            raise ValueError(f\"Overlapping table columns: {sorted(overlap)}\")\n        # 거래 여러 행 → 상품 한 행으로 연결한다. 상품 키가 중복된 채 조인하면\n        # 거래 행·매출이 부풀 수 있어 many_to_one을 강제한다.\n        # left는 거래 행을 유지하며 indicator는 연결 성공 여부를 _merge에 적는다.\n        joined = transactions.merge(products, on=\"product_id\", how=\"left\", validate=\"many_to_one\", indicator=True)\n        if (joined[\"_merge\"] != \"both\").any():\n            raise ValueError(\"Every transaction must reference a known product_id\")\n        # NPY는 NumPy 배열 저장 형식이다. 숫자 배열만 읽도록 pickle을 끈다.\n        self.images = np.load(self.images_path, allow_pickle=False)"
     },
     "checks": {
       "file": "src/pipeline.py",
-      "start": 69,
-      "end": 78,
-      "text": "        comparable = transactions[[\"unit_price\", \"quantity\", \"amount\"]].notna().all(axis=1)\n        if not np.isclose(transactions.loc[comparable, \"amount\"],\n                          transactions.loc[comparable, \"unit_price\"] * transactions.loc[comparable, \"quantity\"],\n                          rtol=1e-6, atol=0.01).all():\n            raise ValueError(\"amount must be the line total unit_price * quantity\")\n        order_groups = transactions.groupby(\"order_id\")\n        for key in [\"customer_id\", \"order_date\"]:\n            if (order_groups[key].nunique(dropna=False) > 1).any():\n                raise ValueError(f\"One order_id must have one {key}\")\n        overlap = (set(transactions.columns) & set(products.columns)) - {\"product_id\"}"
+      "start": 152,
+      "end": 167,
+      "text": "        comparable = transactions[[\"unit_price\", \"quantity\", \"amount\"]].notna().all(axis=1)\n        # loc[행 조건, 컬럼]으로 값을 고른다. isclose는 소수점 계산의 작은\n        # 오차를 허용하며, 주문 전체 금액을 각 상품 행에 복제한 오류 등을 찾는다.\n        if not np.isclose(transactions.loc[comparable, \"amount\"],\n                          transactions.loc[comparable, \"unit_price\"] * transactions.loc[comparable, \"quantity\"],\n                          rtol=1e-6, atol=0.01).all():\n            raise ValueError(\"amount must be the line total unit_price * quantity\")\n        # 같은 주문의 여러 상품 줄은 고객·날짜가 같아야 한다.\n        # nunique는 서로 다른 값의 개수, dropna=False는 결측도 구별해 세라는 뜻이다.\n        order_groups = transactions.groupby(\"order_id\")\n        for key in [\"customer_id\", \"order_date\"]:\n            if (order_groups[key].nunique(dropna=False) > 1).any():\n                raise ValueError(f\"One order_id must have one {key}\")\n        # 집합의 &는 공통 원소다. ID 외의 동명 컬럼은 어느 표의 값인지\n        # 모호해질 수 있어 조인 전에 거부한다.\n        overlap = (set(transactions.columns) & set(products.columns)) - {\"product_id\"}"
     },
     "fill": {
       "file": "src/pipeline.py",
-      "start": 119,
-      "end": 124,
-      "text": "            global_value = getattr(numeric, strategy)()\n            if pd.isna(global_value):\n                raise ValueError(f\"Cannot impute all-missing column {column}\")\n            group_values = frame.groupby(group_col, dropna=False)[column].transform(strategy)\n            frame[column] = numeric.fillna(group_values).fillna(global_value)\n            changes[column] = int(numeric.isna().sum())"
+      "start": 233,
+      "end": 241,
+      "text": "            global_value = getattr(numeric, strategy)()\n            if pd.isna(global_value):\n                raise ValueError(f\"Cannot impute all-missing column {column}\")\n            # agg는 그룹당 한 값으로 줄이지만 transform은 원래 행 위치에\n            # 그룹 통계를 돌려준다. [10,40,NaN]인 그룹이면 [25,25,25]가 된다.\n            group_values = frame.groupby(group_col, dropna=False)[column].transform(strategy)\n            # fillna를 이어 호출해 그룹 값 → 전체 값 순서로 빈 곳만 채운다.\n            frame[column] = numeric.fillna(group_values).fillna(global_value)\n            changes[column] = int(numeric.isna().sum())"
     },
     "grain": {
       "file": "src/pipeline.py",
-      "start": 139,
-      "end": 144,
-      "text": "        product_counts = self._fill_by_group(self.products, product_columns, group_col, strategy)\n        self.products[\"product_name\"] = self.products.product_name.fillna(\"Unknown product\")\n        # A catalog statistic must not be weighted by how often each product sold.\n        for column in [*product_columns, \"product_name\"]:\n            self.df[column] = self.df.product_id.map(self.products.set_index(\"product_id\")[column])\n        line_counts = self._fill_by_group(self.df, transaction_columns, group_col, strategy)"
+      "start": 273,
+      "end": 282,
+      "text": "        product_counts = self._fill_by_group(self.products, product_columns, group_col, strategy)\n        self.products[\"product_name\"] = self.products.product_name.fillna(\"Unknown product\")\n        # 상품 10원·40원이 각각 1개인데 10원 상품이 3번 팔렸다고 해보자.\n        # 상품 표의 중앙값은 25원, 거래 행 [10,10,10,40]의 중앙값은 10원이다.\n        # 상품 속성은 판매 횟수에 가중되지 않도록 상품 표에서 먼저 채운다.\n        for column in [*product_columns, \"product_name\"]:\n            # *목록은 원소를 펼친다. set_index는 ID를 조회 기준으로 삼고,\n            # map은 거래마다 그 상품의 보완된 값을 찾아 붙인다. 거래 행 수는 같다.\n            self.df[column] = self.df.product_id.map(self.products.set_index(\"product_id\")[column])\n        line_counts = self._fill_by_group(self.df, transaction_columns, group_col, strategy)"
     },
     "image": {
       "file": "src/pipeline.py",
-      "start": 161,
-      "end": 168,
-      "text": "        axes = tuple(range(1, self.images.ndim))\n        image_mean = self.images.mean(axis=axes, dtype=np.float64)\n        image_std = self.images.std(axis=axes, dtype=np.float64)\n        indices = self.df.image_index.to_numpy(dtype=int)\n        self.df[\"image_mean\"] = image_mean[indices]\n        self.df[\"image_std\"] = image_std[indices]\n        self.df[\"name_length\"] = self.df.product_name.astype(\"string\").str.len()\n        self.df[\"name_word_count\"] = self.df.product_name.astype(\"string\").str.split().str.len()"
+      "start": 328,
+      "end": 346,
+      "text": "        axes = tuple(range(1, self.images.ndim))\n        # [변화] (80,16,16,3) → (80,). 상품마다 평균 하나씩 남는다.\n        # axis는 인자 이름, axes는 위에서 만든 변수다. float64는 소수 자료형이다.\n        # RGB 전체 값의 단순 평균이므로 정밀한 지각 밝기나 품질 점수는 아니다.\n        image_mean = self.images.mean(axis=axes, dtype=np.float64)\n        # 표준편차는 값의 흩어짐이다. [0,0,100,100]과 [50,50,50,50]은\n        # 평균 50이 같지만 표준편차는 각각 50, 0이다. 여기서는 ddof=0이 기본이다.\n        image_std = self.images.std(axis=axes, dtype=np.float64)\n        # 상품 통계는 80개지만 거래는 2,842행이다. 각 거래의 이미지 위치로\n        # 배열을 조회해 반복 판매에도 올바른 상품 통계를 연결한다.\n        # 예: 평균 [20,80], 위치 [1,0,1] → 거래별 평균 [80,20,80].\n        indices = self.df.image_index.to_numpy(dtype=int)\n        self.df[\"image_mean\"] = image_mean[indices]\n        self.df[\"image_std\"] = image_std[indices]\n        # astype은 자료형 변환, str은 컬럼 전체의 문자열 기능이다.\n        # \"Home item\"은 글자 9개(공백 포함), split()으로 나누면 단어 2개다.\n        # 형태소 분석이 아니며, 한국어 단어의 의미를 이해하는 과정도 아니다.\n        self.df[\"name_length\"] = self.df.product_name.astype(\"string\").str.len()\n        self.df[\"name_word_count\"] = self.df.product_name.astype(\"string\").str.split().str.len()"
     },
     "iqr": {
       "file": "src/pipeline.py",
-      "start": 8,
-      "end": 17,
-      "text": "def iqr_bounds(values, threshold=1.5):\n    \"\"\"Return Tukey fences. Flagging is not a decision to delete a record.\"\"\"\n    if not np.isfinite(threshold) or threshold <= 0:\n        raise ValueError(\"threshold must be finite and positive\")\n    values = pd.to_numeric(values, errors=\"raise\")\n    if not np.isfinite(values.dropna()).all() or values.dropna().empty:\n        raise ValueError(\"IQR requires at least one finite observation\")\n    q1, q3 = values.quantile([0.25, 0.75])\n    spread = q3 - q1\n    return float(q1 - threshold * spread), float(q3 + threshold * spread)"
+      "start": 14,
+      "end": 45,
+      "text": "def iqr_bounds(values, threshold=1.5):\n    \"\"\"IQR을 이용해 이상치 후보를 판별할 하한과 상한을 계산한다.\n\n    Args:\n        values (pandas.Series): 숫자로 변환 가능한 한 컬럼. 결측값은\n            분위수 계산에서 제외하며 유한한 관측값이 하나 이상 필요하다.\n        threshold (float): IQR에 곱할 양수 배수. 기본값은 1.5.\n\n    Returns:\n        tuple[float, float]: (하한, 상한). 원본 값은 바꾸지 않는다.\n\n    Raises:\n        ValueError: 배수가 유한한 양수가 아니거나 데이터에 무한대가 있거나\n            유효한 숫자가 없거나 숫자로 변환할 수 없는 값이 있는 경우.\n    \"\"\"\n    # isfinite는 무한대·NaN이 아닌지 검사한다. not은 참/거짓을 뒤집는다.\n    if not np.isfinite(threshold) or threshold <= 0:\n        raise ValueError(\"threshold must be finite and positive\")\n    # \"10\" 같은 숫자 문자열을 숫자로 바꾼다. errors=\"raise\"는\n    # \"가격미상\"처럼 해석할 수 없는 값을 조용히 넘기지 않고 오류로 알린다.\n    values = pd.to_numeric(values, errors=\"raise\")\n    # dropna()는 결측치를 뺀 임시 Series를 돌려준다. 원본 행을 삭제하지 않는다.\n    # all()은 '모두 참인가', empty는 '남은 값이 없는가'를 뜻한다.\n    if not np.isfinite(values.dropna()).all() or values.dropna().empty:\n        raise ValueError(\"IQR requires at least one finite observation\")\n    # 두 결과를 q1, q3에 나눠 담는 문법을 언패킹이라고 한다.\n    # [10,20,30,40,100]이라면 Q1=20, Q3=40, 가운데 50%의 폭은 20이다.\n    q1, q3 = values.quantile([0.25, 0.75])\n    spread = q3 - q1\n    # 기본 배수 1.5라면 예시의 경계는 (-10, 70). 100은 후보가 되지만\n    # 정상적인 고가 상품일 수도 있으므로 이 함수에서 삭제를 결정하지 않는다.\n    return float(q1 - threshold * spread), float(q3 + threshold * spread)"
     },
     "flag": {
       "file": "src/pipeline.py",
-      "start": 171,
-      "end": 180,
-      "text": "    def detect_outliers(self, column, threshold=1.5):\n        \"\"\"Add a flag and return outlier rows; retain the unaltered measurements.\"\"\"\n        self._require_loaded()\n        lower, upper = iqr_bounds(self.df[column], threshold)\n        values = self.df[column]\n        flag = values.lt(lower) | values.gt(upper)\n        self.df[f\"{column}_is_outlier\"] = flag\n        self.audit.setdefault(\"outliers\", {})[column] = {\n            \"threshold\": threshold, \"lower\": lower, \"upper\": upper, \"count\": int(flag.sum())}\n        return self.df.loc[flag].copy()"
+      "start": 349,
+      "end": 374,
+      "text": "    def detect_outliers(self, column, threshold=1.5):\n        \"\"\"IQR 경계 밖의 행에 표시를 붙이고 해당 행들의 사본을 반환한다.\n\n        Args:\n            column (str): 검사할 숫자 컬럼. 예: shipping_days.\n            threshold (float): IQR 배수. 기본값은 1.5.\n\n        Returns:\n            pandas.DataFrame: 이상치 후보 행의 사본. self.df에는\n                <컬럼명>_is_outlier라는 참/거짓 컬럼을 추가한다. 원본 값은 유지한다.\n\n        Raises:\n            RuntimeError: 데이터를 먼저 로드하지 않은 경우.\n            ValueError: 배수나 관측값이 IQR 계산 조건에 맞지 않는 경우.\n        \"\"\"\n        self._require_loaded()\n        lower, upper = iqr_bounds(self.df[column], threshold)\n        values = self.df[column]\n        # lt는 <, gt는 >. |는 행별 OR이다. 경계와 같은 값은 후보가 아니다.\n        # True/False로 된 Series를 불리언 마스크라고 한다.\n        flag = values.lt(lower) | values.gt(upper)\n        self.df[f\"{column}_is_outlier\"] = flag\n        # setdefault는 키가 없으면 빈 사전을 만든다. True의 합은 후보 개수다.\n        self.audit.setdefault(\"outliers\", {})[column] = {\n            \"threshold\": threshold, \"lower\": lower, \"upper\": upper, \"count\": int(flag.sum())}\n        return self.df.loc[flag].copy()"
     },
     "treat": {
       "file": "src/pipeline.py",
-      "start": 182,
-      "end": 191,
-      "text": "    def treat_outliers(self, column, threshold=1.5, method=\"clip\"):\n        \"\"\"Return a comparison series; do not mutate source columns or RFM inputs.\"\"\"\n        self._require_loaded()\n        if method not in (\"clip\", \"remove\"):\n            raise ValueError(\"method must be clip or remove\")\n        lower, upper = iqr_bounds(self.df[column], threshold)\n        values = self.df[column]\n        if method == \"clip\":\n            return values.clip(lower, upper).rename(f\"{column}_treated\")\n        return values.loc[values.between(lower, upper)].rename(f\"{column}_treated\")"
+      "start": 376,
+      "end": 401,
+      "text": "    def treat_outliers(self, column, threshold=1.5, method=\"clip\"):\n        \"\"\"이상치 처리 전후를 비교할 별도의 한 컬럼을 반환한다.\n\n        Args:\n            column (str): 비교할 숫자 컬럼.\n            threshold (float): IQR 배수. 기본값은 1.5.\n            method (str): clip은 경계로 제한, remove는 경계 안의 값만 선택.\n\n        Returns:\n            pandas.Series: 처리된 비교용 값. remove는 길이가 줄 수 있다.\n                self.df의 원본 컬럼과 RFM용 금액은 바꾸지 않는다.\n\n        Raises:\n            RuntimeError: 데이터를 먼저 로드하지 않은 경우.\n            ValueError: 지원하지 않는 method 또는 잘못된 IQR 입력인 경우.\n        \"\"\"\n        self._require_loaded()\n        if method not in (\"clip\", \"remove\"):\n            raise ValueError(\"method must be clip or remove\")\n        lower, upper = iqr_bounds(self.df[column], threshold)\n        values = self.df[column]\n        if method == \"clip\":\n            # 상한이 10.5면 60을 10.5로 바꾼 비교값을 만든다. 관측 사실이 아니다.\n            return values.clip(lower, upper).rename(f\"{column}_treated\")\n        # between은 양쪽 경계를 포함한다. rename은 반환할 Series의 이름을 붙인다.\n        return values.loc[values.between(lower, upper)].rename(f\"{column}_treated\")"
     },
     "eligible": {
       "file": "src/pipeline.py",
-      "start": 208,
-      "end": 217,
-      "text": "        valid = (self.df[customer_col].notna() & self.df[order_col].notna() & self.df[date_col].notna()\n                 & self.df[amount_col].gt(0) & self.df.quantity.gt(0) & self.df.unit_price.gt(0))\n        purchases = self.df.loc[valid].copy()\n        if purchases.empty:\n            raise ValueError(\"No valid positive purchases available for RFM\")\n        dates = pd.to_datetime(purchases[date_col], errors=\"raise\").dt.normalize()\n        reference = pd.Timestamp(reference_date).normalize() if reference_date is not None else dates.max() + pd.Timedelta(days=1)\n        if pd.isna(reference) or reference < dates.max():\n            raise ValueError(\"reference_date must not precede the latest purchase\")\n        purchases[date_col] = dates"
+      "start": 437,
+      "end": 449,
+      "text": "        valid = (self.df[customer_col].notna() & self.df[order_col].notna() & self.df[date_col].notna()\n                 & self.df[amount_col].gt(0) & self.df.quantity.gt(0) & self.df.unit_price.gt(0))\n        # 필터 후 사본에 작업해 전체 거래 표를 덮어쓰지 않는다.\n        purchases = self.df.loc[valid].copy()\n        if purchases.empty:\n            raise ValueError(\"No valid positive purchases available for RFM\")\n        dates = pd.to_datetime(purchases[date_col], errors=\"raise\").dt.normalize()\n        # Timestamp는 날짜·시각 하나, Timedelta는 기간이다.\n        # 시스템의 오늘 대신 데이터 기준일을 쓰면 재실행 시 R이 저절로 바뀌지 않는다.\n        reference = pd.Timestamp(reference_date).normalize() if reference_date is not None else dates.max() + pd.Timedelta(days=1)\n        if pd.isna(reference) or reference < dates.max():\n            raise ValueError(\"reference_date must not precede the latest purchase\")\n        purchases[date_col] = dates"
     },
     "aggregate": {
       "file": "src/pipeline.py",
-      "start": 221,
-      "end": 224,
-      "text": "        grouped = purchases.groupby(customer_col)\n        result = grouped.agg(last_purchase=(date_col, \"max\"), frequency=(order_col, \"nunique\"),\n                             monetary=(amount_col, \"sum\"))\n        result[\"recency\"] = (reference - result.last_purchase).dt.days"
+      "start": 456,
+      "end": 461,
+      "text": "        grouped = purchases.groupby(customer_col)\n        result = grouped.agg(last_purchase=(date_col, \"max\"), frequency=(order_col, \"nunique\"),\n                             monetary=(amount_col, \"sum\"))\n        # R은 기준일 - 마지막 구매일의 일수. 10/10 - 10/8 = 2일.\n        # M은 양수 구매 합계로, 반품을 차감한 순매출이나 고객 평생가치가 아니다.\n        result[\"recency\"] = (reference - result.last_purchase).dt.days"
     },
     "score": {
       "file": "src/pipeline.py",
-      "start": 225,
-      "end": 230,
-      "text": "        for variable, ascending, score in [(\"recency\", False, \"r_score\"),\n                                            (\"frequency\", True, \"f_score\"),\n                                            (\"monetary\", True, \"m_score\")]:\n            percentile = result[variable].rank(method=\"average\", pct=True, ascending=ascending)\n            result[score] = np.ceil(percentile * 5).clip(1, 5).astype(int)\n        result[\"rfm_score\"] = result[[\"r_score\", \"f_score\", \"m_score\"]].sum(axis=1)"
+      "start": 462,
+      "end": 472,
+      "text": "        for variable, ascending, score in [(\"recency\", False, \"r_score\"),\n                                            (\"frequency\", True, \"f_score\"),\n                                            (\"monetary\", True, \"m_score\")]:\n            # rank는 상대 순위를 구한다. 같은 값은 평균 순위로 같게 처리한다.\n            # R은 작을수록 좋으므로 내림차순 순위를 써 작은 R에 큰 백분위를 준다.\n            # F·M은 클수록 좋다. pct=True는 순위를 고객 수로 나눠 비율로 만든다.\n            percentile = result[variable].rank(method=\"average\", pct=True, ascending=ascending)\n            # 백분위 0.62 → ×5=3.1 → ceil(올림)=4점. clip은 1~5를 보장한다.\n            # 동점을 강제로 나누지 않으므로 점수별 인원은 같지 않을 수 있다.\n            result[score] = np.ceil(percentile * 5).clip(1, 5).astype(int)\n        result[\"rfm_score\"] = result[[\"r_score\", \"f_score\", \"m_score\"]].sum(axis=1)"
     },
     "segment": {
       "file": "src/pipeline.py",
-      "start": 231,
-      "end": 237,
-      "text": "        vip_cutoff = float(result.monetary.quantile(0.75))\n        inactive = result.recency > inactive_days\n        new = (result.recency <= recent_days) & result.frequency.eq(1)\n        vip = (result.recency <= recent_days) & (result.frequency >= loyal_orders) & (result.monetary >= vip_cutoff)\n        loyal = result.frequency >= loyal_orders\n        result[\"segment\"] = np.select([inactive, new, vip, loyal],\n                                       [\"Inactive\", \"New\", \"VIP\", \"Loyal\"], default=\"Regular\")"
+      "start": 474,
+      "end": 483,
+      "text": "        vip_cutoff = float(result.monetary.quantile(0.75))\n        inactive = result.recency > inactive_days\n        new = (result.recency <= recent_days) & result.frequency.eq(1)\n        vip = (result.recency <= recent_days) & (result.frequency >= loyal_orders) & (result.monetary >= vip_cutoff)\n        loyal = result.frequency >= loyal_orders\n        # np.select는 첫 번째로 참인 조건을 택한다. 구매 공백이 긴 반복 고객은\n        # Loyal에도 해당할 수 있으나 먼저 검사한 Inactive로만 분류된다.\n        # Regular는 어느 조건에도 맞지 않을 때의 기본값이다.\n        result[\"segment\"] = np.select([inactive, new, vip, loyal],\n                                       [\"Inactive\", \"New\", \"VIP\", \"Loyal\"], default=\"Regular\")"
     },
     "summary": {
       "file": "src/pipeline.py",
-      "start": 257,
-      "end": 266,
-      "text": "    def segment_summary(self):\n        if self.rfm is None:\n            raise RuntimeError(\"Call calculate_rfm() first\")\n        summary = self.rfm.groupby(\"segment\").agg(\n            customers=(\"monetary\", \"size\"), mean_recency=(\"recency\", \"mean\"),\n            mean_frequency=(\"frequency\", \"mean\"), mean_monetary=(\"monetary\", \"mean\"),\n            revenue=(\"monetary\", \"sum\"))\n        summary[\"customer_share_pct\"] = summary.customers / summary.customers.sum() * 100\n        summary[\"revenue_share_pct\"] = summary.revenue / summary.revenue.sum() * 100\n        return summary"
+      "start": 519,
+      "end": 540,
+      "text": "    def segment_summary(self):\n        \"\"\"고객별 RFM을 그룹별 고객 수·평균·매출 비중으로 집계한다.\n\n        Returns:\n            pandas.DataFrame: 그룹당 한 행인 요약 표. 비중 컬럼의 단위는 %다.\n\n        Raises:\n            RuntimeError: calculate_rfm()을 먼저 호출하지 않은 경우.\n        \"\"\"\n        if self.rfm is None:\n            raise RuntimeError(\"Call calculate_rfm() first\")\n        # 입력이 이미 고객당 한 행이므로 size는 여기서 고객 수가 된다.\n        # 거래 표에서 size를 썼다면 상품 행 수를 세었을 것이다.\n        summary = self.rfm.groupby(\"segment\").agg(\n            customers=(\"monetary\", \"size\"), mean_recency=(\"recency\", \"mean\"),\n            mean_frequency=(\"frequency\", \"mean\"), mean_monetary=(\"monetary\", \"mean\"),\n            revenue=(\"monetary\", \"sum\"))\n        # 고객 비중의 분모는 전체 고객 수, 매출 비중의 분모는 전체 양수 구매 금액이다.\n        # 두 비중을 비교해 매출이 특정 그룹에 얼마나 집중되었는지 읽는다.\n        summary[\"customer_share_pct\"] = summary.customers / summary.customers.sum() * 100\n        summary[\"revenue_share_pct\"] = summary.revenue / summary.revenue.sum() * 100\n        return summary"
     },
     "sample": {
       "file": "src/sample_data.py",
-      "start": 25,
-      "end": 29,
-      "text": "    # Broadcasting constructs the whole (product, height, width, channel) batch.\n    levels = rng.uniform(35, 200, (n_products, 1, 1, 3))\n    texture = rng.normal(0, 25, (n_products, 16, 16, 3))\n    gradient = np.linspace(-20, 20, 16)[None, None, :, None]\n    images = np.clip(levels + texture + gradient, 0, 255).astype(np.uint8)"
+      "start": 47,
+      "end": 55,
+      "text": "    # [이미지 생성] 브로드캐스팅은 크기 1인 축 등을 맞춰 배열을 함께 계산한다.\n    # levels (80,1,1,3) + texture (80,16,16,3) + gradient (1,1,16,1)\n    # → (80,16,16,3). 작은 이미지를 상품마다 숫자로 생성하며 실제 사진은 아니다.\n    levels = rng.uniform(35, 200, (n_products, 1, 1, 3))\n    texture = rng.normal(0, 25, (n_products, 16, 16, 3))\n    # linspace는 일정 간격의 16개 값, None은 축 추가, :는 그 축 전체 선택이다.\n    gradient = np.linspace(-20, 20, 16)[None, None, :, None]\n    # clip으로 0~255를 보장한 다음 uint8(0~255 정수)로 바꿔 저장한다.\n    images = np.clip(levels + texture + gradient, 0, 255).astype(np.uint8)"
     },
     "test": {
       "file": "tests/test_pipeline.py",
@@ -137,9 +140,9 @@
     },
     "chart": {
       "file": "src/report.py",
-      "start": 64,
-      "end": 67,
-      "text": "    valid = df.customer_id.notna() & df.order_id.notna() & df.order_date.notna() & df.amount.gt(0) & df.quantity.gt(0) & df.unit_price.gt(0)\n    monthly = df.loc[valid].groupby(df.loc[valid, \"order_date\"].dt.to_period(\"M\"))[\"amount\"].sum()\n    periods = pd.period_range(monthly.index.min(), monthly.index.max(), freq=\"M\")\n    monthly = monthly.reindex(periods, fill_value=0)"
+      "start": 101,
+      "end": 106,
+      "text": "    valid = df.customer_id.notna() & df.order_id.notna() & df.order_date.notna() & df.amount.gt(0) & df.quantity.gt(0) & df.unit_price.gt(0)\n    monthly = df.loc[valid].groupby(df.loc[valid, \"order_date\"].dt.to_period(\"M\"))[\"amount\"].sum()\n    # to_period(\"M\")은 날짜를 연월로 묶는다. reindex로 빠진 중간 달을 0으로 채워\n    # 선이 달을 건너뛰지 않게 한다. 수집 누락이 없는 데이터라는 전제가 필요하다.\n    periods = pd.period_range(monthly.index.min(), monthly.index.max(), freq=\"M\")\n    monthly = monthly.reindex(periods, fill_value=0)"
     }
   }
 }

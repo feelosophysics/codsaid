@@ -13,14 +13,16 @@
 @media(max-width:760px){.shell{padding:0 18px}.layout{display:block}.sidebar{display:none}.mobile-toc{display:block;margin-bottom:28px;padding:16px;border:1px solid var(--line);border-radius:8px}.mobile-toc nav{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;font-size:14px}.hero{padding:30px 0}.hero p{font-size:16px}.masthead{align-items:start}.chapter{padding-bottom:32px}h2{font-size:25px}.panel{padding:18px}.flow-output,.term-grid{grid-template-columns:1fr}.controls{gap:12px}.field{min-width:100%;flex:auto}.source-window{height:360px}.question details{margin-left:0}.code-block figcaption{padding:12px}.code-block pre{padding:14px 8px}.line-num{min-width:3em}.count-row{grid-template-columns:65px 1fr 35px;gap:8px}.hero-meta{gap:8px 18px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.bar{transition:none}}
 @media print{body{background:#fff;color:#111;font-size:11pt}.shell{max-width:none;padding:0}.layout{display:block}.sidebar,.mobile-toc,.masthead button,.controls,button,.quiz-progress{display:none!important}.hero{padding:0 0 24px}.chapter{page-break-before:auto;border-color:#bbb}.panel{break-inside:avoid}.code-block{background:#f3f3f3;color:#111}.code-block pre{white-space:pre-wrap}.code-line{min-width:0;white-space:pre-wrap}.code-block figcaption,.line-num{color:#333}.source-window{height:auto;overflow:visible;white-space:pre-wrap;background:#f3f3f3;color:#111}.srcrow{min-width:0;white-space:pre-wrap}.chart-gallery figure{break-inside:avoid}.source-note{font-size:9pt}}
+.learning-note{overflow-wrap:anywhere}.learning-note p{max-width:850px}.learning-example{white-space:pre-wrap;overflow-wrap:anywhere;background:var(--code);color:var(--codeink);border-radius:8px;padding:18px;font:14px/1.9 Consolas,monospace}.learning-note summary{cursor:pointer;color:var(--accent);padding:8px 0}.learning-note details p{margin-top:12px}
 </style>
 </head>
 <body>
 <a class="skip" href="#chapter-01">본문으로 이동</a>
 <div class="shell">
-<header class="masthead"><span class="brand">CODSAID / A1-1</span><span>A1-1 · 학습 자료 · 2026.10.10</span></header>
-<div class="hero"><span class="eyebrow">DATA → CODE → JUDGMENT</span><h1>숫자를 고객에 대한<br>판단으로 바꾸는 과정</h1><p>작은 표로 계산해 보고, 같은 일을 하는 실제 Python 코드를 찾고, 2,842행의 결과를 읽습니다. 이해의 기준은 “이 코드가 왜 필요한지 다른 사람에게 설명할 수 있는가”입니다.</p><div class="hero-meta"><span>12개 학습 질문</span><span>18개 원본 코드 발췌</span><span>7개 파일 소스 탐색</span><span>인터넷 없이 작동</span></div></div>
+<header class="masthead"><span class="brand">CODSAID / A1-1</span><span>A1-1 · 학습 자료 · @@GENERATED_DATE@@</span></header>
+<div class="hero"><span class="eyebrow">DATA → CODE → JUDGMENT</span><h1>숫자를 고객에 대한<br>판단으로 바꾸는 과정</h1><p>작은 표로 계산해 보고, 같은 일을 하는 실제 Python 코드를 찾고, 2,842행의 결과를 읽습니다. 이해의 기준은 “이 코드가 왜 필요한지 다른 사람에게 설명할 수 있는가”입니다.</p><div class="hero-meta"><span>Google 스타일 한국어 주석</span><span>12개 학습 질문 + 15개 설명 질문</span><span>18개 원본 코드 발췌</span><span>7개 파일 소스 탐색</span><span>인터넷 없이 작동</span></div></div>
 <details class="mobile-toc"><summary>학습 순서 펼치기</summary><nav id="mobile-nav"></nav></details>
+<div class="callout"><p><strong>주석과 함께 읽는 방법</strong><br>각 장에서 문법·데이터 변화·존재 이유를 읽고 작은 예제의 결과를 먼저 예상해보세요. 코드 발췌와 소스 탐색기에는 같은 한국어 주석이 포함되어 있습니다. 확인 질문의 설명은 생각해본 뒤 펼치세요. 이 미션은 통계·규칙 기반 분석이며 AI 모델을 학습하지 않습니다.</p></div>
 <div class="layout">
 <aside class="sidebar"><nav aria-label="학습 목차" id="desktop-nav"></nav><p class="route">첫 회에는<br><strong>01 → 02 → 07</strong><br>전체 흐름과 구매 집계부터 읽으세요. 그다음 03–06으로 돌아와 전처리를 이해합니다.</p><div class="quiz-progress"><span id="progress-label">설명 체크 0 / 12</span><progress id="progress" max="12" value="0" aria-label="스스로 설명한 질문 수"></progress></div></aside>
 <main>
@@ -33,6 +35,7 @@
 @@CODE:flow@@
 <p><code>analyzer.load_data()</code>의 점은 “analyzer가 가진 기능을 호출한다”는 뜻입니다. 괄호는 실행한다는 뜻이에요. 위 코드는 계산을 직접 늘어놓지 않고, 각 기능을 이름으로 연결합니다.</p>
 <div class="question" data-question="1"><label class="check"><input type="checkbox"><span>Q1. 이미지 계산은 pipeline.py, 그림 저장은 report.py에 있는 이유를 설명할 수 있나요?</span></label><details><summary>설명 예시</summary><p>이미지의 평균·표준편차를 만드는 일은 데이터를 계산하는 분석 로직이다. 그 값을 어떤 색과 축으로 보여주고 파일로 저장할지는 표현 로직이다. 계산 결과를 다른 보고서에서 재사용할 수 있도록 나눴다.</p></details></div>
+@@LEARNING:01@@
 </section>
 
 <section class="chapter" id="chapter-02" data-title="02. 한 행과 데이터 연결">
@@ -47,6 +50,7 @@
 @@CODE:checks@@
 <p><code>np.isclose</code>는 부동소수점의 작은 차이를 허용해 “행 금액 ≈ 단가 × 수량”을 검사합니다. 한 주문 ID에 서로 다른 고객이나 날짜가 있으면 오류를 냅니다. 잘못된 날짜는 로드 시 결측 날짜로 변환되어 RFM 대상에서 제외됩니다.</p>
 <div class="question" data-question="2"><label class="check"><input type="checkbox"><span>Q2. 주문 전체 금액 30,000원을 O1의 두 행에 각각 넣으면 어떤 문제가 생길까요?</span></label><details><summary>설명 예시</summary><p>합산 결과가 60,000원이 되어 주문 매출이 두 배가 된다. amount는 각 상품 행의 총액이어야 한다. 이 구현은 unit_price × quantity와의 불일치를 검사해 이런 입력 오류를 잡는다.</p></details></div>
+@@LEARNING:02@@
 </section>
 
 <section class="chapter" id="chapter-03" data-title="03. Class와 Python 읽기">
@@ -57,6 +61,7 @@
 <dl class="term-grid"><div><dt>self.df</dt><dd>현재 작업 중인 거래 표. <code>df</code>는 DataFrame을 줄여 쓴 이름입니다.</dd></div><div><dt>self.raw_df</dt><dd>조인·형 변환 후, 결측치 대치 전 표의 사본입니다. CSV 원문 바이트를 보존한 파일은 아닙니다.</dd></div><div><dt>self.products</dt><dd>상품당 한 행인 표. 상품 속성의 결측치 통계는 여기서 계산합니다.</dd></div><div><dt>self.rfm</dt><dd>고객당 한 행인 집계 표. 거래 행과 다른 단위입니다.</dd></div><div><dt>self.audit</dt><dd>몇 행을 읽었고 무엇을 보완·제외했는지 기록하는 사전입니다.</dd></div><div><dt>return</dt><dd>계산한 값을 호출한 곳에 돌려줍니다. 함수 이름 뒤 괄호는 그 기능을 실행합니다.</dd></div></dl>
 <h3>이 코드에서 자주 만나는 기호</h3><div class="table-scroll"><table><thead><tr><th>표현</th><th>읽는 방법</th></tr></thead><tbody><tr><td><code>df["amount"]</code></td><td>amount라는 한 컬럼을 선택한다.</td></tr><tr><td><code>df[["amount", "quantity"]]</code></td><td>두 컬럼을 표 형태로 선택한다. 안쪽 대괄호는 이름 목록이다.</td></tr><tr><td><code>df.loc[valid]</code></td><td>조건이 True인 행을 선택한다.</td></tr><tr><td><code>&amp;</code> / <code>|</code></td><td>여러 행의 조건을 AND / OR로 결합한다. 각 조건에 괄호를 쓴다.</td></tr><tr><td><code>groupby(...).agg(...)</code></td><td>같은 키끼리 묶고 집계한다. 결과 행 수가 줄어들 수 있다.</td></tr><tr><td><code>groupby(...).transform(...)</code></td><td>그룹 통계값을 원래 각 행의 위치에 맞춰 돌려준다.</td></tr><tr><td><code>.copy()</code></td><td>별도의 표를 만들어 작업한다. 원본을 보존하려는 의도를 읽는다.</td></tr><tr><td><code>raise ValueError(...)</code></td><td>계속 계산하면 잘못된 결과가 생길 조건에서 명시적으로 멈춘다.</td></tr></tbody></table></div>
 <div class="question" data-question="3"><label class="check"><input type="checkbox"><span>Q3. load_data()보다 먼저 calculate_rfm()을 호출하면 왜 멈춰야 할까요?</span></label><details><summary>설명 예시</summary><p>self.df가 아직 None이므로 집계할 거래가 없다. 빈 결과를 정상 결과처럼 돌려주면 입력 누락을 알아차리기 어렵다. _require_loaded()가 호출 순서를 확인해 오류를 낸다.</p></details></div>
+@@LEARNING:03@@
 </section>
 
 <section class="chapter" id="chapter-04" data-title="04. 결측치와 집계 단위">
@@ -70,6 +75,7 @@
 <p><code>self.products</code>에서 보완한 값을 <code>product_id.map(...)</code>으로 거래 표에 다시 붙입니다. 배송 일수는 거래마다 달라지는 값이므로 거래 표에서 대치합니다. 실제 기본 실행은 카탈로그 가격 12개·평점 7개·배송 일수 272개를 보완했습니다.</p>
 <div class="callout warning"><p><strong>거래 금액을 상품 가격으로 다시 만들지 않습니다.</strong> 카탈로그 가격은 상품의 참고 속성이고, 거래 금액은 그때 실제 기록된 구매 사실입니다. 결측치 대치 때문에 고객 매출이 바뀌면 안 됩니다. 고객 ID·날짜·구매 금액은 자동 추정하지 않습니다.</p></div>
 <div class="question" data-question="4"><label class="check"><input type="checkbox"><span>Q4. transform("median")과 agg("median")은 결과의 어떤 점이 다를까요?</span></label><details><summary>설명 예시</summary><p>agg는 그룹별 한 개의 집계값으로 줄인다. transform은 각 행이 속한 그룹의 중앙값을 원래 행의 위치에 맞춰 반복해서 반환한다. 결측 행을 채울 때는 transform의 결과를 바로 대응시킬 수 있다.</p></details></div>
+@@LEARNING:04@@
 </section>
 
 <section class="chapter" id="chapter-05" data-title="05. 이미지와 배열의 축">
@@ -83,6 +89,7 @@
 @@CODE:sample@@
 <p>이 코드는 실제 사진을 다운로드하지 않고 난수 배열로 이미지를 생성합니다. 브로드캐스팅은 크기가 다른 배열의 축을 맞춰 함께 연산하는 기능입니다. Python에서 픽셀을 하나씩 반복하기보다 NumPy가 전체 배치를 처리하도록 합니다. 데이터 생성이나 컬럼 처리에 반복문이 있는 것과 이미지 통계에 픽셀 반복문을 쓰는 것은 구분하세요.</p>
 <div class="question" data-question="5"><label class="check"><input type="checkbox"><span>Q5. axis=(1,2,3)을 axis=None으로 바꾸면 무엇이 사라질까요?</span></label><details><summary>설명 예시</summary><p>상품 축까지 함께 줄어들어 이미지 전체에 대한 숫자 하나가 나온다. 각 상품이 어떤 이미지 평균을 갖는지 구분할 수 없다. 현재 코드는 상품 축을 유지해 상품별 피처를 만든다.</p></details></div>
+@@LEARNING:05@@
 </section>
 
 <section class="chapter" id="chapter-06" data-title="06. IQR 탐지와 처리">
@@ -97,6 +104,7 @@
 <p><code>clip</code>은 경계보다 큰 값을 상한으로, 작은 값을 하한으로 바꾼 비교용 Series를 반환합니다. <code>remove</code>는 경계 안에 있는 값만 담은 비교용 Series를 반환합니다. 호출만으로 <code>self.df</code>의 원본 행이 삭제되지는 않습니다.</p>
 <div class="callout warning"><p>기본 분석에서는 배송 일수 15행을 이상치 후보로 표시했고, 단가 후보는 0행이었습니다. 고가 상품이 있어도 해당 분포의 IQR 경계를 넘지 않으면 표시되지 않습니다. 배송 박스플롯의 처리 후 값은 비교용이며 RFM 구매 금액은 원래 값을 유지합니다.</p></div>
 <div class="question" data-question="6"><label class="check"><input type="checkbox"><span>Q6. 큰 구매 금액을 모두 삭제하면 단골 분석에 어떤 편향이 생길까요?</span></label><details><summary>설명 예시</summary><p>정상적으로 많이 산 우수 고객의 거래가 사라질 수 있다. 고객의 Monetary가 낮아지고 VIP 판단도 달라진다. 탐지한 뒤 원본 오류인지 정상 고가 거래인지 확인해야 한다.</p></details></div>
+@@LEARNING:06@@
 </section>
 
 <section class="chapter" id="chapter-07" data-title="07. RFM을 직접 계산">
@@ -109,6 +117,7 @@
 <p><code>groupby(customer_col)</code>은 같은 고객끼리 묶습니다. <code>max</code>는 가장 최근 거래일, <code>nunique</code>는 중복 없는 주문 수, <code>sum</code>은 행 금액 합계입니다. 이 집계로 거래 2,842행이 고객 240행으로 바뀝니다.</p>
 <div class="callout warning"><p>양수 구매 합계는 반품을 차감한 순매출이나 평생가치(LTV)가 아닙니다. 고객마다 관측 기간이 다를 수 있으므로 가입일·관측 시작일이 없으면 F·M 비교에도 한계가 있습니다. 합성 데이터의 그룹을 실제 고객에 그대로 적용하기 전에 구매 주기를 검토해야 합니다.</p></div>
 <div class="question" data-question="7"><label class="check"><input type="checkbox"><span>Q7. 기준일을 하루 늦추면 R·F·M 중 무엇이 바뀔까요?</span></label><details><summary>설명 예시</summary><p>입력 거래가 같다면 모든 고객의 R이 1일 늘어난다. 주문 수와 금액은 그대로이므로 F와 M은 바뀌지 않는다. 최근 구매 경계에 걸친 고객은 그룹이 달라질 수 있다.</p></details></div>
+@@LEARNING:07@@
 </section>
 
 <section class="chapter" id="chapter-08" data-title="08. 점수와 고객 분류">
@@ -122,6 +131,7 @@
 @@CODE:summary@@
 <p>고객 표에서 다시 그룹별로 집계해 고객 수·평균 R/F/M·매출 비중을 얻습니다. 이때 고객당 한 행이므로 <code>size</code>는 고객 수입니다. 같은 <code>size</code>라도 어떤 단위의 표에서 세는지에 따라 의미가 달라집니다.</p>
 <div class="question" data-question="8"><label class="check"><input type="checkbox"><span>Q8. R=150일, F=8회인 고객은 기본 정책에서 Loyal인가요, Inactive인가요?</span></label><details><summary>설명 예시</summary><p>Inactive다. R&gt;90 조건을 먼저 검사하고, np.select는 첫 번째 참 조건을 선택한다. 자주 구매했던 고객이어도 현재 구매 공백을 우선해 분류하는 정책이다.</p></details></div>
+@@LEARNING:08@@
 </section>
 
 <section class="chapter" id="chapter-09" data-title="09. 여섯 그래프 읽기">
@@ -131,6 +141,7 @@
 @@CODE:chart@@
 <p>월별 그래프는 RFM과 같은 유효 구매 모집단을 사용합니다. <code>to_period("M")</code>으로 월을 만들고, 빠진 월은 0으로 보완합니다. “데이터가 없는 달”을 0매출로 해석해도 되는지는 실제 데이터의 수집 완전성에 따라 재검토해야 합니다.</p>
 <div class="question" data-question="9"><label class="check"><input type="checkbox"><span>Q9. 상관계수가 크다는 것만으로 광고가 매출을 높였다고 말할 수 있을까요?</span></label><details><summary>설명 예시</summary><p>말할 수 없다. 함께 변한다는 요약이고, 계산식·고객 구성·다른 변수의 영향일 수 있다. 광고 효과를 보려면 광고 노출과 비교군, 적절한 실험 설계가 추가로 필요하다.</p></details></div>
+@@LEARNING:09@@
 </section>
 
 <section class="chapter" id="chapter-10" data-title="10. 숫자에서 실행 가설로">
@@ -139,6 +150,7 @@
 <div class="table-scroll"><table><thead><tr><th>근거</th><th>대상과 행동</th><th>더 필요한 데이터·기각 조건</th></tr></thead><tbody><tr><td>VIP 60명, 고객의 25%, 매출의 71.40%</td><td>VIP에게 멤버십 혜택을 대조군과 비교해 재구매 유지 실험</td><td>혜택 비용·재구매율. 비용 증가가 추가 이익보다 크면 기각</td></tr><tr><td>Inactive 평균 구매 공백 171.93일, 과거 평균 3.15회 구매</td><td>정상 구매 주기와 수신 동의를 확인한 뒤 복귀 메시지 실험</td><td>품목별 구매 주기·동의·반품. 긴 주기가 정상이라면 이탈 해석 수정</td></tr><tr><td>New 60명, 평균 구매 경과 4.47일, 구매 1회</td><td>사용 안내·다음 구매 추천을 비교해 두 번째 구매 전환 실험</td><td>동일한 추적 기간·반품. 비교군과 차이가 없으면 효과 주장 보류</td></tr></tbody></table></div>
 <div class="callout"><p>“VIP 고객은 매출에서 비중이 크다”는 계산으로 확인할 수 있는 관찰입니다.<br>“멤버십 혜택을 주면 이탈이 줄어든다”는 아직 검증하지 않은 가설입니다.<br>현재 구현은 첫 번째를 계산하고, 두 번째를 시험할 방법을 제안합니다.</p></div>
 <div class="question" data-question="10"><label class="check"><input type="checkbox"><span>Q10. “쿠폰으로 재구매율 10% 향상”을 이 결과만으로 README에 쓰면 왜 문제가 될까요?</span></label><details><summary>설명 예시</summary><p>쿠폰 실험을 하지 않았기 때문에 효과 크기 10%는 계산한 결과가 아니다. 기대하는 방향과 실험 조건을 가설로 적고, 효과 크기는 실제 검증 뒤에 보고해야 한다.</p></details></div>
+@@LEARNING:10@@
 </section>
 
 <section class="chapter" id="chapter-11" data-title="11. 실행과 검증 따라가기">
@@ -160,30 +172,35 @@ uv run python tools/execute_notebook.py</code></pre>
 <p>현재 환경의 Python은 3.12 이상입니다. 새 환경은 uv sync --locked로 준비합니다. 정확한 의존성은 uv.lock에 고정되어 있습니다. <code>--generate-sample --seed 42</code>는 입력 샘플을 다시 만드므로 기존 외부 원본 폴더에는 쓰지 않습니다.</p>
 <div class="table-scroll"><table><thead><tr><th>확인</th><th>실제 검증 범위</th><th>그 자체로 보장하지 않는 것</th></tr></thead><tbody><tr><td>21개 의미 테스트</td><td>주문 수, 동점 점수, 대치, 이미지 축, IQR 보존, 잘못된 입력 등</td><td>모든 가능한 실데이터 오류를 검증했다는 보장은 아님</td></tr><tr><td>18개 노트북 코드 셀 실행</td><td>현재 환경에서 위에서 아래로 실행 가능</td><td>다른 라이브러리 버전·다른 데이터에서도 항상 성공한다는 보장은 아님</td></tr><tr><td>6종 차트와 집계 일치</td><td>파일 생성과 거래·고객·주문 금액의 일치</td><td>비즈니스 가설이 효과가 있거나 학습자가 이해했다는 증거는 아님</td></tr></tbody></table></div>
 <div class="question" data-question="11"><label class="check"><input type="checkbox"><span>Q11. 코드 실행 성공, 테스트 통과, 고객 유지 전략 성공은 같은 종류의 근거인가요?</span></label><details><summary>설명 예시</summary><p>서로 다르다. 실행 성공은 프로그램이 완료됐다는 근거, 테스트는 특정 계산과 경계 조건의 근거, 전략 성공은 실제 대상에서 효과가 나타났다는 실험 근거다. 앞의 두 가지로 전략 효과를 대신 주장할 수 없다.</p></details></div>
+@@LEARNING:11@@
 </section>
 
 <section class="chapter" id="chapter-12" data-title="12. 소스 탐색과 다음 학습">
 <span class="section-no">12 / SOURCE EXPLORER</span><h2>설명에서 실제 코드로 돌아가기</h2>
-<p>위 발췌의 “전체 코드에서 보기”를 누르면 아래에서 해당 줄을 찾을 수 있습니다. 파일을 바꾸거나 함수·클래스 이름을 선택해 탐색하세요. 내장 코드는 2026-10-14 생성 시점의 사본입니다. 원본이 바뀌면 자료를 재생성하고 설명도 다시 검토해야 합니다.</p>
+<p>위 발췌의 “전체 코드에서 보기”를 누르면 아래에서 해당 줄을 찾을 수 있습니다. 파일을 바꾸거나 함수·클래스 이름을 선택해 탐색하세요. 내장 코드는 @@GENERATED_DATE@@ 생성 시점의 사본입니다. 원본이 바뀌면 자료를 재생성하고 설명도 다시 검토해야 합니다.</p>
 <div class="panel"><div class="controls"><div class="field"><label for="source-file">파일</label><select id="source-file"></select></div><div class="field"><label for="source-symbol">함수·클래스</label><select id="source-symbol"></select></div><div class="field"><label for="source-line">줄 번호</label><input id="source-line" type="number" min="1" value="1"></div><button id="source-go" type="button">해당 줄로 이동</button></div><div id="source-status" class="sub" aria-live="polite"></div><div id="source-window" class="source-window" role="region" aria-label="전체 Python 소스와 줄 번호" tabindex="0"></div><p id="source-hash" class="source-note"></p></div>
 <h3>배운 내용을 설명하는 순서</h3><ol><li>“한 거래 행이 무엇인지”부터 정의합니다.</li><li>어떤 입력을 읽고 어떤 값으로 변환했는지 설명합니다.</li><li>그 변환을 수행하는 파일과 함수를 찾습니다.</li><li>작은 입력으로 결과를 예측하고 실제 계산과 비교합니다.</li><li>관찰한 결과와 추가 검증이 필요한 가설을 구분합니다.</li></ol>
 <div class="question" data-question="12"><label class="check"><input type="checkbox"><span>Q12. 실데이터로 교체할 때 가장 먼저 확인할 세 가지를 설명할 수 있나요?</span></label><details><summary>설명 예시</summary><p>① 한 행의 단위와 amount가 행 금액인지 확인한다. ② 거래–상품–이미지의 연결 키와 중복·누락을 확인한다. ③ 통화·관측 기간·반품 처리·분류 기준이 목적에 맞는지 확인한다. 출처와 이용 조건도 별도로 기록해야 한다.</p></details></div>
 <div class="callout"><p><strong>오늘의 첫 활동</strong><br>07번의 A 고객 R·F·M을 먼저 손으로 계산하세요. 그다음 횟수 계산을 “거래 행 수”로 바꿔 무엇이 틀어지는지 보고, <code>calculate_rfm()</code>의 <code>nunique</code> 줄을 소스 탐색기에서 찾아보세요.</p></div>
 <h3>참고와 출처</h3><ul><li>데이터·그래프·코드: A1-1 분석 코드와 seed=42 실행 결과. 실제 상거래 자료가 아닙니다.</li><li>여러 축 평균과 표준편차: <a href="https://numpy.org/doc/stable/reference/generated/numpy.mean.html" target="_blank" rel="noopener">NumPy mean</a>, <a href="https://numpy.org/doc/stable/reference/generated/numpy.std" target="_blank" rel="noopener">NumPy std</a>.</li><li>그룹 통계와 동점 순위: <a href="https://pandas.pydata.org/docs/user_guide/groupby.html" target="_blank" rel="noopener">Pandas groupby</a>, <a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.rank.html" target="_blank" rel="noopener">Pandas rank</a>.</li></ul>
 <p class="sub">체크는 스스로 설명해봤다는 표시이며 자동 채점이 아닙니다. 이 페이지를 새로 열면 체크는 초기화됩니다. 기본 계산·소스 탐색·차트는 인터넷 없이 작동하고, 외부 참고 링크를 열 때만 네트워크가 필요합니다.</p>
+@@LEARNING:12@@
 </section>
 
 <section class="chapter" id="bonus" data-title="보너스 · 이미지, 가입 코호트, RFM 탐색">
 <span class="section-no">BONUS / THREE EXTENSIONS</span><h2>같은 데이터에서 더 자세히 보기</h2>
 <h3>1. 이미지 밝기 분포와 엣지</h3>
+@@LEARNING:bonus-image@@
 <p>평균이 같은 이미지도 픽셀 분포와 경계는 다를 수 있습니다. <code>src/bonus.py → image_features()</code>에서 밝기를 8개 구간으로 나누고 각 구간의 픽셀 비율을 계산합니다. 구간 합은 1입니다. 이웃 픽셀의 절대 차이를 평균하면 국소적인 변화의 크기, 히스토그램의 엔트로피는 밝기 분포의 퍼짐을 요약합니다. 모두 NumPy 배열 연산이며 의미·품질의 판정값은 아닙니다.</p>
 <figure><img style="width:100%;height:auto" src="@@BONUS_IMAGE:image_features@@" alt="상품 80개의 평균 정규화 밝기 히스토그램과 픽셀 표준편차 대비 이웃 차이 산점도" loading="lazy"><figcaption>균일한 이미지의 엣지·엔트로피는 0, 검정·흰색이 절반씩인 2×2 이미지의 엔트로피는 1비트입니다.</figcaption></figure>
 <h3>2. 가입 월이 같은 고객의 구매 활동</h3>
+@@LEARNING:bonus-cohort@@
 <p>가입일을 가진 <code>customers.csv</code>를 별도로 읽습니다. 첫 구매일을 가입일로 대신 쓰지 않습니다. 같은 가입 월의 전체 고객을 분모로 놓고, 가입 후 각 월에 양수 구매를 한 고객을 한 번씩 셉니다. 주문이 여러 건이거나 상품 행이 여러 개여도 같은 달의 같은 고객은 한 명입니다. 구매하지 않은 가입자도 분모에 남습니다.</p>
 <p>가입 월(month 0)에도 구매하지 않은 고객이 있으므로 100%일 필요는 없습니다. 관측 종료일 2026-10-09에는 10월 전체를 아직 보지 못했습니다. 이런 칸을 0%로 채우면 최근 고객을 더 나쁘게 평가하게 됩니다. 아래에서는 완전히 관측한 66칸만 표시하고 나머지 78칸은 미관측으로 남깁니다. 합성 가입일로 만든 예시이며 실제 유지율의 증거는 아닙니다.</p>
 <figure><img style="width:100%;height:auto" src="@@BONUS_IMAGE:cohort_retention@@" alt="가입 코호트별 경과 월 구매 활동률. 완전히 관측하지 않은 월은 빈칸" loading="lazy"></figure>
 <div class="table-scroll">@@COHORT_TABLE@@</div>
 <h3>3. 고객별 R/F/M을 직접 탐색</h3>
+@@LEARNING:bonus-plot@@
 <p>범례를 눌러 관심 그룹을 선택하고 점에 마우스를 올려 R/F/M과 점수를 확인하세요. 드래그로 확대하고 도구 모음에서 PNG를 저장할 수 있습니다. Plotly는 이 선택 보너스에서만 사용하며 라이브러리를 파일에 포함해 인터넷 없이 동작합니다.</p>
 <iframe title="Plotly 고객 RFM 탐색" sandbox="allow-scripts allow-downloads" srcdoc="@@BONUS_RFM@@" style="width:100%;height:720px;border:1px solid var(--line);border-radius:12px" loading="lazy"></iframe>
 <p class="sub"><code>results/bonus/</code>에 상품·거래 피처, 코호트 인원·구매 고객 수·활동률과 차트 원본이 있습니다. 세 계산은 소스 탐색기에서 <code>src/bonus.py</code>로 돌아가 확인할 수 있습니다.</p>

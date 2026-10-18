@@ -1,5 +1,6 @@
 """Validate source fidelity, self-contained assets, DOM references and demo evidence."""
 import base64
+import html
 from html.parser import HTMLParser
 import json
 from pathlib import Path
@@ -73,6 +74,12 @@ def main():
     assert len(doc.questions) == 12 and len(set(doc.questions)) == 12
     assert len(doc.images) == 8
     assert len(doc.excerpts) == 18
+    notes = json.loads((study / "learning-notes.json").read_text(encoding="utf-8"))
+    assert len(notes) == 15
+    for key, note in notes.items():
+        assert f"learning-{key}" in doc.ids
+        for field in ("title", "syntax", "data", "why", "example", "question", "answer"):
+            assert html.escape(note[field]) in text, f"Learning note missing: {key}/{field}"
     assert not re.search(r"@@[A-Z]+[:@]", text), "Unresolved template marker"
     assert all(link[1:] in doc.ids for link in doc.links if link.startswith("#"))
     assert set(doc.controls).issubset(doc.labels), "Every editable control needs a label"
