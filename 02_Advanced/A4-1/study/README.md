@@ -13,7 +13,10 @@
 - 혼동 행렬, 범주별 지표, 오분류 8건의 원인 단어 막대
 - 두 문장의 BoW 벡터 비교(어순·부정어·동의어·다의어), 한국어 토큰화 예
 - TF 변형 비교 차트, BM25 포화 곡선(k1·b 조절)과 민감도 격자, 역색인 포스팅 조회와 벤치마크 차트
-- 핵심 함수 16개의 원문과 줄 번호
+- 검색 진입점·핵심 계산·분류·보너스·실험 대본의 함수 원문과 최신 줄 번호
+- 한국어 Google 스타일 docstring, 처음 등장하는 문법과 배열 축·중간값 설명
+- 설명용 두 문서를 연속 추적하는 해설 10개와 답 펼치기 질문 10개
+- 같은 해설을 읽는 [코드 읽기 가이드](code-walkthrough.md)
 
 검색 결과의 발췌는 각 글의 앞 280자이고 이메일·URL은 `[email]`·`[url]`로 가렸다. 본문에 남은 공인·작성자 이름은 그대로 보일 수 있다.
 
@@ -25,9 +28,14 @@
 uv run python -m src.run_all                 # outputs/ 갱신(약 5분)
 uv run python tools/build_study_guide.py     # a4-1.template.html + 색인 + outputs → a4-1.html
 uv run python tools/verify_study_guide.py    # Node.js 필요
+uv run python tools/verify_learning_comments.py # 설명·발췌·줄 번호·원본 해시·손계산
 ```
 
-`a4-1.template.html`이 설명과 화면의 편집 원본이다. build 도구가 현재 코드로 만든 색인·`outputs/*.json`·소스 발췌를 넣는다. 본문 설명문 속 수치 일부(예: 오분류 사례 해설)는 자동 갱신되지 않는다. 데이터나 전처리를 바꾸면 설명도 다시 봐야 한다.
+`a4-1.template.html`은 기존 설명·화면의 편집 원본이고 `learning-notes.json`은 추가 학습 해설의 원본이다. build 도구가 이 둘에 현재 코드로 만든 색인·`outputs/*.json`·소스 발췌를 넣는다. 같은 JSON에서 `code-walkthrough.md`도 생성하므로 두 자료의 설명을 따로 수정하지 않는다. `source-manifest.json`은 코드·도구·설정·설명·결과 JSON의 SHA-256을 기록한다. 검증기는 HTML에 실린 원문과 줄 번호를 현재 AST 발췌와 비교하고, 설명 패널과 Markdown의 동일성·해시도 확인한다.
+
+해시 등록 대상은 UTF-8 텍스트이며 줄바꿈을 LF로 정규화한다. Git이 체크아웃할 때 LF와 CRLF를 바꿔도 같은 내용이면 검증 결과가 같다.
+
+본문 설명문 속 수치 일부(예: 오분류 사례 해설)는 자동 갱신되지 않는다. 데이터나 전처리를 바꾸면 설명도 다시 봐야 한다. 설명용 숫자와 실제 데이터 결과는 구분한다. 학습·검증·Test 구분과 CV에서 IDF를 공유하는 한계, 오분류 기여의 해석 범위도 소스와 HTML에 함께 적었다.
 
 검증 도구는 HTML의 JavaScript를 Node.js에서 실행해 Python 구현과 비교한다.
 

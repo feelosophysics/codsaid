@@ -39,6 +39,10 @@ really actually probably maybe sure quite pretty lot lots thing things way ways 
 new old many much little first last also yes ok okay
 """
 
+# 세 문자열을 공백으로 나누어 한 집합으로 합친다. 중첩 for는 묶음마다 단어를 순회한다.
+# frozenset은 변경할 수 없는 집합이다. 중복 단어는 하나로 합쳐지고 tok in STOPWORDS로
+# 포함 여부를 빠르게 확인한다. 목록 순서에는 의미가 없다.
+# 예상: dont와 not가 모두 사라지면 부정 표현을 구별할까? 답: 구별하지 못한다.
 STOPWORDS = frozenset(
     word for group in (FUNCTION_WORDS, CONTRACTIONS, NEWSGROUP_WORDS) for word in group.split()
 )

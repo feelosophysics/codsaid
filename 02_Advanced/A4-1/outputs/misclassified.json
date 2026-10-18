@@ -3,7 +3,7 @@
     "doc_id": 400,
     "actual": "comp.windows.x",
     "predicted": "sci.space",
-    "confidence": 0.6663273436342391,
+    "confidence": 0.6663273436349659,
     "n_tokens": 82,
     "n_known_terms": 52,
     "toward_predicted": [
@@ -64,7 +64,7 @@
     "doc_id": 1628,
     "actual": "sci.space",
     "predicted": "comp.graphics",
-    "confidence": 0.9575875152882236,
+    "confidence": 0.9575875152882419,
     "n_tokens": 22,
     "n_known_terms": 20,
     "toward_predicted": [
@@ -125,7 +125,7 @@
     "doc_id": 2994,
     "actual": "comp.windows.x",
     "predicted": "sci.space",
-    "confidence": 0.29850238158387987,
+    "confidence": 0.2985023815841292,
     "n_tokens": 7,
     "n_known_terms": 7,
     "toward_predicted": [
@@ -166,7 +166,7 @@
     "doc_id": 2716,
     "actual": "rec.sport.hockey",
     "predicted": "sci.space",
-    "confidence": 0.32006991322489453,
+    "confidence": 0.32006991322514805,
     "n_tokens": 8,
     "n_known_terms": 5,
     "toward_predicted": [
@@ -199,7 +199,7 @@
     "doc_id": 3000,
     "actual": "comp.graphics",
     "predicted": "comp.windows.x",
-    "confidence": 0.7650067028851664,
+    "confidence": 0.7650067028843776,
     "n_tokens": 28,
     "n_known_terms": 21,
     "toward_predicted": [
@@ -260,7 +260,7 @@
     "doc_id": 3125,
     "actual": "rec.sport.hockey",
     "predicted": "rec.sport.baseball",
-    "confidence": 0.44429598026015,
+    "confidence": 0.44429598026032496,
     "n_tokens": 27,
     "n_known_terms": 20,
     "toward_predicted": [
@@ -321,7 +321,7 @@
     "doc_id": 420,
     "actual": "comp.graphics",
     "predicted": "comp.windows.x",
-    "confidence": 0.336478184147133,
+    "confidence": 0.3364781841470485,
     "n_tokens": 6,
     "n_known_terms": 5,
     "toward_predicted": [
@@ -354,7 +354,7 @@
     "doc_id": 1880,
     "actual": "rec.sport.baseball",
     "predicted": "rec.sport.hockey",
-    "confidence": 0.49949087982130175,
+    "confidence": 0.4994908798213104,
     "n_tokens": 7,
     "n_known_terms": 2,
     "toward_predicted": [
@@ -374,7 +374,7 @@
     "doc_id": 221,
     "actual": "comp.graphics",
     "predicted": "sci.space",
-    "confidence": 0.5452432362451096,
+    "confidence": 0.5452432362460922,
     "n_tokens": 22,
     "n_known_terms": 17,
     "toward_predicted": [
@@ -435,7 +435,7 @@
     "doc_id": 780,
     "actual": "sci.space",
     "predicted": "comp.windows.x",
-    "confidence": 0.8799011263054142,
+    "confidence": 0.8799011263053291,
     "n_tokens": 10,
     "n_known_terms": 7,
     "toward_predicted": [
@@ -476,7 +476,7 @@
     "doc_id": 3372,
     "actual": "comp.windows.x",
     "predicted": "comp.graphics",
-    "confidence": 0.4902728082654152,
+    "confidence": 0.49027280826574143,
     "n_tokens": 37,
     "n_known_terms": 24,
     "toward_predicted": [
@@ -537,7 +537,7 @@
     "doc_id": 4343,
     "actual": "comp.windows.x",
     "predicted": "comp.graphics",
-    "confidence": 0.5072567855991981,
+    "confidence": 0.5072567855986556,
     "n_tokens": 292,
     "n_known_terms": 64,
     "toward_predicted": [
@@ -598,7 +598,7 @@
     "doc_id": 2150,
     "actual": "comp.graphics",
     "predicted": "comp.windows.x",
-    "confidence": 0.8660884140933626,
+    "confidence": 0.8660884140930255,
     "n_tokens": 33,
     "n_known_terms": 26,
     "toward_predicted": [
@@ -659,7 +659,7 @@
     "doc_id": 1962,
     "actual": "sci.space",
     "predicted": "rec.sport.baseball",
-    "confidence": 0.5081863080598439,
+    "confidence": 0.5081863080599589,
     "n_tokens": 41,
     "n_known_terms": 29,
     "toward_predicted": [
@@ -720,7 +720,7 @@
     "doc_id": 948,
     "actual": "sci.space",
     "predicted": "comp.graphics",
-    "confidence": 0.8675822336453479,
+    "confidence": 0.8675822336455008,
     "n_tokens": 80,
     "n_known_terms": 34,
     "toward_predicted": [
@@ -781,7 +781,7 @@
     "doc_id": 1670,
     "actual": "comp.windows.x",
     "predicted": "comp.graphics",
-    "confidence": 0.4956827933009919,
+    "confidence": 0.49568279330064896,
     "n_tokens": 67,
     "n_known_terms": 52,
     "toward_predicted": [
@@ -842,7 +842,7 @@
     "doc_id": 223,
     "actual": "comp.windows.x",
     "predicted": "comp.graphics",
-    "confidence": 0.5291402062233079,
+    "confidence": 0.5291402062224136,
     "n_tokens": 127,
     "n_known_terms": 85,
     "toward_predicted": [
@@ -903,7 +903,7 @@
     "doc_id": 4139,
     "actual": "rec.sport.hockey",
     "predicted": "sci.space",
-    "confidence": 0.2870705281282309,
+    "confidence": 0.28707052812843625,
     "n_tokens": 22,
     "n_known_terms": 15,
     "toward_predicted": [
@@ -964,7 +964,7 @@
     "doc_id": 3895,
     "actual": "comp.graphics",
     "predicted": "comp.windows.x",
-    "confidence": 0.5795519364852804,
+    "confidence": 0.57955193648591,
     "n_tokens": 37,
     "n_known_terms": 32,
     "toward_predicted": [
@@ -1025,7 +1025,7 @@
     "doc_id": 997,
     "actual": "comp.graphics",
     "predicted": "sci.space",
-    "confidence": 0.41483351399562685,
+    "confidence": 0.41483351399600293,
     "n_tokens": 13,
     "n_known_terms": 8,
     "toward_predicted": [
@@ -1070,7 +1070,7 @@
     "doc_id": 278,
     "actual": "comp.graphics",
     "predicted": "comp.windows.x",
-    "confidence": 0.566634561145077,
+    "confidence": 0.5666345611451729,
     "n_tokens": 51,
     "n_known_terms": 31,
     "toward_predicted": [
@@ -1131,7 +1131,7 @@
     "doc_id": 4704,
     "actual": "comp.windows.x",
     "predicted": "comp.graphics",
-    "confidence": 0.9302386166105261,
+    "confidence": 0.9302386166105799,
     "n_tokens": 29,
     "n_known_terms": 24,
     "toward_predicted": [
@@ -1192,7 +1192,7 @@
     "doc_id": 3111,
     "actual": "rec.sport.hockey",
     "predicted": "rec.sport.baseball",
-    "confidence": 0.6501600668083122,
+    "confidence": 0.6501600668086355,
     "n_tokens": 9,
     "n_known_terms": 7,
     "toward_predicted": [
@@ -1233,7 +1233,7 @@
     "doc_id": 2475,
     "actual": "comp.graphics",
     "predicted": "comp.windows.x",
-    "confidence": 0.5568385412700396,
+    "confidence": 0.5568385412704355,
     "n_tokens": 27,
     "n_known_terms": 23,
     "toward_predicted": [
@@ -1294,7 +1294,7 @@
     "doc_id": 552,
     "actual": "comp.graphics",
     "predicted": "comp.windows.x",
-    "confidence": 0.9340527070729773,
+    "confidence": 0.9340527070729601,
     "n_tokens": 424,
     "n_known_terms": 226,
     "toward_predicted": [
@@ -1355,7 +1355,7 @@
     "doc_id": 4885,
     "actual": "comp.graphics",
     "predicted": "rec.sport.baseball",
-    "confidence": 0.541984443031626,
+    "confidence": 0.5419844430318348,
     "n_tokens": 27,
     "n_known_terms": 18,
     "toward_predicted": [
@@ -1412,7 +1412,7 @@
     "doc_id": 1987,
     "actual": "rec.sport.baseball",
     "predicted": "rec.sport.hockey",
-    "confidence": 0.4933674040461824,
+    "confidence": 0.49336740404597607,
     "n_tokens": 24,
     "n_known_terms": 17,
     "toward_predicted": [
@@ -1473,7 +1473,7 @@
     "doc_id": 4893,
     "actual": "comp.windows.x",
     "predicted": "sci.space",
-    "confidence": 0.4752266064386865,
+    "confidence": 0.4752266064390817,
     "n_tokens": 21,
     "n_known_terms": 17,
     "toward_predicted": [
@@ -1534,7 +1534,7 @@
     "doc_id": 4024,
     "actual": "comp.graphics",
     "predicted": "comp.windows.x",
-    "confidence": 0.7219703140311966,
+    "confidence": 0.7219703140313086,
     "n_tokens": 73,
     "n_known_terms": 53,
     "toward_predicted": [
@@ -1595,7 +1595,7 @@
     "doc_id": 4205,
     "actual": "comp.graphics",
     "predicted": "rec.sport.baseball",
-    "confidence": 0.44226229755299507,
+    "confidence": 0.44226229755322577,
     "n_tokens": 5,
     "n_known_terms": 4,
     "toward_predicted": [
@@ -1624,7 +1624,7 @@
     "doc_id": 554,
     "actual": "rec.sport.baseball",
     "predicted": "sci.space",
-    "confidence": 0.5617070433728527,
+    "confidence": 0.5617070433729879,
     "n_tokens": 5,
     "n_known_terms": 2,
     "toward_predicted": [
@@ -1644,7 +1644,7 @@
     "doc_id": 2930,
     "actual": "comp.graphics",
     "predicted": "sci.space",
-    "confidence": 0.5602385557010257,
+    "confidence": 0.5602385557014401,
     "n_tokens": 17,
     "n_known_terms": 10,
     "toward_predicted": [
@@ -1697,7 +1697,7 @@
     "doc_id": 3538,
     "actual": "comp.windows.x",
     "predicted": "comp.graphics",
-    "confidence": 0.3474242186201696,
+    "confidence": 0.34742421861967476,
     "n_tokens": 14,
     "n_known_terms": 11,
     "toward_predicted": [
@@ -1754,7 +1754,7 @@
     "doc_id": 3595,
     "actual": "rec.sport.hockey",
     "predicted": "comp.windows.x",
-    "confidence": 0.5804295467003736,
+    "confidence": 0.5804295466992939,
     "n_tokens": 28,
     "n_known_terms": 22,
     "toward_predicted": [
@@ -1815,7 +1815,7 @@
     "doc_id": 1019,
     "actual": "rec.sport.baseball",
     "predicted": "rec.sport.hockey",
-    "confidence": 0.626729993780102,
+    "confidence": 0.6267299937801084,
     "n_tokens": 24,
     "n_known_terms": 16,
     "toward_predicted": [
@@ -1876,7 +1876,7 @@
     "doc_id": 871,
     "actual": "rec.sport.hockey",
     "predicted": "rec.sport.baseball",
-    "confidence": 0.8145271175508041,
+    "confidence": 0.8145271175507826,
     "n_tokens": 22,
     "n_known_terms": 16,
     "toward_predicted": [
@@ -1937,7 +1937,7 @@
     "doc_id": 3714,
     "actual": "comp.windows.x",
     "predicted": "comp.graphics",
-    "confidence": 0.5754896637477406,
+    "confidence": 0.5754896637472418,
     "n_tokens": 42,
     "n_known_terms": 23,
     "toward_predicted": [
@@ -1998,7 +1998,7 @@
     "doc_id": 3376,
     "actual": "comp.graphics",
     "predicted": "comp.windows.x",
-    "confidence": 0.5231191345504552,
+    "confidence": 0.5231191345505444,
     "n_tokens": 59,
     "n_known_terms": 33,
     "toward_predicted": [
@@ -2059,7 +2059,7 @@
     "doc_id": 4039,
     "actual": "sci.space",
     "predicted": "rec.sport.baseball",
-    "confidence": 0.44826150678865173,
+    "confidence": 0.4482615067888254,
     "n_tokens": 29,
     "n_known_terms": 19,
     "toward_predicted": [
@@ -2120,7 +2120,7 @@
     "doc_id": 1697,
     "actual": "comp.windows.x",
     "predicted": "comp.graphics",
-    "confidence": 0.5619633042990024,
+    "confidence": 0.5619633042999619,
     "n_tokens": 14,
     "n_known_terms": 12,
     "toward_predicted": [
@@ -2181,7 +2181,7 @@
     "doc_id": 111,
     "actual": "comp.windows.x",
     "predicted": "comp.graphics",
-    "confidence": 0.6760917855698283,
+    "confidence": 0.6760917855707352,
     "n_tokens": 31,
     "n_known_terms": 20,
     "toward_predicted": [
@@ -2242,7 +2242,7 @@
     "doc_id": 4733,
     "actual": "comp.windows.x",
     "predicted": "comp.graphics",
-    "confidence": 0.526435015974665,
+    "confidence": 0.5264350159740778,
     "n_tokens": 38,
     "n_known_terms": 18,
     "toward_predicted": [
@@ -2303,7 +2303,7 @@
     "doc_id": 3897,
     "actual": "comp.windows.x",
     "predicted": "comp.graphics",
-    "confidence": 0.9157276541246716,
+    "confidence": 0.9157276541246994,
     "n_tokens": 19,
     "n_known_terms": 18,
     "toward_predicted": [
@@ -2364,7 +2364,7 @@
     "doc_id": 4877,
     "actual": "sci.space",
     "predicted": "comp.graphics",
-    "confidence": 0.3588025951552493,
+    "confidence": 0.3588025951546207,
     "n_tokens": 8,
     "n_known_terms": 4,
     "toward_predicted": [
@@ -2393,7 +2393,7 @@
     "doc_id": 2831,
     "actual": "comp.windows.x",
     "predicted": "comp.graphics",
-    "confidence": 0.5732822290536244,
+    "confidence": 0.5732822290530682,
     "n_tokens": 32,
     "n_known_terms": 27,
     "toward_predicted": [
@@ -2454,7 +2454,7 @@
     "doc_id": 1446,
     "actual": "sci.space",
     "predicted": "comp.graphics",
-    "confidence": 0.545843403465614,
+    "confidence": 0.5458434034661533,
     "n_tokens": 8,
     "n_known_terms": 7,
     "toward_predicted": [
@@ -2495,7 +2495,7 @@
     "doc_id": 1041,
     "actual": "comp.windows.x",
     "predicted": "comp.graphics",
-    "confidence": 0.4295793732139011,
+    "confidence": 0.42957937321295664,
     "n_tokens": 13,
     "n_known_terms": 9,
     "toward_predicted": [
@@ -2544,7 +2544,7 @@
     "doc_id": 4129,
     "actual": "rec.sport.baseball",
     "predicted": "sci.space",
-    "confidence": 0.5362745732936023,
+    "confidence": 0.536274573293757,
     "n_tokens": 56,
     "n_known_terms": 38,
     "toward_predicted": [
@@ -2605,7 +2605,7 @@
     "doc_id": 1230,
     "actual": "comp.windows.x",
     "predicted": "rec.sport.baseball",
-    "confidence": 0.5147107589645649,
+    "confidence": 0.5147107589646865,
     "n_tokens": 8,
     "n_known_terms": 5,
     "toward_predicted": [
@@ -2638,7 +2638,7 @@
     "doc_id": 4835,
     "actual": "comp.graphics",
     "predicted": "comp.windows.x",
-    "confidence": 0.7898667234974605,
+    "confidence": 0.7898667234976294,
     "n_tokens": 18,
     "n_known_terms": 13,
     "toward_predicted": [
@@ -2695,7 +2695,7 @@
     "doc_id": 422,
     "actual": "sci.space",
     "predicted": "rec.sport.baseball",
-    "confidence": 0.33569102988537836,
+    "confidence": 0.33569102988555294,
     "n_tokens": 10,
     "n_known_terms": 9,
     "toward_predicted": [
@@ -2744,7 +2744,7 @@
     "doc_id": 2298,
     "actual": "rec.sport.hockey",
     "predicted": "sci.space",
-    "confidence": 0.3504040566125288,
+    "confidence": 0.35040405661278323,
     "n_tokens": 8,
     "n_known_terms": 5,
     "toward_predicted": [
@@ -2777,7 +2777,7 @@
     "doc_id": 3059,
     "actual": "comp.graphics",
     "predicted": "comp.windows.x",
-    "confidence": 0.6279522961043051,
+    "confidence": 0.627952296103853,
     "n_tokens": 21,
     "n_known_terms": 16,
     "toward_predicted": [
@@ -2838,7 +2838,7 @@
     "doc_id": 1886,
     "actual": "comp.graphics",
     "predicted": "sci.space",
-    "confidence": 0.5173684024268957,
+    "confidence": 0.5173684024272999,
     "n_tokens": 15,
     "n_known_terms": 12,
     "toward_predicted": [
@@ -2895,7 +2895,7 @@
     "doc_id": 4665,
     "actual": "comp.windows.x",
     "predicted": "comp.graphics",
-    "confidence": 0.7155373055278416,
+    "confidence": 0.7155373055285457,
     "n_tokens": 10,
     "n_known_terms": 10,
     "toward_predicted": [
@@ -2948,7 +2948,7 @@
     "doc_id": 779,
     "actual": "rec.sport.baseball",
     "predicted": "rec.sport.hockey",
-    "confidence": 0.5735652283033787,
+    "confidence": 0.5735652283033298,
     "n_tokens": 9,
     "n_known_terms": 9,
     "toward_predicted": [
@@ -2997,7 +2997,7 @@
     "doc_id": 591,
     "actual": "comp.windows.x",
     "predicted": "rec.sport.baseball",
-    "confidence": 0.7800384259022743,
+    "confidence": 0.7800384259024425,
     "n_tokens": 12,
     "n_known_terms": 9,
     "toward_predicted": [
@@ -3046,7 +3046,7 @@
     "doc_id": 1152,
     "actual": "comp.graphics",
     "predicted": "sci.space",
-    "confidence": 0.5559696751556739,
+    "confidence": 0.5559696751557861,
     "n_tokens": 33,
     "n_known_terms": 24,
     "toward_predicted": [
@@ -3107,7 +3107,7 @@
     "doc_id": 2518,
     "actual": "comp.graphics",
     "predicted": "comp.windows.x",
-    "confidence": 0.45562725375154167,
+    "confidence": 0.45562725375077606,
     "n_tokens": 7,
     "n_known_terms": 6,
     "toward_predicted": [
@@ -3144,7 +3144,7 @@
     "doc_id": 1397,
     "actual": "comp.graphics",
     "predicted": "comp.windows.x",
-    "confidence": 0.8504031695064451,
+    "confidence": 0.8504031695062014,
     "n_tokens": 26,
     "n_known_terms": 19,
     "toward_predicted": [
@@ -3205,7 +3205,7 @@
     "doc_id": 1838,
     "actual": "rec.sport.baseball",
     "predicted": "rec.sport.hockey",
-    "confidence": 0.33374912606390045,
+    "confidence": 0.3337491260637054,
     "n_tokens": 7,
     "n_known_terms": 6,
     "toward_predicted": [
@@ -3242,7 +3242,7 @@
     "doc_id": 205,
     "actual": "rec.sport.baseball",
     "predicted": "rec.sport.hockey",
-    "confidence": 0.4125009206457767,
+    "confidence": 0.41250092064549315,
     "n_tokens": 39,
     "n_known_terms": 27,
     "toward_predicted": [
@@ -3303,7 +3303,7 @@
     "doc_id": 4397,
     "actual": "sci.space",
     "predicted": "comp.graphics",
-    "confidence": 0.5125249426545833,
+    "confidence": 0.5125249426547132,
     "n_tokens": 16,
     "n_known_terms": 13,
     "toward_predicted": [
@@ -3364,7 +3364,7 @@
     "doc_id": 4308,
     "actual": "comp.windows.x",
     "predicted": "rec.sport.baseball",
-    "confidence": 0.29565706591481006,
+    "confidence": 0.29565706591500074,
     "n_tokens": 2239,
     "n_known_terms": 147,
     "toward_predicted": [
@@ -3425,7 +3425,7 @@
     "doc_id": 2464,
     "actual": "comp.graphics",
     "predicted": "comp.windows.x",
-    "confidence": 0.6799116160788777,
+    "confidence": 0.6799116160787285,
     "n_tokens": 24,
     "n_known_terms": 13,
     "toward_predicted": [
@@ -3478,7 +3478,7 @@
     "doc_id": 4071,
     "actual": "comp.graphics",
     "predicted": "sci.space",
-    "confidence": 0.33946047603616847,
+    "confidence": 0.3394604760361944,
     "n_tokens": 6,
     "n_known_terms": 6,
     "toward_predicted": [
@@ -3515,7 +3515,7 @@
     "doc_id": 4126,
     "actual": "comp.graphics",
     "predicted": "comp.windows.x",
-    "confidence": 0.6506190974982449,
+    "confidence": 0.650619097496797,
     "n_tokens": 10,
     "n_known_terms": 7,
     "toward_predicted": [
@@ -3556,7 +3556,7 @@
     "doc_id": 3926,
     "actual": "comp.graphics",
     "predicted": "comp.windows.x",
-    "confidence": 0.9453338004333954,
+    "confidence": 0.9453338004334668,
     "n_tokens": 12,
     "n_known_terms": 9,
     "toward_predicted": [
@@ -3601,7 +3601,7 @@
     "doc_id": 1010,
     "actual": "sci.space",
     "predicted": "rec.sport.hockey",
-    "confidence": 0.31214491854478954,
+    "confidence": 0.31214491854460336,
     "n_tokens": 7,
     "n_known_terms": 3,
     "toward_predicted": [
@@ -3626,7 +3626,7 @@
     "doc_id": 2517,
     "actual": "comp.graphics",
     "predicted": "sci.space",
-    "confidence": 0.4342213807783382,
+    "confidence": 0.4342213807786365,
     "n_tokens": 10,
     "n_known_terms": 8,
     "toward_predicted": [
@@ -3671,7 +3671,7 @@
     "doc_id": 482,
     "actual": "comp.windows.x",
     "predicted": "comp.graphics",
-    "confidence": 0.24761981552350534,
+    "confidence": 0.24761981552309684,
     "n_tokens": 36,
     "n_known_terms": 18,
     "toward_predicted": [
@@ -3732,7 +3732,7 @@
     "doc_id": 2382,
     "actual": "rec.sport.baseball",
     "predicted": "comp.windows.x",
-    "confidence": 0.6527645858556979,
+    "confidence": 0.6527645858541874,
     "n_tokens": 15,
     "n_known_terms": 11,
     "toward_predicted": [
@@ -3785,7 +3785,7 @@
     "doc_id": 1994,
     "actual": "comp.windows.x",
     "predicted": "comp.graphics",
-    "confidence": 0.6007619598667284,
+    "confidence": 0.6007619598661477,
     "n_tokens": 10,
     "n_known_terms": 10,
     "toward_predicted": [
@@ -3838,7 +3838,7 @@
     "doc_id": 2945,
     "actual": "rec.sport.baseball",
     "predicted": "rec.sport.hockey",
-    "confidence": 0.4324551157935858,
+    "confidence": 0.4324551157933535,
     "n_tokens": 14,
     "n_known_terms": 9,
     "toward_predicted": [
@@ -3887,7 +3887,7 @@
     "doc_id": 2302,
     "actual": "rec.sport.baseball",
     "predicted": "rec.sport.hockey",
-    "confidence": 0.5490093519563739,
+    "confidence": 0.5490093519563161,
     "n_tokens": 20,
     "n_known_terms": 15,
     "toward_predicted": [
@@ -3944,7 +3944,7 @@
     "doc_id": 581,
     "actual": "comp.graphics",
     "predicted": "sci.space",
-    "confidence": 0.7529199733287375,
+    "confidence": 0.7529199733281545,
     "n_tokens": 42,
     "n_known_terms": 29,
     "toward_predicted": [
@@ -4005,7 +4005,7 @@
     "doc_id": 4905,
     "actual": "sci.space",
     "predicted": "comp.graphics",
-    "confidence": 0.6733222519245956,
+    "confidence": 0.673322251923966,
     "n_tokens": 99,
     "n_known_terms": 71,
     "toward_predicted": [
@@ -4066,7 +4066,7 @@
     "doc_id": 4021,
     "actual": "comp.graphics",
     "predicted": "sci.space",
-    "confidence": 0.551189993387812,
+    "confidence": 0.5511899933879193,
     "n_tokens": 28,
     "n_known_terms": 22,
     "toward_predicted": [
@@ -4127,7 +4127,7 @@
     "doc_id": 704,
     "actual": "comp.windows.x",
     "predicted": "comp.graphics",
-    "confidence": 0.6810946772922122,
+    "confidence": 0.6810946772922786,
     "n_tokens": 13,
     "n_known_terms": 11,
     "toward_predicted": [
@@ -4180,7 +4180,7 @@
     "doc_id": 3124,
     "actual": "comp.windows.x",
     "predicted": "rec.sport.baseball",
-    "confidence": 0.5474258423198886,
+    "confidence": 0.5474258423199904,
     "n_tokens": 7,
     "n_known_terms": 7,
     "toward_predicted": [
@@ -4221,7 +4221,7 @@
     "doc_id": 3141,
     "actual": "rec.sport.baseball",
     "predicted": "rec.sport.hockey",
-    "confidence": 0.584113767037632,
+    "confidence": 0.5841137670374574,
     "n_tokens": 10,
     "n_known_terms": 8,
     "toward_predicted": [
@@ -4266,7 +4266,7 @@
     "doc_id": 3126,
     "actual": "comp.windows.x",
     "predicted": "comp.graphics",
-    "confidence": 0.33972204652203614,
+    "confidence": 0.3397220465218092,
     "n_tokens": 17,
     "n_known_terms": 13,
     "toward_predicted": [
@@ -4323,7 +4323,7 @@
     "doc_id": 4057,
     "actual": "rec.sport.baseball",
     "predicted": "rec.sport.hockey",
-    "confidence": 0.9012085623014493,
+    "confidence": 0.9012085623012711,
     "n_tokens": 47,
     "n_known_terms": 23,
     "toward_predicted": [
@@ -4384,7 +4384,7 @@
     "doc_id": 153,
     "actual": "rec.sport.hockey",
     "predicted": "sci.space",
-    "confidence": 0.2521412009139205,
+    "confidence": 0.25214120091411113,
     "n_tokens": 7,
     "n_known_terms": 5,
     "toward_predicted": [
@@ -4417,7 +4417,7 @@
     "doc_id": 1355,
     "actual": "rec.sport.baseball",
     "predicted": "rec.sport.hockey",
-    "confidence": 0.6361637682059142,
+    "confidence": 0.6361637682056748,
     "n_tokens": 13,
     "n_known_terms": 13,
     "toward_predicted": [
@@ -4478,7 +4478,7 @@
     "doc_id": 2016,
     "actual": "rec.sport.hockey",
     "predicted": "rec.sport.baseball",
-    "confidence": 0.32212394601861405,
+    "confidence": 0.322123946018805,
     "n_tokens": 15,
     "n_known_terms": 8,
     "toward_predicted": [
@@ -4523,7 +4523,7 @@
     "doc_id": 3053,
     "actual": "comp.graphics",
     "predicted": "sci.space",
-    "confidence": 0.5926639540401341,
+    "confidence": 0.5926639540402469,
     "n_tokens": 7,
     "n_known_terms": 6,
     "toward_predicted": [
@@ -4559,7 +4559,7 @@
     "doc_id": 4226,
     "actual": "comp.windows.x",
     "predicted": "comp.graphics",
-    "confidence": 0.44086577358835355,
+    "confidence": 0.4408657735880407,
     "n_tokens": 13,
     "n_known_terms": 11,
     "toward_predicted": [
@@ -4616,7 +4616,7 @@
     "doc_id": 2051,
     "actual": "comp.graphics",
     "predicted": "comp.windows.x",
-    "confidence": 0.9049558459591122,
+    "confidence": 0.904955845959204,
     "n_tokens": 74,
     "n_known_terms": 40,
     "toward_predicted": [
@@ -4677,7 +4677,7 @@
     "doc_id": 4712,
     "actual": "comp.windows.x",
     "predicted": "comp.graphics",
-    "confidence": 0.4555213493409682,
+    "confidence": 0.4555213493404064,
     "n_tokens": 5,
     "n_known_terms": 4,
     "toward_predicted": [
@@ -4706,7 +4706,7 @@
     "doc_id": 4734,
     "actual": "comp.windows.x",
     "predicted": "comp.graphics",
-    "confidence": 0.8989134698078974,
+    "confidence": 0.8989134698076988,
     "n_tokens": 22,
     "n_known_terms": 19,
     "toward_predicted": [
@@ -4767,7 +4767,7 @@
     "doc_id": 92,
     "actual": "sci.space",
     "predicted": "rec.sport.hockey",
-    "confidence": 0.3709262798878583,
+    "confidence": 0.3709262798878208,
     "n_tokens": 8,
     "n_known_terms": 7,
     "toward_predicted": [

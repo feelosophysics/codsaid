@@ -176,10 +176,10 @@
     {
       "n_docs": 500,
       "n_terms": 8918,
-      "full_scan_ms": 1.4593074999720557,
-      "column_scan_ms": 0.03612600004998967,
-      "index_ms": 0.054954000006546266,
-      "index_build_ms": 86.24309999868274,
+      "full_scan_ms": 1.3945014999990235,
+      "column_scan_ms": 0.026866000002883084,
+      "index_ms": 0.02247200000056182,
+      "index_build_ms": 177.35540000012406,
       "ops_full": 4459000,
       "ops_column": 1512.5,
       "ops_index": 35.14,
@@ -189,10 +189,10 @@
     {
       "n_docs": 1000,
       "n_terms": 8918,
-      "full_scan_ms": 3.1172905000130413,
-      "column_scan_ms": 0.055917999998200685,
-      "index_ms": 0.02640450002218131,
-      "index_build_ms": 247.23349999112543,
+      "full_scan_ms": 3.500864999996338,
+      "column_scan_ms": 0.05175450000024284,
+      "index_ms": 0.023920999997244508,
+      "index_build_ms": 93.1827999993402,
       "ops_full": 8918000,
       "ops_column": 3025.0,
       "ops_index": 68.815,
@@ -202,10 +202,10 @@
     {
       "n_docs": 2000,
       "n_terms": 8918,
-      "full_scan_ms": 5.927792000002228,
-      "column_scan_ms": 0.10646699993230868,
-      "index_ms": 0.03198099999281112,
-      "index_build_ms": 181.13009999797214,
+      "full_scan_ms": 7.208008000002337,
+      "column_scan_ms": 0.09668050000072981,
+      "index_ms": 0.028854500001216365,
+      "index_build_ms": 168.98529999980383,
       "ops_full": 17836000,
       "ops_column": 6050.0,
       "ops_index": 133.75,
@@ -215,10 +215,10 @@
     {
       "n_docs": 4631,
       "n_terms": 8918,
-      "full_scan_ms": 12.25909649998357,
-      "column_scan_ms": 0.2335915000003297,
-      "index_ms": 0.04430649998539593,
-      "index_build_ms": 473.0876999965403,
+      "full_scan_ms": 17.59340600000087,
+      "column_scan_ms": 0.3083820000028936,
+      "index_ms": 0.04443700000138051,
+      "index_build_ms": 436.5280000001803,
       "ops_full": 41299258,
       "ops_column": 14008.775,
       "ops_index": 312.105,
@@ -226,5 +226,5 @@
       "same_top_k": true
     }
   ],
-  "elapsed_sec": 322.9
+  "elapsed_sec": 187.8
 }

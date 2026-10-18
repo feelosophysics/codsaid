@@ -11,6 +11,8 @@ HTML에 넣는 것
 from __future__ import annotations
 
 import ast
+import hashlib
+import html as html_lib
 import json
 import re
 import sys
@@ -45,22 +47,45 @@ CASES = {
 
 # 화면에 보여 줄 핵심 함수: (파일, 정규화된 이름)
 EXCERPTS = [
+    ("main.py", "main"),
+    ("main.py", "print_explain"),
     ("src/preprocess.py", "clean"),
     ("src/preprocess.py", "tokenize"),
+    ("src/preprocess.py", "normalize"),
+    ("src/preprocess.py", "remove_stopwords"),
     ("src/preprocess.py", "preprocess"),
     ("src/tfidf.py", "build_vocabulary"),
     ("src/tfidf.py", "count_matrix"),
     ("src/tfidf.py", "term_frequency"),
+    ("src/tfidf.py", "document_frequency"),
     ("src/tfidf.py", "inverse_document_frequency"),
     ("src/tfidf.py", "normalize_rows"),
     ("src/tfidf.py", "TfidfVectorizerNP._weight"),
+    ("src/tfidf.py", "TfidfVectorizerNP.fit_transform"),
+    ("src/tfidf.py", "TfidfVectorizerNP.transform"),
+    ("src/data.py", "load_corpus"),
+    ("src/data.py", "train_test_indices"),
     ("src/search.py", "cosine_similarity"),
     ("src/search.py", "top_k"),
+    ("src/search.py", "SearchEngine.search"),
+    ("src/search.py", "SearchEngine.position"),
+    ("src/classify.py", "make_model"),
+    ("src/classify.py", "select_C"),
+    ("src/classify.py", "run_classification"),
     ("src/classify.py", "explain_errors"),
     ("src/bm25.py", "BM25.fit"),
     ("src/bm25.py", "BM25.score"),
+    ("src/bm25.py", "BM25.weight_matrix"),
     ("src/inverted_index.py", "InvertedIndex.__init__"),
     ("src/inverted_index.py", "InvertedIndex.score"),
+    ("src/experiments.py", "RetrievalSplit.tfidf"),
+    ("src/experiments.py", "benchmark_index"),
+    ("src/experiments.py", "bow_limits"),
+    ("src/experiments.py", "verify_against_sklearn"),
+    ("src/run_all.py", "step_verification"),
+    ("src/run_all.py", "step_tf_variants"),
+    ("src/run_all.py", "step_bm25"),
+    ("src/run_all.py", "step_index"),
 ]
 
 
@@ -121,6 +146,35 @@ def read_json(name: str):
     return json.loads((OUT / name).read_text(encoding="utf-8"))
 
 
+def learning_panels() -> tuple[dict[str, str], str]:
+    """같은 설명 원본으로 HTML 패널과 Markdown 읽기 가이드를 만든다."""
+    notes = json.loads((STUDY / "learning-notes.json").read_text(encoding="utf-8"))
+    panels = {}
+    md = ["# A4-1 코드 읽기 가이드", "", "설명용 두 문서를 끝까지 추적한다. 실제 데이터 실행 결과와 구분해 읽는다.",
+          "설명 원본은 learning-notes.json이고 이 문서는 build_study_guide.py가 생성한다.",
+          "HTML의 각 장에도 같은 설명과 답 펼치기가 있다. 코드는 HTML 11장 또는 src 원본에서 읽는다.", ""]
+    available = {name for _, name in EXCERPTS}
+    for note in notes:
+        if not set(note["sources"]) <= available:
+            raise ValueError(f"코드 지도에 없는 참조: {note['sources']}")
+        esc = html_lib.escape
+        refs = " · ".join(f'<code>{esc(n)}</code>' for n in note["sources"])
+        paragraphs = "".join(f"<p>{esc(p)}</p>" for p in note["paragraphs"])
+        panels[note["section"]] = (
+            f'<aside class="read learning-panel" id="learn-{note["section"]}">'
+            f'<h3>{esc(note["title"])}</h3>{paragraphs}'
+            f'<p class="note">계산 추적: {esc(note["trace"])}</p>'
+            f'<details><summary>먼저 예상하기: {esc(note["question"])}</summary>'
+            f'<p>{esc(note["answer"])}</p></details>'
+            f'<p class="small">11장 코드 지도: {refs}</p></aside>'
+        )
+        md.extend([f'## {note["title"]}', "", *sum(([p, ""] for p in note["paragraphs"]), []),
+                   f'계산 추적: {note["trace"]}', "", f'**먼저 예상하기:** {note["question"]}', "",
+                   '<details><summary>답과 이유</summary>', "", note["answer"], "", '</details>', "",
+                   "코드 지도: " + ", ".join(f'`{n}`' for n in note["sources"]), ""])
+    return panels, "\n".join(md)
+
+
 def main() -> None:
     corpus = load_corpus()
     engine = SearchEngine(corpus)
@@ -160,8 +214,23 @@ def main() -> None:
     }
     payload = json.dumps(data, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
     template = (STUDY / "a4-1.template.html").read_text(encoding="utf-8")
+    panels, walkthrough = learning_panels()
+    for section, panel in panels.items():
+        marker = f"__LEARNING_{section.upper()}__"
+        if template.count(marker) != 1:
+            raise ValueError(f"학습 설명 위치가 없거나 중복됨: {marker}")
+        template = template.replace(marker, panel)
     html = template.replace("__STUDY_DATA__", payload)
     (STUDY / "a4-1.html").write_text(html, encoding="utf-8")
+    (STUDY / "code-walkthrough.md").write_text(walkthrough, encoding="utf-8")
+    sources = [ROOT / "main.py", *sorted((ROOT / "src").glob("*.py")),
+               *sorted((ROOT / "tools").glob("*.py")), STUDY / "learning-notes.json",
+               STUDY / "a4-1.template.html", ROOT / "pyproject.toml", ROOT / "uv.lock",
+               *sorted(OUT.glob("*.json"))]
+    # 등록 대상은 UTF-8 텍스트다. Git의 LF/CRLF 변환으로 검증이 깨지지 않게 정규화한다.
+    manifest = {str(p.relative_to(ROOT)).replace("\\", "/"): hashlib.sha256(p.read_text(encoding="utf-8").encode("utf-8")).hexdigest()
+                for p in sources}
+    (STUDY / "source-manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"study/a4-1.html {len(html.encode('utf-8')) / 1e6:.2f} MB")
 
 

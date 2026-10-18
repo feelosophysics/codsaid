@@ -12,6 +12,7 @@ from pathlib import Path
 
 import matplotlib
 
+# Agg는 창 없이 그림 파일을 만드는 백엔드다. pyplot을 가져오기 전에 정한다.
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
@@ -33,26 +34,68 @@ EXAMPLE_QUERIES = ["space shuttle launch", "hockey playoff goalie", "x window se
 
 
 class Log:
-    """콘솔과 파일에 같은 내용을 쓴다."""
+    """같은 설명을 콘솔에 쓰고 나중에 파일로 보관하는 기록 객체.
+
+    Attributes:
+        path: 저장할 파일 경로.
+        lines: 아직 저장하지 않은 문자열 목록.
+    """
 
     def __init__(self, path: Path):
+        """기록 경로와 빈 줄 목록을 만든다.
+
+        Args:
+            path: 저장할 Path. 이때 파일은 쓰지 않는다.
+        """
         self.path = path
         self.lines: list[str] = []
 
     def __call__(self, text: str = "") -> None:
+        """객체를 함수처럼 log(text)로 부를 때 한 줄을 기록한다.
+
+        Args:
+            text: 출력 문자열. 생략하면 빈 줄.
+
+        Returns:
+            None: 콘솔 출력과 self.lines 추가가 일어난다.
+        """
         print(text)
         self.lines.append(text)
 
     def save(self) -> None:
+        """모은 줄을 UTF-8 파일로 저장한다.
+
+        Returns:
+            None: 기존 path 파일 내용을 덮어쓴다.
+        """
         self.path.write_text("\n".join(self.lines) + "\n", encoding="utf-8")
 
 
 def save_json(name: str, data) -> None:
+    """Python 결과를 읽을 수 있는 JSON 파일로 저장한다.
+
+    Args:
+        name: outputs 아래 파일 이름.
+        data: JSON으로 표현할 dict/list/숫자. NumPy 배열은 먼저 tolist가 필요하다.
+
+    Returns:
+        None: 파일을 덮어쓴다. ensure_ascii=False는 한글을 그대로 남긴다.
+    """
     (OUT / name).write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
 # --------------------------------------------------------------------------- 단계별
 def step_verification(corpus, engine) -> dict:
+    """TF-IDF 13설정·코사인의 sklearn 대조를 기록한다.
+
+    Args:
+        corpus: 전체 문서 자료.
+        engine: 같은 자료로 만든 엔진.
+
+    Returns:
+        dict: 설정 수·최대 오차·전체 통과·행렬 shape 요약. txt/json도 저장한다.
+        오차가 커도 이 함수 자체가 예외로 중단하지 않으므로 all_pass를 확인해야 한다.
+    """
     log = Log(OUT / "tfidf_verification.txt")
     rows = verify_against_sklearn(corpus.tokens)
     log("=== TF-IDF 구현 검증 결과 ===")
@@ -83,6 +126,14 @@ def step_verification(corpus, engine) -> dict:
 
 
 def step_search_examples(engine) -> None:
+    """대표 질의와 1위 코사인의 단어별 계산을 저장한다.
+
+    Args:
+        engine: 전체 문서 검색 엔진.
+
+    Returns:
+        None: search_examples.txt를 쓴다. 분류 학습과는 별도다.
+    """
     log = Log(OUT / "search_examples.txt")
     names = engine.corpus.target_names
     for q in EXAMPLE_QUERIES:
@@ -109,6 +160,22 @@ def step_search_examples(engine) -> None:
 
 
 def plot_confusion(cm: np.ndarray, labels: list[str], path: Path, title: str) -> None:
+    """실제 범주를 행, 예측 범주를 열로 혼동 행렬 그림을 저장한다.
+
+    예: cm[우주,그래픽]=3은 실제 우주 문서 3개를 그래픽으로 예측했다는 뜻이다.
+    대각선은 정답 수다. 화면의 x는 열 j, y는 행 i라 ax.text(j,i)를 사용한다.
+
+    Args:
+        cm: shape (K,K) 건수 행렬.
+        labels: K개 범주 이름.
+        path: 저장 그림 경로.
+        title: 그림 제목.
+
+    Returns:
+        None: 그림을 저장한 뒤 닫아 메모리를 해제한다.
+    """
+    # subplots는 그림 전체 fig와 좌표축 ax를 반환한다. figsize는 가로·세로 인치, dpi는 해상도다.
+    # imshow는 (행,열) 숫자를 색으로 표시한다. cm의 값은 확률이 아닌 문서 건수다.
     fig, ax = plt.subplots(figsize=(6.4, 5.4), dpi=130)
     im = ax.imshow(cm, cmap="Blues")
     ax.set_xticks(range(len(labels)), labels, rotation=30, ha="right")
@@ -127,6 +194,15 @@ def plot_confusion(cm: np.ndarray, labels: list[str], path: Path, title: str) ->
 
 
 def step_classification(corpus) -> tuple:
+    """기본 raw TF 분류와 오분류 해설·지표·그림을 저장한다.
+
+    Args:
+        corpus: 전체 자료. 내부에서 Train/Test를 나누고 Train만으로 벡터화한다.
+
+    Returns:
+        tuple: (ClassificationResult, 요약 dict). 모델을 돌려줘 TF 변형에서
+        동일 분할·C를 재사용한다. 공개용 오분류 본문의 이메일은 가린다.
+    """
     log = Log(OUT / "classification.txt")
     res = run_classification(corpus, tf="raw")
     labels = [SHORT[n] for n in corpus.target_names]
@@ -178,6 +254,17 @@ def step_classification(corpus) -> tuple:
 
 
 def step_tf_variants(corpus, base, split: RetrievalSplit) -> list:
+    """같은 분할·C에서 TF 네 방식의 분류·검색을 비교한다.
+
+    Args:
+        corpus: 전체 자료.
+        base: raw TF 기본 분류 결과. raw는 재학습 없이 재사용한다.
+        split: 학습 문서와 질의 문서를 나눈 검색 평가 객체.
+
+    Returns:
+        list: 방식별 분류·검색 지표. 표·CSV·그림도 저장한다.
+        방식마다 C를 최적화한 비교는 아니고 TF 차이에 집중한 실험이다.
+    """
     log = Log(OUT / "tf_variants.txt")
     rows = []
     for tf in TF_VARIANTS:
@@ -194,6 +281,7 @@ def step_tf_variants(corpus, base, split: RetrievalSplit) -> list:
         log(f"{r['tf']:<8}{r['accuracy']:>8.4f}{r['f1_macro']:>8.4f}{r['doc_P@10']:>10.4f}"
             f"{r['doc_MAP@10']:>11.4f}{r['hand_P@5']:>9.3f}{r['hand_P@10']:>10.3f}")
     log.save()
+    # with는 블록이 끝나면 파일을 닫는다. DictWriter는 사전의 키를 CSV 열 이름으로 쓴다.
     with open(OUT / "tf_variants.csv", "w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=list(rows[0]))
         writer.writeheader()
@@ -218,6 +306,18 @@ def step_tf_variants(corpus, base, split: RetrievalSplit) -> list:
 
 
 def step_bm25(engine, split: RetrievalSplit, tfidf_raw: dict) -> dict:
+    """BM25 기본값과 k1×b 민감도 격자를 같은 검색 분할로 평가한다.
+
+    Args:
+        engine: 전체 문서 엔진. 결과 예시·길이 비교에 사용한다.
+        split: Train 색인·Test 질의 평가용 자료.
+        tfidf_raw: 같은 분할의 raw TF-IDF 검색 평가 결과.
+
+    Returns:
+        dict: 두 방법 지표·격자·길이·순위 예제. 로그·그림도 저장한다.
+        Test 질의의 격자는 민감도 관찰이며 최적 설정을 골라 독립 최종 성능이라
+        주장할 수 없다. 설정 선택용 검증 질의와 최종 평가 질의를 나누지는 않았다.
+    """
     log = Log(OUT / "bm25_vs_tfidf.txt")
     base = split.bm25()
     grid_k1, grid_b = (0.5, 1.2, 1.5, 2.0), (0.0, 0.25, 0.5, 0.75, 1.0)
@@ -283,6 +383,15 @@ def step_bm25(engine, split: RetrievalSplit, tfidf_raw: dict) -> dict:
 
 
 def step_index(engine) -> list:
+    """문서 규모별 검색 시간·포스팅 방문량·동등성을 기록한다.
+
+    Args:
+        engine: 전체 어휘와 L2 문서 행렬이 준비된 엔진.
+
+    Returns:
+        list: 4개 규모의 비교 결과. txt/csv/json과 로그 축 그림도 저장한다.
+        5회 중 최솟값이고 색인 구축·질의 전처리 시간은 검색 시간에서 제외한다.
+    """
     log = Log(OUT / "index_benchmark.txt")
     queries = [q for q, _ in HAND_QUERIES] + sample_short_queries(engine, 180)
     sizes = [500, 1000, 2000, len(engine.corpus)]
@@ -330,6 +439,14 @@ def step_index(engine) -> list:
 
 
 def step_bow(engine) -> dict:
+    """BoW가 잃는 어순·부정·동의어·다의어와 한국어 예제를 기록한다.
+
+    Args:
+        engine: 전체 문서 검색 엔진.
+
+    Returns:
+        dict: 예제별 토큰·코사인·순위. txt/json도 저장한다.
+    """
     log = Log(OUT / "bow_limits.txt")
     b = bow_limits(engine)
     log("=== BoW 한계 분석 ===")
@@ -360,6 +477,15 @@ def step_bow(engine) -> dict:
 
 
 def main() -> None:
+    """검증 → 검색 → 분류 → TF/BM25/역색인 → 한계를 차례로 실행한다.
+
+    python -m src.run_all의 -m은 src 패키지 안 모듈을 실행한다는 뜻이다.
+    상대 import를 사용하므로 src/run_all.py를 단독 파일로 실행하는 방식과 다르다.
+
+    Returns:
+        None: outputs를 만들고 결과 파일을 덮어쓴다. summary.json은 집계 지도다.
+        처리 시간·색인 벤치마크 시간은 실행 환경에 따라 달라진다.
+    """
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")
     OUT.mkdir(exist_ok=True)
@@ -377,10 +503,14 @@ def main() -> None:
         "verification": step_verification(corpus, engine),
     }
     step_search_examples(engine)
+    # 여기서부터 분류용 Train/Test가 생긴다. 앞의 전체 corpus 검색·검증과 구분한다.
+    # 반환된 base의 위치를 RetrievalSplit에도 넘겨 방법 간 비교 조건을 맞춘다.
     base, summary["classification"] = step_classification(corpus)
     split = RetrievalSplit(corpus, base.train_idx, base.test_idx)
     summary["tf_variants"] = step_tf_variants(corpus, base, split)
     bm = step_bm25(engine, split, split.tfidf("raw"))
+    # 사전 컴프리헨션은 필요한 키만 모으고 |는 두 dict를 합친다(같은 키는 오른쪽 값).
+    # 작은 요약은 summary, 자세한 격자·사례는 별도 JSON에 둔다.
     summary["bm25"] = {k: bm[k] for k in ("mean_result_length",)} | {
         "bm25": {k: v for k, v in bm["bm25"]["doc_queries"].items()} | {"hand_P@10": bm["bm25"]["hand_queries"]["P@10"]},
         "tfidf": {k: v for k, v in bm["tfidf"]["doc_queries"].items()} | {"hand_P@10": bm["tfidf"]["hand_queries"]["P@10"]},

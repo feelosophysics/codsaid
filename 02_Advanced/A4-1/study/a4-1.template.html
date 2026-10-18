@@ -242,8 +242,9 @@ pre.code .ln{color:var(--code-dim);user-select:none;display:inline-block;width:2
   </div>
   <div class="flow" id="flowbox"></div>
   <div class="read">
-    <p class="note">이 미션이 묻는 질문은 하나다. 단어의 <b>출현 빈도만으로</b> 문서의 의미를 알 수 있는가. 이 검색기에서는 상당 부분 그렇다. 분류 정확도는 0.90이다. 실패한 10%에서 BoW가 무엇을 못 보는지가 드러난다. 06장에서 다룬다.</p>
+    <p class="note">이 미션은 단어의 <b>출현 빈도만으로</b> 주제 검색과 분류를 어디까지 할 수 있는지 살핀다. 이 자료의 분할에서 분류 정확도는 약 0.90이다. 이는 문장 의미 전체를 이해했다는 뜻은 아니다. 실패 사례와 BoW의 한계는 06장에서 다룬다.</p>
   </div>
+  __LEARNING_FLOW__
 </section>
 
 <section id="prep">
@@ -265,15 +266,16 @@ pre.code .ln{color:var(--code-dim);user-select:none;display:inline-block;width:2
         <tr><td>아포스트로피</td><td>빈 문자열로</td><td><code>don't → dont</code>로 한 토큰을 유지해야 불용어로 거를 수 있다.</td></tr>
         <tr><td>토큰 규칙</td><td>영문자로 시작, 2자 이상</td><td><code>x11</code>·<code>mpeg2</code>는 살리고 연도·점수·전화번호는 버린다.</td></tr>
         <tr><td>철자 변형</td><td><span id="nvar"></span>쌍 통합</td><td><code>colour→color</code>처럼 뜻이 같은 철자만. 의미 동의어는 건드리지 않는다.</td></tr>
-        <tr><td>불용어</td><td>직접 정의 <span id="nstop"></span>개</td><td>기능어, 축약형, 게시판 관용어(<code>writes</code>, <code>thanks</code>). <code>not</code>도 뺐다. 주제 분류에는 영향이 작지만 감성 분석이라면 치명적이다.</td></tr>
+        <tr><td>불용어</td><td>직접 정의 <span id="nstop"></span>개</td><td>기능어, 축약형, 게시판 관용어(<code>writes</code>, <code>thanks</code>). <code>not</code>도 뺐다. 부정 의미를 잃으므로 감성·의도 과제에서는 문제가 될 수 있다. 주제 분류 영향이 작다고 별도 검증하지는 않았다.</td></tr>
         <tr><td>어간 추출</td><td>안 함</td><td><code>graphics→graphic</code>, <code>windows→window</code>처럼 범주를 가르는 단어가 합쳐진다.</td></tr>
         <tr><td>어휘 가지치기</td><td>min_df=<span class="m-mindf"></span>, max_df=<span class="m-maxdf"></span></td><td>드문 오타·고유명사와 절반 넘는 문서에 나오는 단어를 뺀다. 행렬이 4,631×8,918로 줄어든다.</td></tr>
       </tbody>
     </table></div>
     <h3>언어마다 토큰화가 다른 이유</h3>
-    <p>영어는 띄어쓰기가 단어 경계와 거의 같아 공백 토큰화로 충분하다. 한국어는 띄어쓰기 단위에 조사가 붙는다. 그래서 <code>고양이가</code>와 <code>고양이를</code>이 다른 축이 된다.</p>
+    <p>이 영어 게시글 과제에서는 정제 후 공백 분할과 토큰 규칙을 사용한다. 모든 영어 과제에 충분한 토큰화라는 뜻은 아니다. 한국어는 띄어쓰기 단위에 조사가 붙어 <code>고양이가</code>와 <code>고양이를</code>이 다른 축이 된다.</p>
     <div id="korean"></div>
   </div>
+  __LEARNING_PREP__
 </section>
 
 <section id="tfidf">
@@ -307,6 +309,7 @@ baseball pitcher launch</textarea></div>
     <p>같은 토큰 리스트를 <code>TfidfVectorizer(analyzer=lambda doc: doc)</code>에 넣었다. 그리고 파라미터 조합 13개 모두에서 직접 구현과 비교했다. 기준은 오차 1e-6이다.</p>
     <div class="scroll"><table id="verif"></table></div>
   </div>
+  __LEARNING_TFIDF__
 </section>
 
 <section id="cosine">
@@ -319,12 +322,13 @@ baseball pitcher launch</textarea></div>
     <div class="lab" id="angle"></div>
     <div class="lab" id="explain"></div>
   </div>
+  __LEARNING_COSINE__
 </section>
 
 <section id="classify">
   <div class="chap"><span class="no">05</span><h2>분류: 같은 벡터로 범주 맞히기</h2></div>
   <div class="read">
-    <p>Train 문서로만 어휘와 IDF를 학습한 TF-IDF를 특성으로 Logistic Regression을 학습했다. Test 문서까지 넣어 IDF를 계산하면 평가 데이터의 분포가 특성에 새어 들어간다. C는 Train 안의 5-fold 교차검증으로 골랐다.</p>
+    <p>Train 문서로만 어휘와 IDF를 학습한 TF-IDF를 특성으로 Logistic Regression을 학습했다. Test 문서까지 넣어 IDF를 계산하면 평가 데이터의 분포가 특성에 새어 들어간다. C는 Train 안의 5-fold 교차검증으로 골랐다. 단, fold마다 벡터화를 다시 학습하지 않고 Train 전체의 어휘·IDF를 공유하므로 검증 fold의 통계가 반영되는 한계가 있다. 최종 Test는 C 선택에 사용하지 않는다.</p>
     <div id="clsfacts" class="facts"></div>
   </div>
   <div class="grid2">
@@ -334,9 +338,10 @@ baseball pitcher launch</textarea></div>
   <div class="read">
     <p id="cmnote"></p>
     <h3>오분류 사례: 무엇이 끌어당겼나</h3>
-    <p>로지스틱 회귀에서 범주 k의 점수는 <code>w_k · x + b_k</code>다. 그래서 단어 j가 예측 범주 p를 실제 범주 a보다 밀어준 양은 <code>x_j · (w_pj − w_aj)</code>다. 막대는 그 값이다. 왼쪽은 틀린 쪽으로, 오른쪽은 맞는 쪽으로 끌어당긴 단어다.</p>
+    <p>로지스틱 회귀에서 범주 k의 점수는 <code>w_k · x + b_k</code>다. 단어 j가 예측 범주 p를 실제 범주 a보다 지지한 기여는 <code>x_j · (w_pj − w_aj)</code>다. 막대는 상위 단어의 점수 기여다. 절편 차이와 나머지 단어도 작용하므로 이 막대만으로 현실의 인과적 원인을 확정하지 않는다.</p>
   </div>
   <div class="cases" id="cases"></div>
+  __LEARNING_CLASSIFY__
 </section>
 
 <section id="limits">
@@ -364,6 +369,7 @@ baseball pitcher launch</textarea></div>
     </ul>
     <p class="note">개선 방향: 어순과 부정은 n-gram으로 일부 살릴 수 있다. 동의어는 LSA나 단어 임베딩으로, 다의어는 문맥 임베딩(BERT 계열)으로 다룬다. 검색에서는 BM25로 후보를 빠르게 뽑고 임베딩으로 재정렬하는 조합이 흔하다.</p>
   </div>
+  __LEARNING_LIMITS__
 </section>
 
 <section id="variants">
@@ -375,6 +381,7 @@ baseball pitcher launch</textarea></div>
   <div class="read">
     <p>분류는 네 변형의 차이가 0.6%p(Test 약 6건) 이내다. 분류기가 단어 가중치를 다시 학습하므로 TF 스케일의 영향을 대부분 흡수한다. 검색은 학습이 없어서 차이가 더 분명하다. 반복을 줄여서 세는 log가 가장 좋고, 반복을 아예 버리는 binary가 가장 낮다. 위 검색창에서 TF 변형을 바꿔 결과가 어떻게 달라지는지 확인해 보자.</p>
   </div>
+  __LEARNING_VARIANTS__
 </section>
 
 <section id="bm25">
@@ -382,7 +389,7 @@ baseball pitcher launch</textarea></div>
   <div class="read">
     <div class="formula">score(q,d) = Σ idf(t) · f·(k1+1) / (f + k1·(1 − b + b·|d|/avgdl))
 idf(t)     = ln((N − df + 0.5) / (df + 0.5) + 1)</div>
-    <p>TF 항은 f가 커져도 k1+1에 수렴한다(포화). 평균보다 긴 문서는 b만큼 TF를 깎는다(길이 보정). 아래에서 k1과 b를 움직이면 TF 항이 빈도에 따라 어떻게 변하는지 보인다. 짧은 문서(20토큰), 평균 문서, 긴 문서(400토큰)를 비교한다.</p>
+    <p>고정한 문서 길이에서 TF 항은 f가 커지면 k1+1에 수렴한다(포화). 평균보다 긴 문서는 분모의 길이 보정 항이 커져 같은 빈도의 기여가 작아진다. b는 그 보정 강도이며 TF를 단순히 b만큼 빼는 연산은 아니다. 아래에서 짧은 문서(20토큰), 평균 문서, 긴 문서(400토큰)를 비교한다.</p>
   </div>
   <div class="lab">
     <div class="controls" style="margin-top:0">
@@ -398,6 +405,7 @@ idf(t)     = ln((N − df + 0.5) / (df + 0.5) + 1)</div>
     <div class="scroll"><table class="heat" id="bmgrid"></table></div>
     <p class="small">b=0(길이 보정 없음)이면 단어가 많은 긴 문서가 문서 전체를 쿼리로 쓴 검색을 독식해 MAP가 0.35로 떨어진다. 이 격자는 Test 쿼리로 잰 민감도 분석이다. 기본값 k1=1.5, b=0.75는 격자를 보기 전에 정했다.</p>
   </div>
+  __LEARNING_BM25__
 </section>
 
 <section id="index">
@@ -417,6 +425,7 @@ idf(t)     = ln((N − df + 0.5) / (df + 0.5) + 1)</div>
   <div class="read">
     <p id="ixnote"></p>
   </div>
+  __LEARNING_INDEX__
 </section>
 
 <section id="check">
@@ -434,6 +443,7 @@ idf(t)     = ln((N − df + 0.5) / (df + 0.5) + 1)</div>
     <details><summary>불용어와 특수문자 범위를 그렇게 정한 근거는?</summary>
       <p>기능어·축약형·게시판 관용어는 모든 범주에 고르게 나와 변별력이 없다. 이메일·URL은 개인 정보이면서 작성자 소속이라는 엉뚱한 신호다. 숫자만으로 된 토큰은 연도·점수처럼 주제를 가르지 못하지만 x11 같은 기술 용어는 살렸다. not을 뺀 것은 주제 분류라서 가능한 선택이고, 감성 분석이라면 반대로 해야 한다. 남은 빈틈도 있다. http 없이 쓴 호스트명(doc 780)이 그 예다.</p></details>
   </div>
+  __LEARNING_CHECK__
 </section>
 
 <section id="code">
