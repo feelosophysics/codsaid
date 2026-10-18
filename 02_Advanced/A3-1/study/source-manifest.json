@@ -1,15 +1,15 @@
 {
   "hash_mode": "UTF-8 텍스트는 CRLF를 LF로 바꾼 뒤 SHA-256, 이미지·결과는 원래 바이트의 SHA-256",
   "text": {
-    "src/app.py": "2e5b89f204961bd9fa60cac5e4a76a5165a615502023ae24cd533ead9b45f536",
-    "src/convolution.py": "bdd8cda899d892b2d4cc2f2d092b85882c547499732c0044fd48c87ee1440de2",
-    "src/eda.py": "cb8935ac93da72f65da05c99e082ba46dd1929f2b71af8ad5ae389601680558d",
-    "src/evaluate.py": "3ca7f949fa2afa4c552d1ca92dfa6b1c8ca110ba995598c97aaff274703c9472",
-    "src/geometry.py": "1d2756723bb3b0a2f02f921f99261f76bc3b1020dc955de981946b150d94bcd5",
-    "src/pdf_export.py": "56ef3faea73feef87a49df07b076d5a36ba8caba8f145c62fd7f01c23e57d589",
-    "src/scanner.py": "5bedf6760ae4794604960b42249d0d33d989889450bc592035f4568125df8eaa",
-    "src/webcam.py": "b2b08fd8162a9ed7ec026863bad1362b7c640caf89790b0e4a50f0b170bf186a",
-    "study/a3-1.template.html": "e9220c4ab4b0253cf4e1169c842f4797430af2048d2ebaa8923976f5c492e251",
+    "src/app.py": "7cabd0fae827929deb24b14c59837f54bebe404e1a15cf5a28438aa2f4c95c07",
+    "src/convolution.py": "d615bf6fec3aa0378964484812c3ec187fa323c52fa2dc64414c5e0d4e6c8958",
+    "src/eda.py": "5a43b9429623c86a8179613c680b56e1904a733794633eab410f179bd08a056b",
+    "src/evaluate.py": "a2dc820783ff5249434ad9527b5c981549efb9de8d3ab5281f82a28ebe761d1f",
+    "src/geometry.py": "31b5f472a9b46a76ef6557de69c50598540eb48ffacfead65d4524cf2d0681e4",
+    "src/pdf_export.py": "c89e31acf1f844d0aecf871ca96e9266fa962dc64e71b55e779119650621206c",
+    "src/scanner.py": "6494ed8e0775c8486c5107801d8c9af95566deabb50433950b965698cfedd2db",
+    "src/webcam.py": "0b0e9da34f9218b863bfb2ebfda58a210d687bd9a5d1a4b6338e2cb1f32a685d",
+    "study/a3-1.template.html": "329535bd3d1081032a0690c830634f12ca48af1ec78906a5b6414e681e840d7c",
     "data/synthetic/labels.json": "0f19ab48a2e8271c048e172bfdd6ef7f0848e966d9801f0bd96e953fbe39825f"
   },
   "binary": {
@@ -39,141 +39,141 @@
     {
       "file": "src/scanner.py",
       "name": "preprocess",
-      "start": 81,
-      "end": 87
+      "start": 185,
+      "end": 205
     },
     {
       "file": "src/scanner.py",
       "name": "detect_edges",
-      "start": 96,
-      "end": 113
+      "start": 225,
+      "end": 261
     },
     {
       "file": "src/scanner.py",
       "name": "find_document_quad",
-      "start": 116,
-      "end": 146
+      "start": 264,
+      "end": 315
     },
     {
       "file": "src/scanner.py",
       "name": "warp_document",
-      "start": 149,
-      "end": 158
+      "start": 318,
+      "end": 343
     },
     {
       "file": "src/scanner.py",
       "name": "enhance",
-      "start": 167,
-      "end": 172
+      "start": 361,
+      "end": 379
     },
     {
       "file": "src/scanner.py",
       "name": "scan",
-      "start": 175,
-      "end": 211
+      "start": 382,
+      "end": 434
     },
     {
       "file": "src/geometry.py",
       "name": "order_points_sum_diff",
-      "start": 17,
-      "end": 26
+      "start": 39,
+      "end": 60
     },
     {
       "file": "src/geometry.py",
       "name": "order_points",
-      "start": 29,
-      "end": 46
+      "start": 63,
+      "end": 100
     },
     {
       "file": "src/geometry.py",
       "name": "is_convex",
-      "start": 56,
-      "end": 62
+      "start": 121,
+      "end": 139
     },
     {
       "file": "src/geometry.py",
       "name": "output_size_by_distance",
-      "start": 72,
-      "end": 78
+      "start": 158,
+      "end": 173
     },
     {
       "file": "src/geometry.py",
       "name": "estimate_aspect_ratio",
-      "start": 81,
-      "end": 116
+      "start": 176,
+      "end": 223
     },
     {
       "file": "src/geometry.py",
       "name": "corner_error",
-      "start": 129,
-      "end": 142
+      "start": 247,
+      "end": 271
     },
     {
       "file": "src/convolution.py",
       "name": "gaussian_kernel_1d",
-      "start": 21,
-      "end": 31
+      "start": 29,
+      "end": 54
     },
     {
       "file": "src/convolution.py",
       "name": "convolve_loops",
-      "start": 45,
-      "end": 57
+      "start": 90,
+      "end": 114
     },
     {
       "file": "src/convolution.py",
       "name": "convolve_vectorized",
-      "start": 60,
-      "end": 74
+      "start": 117,
+      "end": 143
     },
     {
       "file": "src/convolution.py",
       "name": "convolve_strided",
-      "start": 77,
-      "end": 83
+      "start": 146,
+      "end": 164
     },
     {
       "file": "src/convolution.py",
       "name": "blur_separable",
-      "start": 86,
-      "end": 90
+      "start": 167,
+      "end": 183
     },
     {
       "file": "src/eda.py",
       "name": "darkening_experiment",
-      "start": 102,
-      "end": 125
+      "start": 197,
+      "end": 239
     },
     {
       "file": "src/evaluate.py",
       "name": "judge",
-      "start": 53,
-      "end": 80
+      "start": 77,
+      "end": 118
     },
     {
       "file": "src/evaluate.py",
       "name": "sweep_summary",
-      "start": 147,
-      "end": 171
+      "start": 229,
+      "end": 269
     },
     {
       "file": "src/app.py",
       "name": "run_gui",
-      "start": 95,
-      "end": 122
+      "start": 162,
+      "end": 208
     },
     {
       "file": "src/webcam.py",
       "name": "process_frame",
-      "start": 23,
-      "end": 33
+      "start": 26,
+      "end": 44
     },
     {
       "file": "src/pdf_export.py",
       "name": "save_pdf",
-      "start": 22,
-      "end": 30
+      "start": 33,
+      "end": 54
     }
   ],
-  "html_bytes": 1670032
+  "html_bytes": 1693404
 }

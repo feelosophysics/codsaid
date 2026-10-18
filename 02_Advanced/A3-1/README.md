@@ -66,6 +66,7 @@ uv run python -m src.webcam --source 영상.mp4
 | `outputs/` | 그림, `results.json`, `scans/`(변환·이진화 결과), `scans.pdf` |
 | `tests/test_requirements.py` | 요구사항별 테스트 33개 |
 | `study/a3-1.html` | 탑다운 HTML 학습 자료 |
+| `study/code-walkthrough.md` | 코드 읽기 가이드: 함수 단위 데이터 흐름, 숫자 추적표, 확인 질문 |
 
 ## 요구사항 대응
 
@@ -127,6 +128,12 @@ uv run python -m src.run_all --data data/real --out outputs/real
 uv run python tools/build_study_guide.py
 uv run python tools/verify_study_guide.py
 ```
+
+## 코드 읽기
+
+`src/`의 모든 함수·클래스에 한국어 Google 스타일 docstring을 달았다. 줄 단위 주석은 Python 문법, 배열 shape, 그 코드가 필요한 이유를 설명한다. 새 문법은 처음 나오는 곳에서 자세히, 이후에는 짧게 적었다.
+
+함수 단위 데이터 흐름과 E01 기준 숫자 추적, 예측 질문은 [`study/code-walkthrough.md`](study/code-walkthrough.md)에 있다. 처음이라면 HTML 0–1절로 큰 그림을 본 뒤, 가이드의 읽는 순서대로 `scanner.py` → `geometry.py` → `app.py` → `evaluate.py`를 읽는다.
 
 ## 과정 내 위치
 
