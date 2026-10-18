@@ -1,0 +1,43 @@
+{
+  "thresholds": 2908,
+  "numericalChecks": 23264,
+  "sourceIntegrity": true,
+  "originalGuideLinked": true,
+  "originalGuideCalculationsMatch": true,
+  "standalone": true,
+  "rows": [
+    {
+      "threshold": 0.2,
+      "tp": 224,
+      "fp": 342,
+      "tn": 1418,
+      "fn": 16,
+      "precision": 0.3957597173144876,
+      "recall": 0.9333333333333333,
+      "f1": 0.5558312655086849,
+      "accuracy": 0.821
+    },
+    {
+      "threshold": 0.5,
+      "tp": 191,
+      "fp": 159,
+      "tn": 1601,
+      "fn": 49,
+      "precision": 0.5457142857142857,
+      "recall": 0.7958333333333333,
+      "f1": 0.6474576271186441,
+      "accuracy": 0.896
+    },
+    {
+      "threshold": 0.8,
+      "tp": 106,
+      "fp": 52,
+      "tn": 1708,
+      "fn": 134,
+      "precision": 0.6708860759493671,
+      "recall": 0.44166666666666665,
+      "f1": 0.5326633165829145,
+      "accuracy": 0.907
+    }
+  ]
+}

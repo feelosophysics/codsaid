@@ -15,7 +15,7 @@ uv run python -m src.run_all
 uv run python -m unittest discover -s tests -v
 ```
 
-`uv sync`는 `.python-version`(3.12)과 `uv.lock`에 맞춰 `.venv`를 만든다. `data_gen.py`는 `finance_data.csv`를 만들며, 이 CSV는 `.gitignore`의 `*.csv` 규칙으로 저장소에 올라가지 않는다. `src.run_all`은 그래프 10개와 `results/metrics.json`, `results/report.md`, 학습 자료용 `results/test_predictions.json`을 만든다.
+`uv sync`는 `.python-version`(3.12.13)과 `uv.lock`에 맞춰 `.venv`를 만든다. `data_gen.py`는 `finance_data.csv`를 만들며, 이 CSV는 `.gitignore`의 `*.csv` 규칙으로 저장소에 올라가지 않는다. `src.run_all`은 그래프 10개와 `results/metrics.json`, `results/report.md`, 학습 자료용 `results/test_predictions.json`을 만든다.
 
 그리드 탐색은 기본적으로 CPU 코어 2개만 쓴다. 다른 작업과 함께 돌려도 컴퓨터가 멈추지 않게 하기 위해서다. 검증 환경(코어 2개)에서 약 12분 걸렸다. 전용으로 빠르게 돌리려면 모든 코어를 쓴다. 코어 2개와 전체 코어로 각각 실행한 결과는 소수점 16번째 자리의 부동소수점 차이 하나를 빼고 모두 같았다.
 
@@ -30,6 +30,13 @@ Windows 콘솔에서 한글 출력이 깨지면 `$env:PYTHONUTF8 = "1"`을 먼�
 | Windows, Python 3.12.13, scikit-learn 1.9.1, imbalanced-learn 0.14.2, XGBoost 3.4.1, pandas 3.0.6 | 테스트 17개, 전체 실행, 노트북, HTML 검증 통과 |
 
 ## 노트북과 학습 자료
+
+VS Code에서는 Microsoft의 Python·Jupyter 확장을 설치하고, 노트북의 **Select Kernel → Python Environments**에서 이 폴더의 `.venv/Scripts/python.exe`를 선택한다. 커널이 준비됐는지 확인하려면 `uv run --group dev python tools/check_notebook_kernel.py`를 실행한다. 실제 커널에서 `3 + 7`, 주요 라이브러리 import, 데이터 10,000행 로딩을 검사하며 모델을 재학습하거나 노트북 파일을 수정하지 않는다.
+
+Windows의 앱 실행 제어가 켜진 환경에서는 uv의 마이너 버전 추적용 실행기가 차단될 수 있어, 이 프로젝트는 Python을 `3.12.13`으로 고정한다. 새 환경은 `uv venv --python 3.12.13` 후 `uv sync --frozen --group dev`로 구성할 수 있다. 기존 환경이 있다면 먼저 보존하고 재생성한다. 패키지·잠금 파일 관리는 계속 uv로 수행하며, 이 구성에 전역 Python 설치나 보안 설정 해제가 필요하지 않다.
+
+- [`study/anatomy/two-predictions.html`](study/anatomy/two-predictions.html): ‘같은 고객, 두 가지 예측’ 시각 장치. 같은 입력으로 회귀·분류를 예측한 뒤 정답을 공개해 출력과 평가의 차이를 비교한다. 초보자에게 설명할 순서와 확인 질문을 포함한다.
+- [`study/anatomy/threshold.html`](study/anatomy/threshold.html): 임계값에 따라 고객 판정과 분류 지표가 바뀌는 시각 실험.
 
 - [`notebooks/analysis_report.ipynb`](notebooks/analysis_report.ipynb): `src/` 모듈을 단계별로 불러 실행 결과와 그래프를 보여주는 보고서. 계산 로직은 노트북에 없다. `uv run python tools/execute_notebook.py`로 처음부터 실행하고 출력을 저장한다.
 - [`study/a5-1.html`](study/a5-1.html): 인터넷 없이 여는 HTML 학습 자료 12장. 규칙 켜고 끄기, 임계값, Alpha, 승인·보류·거절 정책을 직접 조작하며 지표 변화를 볼 수 있다. 페이지의 계산은 scikit-learn 결과와 대조 검증했다. 생성·검증 방법은 [`study/README.md`](study/README.md)에 있다.

@@ -1,0 +1,20 @@
+{
+  "source": "results/test_predictions.json",
+  "sourceSha256": "79df33b5e68cf66482a423d998b5b2c08eda613f84da5591d429c7a32806e167",
+  "dualSha256": "5d5d5f28a63f8a3de74d87958ff4aa10931734d853eef3f2c2911e5152f02df1",
+  "rows": 2000,
+  "parts": 55,
+  "samples": [
+    3,
+    4,
+    1030
+  ],
+  "regressionModel": "Lasso · α=0.1",
+  "classificationModel": "RF + class_weight",
+  "regressionMetrics": {
+    "rmse": 30.12878795370357,
+    "mae": 23.93165910981752,
+    "r2": 0.8611575908989588
+  },
+  "geometryStates": 20
+}
