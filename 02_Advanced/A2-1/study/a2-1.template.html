@@ -160,7 +160,7 @@ footer { color: var(--muted); font-size: .85rem; max-width: 860px; margin: 0 aut
     <li><b>큰 그림 (20분)</b> — <a href="#big">1장</a>의 학습 루프와 <a href="#step">2장</a>의 위젯에서 "1 스텝 학습"을 여러 번 눌러 본다. 손실이 왜 줄어드는지 말로 설명할 수 있으면 통과다. 세부 수식은 아직 몰라도 된다.</li>
     <li><b>부품 분해 (장당 20–40분)</b> — 3–10장의 위젯마다 <span class="predict" style="display:inline;padding:1px 6px"><b>예측</b></span> 상자가 있다. 슬라이더를 움직이기 <b>전에</b> 결과를 먼저 예측하고 확인한다. 틀린 예측이 가장 많이 배우는 지점이다.</li>
     <li><b>손계산 (60–90분, 종이와 계산기)</b> — <a href="#backprop">7장</a> 연습지에서 고정 예제를 손으로 풀고 채점한다. "새 문제"로 숫자를 바꿔 한 번 더 푼다. 행렬식·Power Iteration 2회·소프트맥스도 손으로 해 본다.</li>
-    <li><b>코드 대조 (60분)</b> — <a href="#code">11장</a>에서 각 수식이 어느 함수 어느 줄인지 확인하고, <code>tests/test_requirements.py</code>가 요구사항을 어떻게 검사하는지 읽는다. 노트북을 처음부터 실행한다.</li>
+    <li><b>코드 대조 (60분)</b> — <a href="#code">11장</a>에서 각 수식이 어느 함수 어느 줄인지 확인하고, <code>tests/test_requirements.py</code>가 요구사항을 어떻게 검사하는지 읽는다. Python 문법과 배열 shape은 소스 주석과 <a href="code-walkthrough.md">코드 읽기 가이드</a>에서 함수 단위로 따라간다. 노트북을 처음부터 실행한다.</li>
     <li><b>설명 연습</b> — <a href="#check">13장</a>의 다섯 질문에 답을 보지 않고 1분씩 말로 설명한다. 막히면 해당 장으로 돌아간다.</li>
   </ol>
 
@@ -566,7 +566,7 @@ footer { color: var(--muted); font-size: .85rem; max-width: 860px; margin: 0 aut
 <!-- ===================================================================== -->
 <section id="code">
   <h2>11. 코드 지도 — 요구사항 → 함수 → 검증</h2>
-  <p class="lead">수식이 코드 어디에 있는지, 어떤 테스트가 그것을 지키는지 한 표로 본다. 발췌는 생성 시점의 원본 사본이며 줄 번호는 원본 기준이다.</p>
+  <p class="lead">수식이 코드 어디에 있는지, 어떤 테스트가 그것을 지키는지 한 표로 본다. 발췌는 생성 시점의 원본 사본이며 줄 번호는 원본 기준이다. 발췌 속 주석은 줄 단위 문법을, <a href="code-walkthrough.md">코드 읽기 가이드</a>는 함수 단위 데이터 흐름과 작은 숫자 예제를 설명한다.</p>
   <div class="tablewrap"><table>
     <tr><th>요구사항</th><th>구현</th><th>검증 (tests/test_requirements.py)</th></tr>
     <tr><td>회전·스케일·전단 시각화</td><td><code>linear_algebra.plot_transformation</code></td><td><code>test_transforms_change_shape_as_expected</code></td></tr>

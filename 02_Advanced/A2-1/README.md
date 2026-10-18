@@ -47,6 +47,7 @@ uv가 없는 환경에서는 `pip install -r requirements.txt`로 계산·시각
 | `tools/prepare_image.py` | 위 이미지를 만드는 전처리 |
 | `tools/execute_notebooks.py` | 두 노트북을 실행하고 출력 저장 |
 | `study/a2-1.html` | 탑다운 HTML 학습 자료 (`tools/build_study_guide.py`로 생성, `tools/verify_study_guide.py`로 검증) |
+| `study/code-walkthrough.md` | 코드 읽기 가이드: 문법, 배열 shape 변화, 작은 숫자 예제, 확인 질문 |
 | `pyproject.toml`, `uv.lock`, `.python-version` | uv 환경 정의 |
 | `requirements.txt` | uv 없이 설치할 때 쓰는 의존성 목록 |
 
@@ -144,7 +145,9 @@ SVD 실험 이미지는 Matplotlib 배포본의 `sample_data/grace_hopper.jpg`(G
 
 ## HTML 학습 자료
 
-[`study/a2-1.html`](study/a2-1.html)을 브라우저에서 연다. 학습 루프 전체를 먼저 보고 각 수학 부품으로 내려가는 탑다운 순서로 구성했다. 생성·검증 방법은 [`study/README.md`](study/README.md)에 있다.
+[`study/a2-1.html`](study/a2-1.html)을 브라우저에서 연다. 학습 루프 전체를 먼저 보고 각 수학 부품으로 내려가는 탑다운 순서로 구성했다.
+
+코드를 직접 읽을 때는 [`study/code-walkthrough.md`](study/code-walkthrough.md)를 함께 본다. `src/`와 노트북 코드 셀의 주석은 줄 단위 문법과 배열 shape을, 가이드는 함수 단위 데이터 흐름과 작은 숫자 예제를 설명한다. 생성·검증 방법은 [`study/README.md`](study/README.md)에 있다.
 
 ## 과정 내 위치
 
