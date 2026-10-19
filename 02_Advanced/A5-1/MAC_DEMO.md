@@ -26,6 +26,22 @@ bash run_mac_demo.command --check-only
 
 ## 동작과 결과
 
+### 노트북을 셀별로 실행하기
+
+A5-1 폴더에서 아래 명령을 한 번 실행한다. 라이브러리 검사 후 사용자 전용 커널을 등록하며 전체 분석은 실행하지 않는다. 입력 CSV가 없으면 먼저 생성한다.
+
+```bash
+bash run_mac_demo.command --install-kernel
+```
+
+VS Code나 Jupyter에서 `notebooks/analysis_report.ipynb`를 열고 **A5-1 Mac (uv + libomp)** 커널을 선택한다. VS Code에서는 커널 선택 → 다른 커널 선택 → Jupyter 커널 목록에서 찾을 수 있다. 목록이 갱신되지 않으면 편집기를 다시 연다. 이미 실행 중인 커널은 종료·재시작하고 첫 셀부터 순서대로 실행한다.
+
+이 커널은 현재 프로젝트 `.venv`의 Python과 동봉 libomp 경로를 시작 시점부터 사용한다. `PYTHONPATH`에 프로젝트 루트를 지정해 노트북 폴더에서 실행해도 `src`를 찾을 수 있다. 패키지 추가 설치나 시스템 설정 변경은 없지만 사용자 Jupyter 커널 등록 파일은 남는다. 다른 Mac에 클론하거나 프로젝트 폴더를 이동하면 다시 등록한다. 등록 파일은 Git으로 전달하지 않는다.
+
+기본 스크립트는 `src.run_all`로 전체 분석과 `results/mac-demo/` 보고서를 만든다. 노트북은 사용자가 셀별로 같은 분석 모듈을 호출하고 중간 표·그래프를 확인한다. 현재 노트북의 차트는 `results/figures/`에 저장되어 기존 차트를 갱신하며, 노트북 저장 시 셀 출력도 `.ipynb`에 남을 수 있다. 노트북 실행만으로 `results/mac-demo/report.md`가 새로 생성되는 것은 아니다.
+
+### 실행 설정
+
 - `uv sync --locked`로 잠금 파일을 변경하지 않고 `.venv`를 준비한다. Python 버전은 기존 `.python-version`을 따른다.
 - Intel에서는 `environment/mac-intel-openmp/libomp.dylib`의 고정 SHA-256, Intel 64비트 헤더, macOS 버전을 확인한다. 라이브러리가 빠져 있으면 폴더 전체를 다시 가져오라는 안내를 표시한다. 라이선스와 출처·해시는 같은 폴더에 있다.
 - 별도 Python 프로세스에서 scikit-learn과 XGBoost를 함께 불러 각각 작은 데이터로 학습·예측한다. 실패한 라이브러리로 전체 분석을 진행하지 않는다. OpenMP 중복 오류를 무시하는 설정을 사용하지 않는다.

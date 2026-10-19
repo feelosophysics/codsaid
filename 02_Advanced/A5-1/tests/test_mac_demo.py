@@ -83,6 +83,22 @@ class MacDemoTests(unittest.TestCase):
             self.assertEqual(demo.main(), 0)
             run.assert_not_called()
 
+    def test_kernel_registration_uses_project_python_and_runtime(self):
+        with patch("ipykernel.kernelspec.install", return_value="/user/kernels/a5-1-mac-demo") as install:
+            result = demo.install_notebook_kernel({"DYLD_LIBRARY_PATH": "/verified/runtime"})
+            self.assertEqual(result, "/user/kernels/a5-1-mac-demo")
+            kwargs = install.call_args.kwargs
+            self.assertTrue(kwargs["user"])
+            self.assertEqual(kwargs["env"]["DYLD_LIBRARY_PATH"], "/verified/runtime")
+            self.assertEqual(kwargs["env"]["PYTHONPATH"], str(ROOT))
+            self.assertEqual(kwargs["kernel_name"], "a5-1-mac-demo")
+
+    def test_kernel_mode_does_not_run_full_analysis(self):
+        with patch.object(demo.sys, "platform", "darwin"), patch.object(demo.sys, "argv", ["mac_demo.py", "--install-kernel"]), patch.object(demo, "find_working_environment", return_value={}), patch.object(demo, "install_notebook_kernel", return_value="/user/kernels/demo") as install, patch.object(demo.Path, "exists", return_value=True), patch.object(demo.subprocess, "run") as run, contextlib.redirect_stdout(io.StringIO()):
+            self.assertEqual(demo.main(), 0)
+            install.assert_called_once_with({})
+            run.assert_not_called()
+
 
 if __name__ == "__main__":
     unittest.main()

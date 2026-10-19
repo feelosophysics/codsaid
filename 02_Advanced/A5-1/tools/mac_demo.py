@@ -59,6 +59,23 @@ def with_library(env: dict[str, str], library: Path) -> dict[str, str]:
     return candidate_env
 
 
+def install_notebook_kernel(env: dict[str, str]) -> str:
+    """이 컴퓨터의 사용자에게 같은 Python과 libomp를 쓰는 커널을 등록한다."""
+    from ipykernel.kernelspec import install
+
+    # 실행 위치가 notebooks/여도 프로젝트의 src를 불러올 수 있게 한다.
+    kernel_env = {"PYTHONUTF8": "1", "PYTHONPATH": str(ROOT)}
+    for key in ("DYLD_LIBRARY_PATH",):
+        if key in env:
+            kernel_env[key] = env[key]
+    return install(
+        user=True,
+        kernel_name="a5-1-mac-demo",
+        display_name="A5-1 Mac (uv + libomp)",
+        env=kernel_env,
+    )
+
+
 def library_candidates() -> list[Path]:
     """현재 Python 환경을 우선하고, 알려진 로컬 설치 위치만 탐색한다."""
     sites = dict.fromkeys(
@@ -138,7 +155,9 @@ def find_working_environment() -> dict[str, str] | None:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--check-only", action="store_true", help="로딩 확인만 하고 종료")
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--check-only", action="store_true", help="로딩 확인만 하고 종료")
+    mode.add_argument("--install-kernel", action="store_true", help="Mac 노트북용 사용자 커널 등록")
     args = parser.parse_args()
     if sys.platform != "darwin":
         print("이 도구는 macOS 전용입니다.", file=sys.stderr)
@@ -153,6 +172,12 @@ def main() -> int:
     if not (ROOT / "finance_data.csv").exists():
         print("시연에 필요한 합성 데이터를 생성합니다.", flush=True)
         subprocess.run([sys.executable, "data_gen.py"], cwd=ROOT, env=env, check=True)
+    if args.install_kernel:
+        location = install_notebook_kernel(env)
+        print(f"노트북 커널 등록 완료: {location}", flush=True)
+        print("노트북에서 'A5-1 Mac (uv + libomp)' 커널을 선택하고 재시작하세요.", flush=True)
+        print("폴더를 이동하거나 새 Mac에 클론하면 이 명령을 다시 실행하세요.", flush=True)
+        return 0
     output = ROOT / "results/mac-demo"
     print(f"분석을 시작합니다. 결과 저장 위치: {output}", flush=True)
     print("전체 모델 비교에는 시간이 걸립니다. 중단하려면 Ctrl+C를 누르세요.", flush=True)
