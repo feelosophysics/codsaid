@@ -1,0 +1,116 @@
+{
+  "project": "A5-1",
+  "target_python": "3.12.13",
+  "started_at": "2026-10-20T00:58:13+0900",
+  "steps": [
+    {
+      "label": "packages-before",
+      "command": [
+        "C:\\Users\\alzznd\\.local\\bin\\uv.exe",
+        "pip",
+        "freeze",
+        "--offline",
+        "--python",
+        "C:\\Users\\alzznd\\Desktop\\newlearn\\projects\\codsaid\\02_Advanced\\A5-1\\.venv\\Scripts\\python.exe"
+      ],
+      "exit_code": 0,
+      "seconds": 0.047
+    },
+    {
+      "label": "packages-after",
+      "command": [
+        "C:\\Users\\alzznd\\.local\\bin\\uv.exe",
+        "pip",
+        "freeze",
+        "--offline",
+        "--python",
+        "C:\\Users\\alzznd\\Desktop\\newlearn\\projects\\codsaid\\02_Advanced\\A5-1\\.venv\\Scripts\\python.exe"
+      ],
+      "exit_code": 0,
+      "seconds": 0.047
+    },
+    {
+      "label": "dependency-check",
+      "command": [
+        "C:\\Users\\alzznd\\.local\\bin\\uv.exe",
+        "pip",
+        "check",
+        "--python",
+        "C:\\Users\\alzznd\\Desktop\\newlearn\\projects\\codsaid\\02_Advanced\\A5-1\\.venv\\Scripts\\python.exe"
+      ],
+      "exit_code": 0,
+      "seconds": 0.093
+    },
+    {
+      "label": "python",
+      "command": [
+        "C:\\Users\\alzznd\\.local\\bin\\uv.exe",
+        "run",
+        "--offline",
+        "--no-sync",
+        "--no-python-downloads",
+        "python",
+        "-B",
+        "-c",
+        "import sys,json; assert sys.version_info[:3]==(3,12,13); assert 'cpython-3.12.13-' in sys.base_prefix; print(json.dumps(dict(version=sys.version,executable=sys.executable,base=sys.base_prefix)))"
+      ],
+      "exit_code": 0,
+      "seconds": 0.204
+    },
+    {
+      "label": "tests",
+      "command": [
+        "C:\\Users\\alzznd\\.local\\bin\\uv.exe",
+        "run",
+        "--offline",
+        "--no-sync",
+        "--no-python-downloads",
+        "python",
+        "-B",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "exit_code": 0,
+      "seconds": 12.312
+    },
+    {
+      "label": "runtime",
+      "command": [
+        "C:\\Users\\alzznd\\.local\\bin\\uv.exe",
+        "run",
+        "--offline",
+        "--no-sync",
+        "--no-python-downloads",
+        "python",
+        "-B",
+        "C:\\Users\\alzznd\\Desktop\\newlearn\\projects\\codsaid\\tools\\verify_python_runtime.py",
+        "A5-1",
+        "C:\\Users\\alzznd\\Desktop\\newlearn\\.newlearn\\tmp\\learning-python31213\\A5-1\\runtime-output"
+      ],
+      "exit_code": 0,
+      "seconds": 3.484
+    }
+  ],
+  "input_hashes_before": {
+    "pyproject.toml": "d063430f733b595209c239a7fce977c89d004fef7c4c443cab45489eafe18b84",
+    "uv.lock": "1b13f8ebd675e40867ebf314362af2ccd61d135f034948ca48bcdcc8403765ae"
+  },
+  "runtime": {
+    "project": "A5-1",
+    "python": "3.12.13",
+    "execution": "Real credit data: Ridge, SMOTE/LogReg and XGBoost training and predictions (1000 train / 64 test)",
+    "jupyter_kernel": "passed"
+  },
+  "status": "passed",
+  "recreated": false,
+  "package_count": 56,
+  "packages_identical": true,
+  "lockfile_unchanged": true,
+  "executable_bytes": 262144,
+  "executable_sha256": "560b9ef7d856608ab8da02ded2dc8a1951ad1f424c382c0ec6a698874165a18e",
+  "completed_at": "2026-10-20T00:58:29+0900"
+}

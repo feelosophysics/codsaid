@@ -1,0 +1,9 @@
+blur=5 canny=(50,150) 윤곽선 374개, 후보 3개 → 사각형 검출: 결과 623x883, 종횡비 0.706 (zhang). 올바른지는 4 Contours 창에서 확인
+저장: C:\Users\alzznd\Desktop\newlearn\.newlearn\tmp\learning-python31213\A3-1-attempt2\runtime-output\scan\E01_1_original.jpg
+저장: C:\Users\alzznd\Desktop\newlearn\.newlearn\tmp\learning-python31213\A3-1-attempt2\runtime-output\scan\E01_2_preprocessed.jpg
+저장: C:\Users\alzznd\Desktop\newlearn\.newlearn\tmp\learning-python31213\A3-1-attempt2\runtime-output\scan\E01_3_edges.jpg
+저장: C:\Users\alzznd\Desktop\newlearn\.newlearn\tmp\learning-python31213\A3-1-attempt2\runtime-output\scan\E01_4_contours.jpg
+저장: C:\Users\alzznd\Desktop\newlearn\.newlearn\tmp\learning-python31213\A3-1-attempt2\runtime-output\scan\E01_5_result.jpg
+저장: C:\Users\alzznd\Desktop\newlearn\.newlearn\tmp\learning-python31213\A3-1-attempt2\runtime-output\scan\scanned_E01.png
+저장: C:\Users\alzznd\Desktop\newlearn\.newlearn\tmp\learning-python31213\A3-1-attempt2\runtime-output\scan\warped_E01.jpg
+{"project": "A3-1", "python": "3.12.13", "execution": "Document scanning CLI on the existing E01 image"}

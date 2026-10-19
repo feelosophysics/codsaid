@@ -1,0 +1,7 @@
+Resolved 63 packages in 2ms
+  × Failed to download `torch==2.14.1+cpu`
+  ╰─▶ Network connectivity is disabled, but the
+      requested data wasn't found in the cache for:
+      `https://download-r2.pytorch.org/whl/cpu/torch-2.14.1%2Bcpu-cp312-cp312-win_amd64.whl`
+
+hint: `torch` (v2.14.1+cpu) was included because `perfdiag` (v0.1.0) depends on `torch`

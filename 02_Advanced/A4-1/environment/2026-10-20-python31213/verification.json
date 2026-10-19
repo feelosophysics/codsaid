@@ -1,0 +1,156 @@
+{
+  "project": "A4-1",
+  "target_python": "3.12.13",
+  "started_at": "2026-10-20T00:57:41+0900",
+  "steps": [
+    {
+      "label": "packages-before",
+      "command": [
+        "C:\\Users\\alzznd\\.local\\bin\\uv.exe",
+        "pip",
+        "freeze",
+        "--offline",
+        "--python",
+        "C:\\Users\\alzznd\\Desktop\\newlearn\\projects\\codsaid\\02_Advanced\\A4-1\\.venv\\Scripts\\python.exe"
+      ],
+      "exit_code": 0,
+      "seconds": 0.031
+    },
+    {
+      "label": "create",
+      "command": [
+        "C:\\Users\\alzznd\\.local\\bin\\uv.exe",
+        "venv",
+        "--offline",
+        "--no-python-downloads",
+        "--python",
+        "3.12.13",
+        "C:\\Users\\alzznd\\Desktop\\newlearn\\projects\\codsaid\\02_Advanced\\A4-1\\.venv"
+      ],
+      "exit_code": 0,
+      "seconds": 0.062
+    },
+    {
+      "label": "restore",
+      "command": [
+        "C:\\Users\\alzznd\\.local\\bin\\uv.exe",
+        "sync",
+        "--locked",
+        "--offline",
+        "--no-python-downloads",
+        "--python",
+        "3.12.13"
+      ],
+      "exit_code": 1,
+      "seconds": 0.359
+    },
+    {
+      "label": "restore-download",
+      "command": [
+        "C:\\Users\\alzznd\\.local\\bin\\uv.exe",
+        "sync",
+        "--locked",
+        "--no-python-downloads",
+        "--python",
+        "3.12.13"
+      ],
+      "exit_code": 0,
+      "seconds": 2.719
+    },
+    {
+      "label": "packages-after",
+      "command": [
+        "C:\\Users\\alzznd\\.local\\bin\\uv.exe",
+        "pip",
+        "freeze",
+        "--offline",
+        "--python",
+        "C:\\Users\\alzznd\\Desktop\\newlearn\\projects\\codsaid\\02_Advanced\\A4-1\\.venv\\Scripts\\python.exe"
+      ],
+      "exit_code": 0,
+      "seconds": 0.031
+    },
+    {
+      "label": "dependency-check",
+      "command": [
+        "C:\\Users\\alzznd\\.local\\bin\\uv.exe",
+        "pip",
+        "check",
+        "--python",
+        "C:\\Users\\alzznd\\Desktop\\newlearn\\projects\\codsaid\\02_Advanced\\A4-1\\.venv\\Scripts\\python.exe"
+      ],
+      "exit_code": 0,
+      "seconds": 0.047
+    },
+    {
+      "label": "python",
+      "command": [
+        "C:\\Users\\alzznd\\.local\\bin\\uv.exe",
+        "run",
+        "--offline",
+        "--no-sync",
+        "--no-python-downloads",
+        "python",
+        "-B",
+        "-c",
+        "import sys,json; assert sys.version_info[:3]==(3,12,13); assert 'cpython-3.12.13-' in sys.base_prefix; print(json.dumps(dict(version=sys.version,executable=sys.executable,base=sys.base_prefix)))"
+      ],
+      "exit_code": 0,
+      "seconds": 0.125
+    },
+    {
+      "label": "tests",
+      "command": [
+        "C:\\Users\\alzznd\\.local\\bin\\uv.exe",
+        "run",
+        "--offline",
+        "--no-sync",
+        "--no-python-downloads",
+        "python",
+        "-B",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "exit_code": 0,
+      "seconds": 14.0
+    },
+    {
+      "label": "runtime",
+      "command": [
+        "C:\\Users\\alzznd\\.local\\bin\\uv.exe",
+        "run",
+        "--offline",
+        "--no-sync",
+        "--no-python-downloads",
+        "python",
+        "-B",
+        "C:\\Users\\alzznd\\Desktop\\newlearn\\projects\\codsaid\\tools\\verify_python_runtime.py",
+        "A4-1",
+        "C:\\Users\\alzznd\\Desktop\\newlearn\\.newlearn\\tmp\\learning-python31213\\A4-1\\runtime-output"
+      ],
+      "exit_code": 0,
+      "seconds": 7.562
+    }
+  ],
+  "input_hashes_before": {
+    "pyproject.toml": "166b1795f0e2a1dc74cb71ea763b5acadad17a04d738fa6427559a19aa293631",
+    "uv.lock": "0c5d9ba39281bd9efca574c52781843f87a3386f1c8ab74ea16977d40a3c83b4"
+  },
+  "runtime": {
+    "project": "A4-1",
+    "python": "3.12.13",
+    "execution": "TF-IDF and BM25 CLI search on the cached 20 Newsgroups corpus"
+  },
+  "status": "passed",
+  "recreated": true,
+  "package_count": 17,
+  "packages_identical": true,
+  "lockfile_unchanged": true,
+  "executable_bytes": 262144,
+  "executable_sha256": "560b9ef7d856608ab8da02ded2dc8a1951ad1f424c382c0ec6a698874165a18e",
+  "completed_at": "2026-10-20T00:58:06+0900"
+}

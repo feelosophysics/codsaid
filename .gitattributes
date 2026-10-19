@@ -1,0 +1,5 @@
+# Captured program output can include alignment spaces; preserve the evidence.
+02_Advanced/*/environment/**/*.log whitespace=-blank-at-eol
+
+# Finder/bash launchers must keep Unix line endings on every checkout.
+*.command text eol=lf

@@ -1,0 +1,55 @@
+{
+  "project": "A3-1",
+  "target_python": "3.12.13",
+  "started_at": "2026-10-20T00:56:31+0900",
+  "steps": [
+    {
+      "label": "packages-before",
+      "command": [
+        "C:\\Users\\alzznd\\.local\\bin\\uv.exe",
+        "pip",
+        "freeze",
+        "--offline",
+        "--python",
+        "C:\\Users\\alzznd\\Desktop\\newlearn\\projects\\codsaid\\02_Advanced\\A3-1\\.venv\\Scripts\\python.exe"
+      ],
+      "exit_code": 0,
+      "seconds": 0.047
+    },
+    {
+      "label": "create",
+      "command": [
+        "C:\\Users\\alzznd\\.local\\bin\\uv.exe",
+        "venv",
+        "--offline",
+        "--no-python-downloads",
+        "--python",
+        "3.12.13",
+        "C:\\Users\\alzznd\\Desktop\\newlearn\\projects\\codsaid\\02_Advanced\\A3-1\\.venv"
+      ],
+      "exit_code": 0,
+      "seconds": 0.094
+    },
+    {
+      "label": "restore",
+      "command": [
+        "C:\\Users\\alzznd\\.local\\bin\\uv.exe",
+        "sync",
+        "--locked",
+        "--offline",
+        "--no-python-downloads",
+        "--python",
+        "3.12.13"
+      ],
+      "exit_code": 1,
+      "seconds": 0.406
+    }
+  ],
+  "input_hashes_before": {
+    "pyproject.toml": "fb9c2f4a405fbe80d2a8308dc49f937d5ffcfdd19a37b709c5acbade8b9b8822",
+    "uv.lock": "f196be8a40c58e54ae58d14768c3a32cb7d585f0bc1bbb30f81affd0f1229afa"
+  },
+  "status": "failed",
+  "restored_previous_environment": true,
+  "error": "'cp949' codec can't encode character '\\u2570' in position 81: illegal multibyte sequence"
+}

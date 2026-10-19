@@ -1,0 +1,143 @@
+{
+  "project": "A3-2",
+  "target_python": "3.12.13",
+  "started_at": "2026-10-20T00:57:30+0900",
+  "steps": [
+    {
+      "label": "packages-before",
+      "command": [
+        "C:\\Users\\alzznd\\.local\\bin\\uv.exe",
+        "pip",
+        "freeze",
+        "--offline",
+        "--python",
+        "C:\\Users\\alzznd\\Desktop\\newlearn\\projects\\codsaid\\02_Advanced\\A3-2\\.venv\\Scripts\\python.exe"
+      ],
+      "exit_code": 0,
+      "seconds": 0.031
+    },
+    {
+      "label": "create",
+      "command": [
+        "C:\\Users\\alzznd\\.local\\bin\\uv.exe",
+        "venv",
+        "--offline",
+        "--no-python-downloads",
+        "--python",
+        "3.12.13",
+        "C:\\Users\\alzznd\\Desktop\\newlearn\\projects\\codsaid\\02_Advanced\\A3-2\\.venv"
+      ],
+      "exit_code": 0,
+      "seconds": 0.079
+    },
+    {
+      "label": "restore",
+      "command": [
+        "C:\\Users\\alzznd\\.local\\bin\\uv.exe",
+        "sync",
+        "--locked",
+        "--offline",
+        "--no-python-downloads",
+        "--python",
+        "3.12.13"
+      ],
+      "exit_code": 0,
+      "seconds": 0.812
+    },
+    {
+      "label": "packages-after",
+      "command": [
+        "C:\\Users\\alzznd\\.local\\bin\\uv.exe",
+        "pip",
+        "freeze",
+        "--offline",
+        "--python",
+        "C:\\Users\\alzznd\\Desktop\\newlearn\\projects\\codsaid\\02_Advanced\\A3-2\\.venv\\Scripts\\python.exe"
+      ],
+      "exit_code": 0,
+      "seconds": 0.031
+    },
+    {
+      "label": "dependency-check",
+      "command": [
+        "C:\\Users\\alzznd\\.local\\bin\\uv.exe",
+        "pip",
+        "check",
+        "--python",
+        "C:\\Users\\alzznd\\Desktop\\newlearn\\projects\\codsaid\\02_Advanced\\A3-2\\.venv\\Scripts\\python.exe"
+      ],
+      "exit_code": 0,
+      "seconds": 0.047
+    },
+    {
+      "label": "python",
+      "command": [
+        "C:\\Users\\alzznd\\.local\\bin\\uv.exe",
+        "run",
+        "--offline",
+        "--no-sync",
+        "--no-python-downloads",
+        "python",
+        "-B",
+        "-c",
+        "import sys,json; assert sys.version_info[:3]==(3,12,13); assert 'cpython-3.12.13-' in sys.base_prefix; print(json.dumps(dict(version=sys.version,executable=sys.executable,base=sys.base_prefix)))"
+      ],
+      "exit_code": 0,
+      "seconds": 0.141
+    },
+    {
+      "label": "tests",
+      "command": [
+        "C:\\Users\\alzznd\\.local\\bin\\uv.exe",
+        "run",
+        "--offline",
+        "--no-sync",
+        "--no-python-downloads",
+        "python",
+        "-B",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "exit_code": 0,
+      "seconds": 8.75
+    },
+    {
+      "label": "runtime",
+      "command": [
+        "C:\\Users\\alzznd\\.local\\bin\\uv.exe",
+        "run",
+        "--offline",
+        "--no-sync",
+        "--no-python-downloads",
+        "python",
+        "-B",
+        "C:\\Users\\alzznd\\Desktop\\newlearn\\projects\\codsaid\\tools\\verify_python_runtime.py",
+        "A3-2",
+        "C:\\Users\\alzznd\\Desktop\\newlearn\\.newlearn\\tmp\\learning-python31213\\A3-2\\runtime-output"
+      ],
+      "exit_code": 0,
+      "seconds": 1.39
+    }
+  ],
+  "input_hashes_before": {
+    "pyproject.toml": "c2d304ef4ea660e416b1db9f6d9092632941cdf4ccac9200ae4c0dcb266a1dd3",
+    "uv.lock": "b082581fbec8d882c69d663429ea7c35c32f5809da26a7afc695d0e21e3e4f79"
+  },
+  "runtime": {
+    "project": "A3-2",
+    "python": "3.12.13",
+    "execution": "Headless tracking of 60 frames from the existing demo video"
+  },
+  "status": "passed",
+  "recreated": true,
+  "package_count": 12,
+  "packages_identical": true,
+  "lockfile_unchanged": true,
+  "executable_bytes": 262144,
+  "executable_sha256": "560b9ef7d856608ab8da02ded2dc8a1951ad1f424c382c0ec6a698874165a18e",
+  "completed_at": "2026-10-20T00:57:41+0900"
+}

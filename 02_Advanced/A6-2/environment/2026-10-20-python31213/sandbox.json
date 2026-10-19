@@ -1,0 +1,1 @@
+{"project": "A6-2", "version": "3.12.13", "base": "C:\\Users\\alzznd\\AppData\\Roaming\\uv\\python\\cpython-3.12.13-windows-x86_64-none", "torch": "2.14.1+cpu", "torchvision": "0.29.1+cpu", "cpu_backward": "passed"}

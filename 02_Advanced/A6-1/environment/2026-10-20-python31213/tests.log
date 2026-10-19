@@ -1,0 +1,40 @@
+test_dataloader_covers_every_sample_once (test_nn.Data.test_dataloader_covers_every_sample_once) ... ok
+test_parse_idx_roundtrip (test_nn.Data.test_parse_idx_roundtrip) ... ok
+test_std_matches_formula (test_nn.Initialization.test_std_matches_formula) ... ok
+test_unknown_method (test_nn.Initialization.test_unknown_method) ... ok
+test_activations_values (test_nn.Layers.test_activations_values) ... ok
+test_bce_with_logits_matches_and_survives_saturation (test_nn.Layers.test_bce_with_logits_matches_and_survives_saturation) ... ok
+test_cross_entropy_gradient_is_softmax_minus_onehot (test_nn.Layers.test_cross_entropy_gradient_is_softmax_minus_onehot) ... ok
+test_inverted_dropout (test_nn.Layers.test_inverted_dropout) ... ok
+test_linear_shapes_and_parameters (test_nn.Layers.test_linear_shapes_and_parameters) ... ok
+test_sequential_collects_parameters_and_zero_grad (test_nn.Layers.test_sequential_collects_parameters_and_zero_grad) ... ok
+test_adam_first_step_is_lr_times_sign (test_nn.Optimizers.test_adam_first_step_is_lr_times_sign) ... ok
+test_adam_minimizes_quadratic (test_nn.Optimizers.test_adam_minimizes_quadratic) ... ok
+test_sgd_momentum_and_weight_decay (test_nn.Optimizers.test_sgd_momentum_and_weight_decay) ... ok
+test_sgd_step (test_nn.Optimizers.test_sgd_step) ... ok
+test_gradient_check_all_layers_below_1e7 (test_requirements.Checklist.test_gradient_check_all_layers_below_1e7) ... ok
+test_he_init_is_robust_across_seeds (test_requirements.Checklist.test_he_init_is_robust_across_seeds) ... ok
+test_he_init_solves_xor_within_100_epochs (test_requirements.Checklist.test_he_init_solves_xor_within_100_epochs) ... ok
+test_mnist_one_epoch_above_80_percent (test_requirements.Checklist.test_mnist_one_epoch_above_80_percent) ... ok
+test_numpy_only (test_requirements.Checklist.test_numpy_only)
+구현 패키지는 NumPy와 표준 라이브러리만 import한다. ... ok
+test_xavier_is_available (test_requirements.Checklist.test_xavier_is_available) ... ok
+test_zero_init_fails_to_learn (test_requirements.Checklist.test_zero_init_fails_to_learn)
+Zero Init: 50 epoch 후에도 loss가 ln 2에서 전혀 줄지 않는다 (대칭성 문제). ... ok
+test_wrong_backward_fails_the_check (test_tensor.GradientCheckDetectsBugs.test_wrong_backward_fails_the_check)
+음성 대조: 일부러 틀린 미분(2x 대신 x)을 넣으면 검사가 실패해야 한다. ... ok
+test_attributes (test_tensor.TensorBasics.test_attributes) ... ok
+test_broadcast_gradient_is_summed (test_tensor.TensorBasics.test_broadcast_gradient_is_summed) ... ok
+test_chain_rule_scalar (test_tensor.TensorBasics.test_chain_rule_scalar) ... ok
+test_deep_graph_has_no_recursion_limit (test_tensor.TensorBasics.test_deep_graph_has_no_recursion_limit) ... ok
+test_four_operations (test_tensor.TensorBasics.test_four_operations) ... ok
+test_matmul_gradient_shapes_and_values (test_tensor.TensorBasics.test_matmul_gradient_shapes_and_values) ... ok
+test_no_grad_and_constants (test_tensor.TensorBasics.test_no_grad_and_constants) ... ok
+test_non_scalar_backward_needs_grad (test_tensor.TensorBasics.test_non_scalar_backward_needs_grad) ... ok
+test_reused_node_accumulates (test_tensor.TensorBasics.test_reused_node_accumulates) ... ok
+test_softmax_is_stable_and_sums_to_one (test_tensor.TensorBasics.test_softmax_is_stable_and_sums_to_one) ... ok
+
+----------------------------------------------------------------------
+Ran 32 tests in 3.786s
+
+OK

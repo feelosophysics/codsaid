@@ -1,0 +1,145 @@
+{
+  "project": "A6-1",
+  "target_python": "3.12.13",
+  "started_at": "2026-10-20T00:59:07+0900",
+  "steps": [
+    {
+      "label": "packages-before",
+      "command": [
+        "C:\\Users\\alzznd\\.local\\bin\\uv.exe",
+        "pip",
+        "freeze",
+        "--offline",
+        "--python",
+        "C:\\Users\\alzznd\\Desktop\\newlearn\\projects\\codsaid\\02_Advanced\\A6-1\\.venv\\Scripts\\python.exe"
+      ],
+      "exit_code": 0,
+      "seconds": 0.047
+    },
+    {
+      "label": "create",
+      "command": [
+        "C:\\Users\\alzznd\\.local\\bin\\uv.exe",
+        "venv",
+        "--offline",
+        "--no-python-downloads",
+        "--python",
+        "3.12.13",
+        "C:\\Users\\alzznd\\Desktop\\newlearn\\projects\\codsaid\\02_Advanced\\A6-1\\.venv"
+      ],
+      "exit_code": 0,
+      "seconds": 0.047
+    },
+    {
+      "label": "restore",
+      "command": [
+        "C:\\Users\\alzznd\\.local\\bin\\uv.exe",
+        "sync",
+        "--locked",
+        "--offline",
+        "--no-python-downloads",
+        "--python",
+        "3.12.13"
+      ],
+      "exit_code": 0,
+      "seconds": 1.062
+    },
+    {
+      "label": "packages-after",
+      "command": [
+        "C:\\Users\\alzznd\\.local\\bin\\uv.exe",
+        "pip",
+        "freeze",
+        "--offline",
+        "--python",
+        "C:\\Users\\alzznd\\Desktop\\newlearn\\projects\\codsaid\\02_Advanced\\A6-1\\.venv\\Scripts\\python.exe"
+      ],
+      "exit_code": 0,
+      "seconds": 0.063
+    },
+    {
+      "label": "dependency-check",
+      "command": [
+        "C:\\Users\\alzznd\\.local\\bin\\uv.exe",
+        "pip",
+        "check",
+        "--python",
+        "C:\\Users\\alzznd\\Desktop\\newlearn\\projects\\codsaid\\02_Advanced\\A6-1\\.venv\\Scripts\\python.exe"
+      ],
+      "exit_code": 0,
+      "seconds": 0.047
+    },
+    {
+      "label": "python",
+      "command": [
+        "C:\\Users\\alzznd\\.local\\bin\\uv.exe",
+        "run",
+        "--offline",
+        "--no-sync",
+        "--no-python-downloads",
+        "python",
+        "-B",
+        "-c",
+        "import sys,json; assert sys.version_info[:3]==(3,12,13); assert 'cpython-3.12.13-' in sys.base_prefix; print(json.dumps(dict(version=sys.version,executable=sys.executable,base=sys.base_prefix)))"
+      ],
+      "exit_code": 0,
+      "seconds": 0.14
+    },
+    {
+      "label": "tests",
+      "command": [
+        "C:\\Users\\alzznd\\.local\\bin\\uv.exe",
+        "run",
+        "--offline",
+        "--no-sync",
+        "--no-python-downloads",
+        "python",
+        "-B",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "exit_code": 0,
+      "seconds": 6.672
+    },
+    {
+      "label": "runtime",
+      "command": [
+        "C:\\Users\\alzznd\\.local\\bin\\uv.exe",
+        "run",
+        "--offline",
+        "--no-sync",
+        "--no-python-downloads",
+        "python",
+        "-B",
+        "C:\\Users\\alzznd\\Desktop\\newlearn\\projects\\codsaid\\tools\\verify_python_runtime.py",
+        "A6-1",
+        "C:\\Users\\alzznd\\Desktop\\newlearn\\.newlearn\\tmp\\learning-python31213\\A6-1\\runtime-output"
+      ],
+      "exit_code": 0,
+      "seconds": 2.719
+    }
+  ],
+  "input_hashes_before": {
+    "pyproject.toml": "397f64898732ad037263e3652eb11018fcd8fe130c2a57dbafa0df14da8be795",
+    "uv.lock": "15dde562415139013194937e3d900e66d53d2fb5009134e9b7327be40857f5b3"
+  },
+  "runtime": {
+    "project": "A6-1",
+    "python": "3.12.13",
+    "execution": "MiniGrad XOR training for 100 epochs",
+    "final_loss": 0.0019055374834025932,
+    "accuracy": 1.0
+  },
+  "status": "passed",
+  "recreated": true,
+  "package_count": 12,
+  "packages_identical": true,
+  "lockfile_unchanged": true,
+  "executable_bytes": 262144,
+  "executable_sha256": "560b9ef7d856608ab8da02ded2dc8a1951ad1f424c382c0ec6a698874165a18e",
+  "completed_at": "2026-10-20T00:59:18+0900"
+}

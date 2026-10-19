@@ -1,0 +1,7 @@
+Resolved 36 packages in 2ms
+  × Failed to download `opencv-python==5.0.0.93`
+  ╰─▶ Network connectivity is disabled, but the
+      requested data wasn't found in the cache for:
+      `https://files.pythonhosted.org/packages/21/f0/9fa6e85cb10c8eb36a0222d27e50fe381b86ce49a55446bf39f491727564/opencv_python-5.0.0.93-cp37-abi3-win_amd64.whl`
+
+hint: `opencv-python` (v5.0.0.93) was included because `a3-1-document-scanner` (v0.1.0) depends on `opencv-python`

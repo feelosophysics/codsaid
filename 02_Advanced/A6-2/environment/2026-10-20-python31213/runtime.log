@@ -1,0 +1,1 @@
+{"project": "A6-2", "python": "3.12.13", "execution": "Real AAPL windows: four forecast architectures trained for 3 steps each; cached pretrained ResNet18 forward/backward and FC update", "torch": "2.14.1+cpu"}

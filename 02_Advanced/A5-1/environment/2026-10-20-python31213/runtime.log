@@ -1,0 +1,5 @@
+[IPKernelApp] WARNING | Kernel is running over TCP without encryption. All communication (including code and outputs) is sent in plain text and is susceptible to eavesdropping. Use IPC transport or launch with kernel manager-provisioned CurveZMQ keys to enable transport encryption.
+C:\Users\alzznd\Desktop\newlearn\projects\codsaid\02_Advanced\A5-1\.venv\Lib\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+C:\Users\alzznd\Desktop\newlearn\projects\codsaid\02_Advanced\A5-1\.venv\Scripts\python.exe
+{"project": "A5-1", "python": "3.12.13", "execution": "Real credit data: Ridge, SMOTE/LogReg and XGBoost training and predictions (1000 train / 64 test)", "jupyter_kernel": "passed"}

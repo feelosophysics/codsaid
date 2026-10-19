@@ -1,0 +1,37 @@
+test_backward_matches_hand_calculation (test_requirements.BackpropTest.test_backward_matches_hand_calculation) ... ok
+test_backward_matches_numerical_gradient (test_requirements.BackpropTest.test_backward_matches_numerical_gradient) ... ok
+test_forward_matches_hand_calculation (test_requirements.BackpropTest.test_forward_matches_hand_calculation) ... ok
+test_random_network_gradient_check (test_requirements.BackpropTest.test_random_network_gradient_check) ... ok
+test_sgd_step_reduces_loss (test_requirements.BackpropTest.test_sgd_step_reduces_loss) ... ok
+test_shapes (test_requirements.BackpropTest.test_shapes) ... ok
+test_derivative_of_x_squared_at_3 (test_requirements.CalculusTest.test_derivative_of_x_squared_at_3) ... ok
+test_gradient_perpendicular_to_contour (test_requirements.CalculusTest.test_gradient_perpendicular_to_contour) ... ok
+test_numerical_gradient_matches_analytic (test_requirements.CalculusTest.test_numerical_gradient_matches_analytic) ... ok
+test_numerical_hessian (test_requirements.CalculusTest.test_numerical_hessian) ... ok
+test_det_matches_area_ratio_within_1_percent (test_requirements.LinearAlgebraTest.test_det_matches_area_ratio_within_1_percent) ... ok
+test_power_iteration_dominant_negative_eigenvalue (test_requirements.LinearAlgebraTest.test_power_iteration_dominant_negative_eigenvalue) ... ok
+test_power_iteration_within_5_percent_of_eig (test_requirements.LinearAlgebraTest.test_power_iteration_within_5_percent_of_eig) ... ok
+test_svd_compression_k_values (test_requirements.LinearAlgebraTest.test_svd_compression_k_values) ... ok
+test_svd_matches_eckart_young_error (test_requirements.LinearAlgebraTest.test_svd_matches_eckart_young_error) ... ok
+test_transforms_change_shape_as_expected (test_requirements.LinearAlgebraTest.test_transforms_change_shape_as_expected) ... ok
+test_unit_circle_shape_and_radius (test_requirements.LinearAlgebraTest.test_unit_circle_shape_and_radius) ... ok
+test_adam_converges_on_ellipse_where_gd_oscillates (test_requirements.OptimizerTest.test_adam_converges_on_ellipse_where_gd_oscillates) ... ok
+test_adam_first_step_size_is_lr_per_coordinate (test_requirements.OptimizerTest.test_adam_first_step_size_is_lr_per_coordinate) ... ok
+test_learning_rate_stability_boundary (test_requirements.OptimizerTest.test_learning_rate_stability_boundary) ... ok
+test_momentum_first_step_equals_gd (test_requirements.OptimizerTest.test_momentum_first_step_equals_gd) ... ok
+test_momentum_reaches_origin_and_helps_on_ellipse (test_requirements.OptimizerTest.test_momentum_reaches_origin_and_helps_on_ellipse) ... ok
+test_newton_one_step_on_quadratic (test_requirements.OptimizerTest.test_newton_one_step_on_quadratic) ... ok
+test_newton_solves_rosenbrock (test_requirements.OptimizerTest.test_newton_solves_rosenbrock) ... ok
+test_vanilla_gd_reaches_origin (test_requirements.OptimizerTest.test_vanilla_gd_reaches_origin) ... ok
+test_bce_is_bernoulli_nll (test_requirements.ProbabilityTest.test_bce_is_bernoulli_nll) ... ok
+test_bernoulli_pmf (test_requirements.ProbabilityTest.test_bernoulli_pmf) ... ok
+test_categorical_cross_entropy (test_requirements.ProbabilityTest.test_categorical_cross_entropy) ... ok
+test_information_identities (test_requirements.ProbabilityTest.test_information_identities) ... ok
+test_mse_and_gaussian_nll_have_same_minimizer (test_requirements.ProbabilityTest.test_mse_and_gaussian_nll_have_same_minimizer) ... ok
+test_normal_pdf_integrates_to_one_and_peak (test_requirements.ProbabilityTest.test_normal_pdf_integrates_to_one_and_peak) ... ok
+test_softmax_sums_to_one (test_requirements.ProbabilityTest.test_softmax_sums_to_one) ... ok
+
+----------------------------------------------------------------------
+Ran 32 tests in 1.907s
+
+OK

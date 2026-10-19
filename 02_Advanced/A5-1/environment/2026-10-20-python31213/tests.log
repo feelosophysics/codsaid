@@ -1,0 +1,22 @@
+test_at_least_five_rules (test_pipeline.BaselineTest.test_at_least_five_rules) ... ok
+test_hits_on_known_rows (test_pipeline.BaselineTest.test_hits_on_known_rows) ... ok
+test_if_else_matches_vectorized_rules (test_pipeline.BaselineTest.test_if_else_matches_vectorized_rules) ... ok
+test_age_groups_and_debt_amount (test_pipeline.CustomTransformerTest.test_age_groups_and_debt_amount) ... ok
+test_out_of_range_age_becomes_missing (test_pipeline.CustomTransformerTest.test_out_of_range_age_becomes_missing) ... ok
+test_sklearn_contract (test_pipeline.CustomTransformerTest.test_sklearn_contract) ... ok
+test_generated_shape_and_imbalance (test_pipeline.DataGenerationTest.test_generated_shape_and_imbalance) ... ok
+test_generation_is_reproducible (test_pipeline.DataGenerationTest.test_generation_is_reproducible) ... ok
+test_metrics_from_confusion (test_pipeline.ModelingTest.test_metrics_from_confusion) ... ok
+test_one_standard_error_selection (test_pipeline.ModelingTest.test_one_standard_error_selection) ... ok
+test_policy_thresholds_are_ordered (test_pipeline.ModelingTest.test_policy_thresholds_are_ordered) ... ok
+test_smote_lives_inside_imblearn_pipeline (test_pipeline.ModelingTest.test_smote_lives_inside_imblearn_pipeline) ... ok
+test_strong_lasso_removes_all_features (test_pipeline.ModelingTest.test_strong_lasso_removes_all_features) ... ok
+test_fit_uses_train_only (test_pipeline.PreprocessorTest.test_fit_uses_train_only) ... ok
+test_missing_values_are_imputed (test_pipeline.PreprocessorTest.test_missing_values_are_imputed) ... ok
+test_stratified_80_20_and_deterministic (test_pipeline.SplitTest.test_stratified_80_20_and_deterministic) ... ok
+test_targets_are_not_inputs (test_pipeline.SplitTest.test_targets_are_not_inputs) ... ok
+
+----------------------------------------------------------------------
+Ran 17 tests in 0.994s
+
+OK

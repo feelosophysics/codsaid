@@ -1,0 +1,42 @@
+test_distance_method_distorts_strong_tilt (test_requirements.TestAspectRatio.test_distance_method_distorts_strong_tilt) ... ok
+test_distance_size_uses_longer_side (test_requirements.TestAspectRatio.test_distance_size_uses_longer_side) ... ok
+test_frontal_falls_back_to_distance (test_requirements.TestAspectRatio.test_frontal_falls_back_to_distance) ... ok
+test_zhang_recovers_true_ratio (test_requirements.TestAspectRatio.test_zhang_recovers_true_ratio) ... ok
+test_all_methods_match_opencv (test_requirements.TestConvolutionBonus.test_all_methods_match_opencv) ... ok
+test_convolution_is_dot_product (test_requirements.TestConvolutionBonus.test_convolution_is_dot_product) ... ok
+test_kernel_matches_opencv (test_requirements.TestConvolutionBonus.test_kernel_matches_opencv) ... ok
+test_uint8_color_blur (test_requirements.TestConvolutionBonus.test_uint8_color_blur) ... ok
+test_geometry_does_not_use_opencv (test_requirements.TestCoordinateOrdering.test_geometry_does_not_use_opencv) ... ok
+test_no_external_geometry_library (test_requirements.TestCoordinateOrdering.test_no_external_geometry_library)
+제약: scipy·shapely·딥러닝·OCR 라이브러리를 import하지 않는다. ... ok
+test_order_any_input_permutation (test_requirements.TestCoordinateOrdering.test_order_any_input_permutation) ... ok
+test_perspective_quads (test_requirements.TestCoordinateOrdering.test_perspective_quads) ... ok
+test_sum_diff_rule_breaks_at_45_degrees (test_requirements.TestCoordinateOrdering.test_sum_diff_rule_breaks_at_45_degrees)
+흔한 합·차 규칙은 45°에서 같은 점을 두 번 고른다. 직접 구현은 네 점을 모두 쓴다. ... ok
+test_easy_case_succeeds_with_defaults (test_requirements.TestDatasetAndEvaluation.test_easy_case_succeeds_with_defaults) ... ok
+test_generator_is_deterministic (test_requirements.TestDatasetAndEvaluation.test_generator_is_deterministic) ... ok
+test_judge_thresholds (test_requirements.TestDatasetAndEvaluation.test_judge_thresholds) ... ok
+test_summary_table (test_requirements.TestDatasetAndEvaluation.test_summary_table) ... ok
+test_tilt_cases_are_at_least_45_degrees (test_requirements.TestDatasetAndEvaluation.test_tilt_cases_are_at_least_45_degrees) ... ok
+test_twenty_images_five_per_condition (test_requirements.TestDatasetAndEvaluation.test_twenty_images_five_per_condition) ... ok
+test_darkening_reduces_border_gradient (test_requirements.TestEda.test_darkening_reduces_border_gradient) ... ok
+test_histogram_sums_to_one (test_requirements.TestEda.test_histogram_sums_to_one) ... ok
+test_corner_error_ignores_start_vertex (test_requirements.TestGeometryHelpers.test_corner_error_ignores_start_vertex) ... ok
+test_polygon_area_and_convexity (test_requirements.TestGeometryHelpers.test_polygon_area_and_convexity) ... ok
+test_korean_path_roundtrip (test_requirements.TestImageIo.test_korean_path_roundtrip) ... ok
+test_multi_page_pdf (test_requirements.TestPdfBonus.test_multi_page_pdf) ... ok
+test_adaptive_beats_global_threshold_under_shadow (test_requirements.TestPipeline.test_adaptive_beats_global_threshold_under_shadow)
+그림자로 오른쪽 절반이 어두운 종이: 적응형은 배경을 흰색으로 유지한다. ... ok
+test_adaptive_threshold_is_binary (test_requirements.TestPipeline.test_adaptive_threshold_is_binary) ... ok
+test_finds_document_corners (test_requirements.TestPipeline.test_finds_document_corners) ... ok
+test_no_document_reports_reason (test_requirements.TestPipeline.test_no_document_reports_reason) ... ok
+test_params_normalized (test_requirements.TestPipeline.test_params_normalized) ... ok
+test_stage_shapes (test_requirements.TestPipeline.test_stage_shapes) ... ok
+test_warp_is_upright_rectangle (test_requirements.TestPipeline.test_warp_is_upright_rectangle)
+펴진 결과의 종횡비가 원래 종이(3:4)에 가깝고, 글자 줄이 수평이다. ... ok
+test_process_frame (test_requirements.TestWebcamFrame.test_process_frame) ... ok
+
+----------------------------------------------------------------------
+Ran 33 tests in 1.900s
+
+OK

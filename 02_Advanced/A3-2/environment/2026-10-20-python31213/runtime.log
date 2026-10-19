@@ -1,0 +1,3 @@
+등록 물체: C:\Users\alzznd\Desktop\newlearn\projects\codsaid\02_Advanced\A3-2\data\target\target.png (ORB 특징점 340개)
+60 frames, 96.4 fps, IDs used 2, target frames 0, zone events 0 → C:\Users\alzznd\Desktop\newlearn\.newlearn\tmp\learning-python31213\A3-2\runtime-output\video
+{"project": "A3-2", "python": "3.12.13", "execution": "Headless tracking of 60 frames from the existing demo video"}

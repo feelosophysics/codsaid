@@ -1,0 +1,7 @@
+Resolved 27 packages in 1ms
+  × Failed to download `scipy==1.18.1`
+  ╰─▶ Network connectivity is disabled, but the
+      requested data wasn't found in the cache for:
+      `https://files.pythonhosted.org/packages/39/e7/979fd14e75008623df31ba70d6bb144700f68feadcea042021c06a05bf82/scipy-1.18.1-cp312-cp312-win_amd64.whl`
+
+hint: `scipy` (v1.18.1) was included because `a4-1-document-search` (v0.1.0) depends on `scikit-learn` (v1.9.1) which depends on `scipy`

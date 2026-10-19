@@ -1,0 +1,29 @@
+test_knee (test_pipeline.ClusteringTest.test_knee) ... ok
+test_relabel_orders_by_overdue_rate (test_pipeline.ClusteringTest.test_relabel_orders_by_overdue_rate) ... ok
+test_scaler_standardizes (test_pipeline.ClusteringTest.test_scaler_standardizes) ... ok
+test_select_k_finds_real_clusters (test_pipeline.ClusteringTest.test_select_k_finds_real_clusters) ... ok
+test_select_k_rule (test_pipeline.ClusteringTest.test_select_k_rule)
+1-표준오차 안 → 안정성 → 구별 변수 수. 표준오차 밖 K(4)는 구별 변수가 많아도 고르지 않는다. ... ok
+test_clustering_input_excludes_targets (test_pipeline.DataTest.test_clustering_input_excludes_targets) ... ok
+test_generated_data_matches_mission (test_pipeline.DataTest.test_generated_data_matches_mission) ... ok
+test_same_data_as_a5_1 (test_pipeline.DataTest.test_same_data_as_a5_1)
+미션 조건: A5-1(Mission 23)에서 만든 데이터와 같은 데이터를 쓴다. ... ok
+test_split_matches_a5_1 (test_pipeline.DataTest.test_split_matches_a5_1) ... ok
+test_bands (test_pipeline.ModelTest.test_bands) ... ok
+test_model_settings (test_pipeline.ModelTest.test_model_settings) ... ok
+test_params_come_from_a5_1 (test_pipeline.ModelTest.test_params_come_from_a5_1) ... ok
+test_signature_match (test_pipeline.PersonaTest.test_signature_match) ... ok
+test_unmatched_cluster_raises (test_pipeline.PersonaTest.test_unmatched_cluster_raises) ... ok
+test_cases_follow_mission_definition (test_pipeline.ResultTest.test_cases_follow_mission_definition) ... ok
+test_required_figures_exist (test_pipeline.ResultTest.test_required_figures_exist) ... ok
+test_saved_transform_reproduces_labels (test_pipeline.ResultTest.test_saved_transform_reproduces_labels) ... ok
+test_additivity (test_pipeline.ShapTest.test_additivity) ... ok
+test_case_selection (test_pipeline.ShapTest.test_case_selection) ... ok
+test_dependence_feature_rule (test_pipeline.ShapTest.test_dependence_feature_rule) ... ok
+test_explains_overdue_class (test_pipeline.ShapTest.test_explains_overdue_class) ... ok
+test_narrate (test_pipeline.ShapTest.test_narrate) ... ok
+
+----------------------------------------------------------------------
+Ran 22 tests in 3.030s
+
+OK
