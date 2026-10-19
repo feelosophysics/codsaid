@@ -97,3 +97,54 @@ Error message(s): ['dlopen(/Users/f22losophysics1091/Desktop/codsaid/02_Advanced
 실행에 실패했습니다. 위 오류 내용을 확인해 주세요.
 
 Enter를 누르면 창을 닫습니다. 
+
+---
+
+f22losophysics1091@c6r10s6 A5-1 % git pull          
+remote: Enumerating objects: 25, done.
+remote: Counting objects: 100% (25/25), done.
+remote: Compressing objects: 100% (9/9), done.
+remote: Total 16 (delta 7), reused 16 (delta 7), pack-reused 0 (from 0)
+Unpacking objects: 100% (16/16), 332.08 KiB | 1024.00 KiB/s, done.
+From https://github.com/feelosophysics/codsaid
+   578247e..20569d9  main       -> origin/main
+Updating 578247e..20569d9
+Fast-forward
+ 02_Advanced/A5-1/MAC_DEMO.md                                  |  15 +++--
+ 02_Advanced/A5-1/README.md                                    |   2 +-
+ 02_Advanced/A5-1/environment/mac-intel-openmp/LICENSE.TXT     | 361 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 02_Advanced/A5-1/environment/mac-intel-openmp/README.md       |  12 ++++
+ 02_Advanced/A5-1/environment/mac-intel-openmp/libomp.dylib    | Bin 0 -> 852904 bytes
+ 02_Advanced/A5-1/environment/mac-intel-openmp/provenance.json |  19 ++++++
+ 02_Advanced/A5-1/tests/test_mac_demo.py                       |  88 ++++++++++++++++++++++++++
+ 02_Advanced/A5-1/tools/mac_demo.py                            |  68 +++++++++++++++++---
+ 8 files changed, 551 insertions(+), 14 deletions(-)
+ create mode 100644 02_Advanced/A5-1/environment/mac-intel-openmp/LICENSE.TXT
+ create mode 100644 02_Advanced/A5-1/environment/mac-intel-openmp/README.md
+ create mode 100644 02_Advanced/A5-1/environment/mac-intel-openmp/libomp.dylib
+ create mode 100644 02_Advanced/A5-1/environment/mac-intel-openmp/provenance.json
+ create mode 100644 02_Advanced/A5-1/tests/test_mac_demo.py
+f22losophysics1091@c6r10s6 A5-1 % bash run_mac_demo.command 
+A5-1 Mac 시연: 기존 잠금 파일로 환경을 준비합니다.
+Resolved 63 packages in 5ms
+Checked 57 packages in 13ms
+Python: /Users/f22losophysics1091/Desktop/codsaid/02_Advanced/A5-1/.venv/bin/python
+CPU: x86_64
+검증된 Intel Mac libomp 23.1.3 연결: /Users/f22losophysics1091/Desktop/codsaid/02_Advanced/A5-1/environment/mac-intel-openmp/libomp.dylib
+XGBoost + scikit-learn 학습 검사 OK: 3.4.1
+시연에 필요한 합성 데이터를 생성합니다.
+데이터 생성 완료: finance_data.csv
+전체 샘플 수: 10000
+연체(1) 비율: 12.01% (불균형 데이터 확인)
+분석을 시작합니다. 결과 저장 위치: /Users/f22losophysics1091/Desktop/codsaid/02_Advanced/A5-1/results/mac-demo
+전체 모델 비교에는 시간이 걸립니다. 중단하려면 Ctrl+C를 누르세요.
+Matplotlib is building the font cache; this may take a moment.
+[   0.1s] 데이터 10,000행, Train 8,000 / Test 2,000
+[   3.3s] 회귀 완료
+[ 324.7s] 분류 완료, 최종 모델 RF + class_weight
+[ 331.2s] 정책·그래프 완료
+[ 373.1s] 진단 완료
+[ 373.1s] 저장 완료: /Users/f22losophysics1091/Desktop/codsaid/02_Advanced/A5-1/results/mac-demo
+시연 완료. 보고서: /Users/f22losophysics1091/Desktop/codsaid/02_Advanced/A5-1/results/mac-demo/report.md
+
+Enter를 누르면 창을 닫습니다. ^C
