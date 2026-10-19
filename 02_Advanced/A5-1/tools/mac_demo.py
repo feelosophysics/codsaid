@@ -3,16 +3,60 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import os
 from pathlib import Path
 import platform
 import subprocess
+import struct
 import sys
 import sysconfig
 
 
 ROOT = Path(__file__).resolve().parents[1]
-PROBE = "import xgboost; print('XGBoost OK:', xgboost.__version__)"
+BUNDLED_LIB = ROOT / "environment/mac-intel-openmp/libomp.dylib"
+BUNDLED_SHA256 = "1194e8e2a2f821844e2abe1d8446d7178051436086ae84f4e02036b124bed5fa"
+# 두 패키지를 함께 사용해 OpenMP 충돌도 검사한다. 중복 런타임 오류를
+# 숨기는 KMP_DUPLICATE_LIB_OK 옵션은 사용하지 않는다.
+PROBE = """
+import numpy as np
+from sklearn.ensemble import RandomForestClassifier
+import xgboost
+X = np.array([[0., 0.], [0., 1.], [1., 0.], [1., 1.]] * 4)
+y = np.array([0, 0, 1, 1] * 4)
+RandomForestClassifier(n_estimators=2, n_jobs=1, random_state=42).fit(X, y).predict(X)
+xgboost.XGBClassifier(n_estimators=2, max_depth=1, n_jobs=1).fit(X, y).predict(X)
+print('XGBoost + scikit-learn 학습 검사 OK:', xgboost.__version__)
+"""
+
+
+def verified_bundled_library() -> Path | None:
+    """Intel Mac용으로 고정한 런타임의 무결성과 실행 조건을 검사한다."""
+    if platform.machine() != "x86_64":
+        return None
+    if not BUNDLED_LIB.is_file():
+        raise RuntimeError(
+            f"시연용 런타임이 없습니다: {BUNDLED_LIB}\n"
+            "environment/mac-intel-openmp 폴더까지 포함한 최신 A5-1을 가져오세요."
+        )
+    data = BUNDLED_LIB.read_bytes()
+    if hashlib.sha256(data).hexdigest() != BUNDLED_SHA256:
+        raise RuntimeError("시연용 libomp의 SHA-256이 다릅니다. 최신 원본을 다시 가져오세요.")
+    if struct.unpack_from("<II", data) != (0xFEEDFACF, 0x01000007):
+        raise RuntimeError("시연용 libomp가 Intel 64비트 Mach-O 파일이 아닙니다.")
+    version = platform.mac_ver()[0]
+    if not version or int(version.split(".")[0]) < 11:
+        raise RuntimeError(f"동봉 런타임은 macOS 11 이상이 필요합니다. 현재: {version}")
+    return BUNDLED_LIB
+
+
+def with_library(env: dict[str, str], library: Path) -> dict[str, str]:
+    candidate_env = env.copy()
+    previous = env.get("DYLD_LIBRARY_PATH", "")
+    candidate_env["DYLD_LIBRARY_PATH"] = str(library.parent) + (
+        os.pathsep + previous if previous else ""
+    )
+    return candidate_env
 
 
 def library_candidates() -> list[Path]:
@@ -50,6 +94,20 @@ def probe(env: dict[str, str]) -> subprocess.CompletedProcess[str]:
 
 def find_working_environment() -> dict[str, str] | None:
     env = os.environ.copy()
+    # Intel 시연에서는 검증된 런타임을 우선한다. sklearn의 기존 파일은
+    # 필요한 심벌이 없어 실패한 것으로 현장 로그에서 확인했다.
+    bundled = verified_bundled_library()
+    if bundled is not None:
+        print(f"검증된 Intel Mac libomp 23.1.3 연결: {bundled}", flush=True)
+        candidate_env = with_library(env, bundled)
+        result = probe(candidate_env)
+        if result.returncode == 0:
+            print(result.stdout.strip(), flush=True)
+            return candidate_env
+        print("동봉 런타임의 실제 학습 검사에 실패했습니다.", file=sys.stderr)
+        print(result.stdout, file=sys.stderr)
+        print(result.stderr, file=sys.stderr)
+        return None
     result = probe(env)
     if result.returncode == 0:
         print(result.stdout.strip(), flush=True)
@@ -65,11 +123,7 @@ def find_working_environment() -> dict[str, str] | None:
         print("사용 가능한 위치에서 libomp.dylib를 찾지 못했습니다.", file=sys.stderr)
     for library in candidates:
         print(f"libomp 검사: {library}", flush=True)
-        candidate_env = env.copy()
-        previous = env.get("DYLD_LIBRARY_PATH", "")
-        candidate_env["DYLD_LIBRARY_PATH"] = str(library.parent) + (
-            os.pathsep + previous if previous else ""
-        )
+        candidate_env = with_library(env, library)
         result = probe(candidate_env)
         if result.returncode == 0:
             print(result.stdout.strip(), flush=True)
@@ -116,6 +170,6 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         print("\n사용자가 실행을 중단했습니다.", file=sys.stderr)
         raise SystemExit(130)
-    except (subprocess.SubprocessError, OSError) as exc:
+    except (subprocess.SubprocessError, OSError, RuntimeError) as exc:
         print(f"시연 실행 오류: {exc}", file=sys.stderr)
         raise SystemExit(1)

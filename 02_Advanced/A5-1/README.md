@@ -6,7 +6,7 @@
 
 ## 실행
 
-**Mac 시연:** [`run_mac_demo.command`](run_mac_demo.command)를 열면 기존 uv 환경을 준비하고 로컬 `libomp` 연결을 검사한 뒤 분석을 실행한다. 실행 권한이 없을 때는 터미널에 `bash `를 입력하고 파일을 끌어다 놓는다. 결과는 `results/mac-demo/`에 저장한다. 상세 안내와 로딩 검사만 하는 방법은 [`MAC_DEMO.md`](MAC_DEMO.md)에 있다.
+**Mac 시연:** [`run_mac_demo.command`](run_mac_demo.command)를 열면 기존 uv 환경을 준비하고 분석을 실행한다. Intel Mac(macOS 11 이상)에서는 동봉한 `environment/mac-intel-openmp/`의 런타임을 검증하고 이번 실행에만 연결한다. 관리자 권한과 Homebrew 설치는 필요 없다. 실행 권한이 없을 때는 터미널에 `bash `를 입력하고 파일을 끌어다 놓는다. 결과는 `results/mac-demo/`에 저장한다. 상세 안내와 학습 검사만 하는 방법은 [`MAC_DEMO.md`](MAC_DEMO.md)에 있다.
 
 환경은 [uv](https://docs.astral.sh/uv/)로 관리한다. 이 README가 있는 A5-1 폴더에서 실행한다.
 
