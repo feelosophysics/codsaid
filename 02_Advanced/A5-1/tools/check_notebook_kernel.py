@@ -2,6 +2,7 @@
 
     uv run --group dev python tools/check_notebook_kernel.py
 """
+import argparse
 import json
 import os
 import sys
@@ -13,6 +14,9 @@ from jupyter_client.kernelspec import KernelSpecManager
 from nbclient import NotebookClient
 
 ROOT = Path(__file__).resolve().parents[1]
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument("--kernel", help="등록된 커널 이름 (Mac: a5-1-mac-demo)")
+args = parser.parse_args()
 runtime = ROOT / ".notebook-runtime"
 runtime.mkdir(exist_ok=True)
 os.environ["JUPYTER_RUNTIME_DIR"] = str(runtime)
@@ -29,19 +33,24 @@ with TemporaryDirectory(prefix="kernel-check-", dir=runtime) as work:
     }), encoding="utf-8")
     notebook = nbformat.v4.new_notebook(cells=[
         nbformat.v4.new_code_cell("3 + 7"),
+        nbformat.v4.new_code_cell(next(
+            cell.source for cell in nbformat.read(
+                ROOT / "notebooks/analysis_report.ipynb", as_version=4).cells
+            if cell.cell_type == "code")),
         nbformat.v4.new_code_cell("""import json, sys
 import ipykernel, numpy, pandas, sklearn
 from src.data import load_data
 print(json.dumps({"python": sys.version.split()[0], "executable": sys.executable,
                   "ipykernel": ipykernel.__version__, "rows": len(load_data())}))"""),
     ])
-    client = NotebookClient(notebook, timeout=60, kernel_name="a5-1-check",
-                            resources={"metadata": {"path": str(ROOT)}})
+    client = NotebookClient(notebook, timeout=60, kernel_name=args.kernel or "a5-1-check",
+                            resources={"metadata": {"path": str(ROOT / "notebooks")}})
     client.km = client.create_kernel_manager()
-    client.km.kernel_spec_manager = KernelSpecManager(kernel_dirs=[work])
+    if not args.kernel:
+        client.km.kernel_spec_manager = KernelSpecManager(kernel_dirs=[work])
     client.execute()
     assert notebook.cells[0].outputs[0].data["text/plain"] == "10"
-    text = "".join(output.get("text", "") for output in notebook.cells[1].outputs)
+    text = "".join(output.get("text", "") for output in notebook.cells[2].outputs)
     details = json.loads(text)
     assert details["rows"] == 10000
     assert Path(details["executable"]).resolve() == Path(sys.executable).resolve()

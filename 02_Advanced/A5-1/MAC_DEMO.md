@@ -6,6 +6,29 @@
 
 ## 실행
 
+### 새 Intel 아이맥에서 처음 준비하기
+
+저장소를 clone한 뒤 터미널에서 `02_Advanced/A5-1` 폴더로 이동한다. VS Code에는 Microsoft Python·Jupyter 확장을 설치하고 활성화한다.
+
+`uv`가 없는 Mac은 먼저 설치한다. 아래 명령은 이 아이맥에서 사용한 설치 명령과 같다.
+
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+그다음 A5-1 폴더에서 실행한다.
+
+```bash
+bash run_mac_demo.command --install-kernel
+.venv/bin/python tools/check_notebook_kernel.py --kernel a5-1-mac-demo
+```
+
+런처가 `$HOME/.local/bin`을 검색하므로 설치 직후에도 위 명령은 셸 재시작 없이 실행할 수 있다. 첫 명령이 잠금 파일에 맞는 `.venv` 생성, OpenMP·작은 모델 학습 검사, 없는 경우 합성 CSV 생성, 현재 Mac 경로로 커널 등록까지 수행한다. 두 번째 명령이 실제 커널에서 노트북 첫 셀과 데이터 10,000행 로딩을 확인한다. Python·패키지 다운로드를 위한 인터넷 연결이 필요할 수 있다.
+
+검증을 통과하면 아래 ‘노트북을 셀별로 실행하기’의 VS Code 커널 선택 절차를 따른다. `.venv/`, `finance_data.csv`, 사용자 `Library/Jupyter/kernels/` 파일은 복사하거나 커밋하지 않는다. 각 Mac에서 위 명령으로 생성한다. `uv.lock`, `.python-version`, `pyproject.toml`, `environment/mac-intel-openmp/`는 저장소에 포함되어 있으므로 그대로 사용한다.
+
+### 전체 분석 실행하기
+
 1. 아이맥에 최신 A5-1 폴더를 가져온다. `run_mac_demo.command`, `tools/mac_demo.py`, **`environment/mac-intel-openmp/` 전체**가 필요하다. Windows의 `.venv`는 가져오지 않는다. 아이맥에서 이미 만든 `.venv`는 그대로 사용한다.
 2. Finder에서 `run_mac_demo.command`를 더블클릭한다.
 3. 터미널에서 환경 준비 → 동봉 런타임 무결성 검사 → 두 모델의 작은 학습·예측 검사 → 데이터 준비 → 전체 분석 순서로 진행된다. Python 패키지 준비에는 인터넷 연결이 필요할 수 있지만 동봉 `libomp`를 따로 다운로드하거나 설치하지 않는다.
@@ -34,7 +57,20 @@ A5-1 폴더에서 아래 명령을 한 번 실행한다. 라이브러리 검사 
 bash run_mac_demo.command --install-kernel
 ```
 
-VS Code나 Jupyter에서 `notebooks/analysis_report.ipynb`를 열고 **A5-1 Mac (uv + libomp)** 커널을 선택한다. VS Code에서는 커널 선택 → 다른 커널 선택 → Jupyter 커널 목록에서 찾을 수 있다. 목록이 갱신되지 않으면 편집기를 다시 연다. 이미 실행 중인 커널은 종료·재시작하고 첫 셀부터 순서대로 실행한다.
+VS Code에서 **A5-1 폴더 전체**를 열고 `notebooks/analysis_report.ipynb`를 연다.
+
+1. 노트북 오른쪽 위 커널 이름 또는 **Select Kernel**을 누른다.
+2. **Select Another Kernel…(다른 커널 선택)** → **Jupyter Kernel…** → **A5-1 Mac (uv + libomp)**를 선택한다. 처음 목록에는 최근 사용한 커널만 나올 수 있다. 등록한 표시 이름은 Python Environments 목록에서 찾는 것이 아니다.
+3. 목록에 없으면 `Cmd+Shift+P` → **Developer: Reload Window**를 실행한 뒤 다시 선택한다. Python(`ms-python.python`)과 Jupyter(`ms-toolsai.jupyter`) 확장이 활성화되어 있는지도 확인한다.
+4. 커널을 재시작하고 첫 코드 셀부터 순서대로 실행한다. 첫 셀의 `Python:` 경로가 이 프로젝트의 `.venv/bin/python`인지 확인한다.
+
+등록된 커널 자체는 터미널에서도 검사할 수 있다. 전체 학습 없이 `notebooks/`에서 실제 노트북 첫 셀과 데이터 로딩까지 확인한다.
+
+```bash
+.venv/bin/python tools/check_notebook_kernel.py --kernel a5-1-mac-demo
+```
+
+`ModuleNotFoundError: No module named 'src'`는 프로젝트 루트가 Python 검색 경로에 없다는 뜻이다. 노트북 첫 셀도 현재 폴더와 상위 폴더에서 프로젝트 루트를 찾아 검색 경로에 추가한다. Mac에서는 libomp도 시작 시점부터 연결해야 하므로 위에서 등록한 커널을 선택한다.
 
 이 커널은 현재 프로젝트 `.venv`의 Python과 동봉 libomp 경로를 시작 시점부터 사용한다. `PYTHONPATH`에 프로젝트 루트를 지정해 노트북 폴더에서 실행해도 `src`를 찾을 수 있다. 패키지 추가 설치나 시스템 설정 변경은 없지만 사용자 Jupyter 커널 등록 파일은 남는다. 다른 Mac에 클론하거나 프로젝트 폴더를 이동하면 다시 등록한다. 등록 파일은 Git으로 전달하지 않는다.
 
@@ -52,4 +88,4 @@ VS Code나 Jupyter에서 `notebooks/analysis_report.ipynb`를 열고 **A5-1 Mac 
 - 전체 모델 비교를 실행하므로 즉시 끝나는 데모가 아니다. Windows의 기존 기록은 약 12분이며 Mac 소요 시간은 별도 확인이 필요하다. Ctrl+C로 중단할 수 있다.
 - 실패하면 창에 표시된 오류 전체를 전달한다. 정상 종료나 실패 후 Enter를 누를 때까지 터미널 창을 유지한다.
 
-이 도구는 Windows에서 구문·제어 흐름·동봉 파일 해시·Intel Mach-O 아키텍처·필수 심벌을 확인했다. Intel Mac에서의 실제 학습 검사와 Finder 실행은 현장 확인이 필요하다. 먼저 `--check-only`를 통과시킨 뒤 전체 분석을 실행하는 것을 권장한다.
+이 도구는 Windows에서 구문·제어 흐름·동봉 파일 해시·Intel Mach-O 아키텍처·필수 심벌을 확인했다. 현재 Intel 아이맥에서는 scikit-learn·XGBoost의 작은 학습 검사와 등록된 Jupyter 커널의 노트북 첫 셀·데이터 10,000행 로딩까지 확인했다. Finder 실행과 Mac 전체 모델 비교 완료는 별도 확인이 필요하다.

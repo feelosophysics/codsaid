@@ -33,7 +33,7 @@ Windows 콘솔에서 한글 출력이 깨지면 `$env:PYTHONUTF8 = "1"`을 먼�
 
 ## 노트북과 학습 자료
 
-VS Code에서는 Microsoft의 Python·Jupyter 확장을 설치하고, 노트북의 **Select Kernel → Python Environments**에서 이 폴더의 `.venv/Scripts/python.exe`를 선택한다. 커널이 준비됐는지 확인하려면 `uv run --group dev python tools/check_notebook_kernel.py`를 실행한다. 실제 커널에서 `3 + 7`, 주요 라이브러리 import, 데이터 10,000행 로딩을 검사하며 모델을 재학습하거나 노트북 파일을 수정하지 않는다.
+VS Code에서는 Microsoft의 Python·Jupyter 확장을 설치한다. Windows는 노트북의 **Select Kernel → Select Another Kernel → Python Environments**에서 이 폴더의 `.venv/Scripts/python.exe`를 선택한다. **Mac은 [Mac 노트북 안내](MAC_DEMO.md#노트북을-셀별로-실행하기)에 따라 등록한 `A5-1 Mac (uv + libomp)`를 Jupyter Kernel 목록에서 선택한다.** 커널이 준비됐는지 확인하려면 `uv run --group dev python tools/check_notebook_kernel.py`를 실행한다(Mac은 끝에 `--kernel a5-1-mac-demo` 추가). 실제 커널을 `notebooks/`에서 시작해 `3 + 7`, 노트북 첫 코드 셀, 주요 라이브러리 import, 데이터 10,000행 로딩을 검사하며 모델을 재학습하거나 노트북 파일을 수정하지 않는다.
 
 Windows의 앱 실행 제어가 켜진 환경에서는 uv의 마이너 버전 추적용 실행기가 차단될 수 있어, 이 프로젝트는 Python을 `3.12.13`으로 고정한다. 새 환경은 `uv venv --python 3.12.13` 후 `uv sync --frozen --group dev`로 구성할 수 있다. 기존 환경이 있다면 먼저 보존하고 재생성한다. 패키지·잠금 파일 관리는 계속 uv로 수행하며, 이 구성에 전역 Python 설치나 보안 설정 해제가 필요하지 않다.
 

@@ -13,7 +13,21 @@ CELLS = [
 같은 결과를 한 번에 만들려면 `uv run python -m src.run_all`을 실행한다.
 
 데이터는 `python data_gen.py`로 만든 **합성 데이터**이며, 결과는 실제 금융 고객에 대한 결론이 아니다."""),
-    ("code", """import warnings
+    ("code", """import sys
+from pathlib import Path
+
+# VS Code/Jupyter가 notebooks/에서 시작해도 프로젝트 모듈을 찾는다.
+ROOT = next((path for path in (Path.cwd(), *Path.cwd().parents)
+             if (path / "src/__init__.py").is_file()
+             and (path / "pyproject.toml").is_file()), None)
+if ROOT is None:
+    raise RuntimeError("A5-1 프로젝트 폴더를 열고 노트북을 실행하세요.")
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+print(f"Python: {sys.executable}")
+print(f"프로젝트: {ROOT}")
+
+import warnings
 import pandas as pd
 from IPython.display import Image, display
 
