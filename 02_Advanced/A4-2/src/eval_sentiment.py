@@ -42,7 +42,7 @@ def ablation(analyzer: SentimentAnalyzer, rows: list[dict]) -> tuple[list[dict],
 
 
 def negation_subset(analyzer: SentimentAnalyzer, rows, preds) -> dict:
-    """부정어 규칙이 실제로 작동한(감성어가 뒤집힌) 문장만 모아 A와 E를 비교한다. 전체 정확도에서는 효과가 희석된다."""
+    """부정어가 감성어 계산에 사용된 문장만 모아 A와 E를 비교한다. 이중부정은 최종 부호가 유지될 수 있다. 전체 정확도에서는 효과가 희석된다."""
     idx = [i for i, r in enumerate(rows) if any(it.negators for it in analyzer.analyze(r["text"], REQUIRED_CONFIG).items)]
     y = [rows[i]["label"] for i in idx]
     a = [preds[ABLATION_STEPS[0][0]][i] for i in idx]

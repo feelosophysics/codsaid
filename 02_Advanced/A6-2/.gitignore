@@ -1,5 +1,6 @@
 .venv/
 __pycache__/
+.ipynb_checkpoints/
 *.py[cod]
 # 내려받는 원본과 선별 이미지 (scripts/prepare_flowers.py로 다시 만든다)
 data/raw/

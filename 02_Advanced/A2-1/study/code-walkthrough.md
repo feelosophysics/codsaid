@@ -5,13 +5,15 @@
 | 자료 | 맡는 일 |
 | --- | --- |
 | [a2-1.html](a2-1.html) | 학습 루프 전체 그림, 수학 개념, 조작 위젯, 원본 코드 발췌 |
-| [notebooks/](../notebooks/) | 역전파·MLE 수식 유도와 손계산, 실행 결과 |
+| [notebooks/](../notebooks/) | 작은 입력·손실 항·첫 갱신부터 실행, 수식 유도와 손계산·모듈·수치 미분 대조 |
 | `src/*.py`의 주석 | 줄 단위 문법, 배열 shape, 그 코드가 왜 필요한지 |
 | 이 문서 | 함수 단위 데이터 흐름, 작은 숫자 예제, 예측 질문 |
 
 줄 번호 링크는 현재 소스 기준이다. 표의 숫자 중 **실행 결과**라고 쓴 값은 `python -m src.run_all` 또는 노트북 출력과 같은 값이고, **설명용**이라고 쓴 값은 이해를 돕기 위해 입력을 단순하게 바꿔 계산한 값이다.
 
-## 읽는 순서
+학습·시연은 [역전파·학습 노트북](../notebooks/backprop_derivation.ipynb) → [확률·손실 노트북](../notebooks/probability_loss.ipynb) 순서로 시작한다. 아래 순서는 노트북을 실행한 뒤 구현을 더 읽을 때의 경로다.
+
+## 구현을 더 읽는 순서
 
 | 순서 | 파일 | 하는 일 |
 | --- | --- | --- |
@@ -386,12 +388,10 @@ KL(p‖q) = 0.7·log(0.7/0.4) + 0.3·log(0.3/0.6)
 | 파일 | 하는 일 |
 | --- | --- |
 | [tests/test_requirements.py](../tests/test_requirements.py) | 미션의 수치 기준(면적비 1% 이내, 고유값 5% 이내, 소프트맥스 합 1e-6 등)을 테스트 32개로 검사 |
-| [tools/build_study_guide.py](../tools/build_study_guide.py) | 템플릿 HTML에 현재 소스의 함수 발췌(줄 번호 포함)와 그림을 넣어 `a2-1.html` 생성 |
-| [tools/verify_study_guide.py](../tools/verify_study_guide.py) | HTML 발췌가 현재 소스와 같은지, HTML의 JavaScript 계산이 Python과 같은지 비교 |
 | [tools/execute_notebooks.py](../tools/execute_notebooks.py) | 두 노트북을 처음부터 실행해 출력 저장 |
 | [tools/prepare_image.py](../tools/prepare_image.py) | SVD 실험용 128×128 흑백 이미지 생성 |
 
-HTML의 코드 발췌는 함수 이름으로 소스에서 자동으로 잘라 온다. 그래서 소스 주석을 고치면 `build_study_guide.py`를 다시 실행해야 HTML의 발췌와 줄 번호가 맞는다.
+HTML의 코드 발췌는 작성 당시 소스에서 함수 이름으로 잘라 온 것이다. 이후 소스를 고치면 HTML의 발췌·줄 번호와 달라질 수 있다.
 
 ---
 
@@ -423,7 +423,7 @@ HTML의 코드 발췌는 함수 이름으로 소스에서 자동으로 잘라 �
 
 </details>
 
-**4. 원본 변경.** 노트북에서 `net.sgd_step(...)`을 실행한 뒤 `example_network()`를 다시 부르면 가중치는 처음 값일까?
+**4. 원본 변경.** `net.sgd_step(...)`을 실행한 뒤 `example_network()`를 다시 부르면 가중치는 처음 값일까?
 
 <details><summary>답</summary>
 

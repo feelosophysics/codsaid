@@ -245,9 +245,10 @@ def error_report(vision, stats, improve):
               f"**검수 상태: {n_review}/{stats['n_errors']}건 검수 완료.** 검수 전 행은 Claude가 사진을 직접 보고 단 초안"
               "(tagged_by = claude-draft)이며 사용자 검수를 기다린다. 검수는 `annotations/tagging.html`에서 한다.")
     parts = ["# 오차 분석 리포트 (Error Analysis)", "",
-             "모델이 틀린 Test 사진을 사람이 직접 보고 실패 원인을 태깅했다(Human-in-the-loop). "
+             "모델이 틀린 Test 사진에 원인 태그 초안을 달고 사람이 검수하는 흐름이다(Human-in-the-loop). "
              "태깅 도구 `tools/build_tagging_page.py`는 오분류 사진 옆에 실제 클래스와 예측 클래스의 Train 사진을 3장씩 나란히 보여 준다.", "",
              status, "",
+             "원인 태그는 관찰에서 세운 가설이다. Test 오분류를 보고 선택한 처방의 같은 Test 재평가는 탐색적이며 독립 Test 검증이 아니다.", "",
              "## 분석 대상", "",
              f"주 모델({main['name']}, {main['label']})의 Test 오분류는 {vision['main']['errors']}건이다. "
              + (f"미션 기준 30건에 못 미쳐, 같은 Test 사진에서 다음 모델들의 오분류를 합쳤다: {', '.join(vision['error_analysis_models'])}. "
@@ -284,8 +285,9 @@ def error_report(vision, stats, improve):
                          ["처방 후", a["strategy"], a["augmentation"], f"{a['image_size']}px",
                           " / ".join(acc(x["test"]["accuracy"]) for x in improve["runs"]["after"]),
                           f"{acc(improve['after_test_accuracy']['mean'])} ± {improve['after_test_accuracy']['std'] * 100:.1f}%p"]]), "",
-                  f"Test 정확도 변화: **{improve['gain_points']:+.1f}%p**. 변화가 두 조건의 seed 간 표준편차 합"
-                  f"({(improve['before_test_accuracy']['std'] + improve['after_test_accuracy']['std']) * 100:.1f}%p)보다 커서 우연으로 보기 어렵다. Test 325장에서 1.3%p는 약 4장이다. 분석 대상 오분류 사진을 맞힌 수(태그별, seed 0, 처방 전→후/전체): {fixed}.", ""]
+                  f"Test 정확도 변화: **{improve['gain_points']:+.1f}%p**. 같은 Test의 탐색적 재평가다. "
+                  "seed 3개의 표준편차만으로 통계적 유의성이나 독립 데이터의 개선을 주장할 수 없다. "
+                  f"분석 대상 오분류 사진을 맞힌 수(태그별, seed 0, 처방 전→후/전체): {fixed}.", ""]
     write("ERROR_ANALYSIS.md", "\n".join(parts))
 
 

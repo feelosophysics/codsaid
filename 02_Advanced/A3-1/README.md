@@ -6,6 +6,28 @@
 
 ## 실행
 
+### 학습과 시연 시작점
+
+[사진 한 장을 스캔본으로: 실행 노트북](notebooks/scanner_walkthrough.ipynb)을 위에서 아래로 실행한다.
+E01의 한 픽셀 밝기·블러, 후보 선택, 좌표 정렬, 투시 행렬 계산을 펼친 뒤 기존 `scan()` 결과와 대조한다.
+중간 이미지·배열 표를 읽고, 같은 조건의 20장 평가·266개 파라미터 조합·실패 그림을 거쳐 앱 시연으로 이어진다.
+거리 기반 변환으로 기본 기하를 배운 뒤 앱 기본값인 Zhang 종횡비 보정을 비교하므로, 보너스가 기본 설정에 연결된 지점도 확인할 수 있다.
+
+```powershell
+uv sync --group dev
+uv run --group dev python tools/build_learning_notebook.py --execute
+```
+
+VS Code/Jupyter에서는 A3-1의 `.venv` Python을 커널로 선택하고 노트북을 연다.
+노트북은 A3-1 또는 `notebooks`를 작업 디렉터리로 실행할 수 있다. 생성기는 셀 원본을 관리하며
+`--execute`는 새 커널에서 전체 실행한 출력을 저장한다. 전체 탐색은 5,320회 검출하므로 시간이 걸린다.
+원본 사진과 기존 `outputs` 실험 결과는 덮어쓰지 않는다.
+
+학습 순서는 **노트북 1~8절 → 9절 파라미터 변화 → 10~11절 평가·실패 → 13절 앱 시연**이다.
+12절은 보너스·규칙 추가 실험이다. [기존 코드 해설](study/code-walkthrough.md)은 문법과 함수 상세를 찾아보는 자료로,
+[브라우저 위젯](study/a3-1.html)은 원리 보조 자료로 사용한다.
+정량 성공률은 합성 사진의 꼭짓점 위치 평가이며, 실제 사진의 가독성이나 OCR 성능을 의미하지 않는다.
+
 환경은 [uv](https://docs.astral.sh/uv/)로 관리한다. 이 README가 있는 A3-1 폴더에서 실행한다.
 
 ```powershell
@@ -61,7 +83,6 @@ uv run python -m src.webcam --source 영상.mp4
 | `src/figures.py`, `src/run_all.py` | 보고서 그림과 전체 실험 실행 |
 | `tools/build_report.py` | `REPORT.template.md` + `results.json` → `REPORT.md` |
 | `tools/annotate_corners.py` | 직접 찍은 사진에 정답 꼭짓점과 조건을 기록 |
-| `tools/build_study_guide.py`, `tools/verify_study_guide.py` | HTML 학습 자료 생성·검증 |
 | `data/synthetic/` | 테스트 이미지 20장과 `labels.json`(촬영 조건, 정답 꼭짓점) |
 | `outputs/` | 그림, `results.json`, `scans/`(변환·이진화 결과), `scans.pdf` |
 | `tests/test_requirements.py` | 요구사항별 테스트 33개 |
@@ -122,12 +143,7 @@ uv run python -m src.run_all --data data/real --out outputs/real
 
 [`study/a3-1.html`](study/a3-1.html)을 브라우저에서 연다(인터넷 불필요). 완성된 스캐너를 먼저 돌려 본 뒤 각 단계의 원리로 내려가는 탑다운 순서다. 브라우저 안에서 히스토그램·컨볼루션·Canny 트랙바·Douglas–Peucker·꼭짓점 정렬·호모그래피·종횡비·적응형 이진화를 직접 조작해 볼 수 있다.
 
-소스나 결과를 바꾼 뒤에는 다시 만들고 검증한다. 검증은 Node.js로 페이지의 계산 함수를 실행해 Python·OpenCV 결과와 비교한다. Canny·적응형 이진화 픽셀 일치율, approxPolyDP 꼭짓점 수, 꼭짓점 정렬, 호모그래피, 종횡비 등 664회를 비교한다.
-
-```powershell
-uv run python tools/build_study_guide.py
-uv run python tools/verify_study_guide.py
-```
+작성 당시 Node.js로 페이지의 계산 함수를 실행해 Python·OpenCV 결과와 비교했다. Canny·적응형 이진화 픽셀 일치율, approxPolyDP 꼭짓점 수, 꼭짓점 정렬, 호모그래피, 종횡비 등 664회를 비교했다.
 
 ## 코드 읽기
 

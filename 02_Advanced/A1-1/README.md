@@ -13,19 +13,19 @@ Python과 AI 개념을 처음 익히는 독자를 위해 `src/`의 모든 함수
 docstring에서, 새 문법·데이터 모양 변화·선택 이유는 해당 코드 옆에서 읽는다.
 이 미션은 데이터 준비와 통계·규칙 기반 RFM 분석이며 예측 모델을 학습하지 않는다.
 
-1. [`study/a1-1.html`](study/a1-1.html)의 **01 전체 흐름 → 03 Class와 Python 읽기**로 시작한다.
-2. 02–08에서 작은 표·배열 예제와 실제 코드를 연결한다. 각 장의 **문법·데이터 변화·존재 이유** 설명과 확인 질문을 함께 읽는다.
-3. [`src/run_analysis.py`](src/run_analysis.py)의 호출 순서를 지도 삼아 [`src/pipeline.py`](src/pipeline.py)의 같은 이름 메서드를 찾는다.
-4. [`notebooks/analysis_report.ipynb`](notebooks/analysis_report.ipynb)를 위에서 아래로 읽거나 실행해 결과와 해석을 확인한다.
-5. [`src/report.py`](src/report.py)의 차트·해석, [`src/sample_data.py`](src/sample_data.py)의 생성 조건, [`src/bonus.py`](src/bonus.py)의 확장을 읽는다.
+1. [`notebooks/analysis_report.ipynb`](notebooks/analysis_report.ipynb)를 위에서 아래로 실행한다. 행의 단위 → 결측치 → 이미지 축 → IQR → 통계 → RFM → 차트·해석이 한 파일에서 이어진다.
+2. 작은 예제와 실제 입력의 계산을 먼저 따라가고, `DataAnalyzer`의 반환값·내부 상태 및 직접 계산과의 대조 결과를 확인한다. 기본 분석을 시연할 때는 **기본 시연 마무리**에서 멈춰도 된다.
+3. 반복 계산과 입력 검증의 구현은 [`src/pipeline.py`](src/pipeline.py), 같은 단계를 묶은 CLI는 [`src/run_analysis.py`](src/run_analysis.py)에서 읽는다.
+4. 배열·정책을 조작해 보고 싶으면 [`study/a1-1.html`](study/a1-1.html)을 보조 자료로 사용한다. 내장 소스는 작성 시점의 사본이며 현재 실행 코드는 노트북과 `src/`를 따른다.
+5. 기본 흐름을 마친 뒤 노트북의 보너스 절과 [`src/bonus.py`](src/bonus.py)를 읽는다. 차트·해석은 [`src/report.py`](src/report.py), 합성 입력의 생성 조건은 [`src/sample_data.py`](src/sample_data.py)에 있다.
 
 한 번에 모두 외우기보다 **입력의 한 행/축 → 연산 후 모양 → 이 단계의 존재 이유**를
 말로 설명해본다. 함수 설명을 보완한 상태와 학습자가 이해한 상태는 구분한다.
-학습자료 구성과 재생성은 [`study/README.md`](study/README.md)를 참고한다.
+HTML 보조 자료의 구성은 [`study/README.md`](study/README.md)를 참고한다.
 
 ## 실행
 
-현재 고정한 라이브러리는 **Python 3.12 이상**이 필요하다. 검증 환경은 Windows, Python 3.12.14다. 이 README가 있는 A1-1 폴더에서 실행한다.
+현재 고정한 라이브러리는 **Python 3.12 이상**이 필요하다. 검증 환경은 Windows, Python 3.12.13이다. 이 README가 있는 A1-1 폴더에서 실행한다.
 
 ```powershell
 uv sync --locked
@@ -39,13 +39,13 @@ uv run python -m src.run_analysis --generate-sample --seed 42
 uv run python -m unittest discover -s tests -v
 ```
 
-환경은 uv로 관리한다. `.python-version`은 Python 3.12, `pyproject.toml`은 의존성과 노트북 개발 의존성, `uv.lock`은 정확한 버전을 고정한다. Windows와 다른 운영체제에서 같은 uv 명령을 사용한다. uv 없이 설치할 때는 `requirements.txt` 또는 노트북용 `requirements-dev.txt`를 쓴다. 두 파일은 uv.lock에서 내보낸 사본이다.
+환경은 uv로 관리한다. `.python-version`은 Python 3.12.13, `pyproject.toml`은 의존성과 노트북 개발 의존성, `uv.lock`은 정확한 버전을 고정한다. Windows와 다른 운영체제에서 같은 uv 명령을 사용한다. uv 없이 설치할 때는 `requirements.txt` 또는 노트북용 `requirements-dev.txt`를 쓴다. 두 파일은 uv.lock에서 내보낸 사본이다.
 
 명령이 성공하면 `results/`에 필수 CSV·JSON·Markdown·차트 6종, `results/bonus/`에 보너스 결과가 저장된다. 핵심 분석에는 NumPy·Pandas·Matplotlib·Seaborn만 직접 사용하며 이미지 처리는 NumPy 배열 연산으로 구현한다. Plotly는 미션에서 허용한 보너스 3의 시각화에만 사용한다. Matplotlib의 설치 의존성에 Pillow가 포함되지만 프로젝트에서 Pillow API로 이미지를 처리하지 않는다.
 
 ## 분석 노트북
 
-[`notebooks/analysis_report.ipynb`](notebooks/analysis_report.ipynb)는 실행 결과·해석·차트가 저장된 보고서다. VS Code나 Jupyter에서 `.venv`의 Python을 커널로 선택해 처음부터 실행할 수 있다. 별도 Jupyter 화면 없이 전용 환경에서 실행하려면:
+[`notebooks/analysis_report.ipynb`](notebooks/analysis_report.ipynb)는 계산 과정·실행 결과·해석·차트를 함께 읽는 학습·시연 노트북이다. VS Code나 Jupyter에서 `.venv`의 Python을 커널로 선택하고 **커널 재시작 후 전체 실행**한다. A1-1 또는 `notebooks/` 폴더에서 시작할 수 있다. 입력은 `data/sample/`에서 읽고 결과는 `results/`에 다시 저장한다. 별도 Jupyter 화면 없이 전용 환경에서 실행하려면:
 
 ```powershell
 uv sync --locked
@@ -53,6 +53,8 @@ uv run python tools/execute_notebook.py
 ```
 
 이 도구는 저장소 안에 임시 커널 설정을 만들어 현재 Python으로 실행한다. Notebook 도구는 실행·표시용이며 분석 로직에 추가 라이브러리를 사용하지 않는다.
+
+노트북에서 상품 가격 대치·이미지 평균과 표준편차·IQR 경계와 후보·고객별 RFM 및 점수·그룹을 직접 계산하고 기존 메서드와 대조한다. 고객 수·주문 수·금액·비중의 합계도 확인한다. 클래스와 NumPy 벡터 연산은 그대로 학습하며, 한 이미지·한 고객을 먼저 확인한 뒤 전체 계산으로 확장한다. 보너스는 기본 분석 뒤에 구분해 두었다.
 
 전체 실행 성공 후 [Markdown 실행 기록](results/notebook_execution.md)을 자동 저장한다. 실행 시각, 환경, 코드 셀별 실행 번호·출력 수·오류 수, 실행 전후 소스·입력 해시와 저장된 노트북 해시를 포함하므로 `.ipynb`를 읽지 않는 환경에서도 실행 근거를 확인할 수 있다. 파일이 변경되면 기록은 이전 실행의 근거이며 위 명령으로 다시 실행해야 한다.
 
@@ -78,7 +80,7 @@ uv run python tools/execute_notebook.py
 - 실행 결과의 6종 차트와 수치 해석, 관찰과 실행 가설의 구분
 - 이미지 고급 피처·가입 코호트 해석과 결과 그림 2종, 오프라인 Plotly RFM 차트
 
-자료의 JavaScript 계산은 Python 결과 25개 사례 및 고객 240명의 점수·그룹과 대조했다. 내장 소스는 생성 시점 사본이며 원본을 수정하는 기능이 아니다. 소스를 바꾼 뒤에는 재생성과 설명 검토가 필요하다. 생성·검증 방법은 [`study/README.md`](study/README.md)에 있다.
+자료의 JavaScript 계산은 작성 당시 Python 결과 25개 사례 및 고객 240명의 점수·그룹과 대조했다. 내장 소스는 작성 시점 사본이며 원본을 수정하는 기능이 아니다. 현재 Python 계산은 노트북과 `src/`에서 확인한다. 포함 내용과 열람 방법은 [`study/README.md`](study/README.md)에 있다.
 
 ## 데이터와 구조
 

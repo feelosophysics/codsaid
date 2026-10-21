@@ -71,7 +71,7 @@ def print_explain(engine: SearchEngine, query: str) -> None:
         return
     ex = engine.explain(query, hits[0].doc_id)
     print()
-    print("=== 코사인 유사도 계산 (1위 문서) ===")
+    print("=== TF-IDF 코사인 유사도 계산 (TF-IDF 1위 문서) ===")
     print("Query 벡터(0이 아닌 칸): " + ", ".join(f"{t}={w:.3f}" for t, w in ex["query_terms"].items()))
     print(f"문서 doc {hits[0].doc_id}: 0이 아닌 칸 {ex['doc_nonzero']}개, 그중 쿼리와 겹치는 칸")
     for term, qw, dw, prod in ex["shared"]:
@@ -84,7 +84,7 @@ def main() -> None:
     """터미널 옵션을 읽어 데이터 준비 → 검색 → 선택 해설을 실행한다.
 
     --query는 필수 문자열, --topk는 int 변환, --index/--explain은 스위치다.
-    이 CLI는 topk의 양수 여부까지 검사하지 않으므로 1 이상을 사용한다.
+    --topk는 1 이상이어야 한다. 잘못된 값은 색인 구축 전에 거절한다.
 
     Returns:
         None: 데이터 캐시가 없으면 다운로드하고 준비·검색 결과를 출력한다.
@@ -98,8 +98,10 @@ def main() -> None:
     # action="store_true"는 옵션이 있으면 True, 생략하면 False.
     # choices는 가능한 값, default는 생략 시 값이다.
     parser.add_argument("--index", action="store_true", help="역색인으로 검색")
-    parser.add_argument("--explain", action="store_true", help="1위 문서의 코사인 계산 과정 출력")
+    parser.add_argument("--explain", action="store_true", help="TF-IDF 1위 문서의 코사인 계산 과정 출력")
     args = parser.parse_args()
+    if args.topk < 1:
+        parser.error("--topk는 1 이상의 정수여야 합니다.")
 
     start = time.perf_counter()
     engine = SearchEngine(load_corpus())

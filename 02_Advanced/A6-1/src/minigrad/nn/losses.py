@@ -1,4 +1,4 @@
-"""손실 함수. 모두 배치 평균을 반환한다."""
+"""MSE/BCE는 모든 원소 평균, CE/NLL은 클래스 축 합 뒤 표본 평균을 반환한다."""
 import numpy as np
 
 from ..core.tensor import Tensor
@@ -28,6 +28,8 @@ def binary_cross_entropy_with_logits(logits, target):
     """
     y = np.asarray(target.data if isinstance(target, Tensor) else target, dtype=logits.dtype)
     z = logits.data
+    if y.shape != z.shape:
+        raise ValueError("BCEWithLogits의 target과 logits는 같은 shape여야 한다")
     loss = np.maximum(z, 0) - z * y + np.log1p(np.exp(-np.abs(z)))
     out = logits._result(loss.mean(), (logits,), "bce_with_logits")
     if out.requires_grad:

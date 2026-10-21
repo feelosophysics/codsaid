@@ -27,7 +27,7 @@
         "execution": "Full commerce analysis, including bonus outputs",
         "jupyter_kernel": "passed"
       },
-      "evidence": "02_Advanced/A1-1/environment/2026-10-20-python31213/verification.json"
+      "evidence": "597bfcac0f89795bc933d94cd4d0ac9fa0539ae9:02_Advanced/A1-1/environment/2026-10-20-python31213/verification.json"
     },
     {
       "project": "A2-1",
@@ -49,7 +49,7 @@
         "execution": "Full linear algebra, calculus, backprop, optimizer and probability experiments",
         "jupyter_kernel": "passed"
       },
-      "evidence": "02_Advanced/A2-1/environment/2026-10-20-python31213/verification.json"
+      "evidence": "597bfcac0f89795bc933d94cd4d0ac9fa0539ae9:02_Advanced/A2-1/environment/2026-10-20-python31213/verification.json"
     },
     {
       "project": "A3-1",
@@ -70,7 +70,7 @@
         "python": "3.12.13",
         "execution": "Document scanning CLI on the existing E01 image"
       },
-      "evidence": "02_Advanced/A3-1/environment/2026-10-20-python31213-attempt2/verification.json"
+      "evidence": "597bfcac0f89795bc933d94cd4d0ac9fa0539ae9:02_Advanced/A3-1/environment/2026-10-20-python31213-attempt2/verification.json"
     },
     {
       "project": "A3-2",
@@ -91,7 +91,7 @@
         "python": "3.12.13",
         "execution": "Headless tracking of 60 frames from the existing demo video"
       },
-      "evidence": "02_Advanced/A3-2/environment/2026-10-20-python31213/verification.json"
+      "evidence": "597bfcac0f89795bc933d94cd4d0ac9fa0539ae9:02_Advanced/A3-2/environment/2026-10-20-python31213/verification.json"
     },
     {
       "project": "A4-1",
@@ -112,7 +112,7 @@
         "python": "3.12.13",
         "execution": "TF-IDF and BM25 CLI search on the cached 20 Newsgroups corpus"
       },
-      "evidence": "02_Advanced/A4-1/environment/2026-10-20-python31213/verification.json"
+      "evidence": "597bfcac0f89795bc933d94cd4d0ac9fa0539ae9:02_Advanced/A4-1/environment/2026-10-20-python31213/verification.json"
     },
     {
       "project": "A4-2",
@@ -133,7 +133,7 @@
         "python": "3.12.13",
         "execution": "Extraction, sentiment, aspect and masking CLI"
       },
-      "evidence": "02_Advanced/A4-2/environment/2026-10-20-python31213/verification.json"
+      "evidence": "597bfcac0f89795bc933d94cd4d0ac9fa0539ae9:02_Advanced/A4-2/environment/2026-10-20-python31213/verification.json"
     },
     {
       "project": "A5-1",
@@ -155,7 +155,7 @@
         "execution": "Real credit data: Ridge, SMOTE/LogReg and XGBoost training and predictions (1000 train / 64 test)",
         "jupyter_kernel": "passed"
       },
-      "evidence": "02_Advanced/A5-1/environment/2026-10-20-python31213/verification.json"
+      "evidence": "597bfcac0f89795bc933d94cd4d0ac9fa0539ae9:02_Advanced/A5-1/environment/2026-10-20-python31213/verification.json"
     },
     {
       "project": "A5-2",
@@ -178,7 +178,7 @@
         "shap_additivity_error": 4.163336342344337E-16,
         "jupyter_kernel": "passed"
       },
-      "evidence": "02_Advanced/A5-2/environment/2026-10-20-python31213/verification.json"
+      "evidence": "597bfcac0f89795bc933d94cd4d0ac9fa0539ae9:02_Advanced/A5-2/environment/2026-10-20-python31213/verification.json"
     },
     {
       "project": "A6-1",
@@ -201,7 +201,7 @@
         "final_loss": 0.0019055374834025932,
         "accuracy": 1.0
       },
-      "evidence": "02_Advanced/A6-1/environment/2026-10-20-python31213/verification.json"
+      "evidence": "597bfcac0f89795bc933d94cd4d0ac9fa0539ae9:02_Advanced/A6-1/environment/2026-10-20-python31213/verification.json"
     },
     {
       "project": "A6-2",
@@ -225,7 +225,7 @@
         "execution": "Real AAPL windows: four forecast architectures trained for 3 steps each; cached pretrained ResNet18 forward/backward and FC update",
         "torch": "2.14.1+cpu"
       },
-      "evidence": "02_Advanced/A6-2/environment/2026-10-20-python31213/verification.json"
+      "evidence": "597bfcac0f89795bc933d94cd4d0ac9fa0539ae9:02_Advanced/A6-2/environment/2026-10-20-python31213/verification.json"
     }
   ],
   "temporary_environments_removed": true,

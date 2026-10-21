@@ -4,19 +4,30 @@ AI 모델이 학습하는 과정을 선형대수·미적분·확률통계로 나
 
 계산은 NumPy, 시각화는 Matplotlib만 사용한다. 자동 미분 라이브러리와 scikit-learn은 사용하지 않는다. `np.linalg.eig`는 Power Iteration 결과를 비교하는 검증 함수에서만 호출한다.
 
+## 학습과 시연
+
+두 노트북을 다음 순서로 실행한다. 각각 새 커널에서 독립적으로 동작하며, 기존 `outputs/` 파일 없이 계산과 그림을 만든다. 실행에는 같은 프로젝트의 `src/`와 `data/grace_hopper_128.png`가 필요하다.
+
+1. [행렬·미분에서 신경망 한 번 학습까지](notebooks/backprop_derivation.ipynb): 행렬 한 행과 중심차분 → 고정 예제의 순전파·BCE·역전파 → 손계산·모듈·수치 미분 대조 → 첫 갱신 → 반복 학습·Momentum 상태. 마지막 선형대수 연결에서 공간 변환·Power Iteration·SVD를 실행한다.
+2. [확률에서 손실 함수까지](notebooks/probability_loss.ipynb): 밀도·확률 → softmax의 축과 중간값 → 관측별 MSE·NLL·BCE·CE 항 → 전체 곡선·MLE → 기울기 비교. 기본 시연 뒤 정보 이론을 선택 확장으로 둔다.
+
+친구에게 보여줄 때는 첫 노트북의 **첫 갱신**에서 확률·손실이 어떻게 바뀌었는지 먼저 설명하고, 반복·다른 수학 부품으로 이어 간다. 두 번째 노트북에서는 관측별 손실 한 행을 설명한 뒤 합·평균과 곡선을 연결한다. 코드 셀을 실행하기 전 결과를 예상하고, 확인 질문은 출력 표를 근거로 답해 본다.
+
+[HTML 보조 자료](study/a2-1.html)는 개념과 파라미터를 조작할 때, [코드 읽기 가이드](study/code-walkthrough.md)는 구현 파일을 더 읽을 때 사용한다. HTML의 내장 코드는 작성 시점의 사본이므로 현재 Python 동작은 노트북과 `src/`에서 확인한다.
+
 ## 실행
 
 환경은 [uv](https://docs.astral.sh/uv/)로 관리한다. 이 README가 있는 A2-1 폴더에서 실행한다.
 
 ```powershell
-uv sync
+uv sync --locked
 uv run python -m src.run_all
 uv run python -m unittest discover -s tests -v
 ```
 
-`uv sync`는 `.python-version`(3.12)과 `uv.lock`에 맞춰 `.venv`를 만들고 노트북 도구(dev 그룹)까지 설치한다. `src.run_all`은 모든 실험을 `np.random.seed(42)`로 실행하고 그림 19개와 수치 요약 `summary.json`을 `outputs/`에 저장한다. 테스트 32개는 미션의 수치 기준을 그대로 검사한다.
+`uv sync --locked`는 `.python-version`(3.12.13)과 `uv.lock`에 맞춰 `.venv`를 만들고 노트북 도구(dev 그룹)까지 설치한다. `src.run_all`은 모든 실험을 `np.random.seed(42)`로 실행하고 그림 19개와 수치 요약 `summary.json`을 `outputs/`에 저장한다. 테스트는 면적비·기울기·집계·확률 관계와 최적화 경계를 검사한다.
 
-노트북은 VS Code나 Jupyter에서 `.venv`의 Python을 커널로 선택해 처음부터 실행한다. 별도 Jupyter 설치 없이 두 노트북을 실행하고 출력을 저장하려면:
+노트북은 VS Code나 Jupyter에서 `.venv`의 Python을 커널로 선택해 **커널 재시작 후 전체 실행**한다. 별도 Jupyter 설치 없이 두 노트북을 실행하고 출력을 저장하려면:
 
 ```powershell
 uv run python tools/execute_notebooks.py
@@ -26,6 +37,7 @@ uv가 없는 환경에서는 `pip install -r requirements.txt`로 계산·시각
 
 | 검증 조합 | 결과 |
 | --- | --- |
+| Windows, Python 3.12.13, NumPy 2.5.4, Matplotlib 3.11.2 (`uv.lock`, 현재 `.python-version`) | 테스트 32개, 전체 실험, Jupyter 커널 시작 통과 (2026-10-20 환경 전환) |
 | Windows, Python 3.12.14, NumPy 2.5.4, Matplotlib 3.11.2 (`uv.lock`) | 테스트 32개, 전체 실험, 노트북 2개, HTML 검증 통과 |
 | Windows, Python 3.8.20, NumPy 1.21.6, Matplotlib 3.4.3 (미션 최소 버전) | 테스트 32개, 전체 실험 통과 |
 
@@ -40,13 +52,13 @@ uv가 없는 환경에서는 `pip install -r requirements.txt`로 계산·시각
 | `src/probability.py` | 정규분포 PDF, 베르누이 PMF, 소프트맥스, MSE·가우시안 NLL·BCE·Categorical CE |
 | `src/information.py` | 엔트로피, Cross-Entropy, KL-Divergence (보너스) |
 | `src/run_all.py` | 전체 실험 실행, 그림과 `summary.json` 저장 |
-| `notebooks/backprop_derivation.ipynb` | 역전파 수식 유도, 고정 예제 손계산, NumPy·수치 미분 검증 |
-| `notebooks/probability_loss.ipynb` | 분포 시각화, 소프트맥스, MSE–MLE·CE–MLE 유도, 정보 이론 |
+| `notebooks/backprop_derivation.ipynb` | 행렬·수치 미분, 역전파와 첫 갱신, Momentum 상태, 공간 변환·고유값·SVD |
+| `notebooks/probability_loss.ipynb` | 분포·softmax 중간 계산, 관측별 손실과 합·평균, MLE 유도, 정보 이론 |
 | `tests/test_requirements.py` | 요구사항별 수치 검증 32개 |
 | `data/grace_hopper_128.png` | SVD 실험용 128x128 흑백 이미지 |
 | `tools/prepare_image.py` | 위 이미지를 만드는 전처리 |
 | `tools/execute_notebooks.py` | 두 노트북을 실행하고 출력 저장 |
-| `study/a2-1.html` | 탑다운 HTML 학습 자료 (`tools/build_study_guide.py`로 생성, `tools/verify_study_guide.py`로 검증) |
+| `study/a2-1.html` | 탑다운 HTML 학습 자료 |
 | `study/code-walkthrough.md` | 코드 읽기 가이드: 문법, 배열 shape 변화, 작은 숫자 예제, 확인 질문 |
 | `pyproject.toml`, `uv.lock`, `.python-version` | uv 환경 정의 |
 | `requirements.txt` | uv 없이 설치할 때 쓰는 의존성 목록 |
@@ -94,7 +106,7 @@ rank-k 근사는 U의 m·k개, σ의 k개, V의 n·k개 값을 저장한다. 128
 | ∂L/∂z1 | (2,) | [−0.0440, −0.0517] |
 | ∂L/∂W1 | (2,2) | [[−0.0440, 0], [−0.0517, 0]] |
 
-손계산과 NumPy 결과는 소수점 4자리까지 모두 일치한다. 수치 미분과의 최대 차이는 1.1e-11이다. 정답 값은 결과 예시와 같은 y=1로 정했다. 결과 예시의 ∂L/∂z1 두 번째 값은 −0.0513이지만, −0.2116×0.2445 = −0.0517이므로 이 구현은 −0.0517을 사용한다.
+손계산과 NumPy 결과는 소수점 4자리까지 모두 일치한다. 수치 미분과의 최대 차이는 1.1e-11이다. 고정 예제는 y=1이며, 첫 학습률 0.5 갱신에서 예측 확률은 0.6473 → 0.7121, BCE는 0.4350 → 0.3395로 변한다. 같은 관측 20회 학습과 첫 갱신의 결과를 노트북에서 구분한다. 이는 한 관측의 학습이며 일반화 성능 평가는 아니다.
 
 ### 4. 최적화 (시작점 (5, 5))
 
@@ -116,6 +128,8 @@ x²+10y²에서 lr이 작으면 GD는 완만한 x 방향으로 천천히 이동�
 - 소프트맥스 출력의 합과 1의 차이는 0이며, 기준은 1e-6이다. 최댓값을 빼는 안정화로 [1000, 1001, 1002]도 overflow 없이 계산한다.
 - MSE 최소화와 가우시안 NLL 최소화의 최적 w는 1.505로 같다. BCE 최소화와 베르누이 우도 최대화의 최적 w도 1.745로 같다 ([그림](outputs/18_loss_mle.png)). 수식 유도는 노트북에 있다.
 
+위 이진 분류 결과는 `src.run_all`의 seed=42·표본 50개·w 후보 0–3의 601개 실험이다. 확률 노트북의 기존 독립 실험은 seed=7·표본 60개·w 후보 0–4의 801개로, BCE 최소와 우도 최대가 모두 w=2.090이다. 입력이 다르므로 두 w를 직접 비교하지 않고, 같은 실험 안에서 목적 함수의 최적점이 같은지 확인한다.
+
 ## 보너스
 
 | 과제 | 결과 |
@@ -124,20 +138,14 @@ x²+10y²에서 lr이 작으면 GD는 완만한 x 방향으로 천천히 이동�
 | Newton Method | x²+10y²에서 1회 만에 최솟값에 도달한다. Rosenbrock에서는 Newton 5회, GD(lr=0.001) 17,695회가 걸린다. 대신 Hessian 계산·풀이 비용이 들고, x²−y²에서는 안장점으로 곧장 이동한다. 같은 위치에서 GD는 안장점에서 벗어난다 ([그림](outputs/15_newton_method.png)). |
 | 정보 이론 | p=[0.7,0.2,0.1], q=[0.4,0.4,0.2]에서 H(p)=0.8018, H(p,q)=0.9856, KL(p‖q)=0.1838, KL(q‖p)=0.1920이다. H(p,q)=H(p)+KL(p‖q)이고, KL은 대칭이 아니다 ([그림](outputs/19_information_theory.png)). |
 
-## 해석 결정
+## 계산의 전제와 읽는 법
 
-미션 설명이 비어 있거나, 서로 충돌하거나, 수학적으로 성립하지 않는 부분은 아래처럼 처리했다. 근거는 위 결과 섹션과 HTML 학습 자료 14장에 있다.
-
-| 항목 | 미션 설명 | 이 구현의 처리 | 이유 |
-| --- | --- | --- | --- |
-| 손계산 정답 y | 값이 비어 있음 | y = 1 | 결과 예시가 y = 1을 사용 |
-| SVD 이미지 크기 | 64x64 이하 권장, k=10·50·100 비교 | 128x128 흑백 | 64x64는 rank가 최대 64라 k=100 비교가 불가능 |
-| N(2, 0.5) | 두 번째 값의 의미가 명시되지 않음 | 분산 0.5 (σ≈0.707) | N(μ, σ²) 표준 표기 |
-| 발산 확인 | "lr=0.5 이상에서 발산" | x²+y²의 실제 경계 lr=1을 보이고, 발산은 lr=1.1과 x²+10y²의 lr=0.5로 제시 | x²+y²에서 lr=0.5는 (1−2·0.5)=0이라 한 번에 수렴 |
-| Momentum 이점 | 타원에서 이점 확인 | 작은 lr(0.01)에서 이점을 보이고, 큰 lr(0.09)에서 GD가 더 빠른 결과도 함께 기록 | β=0.9의 수렴률은 √β≈0.95에서 더 좋아지지 않음 |
-| 역전파 결과 예시 | ∂L/∂z1 = [−0.0440, −0.0513] | [−0.0440, −0.0517] | −0.2116×0.2445 = −0.0517, NumPy·수치 미분도 같음 |
-| 회전 R(θ), 전단 Sh(k) | θ, k 값이 지정되지 않음 | θ=45°, x 방향 전단 k=1 | 변환이 그림에서 잘 보이는 값 |
-| det와 면적비 | 세 변환으로 확인 | det=5, det=−2 행렬을 추가로 확인 | 요구된 세 변환은 모두 det=1이라 관계를 구별하지 못함 |
+- 고정 신경망은 입력 `[1,0]`, 정답 1인 관측 하나다. 6자리 표시는 읽기용이며 중간 계산은 반올림하지 않는다.
+- 정규분포는 `N(평균, 분산)`으로 표기한다. PDF의 높이는 확률이 아니라 밀도다.
+- MSE와 가우시안 NLL의 최적점 일치는 모든 관측의 잡음 분산이 같은 고정값일 때 성립한다. MSE 자체는 확률 가정 없이 오차 지표로도 쓸 수 있다.
+- 노트북의 BCE·CE와 NLL 함수는 관측별 항의 합을 반환한다. MSE 평균 및 기울기 비교의 `½(예측−정답)²`와 배율을 구분한다.
+- `x²+y²`에서 GD의 안정 범위는 `0 < lr < 1`이다. 같은 학습률도 곡률이 다른 함수에서는 진동하거나 발산할 수 있다. Momentum의 이점 역시 조건에 따라 달라진다.
+- SVD는 복원 오차·에너지·저장할 실수 개수를 함께 본다. 높은 PSNR만으로 압축 효율이 높다고 판단하지 않는다.
 
 ## 데이터
 
@@ -147,7 +155,7 @@ SVD 실험 이미지는 Matplotlib 배포본의 `sample_data/grace_hopper.jpg`(G
 
 [`study/a2-1.html`](study/a2-1.html)을 브라우저에서 연다. 학습 루프 전체를 먼저 보고 각 수학 부품으로 내려가는 탑다운 순서로 구성했다.
 
-코드를 직접 읽을 때는 [`study/code-walkthrough.md`](study/code-walkthrough.md)를 함께 본다. `src/`와 노트북 코드 셀의 주석은 줄 단위 문법과 배열 shape을, 가이드는 함수 단위 데이터 흐름과 작은 숫자 예제를 설명한다. 생성·검증 방법은 [`study/README.md`](study/README.md)에 있다.
+코드를 직접 읽을 때는 [`study/code-walkthrough.md`](study/code-walkthrough.md)를 함께 본다. `src/`와 노트북 코드 셀의 주석은 문법과 배열 shape을, 가이드는 함수 단위 데이터 흐름과 작은 숫자 예제를 설명한다. HTML 포함 내용과 열람 방법은 [`study/README.md`](study/README.md)에 있다.
 
 ## 과정 내 위치
 

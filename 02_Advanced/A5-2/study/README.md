@@ -17,26 +17,17 @@
 
 점검 질문 체크는 스스로 설명해 봤다는 표시일 뿐이다. 자동 채점이 아니며 새로 열면 초기화된다. 합성 데이터 결과이므로 실제 금융 고객에 대한 결론이 아니다.
 
-## 재생성과 검증
+## 작성 당시 검증
 
-A5-2 폴더에서 실행한다. 먼저 분석 결과가 있어야 한다.
+이 HTML은 작성 당시의 소스·결과로 한 번 만든 학습 자료다. 생성 도구와 템플릿은 정리했고, 아래는 작성 당시 확인한 내용이다.
 
-```powershell
-uv run python -m src.run_all
-uv run python tools/build_study_guide.py
-uv run python tools/verify_study_guide.py
-```
+다음을 검사했다.
 
-`a5-2.template.html`이 설명과 화면의 편집 원본이다. build 도구는 현재 소스의 코드 발췌, `results/*.json`의 수치, `results/figures`의 PNG, `results/test_explanations.json`의 Test 데이터를 HTML에 넣는다. 그리고 `source-manifest.json`과 `calculation-evidence.json`을 저장한다. 본문 수치는 자동으로 바뀌지만 "소득은 어느 군집도 구별하지 않는다" 같은 해석 문장은 자동으로 바뀌지 않는다. 데이터나 모델을 바꾸면 설명도 다시 검토해야 한다.
-
-verify 도구는 다음을 검사한다.
-
-- 소스·결과·그래프 파일 해시. UTF-8 텍스트는 Git의 LF/CRLF 차이를 LF로 정규화하고, PNG는 원래 바이트로 비교한다.
 - 코드 발췌가 원본의 해당 줄과 같은지, 페이지에 표시된 발췌가 원본과 같은지
 - 자리표시자, 내부 링크, 스크립트가 찾는 요소, 입력 레이블, 이미지 대체 텍스트
 - 내장 Test 데이터가 결과 파일과 같은지
 
-이어서 Node.js로 페이지의 계산 함수를 실행해 Python 결과와 대조한다. 대상은 다음과 같다.
+이어서 Node.js로 페이지의 계산 함수를 실행해 Python 결과와 대조했다. 대상은 다음과 같다.
 
 - Test 2,000명의 군집 재배정 vs scikit-learn K-Means
 - PCA 좌표 vs scikit-learn PCA

@@ -54,13 +54,21 @@ def backward(root, grad=None):
     """root에서 시작해 그래프 전체에 기울기를 전파한다.
 
     root가 스칼라면 시작 기울기 dL/dL = 1을 쓰고, 아니면 같은 shape의 grad를 받아야 한다.
+    중간 노드의 grad는 이번 호출 값으로 다시 계산하고, 리프의 grad만 호출 간 누적한다.
+    매개변수를 갱신한 뒤에는 순전파부터 새 그래프를 만들어야 한다.
     """
     if grad is None:
         if root.data.size != 1:
             raise RuntimeError("스칼라가 아닌 텐서에서 backward()를 부르려면 grad를 넘겨야 한다")
         grad = np.ones_like(root.data)
-    grad = np.broadcast_to(np.asarray(grad, dtype=root.data.dtype), root.data.shape)
+    grad = np.asarray(grad, dtype=root.data.dtype)
+    if grad.shape != root.data.shape:
+        raise ValueError("시작 기울기의 shape는 출력 텐서와 같아야 한다")
+    order = topological_order(root)
+    for node in order:
+        if node._prev:
+            node.grad = None
     root.grad = np.array(grad) if root.grad is None else root.grad + grad
-    for node in reversed(topological_order(root)):
+    for node in reversed(order):
         if node.grad is not None:
             node._backward()

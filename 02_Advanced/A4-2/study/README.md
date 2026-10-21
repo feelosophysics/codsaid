@@ -2,6 +2,17 @@
 
 `a4-2.html` 하나를 브라우저에서 열면 된다. 글꼴(Google Fonts)을 빼면 인터넷 없이 동작한다. 오프라인에서는 시스템 글꼴로 대체된다. 휴대폰 폭(375px)에서도 가로 넘침 없이 읽을 수 있고, 라이트·다크 테마를 지원한다.
 
+## Python 계산 실습
+
+[계산 실습 노트북](../notebooks/rules_walkthrough.ipynb)은 정규식 후보·그룹·좌표에서 Entity까지,
+사전 Hit에서 감성 점수까지 작은 사례를 펼친 뒤 전체 평가·보너스로 연결한다.
+`uv sync --group dev` 후 `uv run --group dev python tools/build_learning_notebook.py --execute`로
+새 커널 실행·재생성한다. 기존 outputs는 보존한다.
+
+HTML의 조작 기능과 Python 자료구조 확인은 역할이 다르다. 노트북 첫 계산 후 아래 HTML 실험실에서
+규칙을 바꿔 예상과 결과를 비교하면 좋다. 점수 0은 단서 없음뿐 아니라 기여 상쇄도 포함한다.
+이중부정 스위치에 따라 실제 반전 배율이 달라지며 해설은 그 실제 배율을 표시한다.
+
 ## 학습 순서
 
 완성된 파이프라인을 먼저 써 보고 부품으로 내려가는 탑다운 순서다.
@@ -46,25 +57,20 @@
 
 리뷰 본문은 NSMC(CC0)에서 왔다. 실명과 비속어가 들어 있을 수 있다. KNU 감성사전은 저장소에 라이선스 표기가 없어서 파일에 넣지 않았다. 사전 비교표의 KNU 수치만 Python 실행 결과에서 옮겼다.
 
-## 재생성과 검증
+## 작성 당시 검증
 
-상위 A4-2 폴더에서:
+이 HTML은 작성 당시의 소스·결과로 한 번 만든 학습 자료다. 생성 도구와 템플릿은 정리했고, 아래 표는 작성 당시 확인한 범위다. 현재 Python 계산·평가의 재현과 새 노트북 실행은 위 명령으로 확인한다.
 
-```powershell
-uv run python -m src.run_all                 # outputs/ 갱신(1~2분)
-uv run python tools/build_study_guide.py     # a4-2.template.html + engine.js + app.js + 데이터 → a4-2.html
-uv run python tools/verify_study_guide.py    # Node.js 18 이상 필요
-```
+`uv run --group dev python tools/verify_learning_flow.py`는 실행 노트북과 생성기의 셀·ID,
+별도 JS와 HTML 내 스크립트, 소스 발췌 15개를 대조한다. Node.js가 필요하다.
+감성은 dev/test 2,000건 + 고정 난수로 뽑은 pool 3,000건 + 표적·경계 45문장에 규칙 9단계를 적용한다.
+추출 80문장·마스킹 20문장·속성 48문장×연결 2방식도 Python과 JS를 비교한다.
+문자열 위치는 Python 코드 포인트와 JS UTF-16 코드 단위의 차이를 환산해 대조한다.
+이 검사는 브라우저 화면·조작 검증과 별개다.
 
-파일 구성은 다음과 같다.
+`engine.js`(Python 규칙 엔진을 옮긴 것)와 `app.js`(화면)는 HTML에 들어간 스크립트의 원본이다.
 
-- `a4-2.template.html`: 설명과 화면의 원본
-- `engine.js`: Python 규칙 엔진(정규식·정규화·추출·마스킹·사전 매칭·감성·속성)을 옮긴 것
-- `app.js`: 화면
-
-build 도구가 사전 표면형, 정규식의 JS 변환본(`src.patterns.to_js_source`), 평가 결과, 소스 발췌를 넣는다. 본문 설명문 속 수치 일부는 자동으로 갱신되지 않는다. 사전이나 규칙을 바꾸면 설명도 다시 봐야 한다.
-
-검증 도구는 HTML 안의 엔진을 Node.js에서 실행해 Python 구현과 비교한다.
+HTML 안의 엔진을 Node.js에서 실행해 Python 구현과 비교했다.
 
 | 항목 | 내용 | 결과 |
 | --- | --- | --- |

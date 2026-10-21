@@ -8,6 +8,11 @@
 
 이 프로젝트는 「구현 → 검증 → 실험」 순서로 진행한다.
 
+처음 공부한다면 [실행된 계산 추적 노트북](notebooks/autograd_walkthrough.ipynb)부터 읽는다.
+두 표본의 `Tensor.data → 예측 → 손실 2.5 → 계산 그래프 → 기울기 → SGD 갱신 → 손실 1.1698`을
+손계산·실제 레이어·수치 미분으로 대조하고, 같은 엔진을 XOR와 MNIST로 연결한다.
+브라우저에서 조작하는 [HTML](study/a6-1.html)과 실제 Python 객체를 보는 노트북을 함께 사용할 수 있다.
+
 1. **구현**: Tensor·AutoGrad 엔진, 레이어, 초기화, 손실, 옵티마이저, 데이터 로더
 2. **검증**: 모든 연산과 레이어의 역전파를 수치 미분과 비교한다(Gradient Checking, 상대 오차 1e-7 미만).
 3. **실험**: 초기화(Zero/Random/He/Xavier)가 학습에 미치는 영향, XOR·MNIST 학습, 보너스로 Dropout·L2·추가 활성화 함수
@@ -22,7 +27,19 @@ Python 3.10 이상이 필요하다. 환경은 [uv](https://docs.astral.sh/uv/)�
 uv sync
 ```
 
-`uv sync`는 `.python-version`(3.12)과 `uv.lock`에 맞춰 `.venv`를 만들고, `minigrad` 패키지(`src/minigrad`)를 편집 가능 모드로 설치한다. uv가 없으면 다음처럼 설치한다.
+노트북을 실행하거나 다시 생성하려면 `uv sync --group dev`로 개발 의존성도 설치한다.
+`.venv` 커널로 위에서 아래로 실행하거나 다음 명령을 사용한다.
+
+```powershell
+uv run --group dev python tools/build_learning_notebook.py --execute
+uv run --group dev python tools/build_learning_notebook.py --check
+uv run --group dev python tools/verify_learning_flow.py
+```
+
+새 커널 실행에는 MNIST 캐시가 필요하다. 없으면 먼저 `uv run python scripts/download_mnist.py`로 준비한다.
+노트북은 캐시 네 파일의 SHA-256을 확인하며, 기존 보고서·그림을 덮어쓰지 않는다.
+
+`uv sync`는 `.python-version`(3.12.13)과 `uv.lock`에 맞춰 `.venv`를 만들고, `minigrad` 패키지(`src/minigrad`)를 편집 가능 모드로 설치한다. uv가 없으면 다음처럼 설치한다.
 
 ```powershell
 pip install -r requirements.txt
@@ -51,6 +68,10 @@ uv run python scripts/run_all.py
 | 5 | `uv run python scripts/bonus_activations.py` | 보너스: Tanh·LeakyReLU·ELU의 도함수, 깊은 망 기울기, Two Moons 비교 | `figures/bonus_activations.png` |
 | 6 | `uv run python scripts/bonus_regularization.py` | 보너스: Inverted Dropout과 L2의 과적합 억제 | `figures/bonus_regularization.png` |
 
+`train_xor.py --init zero --epochs 50`은 학습 실패를 재현하므로 종료 코드 **1**이 정상적인 관찰이다.
+실행 오류와 구별하려면 출력에서 loss가 `0.693147`로 유지되고 예측이 모두 0.5인지 확인한다.
+위 실험 CLI는 각자의 reports/figures 파일을 갱신한다. 기존 결과를 보존하며 학습하려면 노트북을 쓴다.
+
 테스트는 미션 체크리스트와 단위 동작을 검사한다. MNIST 파일이 없으면 MNIST 테스트 1개는 건너뛴다.
 
 ```powershell
@@ -67,11 +88,12 @@ uv run python -m unittest discover -s tests -v
 | --- | --- |
 | `src/minigrad/` | 프레임워크 소스 (아래 상세) |
 | `scripts/` | 검증·학습·실험 스크립트와 `run_all.py` |
-| `tests/` | 단위 테스트와 미션 체크리스트 테스트 32개 |
+| `tests/` | 단위·실험·학습 경계 회귀 테스트 38개 |
 | `figures/` | 초기화 비교 등 그림 6개 |
 | `reports/` | 검증·실험 리포트, 실행 로그(`*.log`), 수치(`*.json`) |
-| `study/` | 단일 HTML 학습 자료와 그 편집 원본 |
-| `tools/` | 학습 자료 빌드·검증 도구 |
+| `study/` | 단일 HTML 학습 자료와 읽는 순서 |
+| `notebooks/` | 출력이 포함된 실제 Python 계산 추적 |
+| `tools/` | 노트북 생성·실행·검증, HTML 코드 발췌 대조 도구 |
 | `pyproject.toml`, `uv.lock`, `.python-version` | uv 환경 정의 |
 | `requirements.txt` | uv 없이 설치할 때 쓰는 의존성 목록 |
 
@@ -163,6 +185,11 @@ for r in check_gradients(lambda: (layer(x) ** 2).sum(), [x, layer.W, layer.b], [
 
 ## 실험 결과 요약
 
+아래 초기화·보너스 비교는 기존 저장 실험 결과다. 현재 코드로 다시 실행한 범위는
+노트북의 첫 계산, gradient check 38개, XOR zero/he seed 0, MNIST 전체 1 epoch와 회귀 테스트다.
+MNIST는 캐시 해시와 기존 설정을 대조했고 Test 93.76%가 다시 나왔다.
+초기화 seed 20개 전체, 깊은 망, Two Moons, Dropout/L2 비교 실험과 그림 6개는 이번에 재생성하지 않았다.
+
 상세한 수치와 해석은 [검증 리포트](reports/VERIFICATION_REPORT.md)와 [실험 리포트](reports/EXPERIMENT_REPORT.md)에 있다.
 
 ### Gradient Check — 통과
@@ -221,14 +248,21 @@ XOR(2-32-32-1, ReLU, Adam lr=0.01, seed 20개의 중앙값)
 - **Xavier 공식**: 미션 표기 N(0, √(2/(n_in+n_out)))의 두 번째 값을 표준편차로 해석했다. He도 같다.
 - **L2와 Adam**: `weight_decay`는 기울기에 λw를 더하는 고전적 L2다. AdamW의 분리형 감쇠와는 다르다.
 - **손실**: 출력 Sigmoid + BCE를 분리해 쓰면 포화된 출력에서 기울기가 사라질 수 있다. 그래서 `binary_cross_entropy_with_logits`를 함께 제공한다. 다중 분류의 `cross_entropy`도 같은 이유로 log-softmax를 쓴다.
+- **배열 축과 reduction**: Linear는 `(N,D) @ (D,C) + (C,) → (N,C)`다. 편향 역전파는 표본 축을 합친다. MSE/BCE는 모든 원소 평균, CE/NLL은 클래스 축 합 뒤 표본 평균이다. MSE/분리형 BCE는 NumPy broadcasting을 허용하므로 예측과 정답 shape를 먼저 맞춘다. 안정형 BCE는 같은 shape만 받는다.
+- **공유·반복 역전파**: 같은 노드를 여러 경로에서 사용하면 기여를 더한다. 같은 그래프의 backward를 반복하면 리프 grad는 누적하고 중간 grad는 다시 계산한다. 시작 grad는 출력과 정확히 같은 shape여야 한다. `zero_grad`는 매개변수 grad만 지우며, 갱신 뒤에는 새 순전파로 그래프를 만든다. 이 엔진은 data의 제자리 변경을 자동 감지하지 않는다.
+- **평가 경계**: `eval()`은 Dropout 등 레이어 동작을 바꾸고 `no_grad()`는 새 연산의 그래프 기록을 끈다. 둘은 독립적이다. L2는 optimizer에 넘긴 편향을 포함한 모든 파라미터에 적용되지만 grad=None이면 건너뛴다. 출력 데이터 손실에는 L2 항이 포함되지 않는다.
 
 ## 테스트 환경
 
 | 환경 | 결과 |
 | --- | --- |
+| 현재 Windows, Python 3.12.13, NumPy 2.5.4 (`uv.lock`) | 테스트 38개 통과, 노트북 새 커널 실행·셀 일치·HTML 발췌 검사 |
 | Windows 11, Python 3.12.13, NumPy 2.5.4, Matplotlib 3.11.2 (`uv.lock`) | 테스트 32개, 전체 스크립트, HTML 검증 통과 |
 | Windows 11, Python 3.10.21, NumPy 1.23.5, Matplotlib 3.6.3 (최소 버전) | 테스트 32개 통과, 한글 그림 출력 확인 |
 
 ## 학습 자료
 
 [study/a6-1.html](study/a6-1.html): 하나의 파일로 된 오프라인 학습 자료. 계산 그래프 단계 실행, 역전파 손계산 연습, 초기화 실험 위젯이 들어 있다.
+
+[notebooks/autograd_walkthrough.ipynb](notebooks/autograd_walkthrough.ipynb): 실제 data/shape/부모/grad를 출력하며 따라가는 기본 계산과 XOR·MNIST 연결, 평가·정규화 경계.
+친구에게는 첫 계산과 갱신 → 공유 노드 → XOR zero/he → MNIST 축 → eval/no_grad 순서로 시연한다.

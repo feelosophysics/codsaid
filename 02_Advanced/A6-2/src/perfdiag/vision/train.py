@@ -81,7 +81,8 @@ def fit(train_set, validation_set, cfg, n_classes, log=print):
     model = TransferNet(n_classes, cfg.strategy, cfg.dropout)
     opt = torch.optim.AdamW(model.param_groups(cfg.lr_head, cfg.lr_backbone), weight_decay=cfg.weight_decay)
     transform = train_transform(cfg.augmentation, cfg.image_size)
-    x_all, y_all = to_tensor(train_set.images), torch.as_tensor(train_set.targets)
+    # pandas가 반환한 읽기 전용 배열도 안전하게 다루도록 정답을 텐서에 복사한다.
+    x_all, y_all = to_tensor(train_set.images), torch.tensor(train_set.targets)
     generator = torch.Generator().manual_seed(cfg.seed)
     history = {key: [] for key in ("train_loss", "validation_loss", "train_error", "validation_error")}
     best = (float("inf"), 0, None)

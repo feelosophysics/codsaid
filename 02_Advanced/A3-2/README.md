@@ -6,6 +6,27 @@
 
 ## 실행
 
+### 학습과 시연 시작점
+
+[실행 노트북: 한 프레임의 검출에서 시간에 걸친 ID까지](notebooks/tracking_walkthrough.ipynb)를 위에서 아래로 실행한다.
+첫 실제 영상 프레임의 전경 마스크·모폴로지·박스·중심점·거리 행렬·ID 갱신을 펼치고 기존 모듈과 대조한다.
+배경과 추적기의 상태, 이전 Track 참조와 값 복사의 차이, 병합·미검출·ID 전환의 판정을 확인한 뒤
+실제 test 영상 평가와 앱의 일시정지·한 프레임 진행·스냅샷 시연으로 이어진다.
+
+```powershell
+uv sync --group dev
+uv run --group dev python tools/build_learning_notebook.py --execute
+```
+
+VS Code/Jupyter에서 A3-2의 `.venv` Python을 커널로 선택한다. 노트북은 A3-2 또는 `notebooks`를 작업 디렉터리로 실행한다.
+생성기는 셀 원본을 관리하고 `--execute`는 새 커널 실행 결과를 저장한다. 기존 영상·`outputs`는 덮어쓰지 않는다.
+test 영상 5개, 같은 검출 입력을 쓰는 추적기 변형·민감도 실험, 특징점 조건별·일반화 실험을 다시 계산하므로 수 분이 걸릴 수 있다.
+dev 선택 과정·배경 모델 전체 비교·특징점 연속 곡선·속도 측정은 이 노트북의 재실행 범위와 구분한다.
+
+**권장 순서:** 노트북 1~6절(계산·상태) → 7~9절(평가·실패) → 10~11절(등록 물체) → 13절(앱 시연).
+12절은 보너스다. [기존 HTML](study/a3-2.html)의 시간 재생 위젯은 계속 활용한다.
+HTML은 시간에 따른 비교, 노트북은 실제 Python 배열·객체 확인을 맡는다.
+
 환경은 [uv](https://docs.astral.sh/uv/)로 관리한다. 이 README가 있는 A3-2 폴더에서 실행한다.
 
 ```powershell
@@ -58,7 +79,6 @@ OpenCV 스레드를 기본 2개로 제한한다(`--threads`). 분석 파이프�
 | `src/cache.py` | 실험 중간 결과 디스크 캐시 (선택) |
 | `tools/build_report.py` | `REPORT.template.md` + `results.json` → `REPORT.md` |
 | `tools/annotate_events.py` | 직접 찍은 영상의 수동 측정 (키로 이벤트·ID Switch·실패 기록 → CSV) |
-| `tools/build_study_guide.py`, `tools/verify_study_guide.py` | HTML 학습 자료 생성·검증 |
 | `data/synthetic/` | 테스트 영상(`*_test.mp4`)과 정답 JSON. dev 영상은 생성 명령으로 만든다 |
 | `data/target/` | 등록 물체 `target.png`, 일반화 실험용 `same_series.png`·`other.png` |
 | `outputs/` | 그림 15개, `results.json`, `measurement_log.csv` |
@@ -114,12 +134,7 @@ uv run python tools/annotate_events.py data/real/두사람교차.mp4 --condition
 
 [`study/a3-2.html`](study/a3-2.html)을 브라우저에서 연다(인터넷 불필요). 완성된 추적기가 교차 장면에서 ID를 바꾸는 모습을 먼저 보고, 배경 모델 → 모폴로지 → 할당 → 칼만 → 판정 기준 → 특징점 순서로 내려간다. 실제 test 영상의 검출 결과를 페이지 안의 JS 추적기로 다시 돌려 보며 추적기 설정을 바꿀 수 있다.
 
-소스나 결과를 바꾼 뒤에는 다시 만들고 검증한다. 검증은 Node.js로 페이지의 계산 함수를 실행해 Python 결과와 비교한다. Hungarian 할당, 시나리오 5개 × 추적기 설정 9개의 프레임별 ID, 이벤트별 판정, 이동 평균 배경, 모폴로지, 비율 검정을 합쳐 약 6만 번 비교한다.
-
-```powershell
-uv run python tools/build_study_guide.py
-uv run python tools/verify_study_guide.py
-```
+작성 당시 Node.js로 페이지의 계산 함수를 실행해 Python 결과와 비교했다. Hungarian 할당, 시나리오 5개 × 추적기 설정 9개의 프레임별 ID, 이벤트별 판정, 이동 평균 배경, 모폴로지, 비율 검정을 합쳐 약 6만 번 비교했다.
 
 ## 과정 내 위치
 

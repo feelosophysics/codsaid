@@ -1,5 +1,8 @@
 # A3-1 코드 읽기 가이드
 
+실제 사진 배열과 중간 결과를 실행하며 읽으려면 [스캐너 실습 노트북](../notebooks/scanner_walkthrough.ipynb)부터 시작한다.
+노트북에서 E01의 계산을 따라간 뒤, 이 문서에서 필요한 함수·문법·확장 수식을 찾아본다.
+
 이 문서는 `src/`의 코드를 **문법 → 데이터 변화 → 존재 이유** 순서로 읽도록 돕는다. 영상 처리 원리와 조작 위젯은 이미 [a3-1.html](a3-1.html)에 있으므로 여기서는 "그 원리가 코드에서 어떻게 계산되고, 배열이 어떤 모양으로 바뀌는가"에 집중한다.
 
 | 자료 | 맡는 일 |
@@ -566,12 +569,10 @@ REFLECT_101로 양쪽 1칸 채움: [10 | 10, 10, 200, 200 | 200]      (왼쪽 = 
 | 파일 | 하는 일 |
 | --- | --- |
 | [tests/test_requirements.py](../tests/test_requirements.py) | 요구사항별 테스트 33개. 좌표 정렬의 입력 순서 무관성, 금지 라이브러리 import 여부, 투시 변환 결과, 컨볼루션의 OpenCV 일치 등 |
-| [tools/build_study_guide.py](../tools/build_study_guide.py) | 템플릿 HTML에 현재 소스의 함수 발췌(줄 번호 포함)·그림·위젯 데이터를 넣어 `a3-1.html` 생성 |
-| [tools/verify_study_guide.py](../tools/verify_study_guide.py) | HTML 발췌가 현재 소스와 같은지, HTML의 JavaScript 계산이 Python·OpenCV와 같은지 비교 |
 | [tools/build_report.py](../tools/build_report.py) | `REPORT.template.md` + `results.json` → `REPORT.md` |
 | [tools/annotate_corners.py](../tools/annotate_corners.py) | 직접 찍은 사진에 정답 꼭짓점과 조건을 기록 |
 
-HTML의 코드 발췌는 함수 이름으로 소스에서 자동으로 잘라 온다. 소스 주석을 고치면 `build_study_guide.py`를 다시 실행해야 HTML의 발췌와 줄 번호가 맞는다.
+HTML의 코드 발췌는 작성 당시 소스에서 함수 이름으로 잘라 온 것이다. 이후 소스를 고치면 HTML의 발췌·줄 번호와 달라질 수 있다.
 
 ---
 

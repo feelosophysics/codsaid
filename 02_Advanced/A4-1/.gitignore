@@ -1,3 +1,4 @@
 # sklearn이 내려받는 20 Newsgroups 캐시(약 14MB). 첫 실행 때 자동으로 다시 받는다.
 data/
 .run_all.log
+.notebook-runtime/

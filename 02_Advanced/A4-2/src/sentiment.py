@@ -157,6 +157,11 @@ def clause_map(text: str, tokens: list[Token]) -> tuple[list[int], int | None]:
 
 @dataclass
 class Scored:
+    """감성어 한 개의 계산 기록. 위치는 normalize_text 결과의 글자 좌표다.
+
+    negators는 탐지한 표현, negation_factor는 설정까지 적용한 실제 배율이다.
+    이중부정을 끄면 부정어가 두 개여도 배율은 -1일 수 있다.
+    """
     surface: str
     term: str
     base: float
@@ -166,6 +171,7 @@ class Scored:
     contrast: float = 1.0
     value: float = 0.0
     kind: str = "SENTI"
+    negation_factor: int = 1
 
 
 @dataclass
@@ -262,6 +268,7 @@ class SentimentAnalyzer:
                 if not cfg.double_negation:
                     flips = min(flips, 1)
             sign = -1 if flips % 2 else 1
+            item.negation_factor = sign
             item.contrast = _contrast(cfg, last_strong, h.start)
             item.value = item.base * factor * sign * item.contrast
             items.append(item)
@@ -381,7 +388,8 @@ def explain(result: Result) -> str:
     senti = [f"{i.surface}({i.base:+g})" for i in result.items]
     lines.append("2. 감성 단어 탐지: " + (", ".join(senti) if senti else "(없음)"))
     negs = [f"'{n}'" for i in result.items for n in i.negators]
-    lines.append("3. 부정어 탐지: " + (", ".join(negs) + " → 감성 반전" if negs else "(없음)"))
+    factors = [f"{i.surface}: ×{i.negation_factor:+g}" for i in result.items if i.negators]
+    lines.append("3. 부정어 탐지: " + (", ".join(negs) + " → 실제 배율 " + ", ".join(factors) if negs else "(없음)"))
     mods = [f"'{s}' → 강도 ×{f:g}" for i in result.items for s, f in i.modifiers]
     lines.append("4. 강조어 탐지: " + (", ".join(mods) if mods else "(없음)"))
     extra = []
@@ -398,7 +406,7 @@ def explain(result: Result) -> str:
     for i in result.items:
         parts = [f"({i.base:+g})"]
         if i.negators:
-            parts.append("(-1)" * len(i.negators))
+            parts.append(f"({i.negation_factor:+g})")
         parts += [f"{f:g}" for _, f in i.modifiers]
         if i.contrast != 1.0:
             parts.append(f"{i.contrast:g}")
@@ -410,7 +418,7 @@ def explain(result: Result) -> str:
     lines.append(f"계산: {calc} = {result.score:g}")
     verdict = "긍정" if result.label == 1 else "부정"
     if result.decided_by_tie:
-        verdict += " (점수 0: 단서 없음 → 기본값)"
+        verdict += " (점수 0: 단서 없음 또는 기여 상쇄 → 기본값)"
     lines.append(f"최종 판정: {verdict}")
     return "\n".join(lines)
 

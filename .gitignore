@@ -195,6 +195,9 @@ tmp/
 node_modules/
 .notebook-runtime/
 
+# Personal task notes and local verification records
+/.newlearn/
+
 # Local private credentials
 .aws/
 .ssh/

@@ -90,7 +90,7 @@
     const senti = res.items.map((i) => `${i.surface}(${sgn(i.base)})`);
     L.push("감성 단어: " + (senti.join(", ") || "(없음)"));
     const negs = res.items.flatMap((i) => i.negators.map((n) => `'${n}'`));
-    L.push("부정어: " + (negs.length ? negs.join(", ") + " → 반전" : "(없음)"));
+    L.push("부정어: " + (negs.length ? negs.join(", ") + " → 실제 배율 " + res.items.filter(i => i.negators.length).map(i => `${i.surface}: ×${sgn(i.negation_factor)}`).join(", ") : "(없음)"));
     const mods = res.items.flatMap((i) => i.modifiers.map(([s, f]) => `'${s}' ×${f}`));
     L.push("강조·약화어: " + (mods.join(", ") || "(없음)"));
     const extra = [];
@@ -100,7 +100,7 @@
     if (extra.length) L.push("확장 규칙: " + extra.join("; "));
     const terms = res.items.map((i) => {
       const p = [`(${sgn(i.base)})`];
-      i.negators.forEach(() => p.push("(-1)"));
+      if (i.negators.length) p.push(`(${sgn(i.negation_factor)})`);
       i.modifiers.forEach(([, f]) => p.push(String(f)));
       if (i.contrast !== 1) p.push(String(i.contrast));
       return p.join(" × ");
@@ -110,7 +110,7 @@
   }
   function verdictHTML(res) {
     const p = res.label === 1;
-    return `<div class="verdict ${p ? "p" : "n"}"><span class="dot"></span>${p ? "긍정" : "부정"} <small>${res.decided_by_tie ? "점수 0 — 단서가 없어 기본값(부정)" : "점수 " + sgn(res.score)}</small></div>`;
+    return `<div class="verdict ${p ? "p" : "n"}"><span class="dot"></span>${p ? "긍정" : "부정"} <small>${res.decided_by_tie ? "점수 0 — 단서 없음 또는 상쇄, 기본값" : "점수 " + sgn(res.score)}</small></div>`;
   }
   function sentimentBlock(text, cfg) {
     const r = E.analyze(text, cfg);
@@ -387,7 +387,7 @@
   let evSplit = "test", evFilter = "wrong", evSel = null;
   const evCfg = ruleToggles($("#ev-toggles"), FINAL, () => renderEval());
   segmented($("#ev-split"), [["dev", "dev 1,000"], ["test", "test 1,000"]], evSplit, (v) => { evSplit = v; evSel = null; renderEval(); });
-  segmented($("#ev-filter"), [["wrong", "오분류"], ["tie", "단서 없음"], ["neg", "부정어 작동"], ["all", "전체"]], evFilter, (v) => { evFilter = v; renderEvalList(); });
+  segmented($("#ev-filter"), [["wrong", "오분류"], ["tie", "점수 0"], ["neg", "부정어 작동"], ["all", "전체"]], evFilter, (v) => { evFilter = v; renderEvalList(); });
   let evRes = [];
   function macroF1(y, p) {
     const f = (c) => { const tp = y.filter((t, i) => t === c && p[i] === c).length, fp = y.filter((t, i) => t !== c && p[i] === c).length, fn = y.filter((t, i) => t === c && p[i] !== c).length;
@@ -402,7 +402,7 @@
     const ties = evRes.filter((r) => r.decided_by_tie).length;
     const cov = evRes.map((r, i) => [r, i]).filter(([r]) => !r.decided_by_tie);
     const covAcc = cov.filter(([r, i]) => r.label === y[i]).length / Math.max(1, cov.length);
-    $("#ev-facts").innerHTML = [[pct(acc), "정확도"], [f3(macroF1(y, p)), "macro F1"], [ties, "단서 없음(점수 0)"], [pct(covAcc), "단서 있는 리뷰 정확도"]]
+    $("#ev-facts").innerHTML = [[pct(acc), "정확도"], [f3(macroF1(y, p)), "macro F1"], [ties, "점수 0(없음·상쇄)"], [pct(covAcc), "점수 0 제외 정확도"]]
       .map(([b, s]) => `<div class="fact"><b>${b}</b><span>${s}</span></div>`).join("");
     const cm = [[0, 0], [0, 0]];
     y.forEach((t, i) => { cm[t][p[i]] += 1; });
@@ -493,7 +493,7 @@
       title: "규칙 단계별 정확도", xs: dev.map((_, i) => i), xlabels: dev.map((r, i) => `${r.step[0]}\n${short[i]}`), xlabelLines: 2,
       ymin: 0.68, ymax: 0.84, ystep: 0.04, band: [0, 4], bandLabel: "필수 범위",
       series: [{ name: "dev", color: "--s1", points: dev.map((r) => ({ y: r.accuracy })) }, { name: "test", color: "--s2", points: test.map((r) => ({ y: r.accuracy })) }],
-      tip: (i) => `<b>${esc(dev[i].step)}</b><br>dev ${f3(dev[i].accuracy)} · test ${f3(test[i].accuracy)}<br>test 단서 없음 ${test[i].ties}건`,
+      tip: (i) => `<b>${esc(dev[i].step)}</b><br>dev ${f3(dev[i].accuracy)} · test ${f3(test[i].accuracy)}<br>test 점수 0 ${test[i].ties}건`,
     });
     $("#ab-chart").insertAdjacentHTML("beforeend", `<div class="legend">${"<span>" + swatch("--s1") + "dev (사전을 만든 집합)</span><span>" + swatch("--s2") + "test (규칙 고정 후 1회)</span>"}</div>`);
   }
@@ -513,7 +513,7 @@
   }
   function redrawCharts() { drawAblation(); drawTfidf(); }
   redrawCharts();
-  $("#ab-table").innerHTML = `<tr><th>단계</th><th class="num">dev</th><th class="num">test</th><th class="num">test macro F1</th><th class="num">test 단서 없음</th></tr>` +
+  $("#ab-table").innerHTML = `<tr><th>단계</th><th class="num">dev</th><th class="num">test</th><th class="num">test macro F1</th><th class="num">test 점수 0</th></tr>` +
     testAb.map((r, i) => `<tr><td>${esc(r.step)}</td><td class="num">${f3(R.sentiment.dev.ablation[i].accuracy)}</td><td class="num"><b>${f3(r.accuracy)}</b></td><td class="num">${f3(r.macro_f1)}</td><td class="num">${r.ties}</td></tr>`).join("");
   const sig = R.significance;
   $("#sig").innerHTML = `<p class="small">test 1,000건 정확도의 bootstrap 95% 구간</p><table>${Object.entries(sig.ci95).map(([k, v]) => `<tr><td>${esc(k)}</td><td class="num mono">${f3(v.accuracy[0])} – ${f3(v.accuracy[1])}</td></tr>`).join("")}</table>` +
@@ -523,14 +523,14 @@
     ["dev", "test"].map((s) => `<tr><td>${s}</td><td class="num">${ns(s).n}</td><td class="num">${pct(ns(s).acc_A)}</td><td class="num"><b>${pct(ns(s).acc_E)}</b></td><td class="num">${ns(s).mcnemar_A_vs_E.p_value < 0.001 ? ns(s).mcnemar_A_vs_E.p_value.toExponential(1) : ns(s).mcnemar_A_vs_E.p_value.toFixed(3)}</td></tr>`).join("") + "</table>";
   const LN = { custom: "직접 구축 (394)", knu: "KNU (14,854)", "knu+domain": "KNU + 도메인어 92", union: "직접 구축 + KNU" };
   const lc = R.lexicon_comparison;
-  $("#lexcmp").innerHTML = `<tr><th>사전</th><th class="num">dev 필수</th><th class="num">dev 최종</th><th class="num">test 필수</th><th class="num">test 최종</th><th class="num">test 단서 없음(최종)</th></tr>` +
+  $("#lexcmp").innerHTML = `<tr><th>사전</th><th class="num">dev 필수</th><th class="num">dev 최종</th><th class="num">test 필수</th><th class="num">test 최종</th><th class="num">test 점수 0(최종)</th></tr>` +
     Object.keys(LN).map((k) => { const g = (s, c) => lc[s].find((x) => x.lexicon === k && x.config.startsWith(c)); return `<tr><td>${LN[k]}</td><td class="num">${f3(g("dev", "필수").accuracy)}</td><td class="num">${f3(g("dev", "최종").accuracy)}</td><td class="num">${f3(g("test", "필수").accuracy)}</td><td class="num"><b>${f3(g("test", "최종").accuracy)}</b></td><td class="num">${g("test", "최종").ties}</td></tr>`; }).join("");
 
   // ───────── 08 실패 사례 ─────────
   const fmtPairs = (a) => a.map((x) => `${LABELS[x[0]]} <span class="mono">${esc(x[1])}</span>`).join("<br>") || "—";
   $("#ext-fail").innerHTML = `<tr><th>ID</th><th>문장</th><th>유형</th><th>놓친 것</th><th>잘못 잡은 것</th><th>원인</th></tr>` +
     R.extraction.errors.map((e) => `<tr><td class="mono">${e.id}</td><td>${esc(e.text)}</td><td><span class="pill">${esc(e.fail)}</span></td><td class="small">${fmtPairs(e.missed)}</td><td class="small">${fmtPairs(e.false_positive)}</td><td class="small">${esc(e.note)}</td></tr>`).join("");
-  $("#err-intro").innerHTML = `최종 규칙의 test 오분류는 ${R.n_test_errors}건이다. 그중 ${R.n_tie_errors}건은 사전 단서가 하나도 없어 기본값(부정)으로 판정된 긍정 리뷰다. 아래는 원인을 직접 분류한 ${R.error_annotations.length}건이다. 누르면 엔진의 계산 과정이 나온다. 이 사례들은 test를 본 뒤에 알게 되었으므로 규칙에 반영하지 않았다.`;
+  $("#err-intro").innerHTML = `최종 규칙의 test 오분류는 ${R.n_test_errors}건이다. 그중 ${R.n_tie_errors}건은 점수가 0이라 기본값(부정)으로 판정된 긍정 리뷰다. 아래는 원인을 직접 분류한 ${R.error_annotations.length}건이다. 누르면 엔진의 계산 과정이 나온다. 이 사례들은 test를 본 뒤에 알게 되었으므로 규칙에 반영하지 않았다.`;
   const cats = [...new Set(R.error_annotations.map((a) => a.category))];
   let errCat = "전체", errSel = 0;
   segmented($("#err-filter"), [["전체", "전체"]].concat(cats.map((c) => [c, c])), errCat, (v) => { errCat = v; renderErr(); });
@@ -590,7 +590,7 @@
     ["순위를 매기는 검색(A4-1)", "통계", "TF-IDF·BM25는 점수로 순위를 낸다. 규칙은 일치 여부만 낸다"],
   ].map((r) => `<tr><td>${r[0]}</td><td><b>${r[1]}</b></td><td class="small">${r[2]}</td></tr>`).join("");
   $("#qa2").innerHTML = `장점은 정밀도와 해석 가능성이다. 추출 정밀도 ${f3(R.extraction.micro.precision)}, 마스킹 오탐 0건이다. 틀린 경우에도 어느 패턴의 어느 부분 때문인지 바로 짚을 수 있다. 단점은 재현율과 유지보수다. 재현율은 ${f3(R.extraction.micro.recall)}에 그쳤다. 놓친 것은 모두 '상상하지 못한 표기'였다. 그리고 하나를 고치면 다른 것이 깨진다. URL을 한글에서 멈추게 하면 조사는 떨어지지만 한글 경로가 잘린다. '만원'을 금액으로 받으면 '만원 버스'도 들어온다.`;
-  $("#qa5").innerHTML = `형식이 정해져 있고 틀리면 안 되는 일(연락처·금액 추출, 개인정보 마스킹)은 규칙이 맞다. 데이터가 적거나 판정 근거를 설명해야 할 때도 규칙이 낫다. 레이블 데이터가 충분하고 표현이 다양한 일(리뷰 감성, 주제 분류, 검색 순위)은 통계가 맞다. 이번 실험에서 TF-IDF는 약 ${tfCross ? tfCross.toLocaleString() : "?"}건부터 규칙을 넘었다. 둘을 합치는 것이 가장 좋았다. 규칙 점수를 TF-IDF 특성에 더하면 모든 데이터 크기에서 둘 다보다 높았다. 데이터가 적을 때의 안정성(표준편차)도 가장 좋았다.`;
+  $("#qa5").innerHTML = `연락처·금액처럼 형식이 정해진 정보는 규칙으로 추출·검증 과정을 설명하기 좋다. 미지원 표기는 놓칠 수 있으며, 마스킹의 검출 범위를 별도로 확인해야 한다. 데이터가 적거나 판정 근거를 설명해야 할 때도 규칙이 낫다. 레이블 데이터가 충분하고 표현이 다양한 일(리뷰 감성, 주제 분류, 검색 순위)은 통계가 맞다. 이번 실험에서 TF-IDF는 약 ${tfCross ? tfCross.toLocaleString() : "?"}건부터 규칙을 넘었다. 규칙 점수를 TF-IDF 특성에 더한 혼합형은 모든 학습 크기에서 TF-IDF 단독보다 높았다. 다만 10·30·100건에서는 고정된 최종 규칙보다 낮았다. 소표본에서는 단독 TF-IDF보다 표준편차가 작았지만, 1만 건에서는 혼합형의 표준편차가 더 컸다.`;
 
   // ───────── 12 코드 지도 ─────────
   $("#code-list").innerHTML = D.code.map((c) => {

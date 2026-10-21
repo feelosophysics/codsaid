@@ -4,8 +4,7 @@
 - 벡터화: TF-IDF 어휘와 IDF는 Train 문서로만 학습하고 Test에는 transform만 한다.
   Test 문서까지 넣어 IDF를 계산하면 평가 데이터의 정보가 특성에 섞인다.
 - C(규제 강도의 역수)는 Train 안에서 5-fold 교차검증으로 고른다. Test는 마지막 평가에만 쓴다.
-  교차검증의 각 fold는 Train 전체로 학습한 어휘·IDF를 공유한다. 검증 fold 통계가
-  반영되는 한계가 있으며 영향이 작다고 검증한 것은 아니다. select_C 설명을 참고한다.
+  각 fold의 학습 문서에서만 어휘·IDF를 만들고 검증 문서는 transform한다.
 """
 from __future__ import annotations
 
@@ -15,7 +14,7 @@ from typing import Dict, List, Sequence
 import numpy as np
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, confusion_matrix, f1_score, precision_recall_fscore_support
-from sklearn.model_selection import StratifiedKFold, cross_val_score
+from sklearn.model_selection import StratifiedKFold
 
 from .data import RANDOM_STATE, Corpus, train_test_indices
 from .search import MAX_DF, MIN_DF
@@ -81,24 +80,34 @@ def make_model(C: float) -> LogisticRegression:
     return LogisticRegression(C=C, max_iter=2000, random_state=RANDOM_STATE)
 
 
-def select_C(X: np.ndarray, y: np.ndarray, grid: Sequence[float] = C_GRID) -> Dict[float, float]:
+def select_C(tokens: Sequence[Sequence[str]], y: np.ndarray,
+             grid: Sequence[float] = C_GRID, tf: str = "raw") -> Dict[float, float]:
     """Train 내부 5분할 교차검증의 평균 macro F1로 C를 비교한다.
 
     4개 fold로 학습하고 나머지 1개로 평가하는 일을 5번 바꿔 반복한다.
-    단, X는 이미 Train 전체로 어휘·IDF를 만든 값이다. 검증 fold의 비지도 통계가
-    미리 반영된 한계가 있다. 엄격한 검증은 fold마다 벡터화도 다시 fit해야 한다.
-    여기서는 기존 계산을 유지한다. 이 CV 점수를 완전히 누수 없는 성능으로 읽지 않는다.
+    각 fold의 학습 문서에서 어휘·IDF를 새로 fit하고 검증 문서에는 transform만 한다.
 
     Args:
-        X: shape (N_train,V_train) 특성.
+        tokens: 최종 Test를 제외한 Train의 토큰 목록. 미리 벡터화하지 않는다.
         y: shape (N_train,) 정답.
         grid: 비교할 양수 C 값들.
+        tf: TF 방식. 최종 학습과 같은 설정을 쓴다.
 
     Returns:
         Dict[float,float]: {C: 5개 검증 F1의 평균}. Test는 이 선택에 쓰지 않는다.
     """
     folds = StratifiedKFold(n_splits=5, shuffle=True, random_state=RANDOM_STATE)
-    return {C: float(cross_val_score(make_model(C), X, y, cv=folds, scoring="f1_macro").mean()) for C in grid}
+    scores = {C: [] for C in grid}
+    for fit_idx, valid_idx in folds.split(np.zeros(len(y)), y):
+        vectorizer = TfidfVectorizerNP(tf=tf, min_df=MIN_DF, max_df=MAX_DF)
+        X_fit = vectorizer.fit_transform([tokens[i] for i in fit_idx])
+        X_valid = vectorizer.transform([tokens[i] for i in valid_idx])
+        # 같은 fold의 표현은 C 후보끼리 공유해도 된다. 검증 문서로 fit하지 않는다.
+        for C in grid:
+            model = make_model(C).fit(X_fit, y[fit_idx])
+            score = f1_score(y[valid_idx], model.predict(X_valid), average="macro")
+            scores[C].append(float(score))
+    return {C: float(np.mean(values)) for C, values in scores.items()}
 
 
 def run_classification(corpus: Corpus, tf: str = "raw", C: float | None = None) -> ClassificationResult:
@@ -125,7 +134,7 @@ def run_classification(corpus: Corpus, tf: str = "raw", C: float | None = None) 
 
     cv_scores: Dict[float, float] = {}
     if C is None:
-        cv_scores = select_C(X_train, y_train)
+        cv_scores = select_C([corpus.tokens[i] for i in train_idx], y_train, tf=tf)
         C = max(cv_scores, key=lambda c: (cv_scores[c], -c))  # 동점이면 규제가 강한(작은) C
     model = make_model(C).fit(X_train, y_train)
     # fit은 w,b를 학습하고 predict는 점수가 가장 큰 범주를 고른다.

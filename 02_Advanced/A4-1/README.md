@@ -8,13 +8,20 @@ scikit-learn은 데이터 다운로드, Train/Test 분할, 분류 모델·지표
 
 ## 학습 시작
 
+[계산 실습 노트북](notebooks/search_walkthrough.ipynb)은 작은 두 문서·질의의 계산을 펼친 뒤
+기존 모듈 대조 → 실제 검색·기여도 → 분류 → 보너스·시연으로 이어진다.
+`uv sync --group dev` 후 A4-1의 `.venv` 커널로 위에서 아래로 실행한다.
+`uv run --group dev python tools/build_learning_notebook.py --execute`로 재생성·새 커널 실행한다.
+노트북은 기존 `outputs/`를 덮어쓰지 않는다.
+
+
 [HTML 학습자료](study/a4-1.html)의 01 전체 흐름 → 02 전처리 → 03 TF-IDF →
 04 코사인 → 05 분류 → 06 한계를 읽고, 07–09 보너스로 이어 간다.
 각 장의 추가 해설은 작은 입력·중간값·축·코드 대응과 답 펼치기 질문을 제공한다.
 [코드 읽기 가이드](study/code-walkthrough.md)는 같은 해설의 Markdown 판이다.
 소스의 한국어 Google 스타일 docstring은 입력·반환·부작용·오류 조건을,
 인접 주석은 새 문법과 데이터 변화를 설명한다. 먼저 결과를 예상한 다음 답을 확인한다.
-설명 원본·재생성·검증 방법은 [study/README.md](study/README.md)에 있다.
+학습 자료의 역할과 실행 방법은 [study/README.md](study/README.md)에 있다.
 
 ## 실행
 
@@ -26,7 +33,7 @@ uv run python -m src.run_all
 uv run python -m unittest discover -s tests -v
 ```
 
-`uv sync`는 `.python-version`(3.12)과 `uv.lock`에 맞춰 `.venv`를 만든다. uv 없이 설치하려면 Python 3.10 이상에서 `pip install -r requirements.txt`를 쓴다. 첫 실행 때 sklearn이 20 Newsgroups(약 14MB)를 `data/`에 내려받는다. `src.run_all`은 검증·검색 예시·분류·보너스 실험을 모두 실행하고 로그와 그림을 `outputs/`에 저장한다. 3~5분 걸린다. 행렬 곱과 로지스틱 회귀가 BLAS로 모든 CPU 코어를 쓰므로, 다른 작업과 함께 돌릴 때는 PowerShell에서 `$env:OMP_NUM_THREADS=2; $env:OPENBLAS_NUM_THREADS=2`로 스레드를 줄인다. 테스트 22개 중 17개는 손계산 예제로 수식을 확인하고, 5개는 실제 데이터에서 미션 기준을 확인한다.
+`uv sync`는 `.python-version`(3.12.13)과 `uv.lock`에 맞춰 `.venv`를 만든다. uv 없이 설치하려면 Python 3.10 이상에서 `pip install -r requirements.txt`를 쓴다. 첫 실행 때 sklearn이 20 Newsgroups(약 14MB)를 `data/`에 내려받는다. `src.run_all`은 검증·검색 예시·분류·보너스 실험을 모두 실행하고 로그와 그림을 `outputs/`에 저장한다. 3~5분 걸린다. 행렬 곱과 로지스틱 회귀가 BLAS로 모든 CPU 코어를 쓰므로, 다른 작업과 함께 돌릴 때는 PowerShell에서 `$env:OMP_NUM_THREADS=2; $env:OPENBLAS_NUM_THREADS=2`로 스레드를 줄인다. 기존 테스트 22개와 학습 경계·CLI 입력 테스트 3개로 수식·실제 데이터·CV 누수 방지·해설 점수 재구성을 확인한다.
 
 ### (안 A) CLI
 
@@ -96,7 +103,7 @@ for score, doc_id, snippet in search("hockey playoff goalie"):
 | `tests/test_requirements.py` | 손계산·sklearn 대조·실제 데이터 테스트 22개 |
 | `outputs/` | 검증 로그, 분류 결과, 오분류 목록, 보너스 실험 표와 그림, `summary.json` |
 | `study/a4-1.html` | 탑다운 HTML 학습 자료(브라우저 안 검색 실습 포함, `study/README.md` 참고) |
-| `tools/` | 학습 자료 빌드·검증 도구 |
+| `tools/build_learning_notebook.py` | 계산 노트북 생성·새 커널 실행 |
 | `pyproject.toml`, `uv.lock`, `.python-version` | uv 환경 정의 |
 | `requirements.txt` | uv 없이 설치할 때 쓰는 의존성 목록 |
 
@@ -203,11 +210,20 @@ cos(q, d) = (q · d) / (‖q‖ × ‖d‖)
 | 모델 | `LogisticRegression(C=10, max_iter=2000, random_state=42)` (lbfgs, 다항) |
 | C 선택 | Train 안의 5-fold 교차검증 macro F1: C=1 0.9023, **C=10 0.9028**, C=100 0.8966 |
 
-Test 문서까지 넣어 IDF를 계산하면 평가 데이터의 분포가 특성에 섞인다. 그래서 어휘·IDF는 Train으로만 학습했다. C도 Test가 아닌 Train 교차검증으로 골랐다. 단, 교차검증의 각 fold는 Train 전체로 학습한 어휘·IDF를 공유하므로 검증 fold 통계가 반영되는 한계가 있다. 영향이 작다고 별도 검증하지는 않았다. 엄격한 비교에는 fold마다 벡터화를 다시 학습하는 Pipeline이 필요하다.
+위 표와 기존 `outputs/`의 수치는 이전 CV 조건의 저장 결과다. 당시에는 Train 전체의 어휘·IDF를 fold들이 공유했으나 최종 Test는 분리했다.
+현재 `select_C`는 각 fold의 학습 토큰에서 어휘·IDF를 fit하고 검증 토큰은 transform한다.
+C 선택 뒤 Train 전체로 다시 학습하고 Test에서 평가한다. 새 CV 조건의 결과는 계산 노트북에 별도로 출력한다.
+검색의 전체 문서 색인은 분류의 Train 표현과 별개다.
 
 ---
 
 ## 2. 검증/실험 결과
+
+이 절과 기존 `outputs/`는 저장 당시 실험 결과다. 검색·전처리·TF-IDF 정의는 유지하며,
+분류의 C 선택 경계는 현재 코드에서 수정했다. 따라서 분류 및 C=10을 공유했던 TF 변형 분류 표는
+새 CV 실행 결과와 구분한다. `src.run_all`을 현재 코드로 다시 실행하면 새로 선택한 C로 결과를 덮어쓴다.
+아래의 BM25 격자·TF 변형 전체 평가·200질의 속도 실험은 이번 계산 노트북의 소규모 확인과 별개다.
+
 
 ### TF-IDF 검증 로그
 

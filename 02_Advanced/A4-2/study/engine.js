@@ -1,7 +1,7 @@
 /* A4-2 규칙 엔진의 JavaScript 이식판.
    src/patterns.py · normalize.py · extract.py · lexicon.py(Matcher) · sentiment.py · aspect.py 를 한 줄씩 옮겼다.
-   사전 표면형(활용 변이)과 정규식 소스는 Python이 만든 것을 빌드 때 그대로 받는다(tools/build_study_guide.py).
-   tools/verify_study_guide.py 가 Node에서 이 파일을 실행해 Python 결과와 대조한다. */
+   사전 표면형(활용 변이)과 정규식 소스는 작성 당시 Python이 만든 것을 빌드 때 그대로 받았다.
+   작성 당시 Node에서 이 파일을 실행해 Python 결과와 대조했다. */
 (function () {
   "use strict";
 
@@ -228,11 +228,11 @@
       hits.forEach((h, k) => {
         if (h.kind === "EMO") {
           const c = contrastFactor(cfg, lastStrong, h.start);
-          items.push({ surface: h.surface, term: h.entry.term, base: h.entry.score, start: h.start, modifiers: [], negators: [], contrast: c, value: h.entry.score * c, kind: "EMO" });
+          items.push({ surface: h.surface, term: h.entry.term, base: h.entry.score, start: h.start, modifiers: [], negators: [], contrast: c, value: h.entry.score * c, kind: "EMO", negation_factor: 1 });
           return;
         }
         if (h.kind !== "SENTI") return;
-        const item = { surface: h.surface, term: h.entry.term, base: h.entry.score, start: h.start, modifiers: [], negators: [], contrast: 1, value: 0, kind: "SENTI" };
+        const item = { surface: h.surface, term: h.entry.term, base: h.entry.score, start: h.start, modifiers: [], negators: [], contrast: 1, value: 0, kind: "SENTI", negation_factor: 1 };
         let factor = 1, flips = 0;
         const fixed = h.entry.flags.includes("keep");
         for (let j = k - 1; j >= 0; j--) {
@@ -260,6 +260,7 @@
           if (!cfg.double_negation) flips = Math.min(flips, 1);
         }
         const sign = flips % 2 ? -1 : 1;
+        item.negation_factor = sign;
         item.contrast = contrastFactor(cfg, lastStrong, h.start);
         item.value = item.base * factor * sign * item.contrast;
         items.push(item);

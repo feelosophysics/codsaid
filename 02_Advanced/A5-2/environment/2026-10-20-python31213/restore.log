@@ -1,7 +1,0 @@
-Resolved 85 packages in 1ms
-  × Failed to download `pyarrow==25.0.1`
-  ╰─▶ Network connectivity is disabled, but the
-      requested data wasn't found in the cache for:
-      `https://files.pythonhosted.org/packages/65/ee/197cbf47e49f83e6ebeb946a5259a48a638dea27ac774db42fe78022179d/pyarrow-25.0.1-cp312-cp312-win_amd64.whl`
-
-hint: `pyarrow` (v25.0.1) was included because `a5-2-clustering-xai` (v1.0.0) depends on `streamlit` (v1.65.0) which depends on `pyarrow`

@@ -1,7 +1,7 @@
 # A4-1 코드 읽기 가이드
 
 설명용 두 문서를 끝까지 추적한다. 실제 데이터 실행 결과와 구분해 읽는다.
-설명 원본은 learning-notes.json이고 이 문서는 build_study_guide.py가 생성한다.
+설명 원본은 learning-notes.json이고 이 문서는 작성 당시 그 원본에서 생성했다.
 HTML의 각 장에도 같은 설명과 답 펼치기가 있다. 코드는 HTML 11장 또는 src 원본에서 읽는다.
 
 ## 먼저 한 문서와 한 축을 정하자
@@ -62,7 +62,7 @@ L2 길이는 sqrt(각 칸 제곱의 합)이다. 가중치 행을 각자의 길�
 
 fit_transform은 어휘·IDF를 새로 저장하고 입력 문서도 변환한다. transform은 그 어휘·IDF로 새 문서만 변환한다. 질의 space unknown은 [[0,0,1]]이 된다. unknown은 무시하고 space만 L2 길이 1로 남는다. 질의에서 fit하면 열과 IDF가 바뀌어 기존 문서와 비교할 수 없다.
 
-계산 추적: 토큰 [[space,space,orbit],[goalie,orbit]] → 열 [goalie,orbit,space] → counts [[0,1,2],[1,1,0]] → df [1,2,1] → idf [1.405465,1,1.405465] → raw 가중치 → 행별 L2. 이 설명용 값은 tools/verify_learning_comments.py에서 직접 구현과 대조한다.
+계산 추적: 토큰 [[space,space,orbit],[goalie,orbit]] → 열 [goalie,orbit,space] → counts [[0,1,2],[1,1,0]] → df [1,2,1] → idf [1.405465,1,1.405465] → raw 가중치 → 행별 L2. 이 설명용 값은 작성 당시 직접 구현과 대조했다.
 
 **먼저 예상하기:** max_df=1.0과 max_df=1은 같은 뜻일까? 또 [3,4]와 [6,8]의 L2 결과는?
 
@@ -104,7 +104,7 @@ Corpus의 위치를 범주 비율이 유지되도록 Train/Test 8:2로 나눈다
 
 Logistic Regression은 범주 k 점수 z_k=w_k·x+b_k를 만든다. 이 다범주 모델은 softmax로 exp(z_k)/Σexp(z)를 구해 확률로 바꾼다. 설명용 두 점수 [0,ln3]이면 exp=[1,3], 확률=[.25,.75]다. 학습은 정답 확률의 -log 손실과 규제 항을 줄인다. C는 규제 강도의 역수라 작을수록 가중치 크기를 강하게 억제한다.
 
-C 후보 1,10,100은 Train 내부 5-fold 평균 macro F1로 고른다. 단, 현재 구현은 Train 전체로 만든 어휘·IDF를 fold들이 공유한다. 검증 fold의 통계가 사전에 섞이는 한계가 있어 완전히 독립적인 CV 점수는 아니다. 엄격한 방식은 각 fold에서 벡터화까지 새로 fit하는 Pipeline이다. 최종 Test는 C 선택에 쓰지 않는다.
+C 후보 1,10,100은 Train 내부 5-fold 평균 macro F1로 고른다. 현재 select_C는 각 fold의 학습 토큰에서 어휘·IDF를 새로 fit하고 검증 토큰에는 transform만 한다. C를 선택한 뒤 Train 전체로 표현과 모델을 학습한다. 최종 Test는 C 선택에 쓰지 않는다. HTML 표와 기존 outputs의 CV는 Train 전체 어휘·IDF를 공유했던 이전 조건이며, 새 조건 결과는 계산 노트북에서 확인한다.
 
 accuracy는 전체 정답 비율이다. TP=3, FP=1, FN=2인 범주라면 precision=3/4, recall=3/5, F1=2PR/(P+R)=2/3이다. macro F1은 범주별 F1을 같은 비중으로 평균하므로 다수 범주만 잘 맞히는지 확인하는 데 도움이 된다. confusion의 행은 실제, 열은 예측이며 대각선은 맞힌 건수다.
 

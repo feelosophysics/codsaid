@@ -4,6 +4,11 @@
 
 ## 학습 순서
 
+실제 Python 계산을 먼저 익히려면 [계산 추적 노트북](../notebooks/autograd_walkthrough.ipynb)을 연다.
+두 표본으로 예측·손실·부모 노드·역전파 기울기·SGD 갱신을 확인한 뒤 아래 HTML 위젯을 사용한다.
+노트북 실행 준비와 생성 명령은 [프로젝트 README](../README.md)에 있다.
+HTML의 실험 그림과 로그는 저장된 결과이며, 현재 실행 범위는 노트북에 구분해 표시한다.
+
 완성된 학습 루프를 먼저 보고 부품으로 내려가는 탑다운 순서다.
 
 1. **큰 그림**: 0–1장을 읽고, 8장 XOR 실험실에서 초기화를 바꿔 학습해 본다.
@@ -31,22 +36,14 @@
 
 페이지는 Python을 실행하지 않는다. 필요한 계산은 `<script id="mathlib">`의 JavaScript가 minigrad와 같은 순서로 다시 계산한다. 위젯의 난수열은 NumPy와 다르다. 그래서 같은 seed 번호라도 Python 실험과 초기 가중치가 다르고, 성공률 같은 통계만 비슷하게 나온다.
 
-## 재생성과 검증
+## 작성 당시 검증
 
-상위 A6-1 폴더에서 실행한다.
+이 HTML은 작성 당시의 소스·결과로 한 번 만든 학습 자료다. 생성 도구와 템플릿은 정리했고, 아래는 작성 당시 확인한 내용이다.
 
-```powershell
-uv run python scripts/run_all.py
-uv run python tools/build_study_guide.py
-uv run python tools/verify_study_guide.py
-```
+다음을 확인했다.
 
-`a6-1.template.html`이 설명과 화면의 편집 원본이다. 빌드 도구는 여기에 현재 소스의 발췌, `figures/` 그림, gradient check 로그 발췌, MNIST 첫 24바이트와 첫 이미지를 넣는다. 그리고 `source-manifest.json`에 원본 해시를 저장한다. 본문 표의 수치는 자동으로 갱신되지 않는다. 실험 조건을 바꾸면 본문도 다시 확인해야 한다.
-
-검증 도구는 다음을 확인한다. Node.js가 필요하다.
-
-- **파일 대조**: 매니페스트 해시와 현재 파일을 비교한다. 텍스트는 LF로 정규화해서 비교한다.
-- **코드 발췌**: HTML 속 발췌가 현재 원본 줄과 같은지 확인한다.
+- **코드 발췌**: 현재는 `uv run --group dev python tools/verify_learning_flow.py`로 원본 줄과 대조한다.
+  소스가 바뀌면 `--refresh-html`로 코드 발췌만 갱신할 수 있다. 위젯 계산·저장 실험은 재생성하지 않는다.
 - **페이지 구조**: 내부 링크 대상, 입력 요소의 레이블, 스크립트가 찾는 id, 외부 리소스를 쓰지 않는지 확인한다.
 - **계산 대조**: mathlib을 Node.js로 실행해 minigrad와 비교한다.
   - XOR 학습 곡선 6개 (He, Random 성공·clip 실패·안정형 회복, Xavier, Zero). 같은 초기 가중치에서 101개 loss가 상대 1e-9 이내로 일치한다. 실제 차이는 1e-14 수준이다.

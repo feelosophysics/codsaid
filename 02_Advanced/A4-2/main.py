@@ -84,7 +84,7 @@ def main(argv=None) -> int:
     if args.json:
         for r in results:
             r.pop("_reports")
-        print(json.dumps(results if len(results) > 1 else results[0], ensure_ascii=False, indent=2, default=str))
+        print(json.dumps(results[0] if len(results) == 1 else results, ensure_ascii=False, indent=2, default=str))
         return 0
     for i, r in enumerate(results):
         if i:

@@ -14,3 +14,10 @@ dependencies = [
 
 [tool.uv]
 package = false
+
+[dependency-groups]
+dev = [
+    "ipykernel>=6.29.5",
+    "nbclient>=0.10.1",
+    "nbformat>=5.10.4",
+]

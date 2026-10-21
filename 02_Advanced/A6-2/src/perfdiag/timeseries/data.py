@@ -146,6 +146,8 @@ class MinMaxScaler:
         values = np.asarray(values, dtype=float)
         self.min_ = values.min(axis=0)
         self.range_ = values.max(axis=0) - self.min_
+        # 상수 열도 유한한 값으로 변환하고 원래 단위로 되돌릴 수 있게 한다.
+        self.range_ = np.where(self.range_ == 0, 1.0, self.range_)
         return self
 
     def transform(self, values):
@@ -205,6 +207,8 @@ def prepare(name, first_target=120, ratios=(0.7, 0.1, 0.2)):
 # ----------------------------------------------------------------------------- 윈도우
 def window_indices(targets, window, lookahead=False):
     """시점 t의 입력 행 번호 (m, window). 정상: t-window … t-1. lookahead=True는 누수 재현용(t 포함)."""
+    if not isinstance(window, (int, np.integer)) or window < 1:
+        raise ValueError("window는 1 이상의 정수여야 한다")
     offsets = np.arange(-window, 0) + (1 if lookahead else 0)
     return np.asarray(targets)[:, None] + offsets[None, :]
 
@@ -233,7 +237,10 @@ class Dataset:
     def reconstruct(self, split, pred_scaled):
         """정규화된 예측 → 원래 단위(달러·°C)."""
         ws = self.sets[split]
-        pred = self.target_scaler.inverse_transform(np.asarray(pred_scaled).reshape(-1, 1)).ravel()
+        pred_scaled = np.asarray(pred_scaled)
+        if pred_scaled.shape not in ((len(ws.t),), (len(ws.t), 1)):
+            raise ValueError("예측은 각 target 시점에 하나씩 대응해야 한다: (m,) 또는 (m, 1)")
+        pred = self.target_scaler.inverse_transform(pred_scaled.reshape(-1, 1)).ravel()
         level = pred if self.mode == "level" else ws.prev_level + pred
         return self.prep.from_level(level)
 

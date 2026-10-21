@@ -201,9 +201,12 @@ class Tensor:
                 grad = out.grad
                 a2 = a[None, :] if a.ndim == 1 else a
                 b2 = b[:, None] if b.ndim == 1 else b
-                if a.ndim == 1:
+                if a.ndim == 1 and b.ndim == 1:
+                    # 내적 출력은 0차원이므로 두 축을 한꺼번에 복원한다.
+                    grad = grad.reshape(1, 1)
+                elif a.ndim == 1:
                     grad = np.expand_dims(grad, -2)
-                if b.ndim == 1:
+                elif b.ndim == 1:
                     grad = np.expand_dims(grad, -1)
                 grad_a = grad @ np.swapaxes(b2, -1, -2)
                 grad_b = np.swapaxes(a2, -1, -2) @ grad

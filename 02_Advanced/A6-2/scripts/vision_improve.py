@@ -8,6 +8,8 @@
 처방 전·후를 seed 0·1·2로 학습해 Test 정확도 평균±표준편차를 재고, 태그를 단 오분류 사진을 처방 전·후 모델이
 각각 몇 장 맞혔는지 태그별로 센다.
 
+처방 선택에 Test 오분류를 사용하므로 이 재평가는 탐색적이다. 독립 Test의 일반화 개선으로 해석하지 않는다.
+
 실행: uv run python scripts/vision_improve.py [--prescription photometric|deeper]
 """
 import argparse
