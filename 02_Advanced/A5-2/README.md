@@ -23,7 +23,7 @@ uv run streamlit run app.py                # 보너스 1: 대시보드
 
 | 검증 조합 | 결과 |
 | --- | --- |
-| Windows, Python 3.12.13, scikit-learn 1.9.1, shap 0.53.0, pandas 3.0.6, streamlit 1.65.0 | 테스트 22개, 전체 실행, 노트북 2개, HTML 검증, 대시보드 확인 |
+| Windows, Python 3.12.13, scikit-learn 1.9.1, shap 0.53.0, pandas 3.0.6, streamlit 1.65.0 | 테스트 26개, 전체 실행, 노트북 2개, HTML 검증, 대시보드 확인 |
 
 `requirements.txt`에 shap·scikit-learn을 포함한 전체 버전을 고정했다(`uv export`로 `uv.lock`에서 생성). uv가 없으면 `pip install -r requirements.txt`로 같은 환경을 만든다.
 
@@ -267,3 +267,17 @@ Force Plot도 `results/force_plots/reject_case.html`, `approve_case.html`로 저
 ## 과정 내 위치
 
 [심화 과정 목차](../README.md) · [전체 과정](../../README.md)
+
+## 노트북으로 한 단계씩 배우기
+
+`notebooks/analysis_clustering.ipynb` → `notebooks/analysis_shap.ipynb` 순서로 실행한다.
+
+군집화 노트북은 고객 한 쌍의 거리부터 표준화, K-Means, K별 지표, K 선택, 군집 특징과 PCA를 직접 실행한다. SHAP 노트북은 Train/Test 분할과 RF 학습부터 한 고객의 기준값·기여·예측 재구성, 전체 Summary, 승인·거절 Waterfall, Dependence, 군집별 설명으로 이어진다. 입력 크기와 중간 결과, 출력 해석, 확인 질문을 포함한다.
+
+프로젝트 가상환경의 커널을 선택하고 첫 셀부터 실행한다. 두 노트북은 각각 새 커널에서 실행할 수 있으며, SHAP 단계는 앞 단계의 `results/learning/clustering.npz`와 데이터 해시·변수 순서를 확인한다. 선행 파일이 없거나 데이터가 바뀌었다면 군집화부터 다시 실행한다.
+
+```text
+uv run --group dev python tools/execute_notebook.py
+```
+
+셀 내용을 수정하려면 `tools/build_notebook.py`를 수정하고 실행해 재생성한다. 이후 위 명령으로 실행 출력을 저장한다. 실습 그림과 표는 `results/learning/`에 저장되며 기존 CLI 보고서와 대시보드 결과를 덮어쓰지 않는다. 군집 번호는 학습된 중심의 이름표이며 기존 보고서의 연체율 정렬 번호와 다를 수 있다. 승인·거절 사례도 실습에서 명시한 대표 선정 기준으로 고르므로 기존 사례 번호와 섞지 않는다.

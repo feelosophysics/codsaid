@@ -9,3 +9,6 @@ __pycache__/
 # 노트북 실행 상태
 .ipynb_checkpoints/
 .notebook-runtime/
+
+# Generated notebook outputs
+/results/learning/

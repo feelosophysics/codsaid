@@ -34,6 +34,11 @@ def main():
                                 resources={"metadata": {"path": str(root)}}, record_timing=False)
         client.km = client.create_kernel_manager()
         client.km.kernel_spec_manager = KernelSpecManager(kernel_dirs=[str(runtime / "kernels")])
+        def progress(cell, cell_index):
+            if cell.cell_type == "code":
+                print(f"{name}: cell {cell_index + 1}: {cell.source.splitlines()[0]}", flush=True)
+
+        client.on_cell_start = progress
         client.execute()
         # 다른 컴퓨터에서도 일반 Python 커널로 열 수 있게 저장한다.
         notebook.metadata.kernelspec = {"display_name": "Python 3", "language": "python", "name": "python3"}
