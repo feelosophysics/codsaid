@@ -177,3 +177,15 @@ CV F1 최고는 RF + SMOTE(0.665±0.018)다. **1-표준오차 규칙**을 적용
 ## 과정 내 위치
 
 [심화 과정 목차](../README.md) · [전체 과정](../../README.md)
+
+## 한 단계씩 배우는 노트북
+
+처음 학습할 때는 [`notebooks/learning_walkthrough.ipynb`](notebooks/learning_walkthrough.ipynb)를 위에서부터 실행한다. 첫 모델은 전처리·학습·예측·평가를 펼쳐 쓰고, 이후 Pipeline, 불균형 처리, 회귀와 규제, RF 튜닝, 임계값, 보너스·모듈화로 확장한다. 출력 읽는 법과 확인 질문을 포함한다. 기존 `analysis_report.ipynb`는 최종 실험 보고서다.
+
+학습용 기본 실험은 원본 6개 입력과 RF 8조합 탐색을 사용하므로, 파생 변수와 더 큰 격자를 사용하는 위 성능표와 수치가 다를 수 있다. 범주형 인코딩과 Custom Transformer는 뒤쪽 확장에서 실제 실행한다. 기존 CSV는 수정하지 않으며, 파일이 없을 때만 제공 생성기를 실행한다. 새 커널에서 처음부터 실행할 수 있다.
+
+```text
+uv run --group dev python tools/execute_learning_notebook.py
+```
+
+노트북 내용을 수정하려면 `tools/build_learning_notebook.py`를 고치고 `uv run --group dev python tools/build_learning_notebook.py`로 재생성한다. 이후 자동 실행으로 출력을 저장한다.

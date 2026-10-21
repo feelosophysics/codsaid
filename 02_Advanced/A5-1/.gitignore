@@ -9,3 +9,14 @@ __pycache__/
 # 노트북 실행 상태
 .ipynb_checkpoints/
 .notebook-runtime/
+
+# Local-only files
+/private-reference/
+/.codex-remote-attachments/
+*checklist*
+*chechlist*
+*체크리스트*
+/A5-1.json
+/1000006338.jpg
+/1-1000006338.jpg
+/study/learning_mission_review.md
