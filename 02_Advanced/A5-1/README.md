@@ -35,7 +35,7 @@ Windows 콘솔에서 한글 출력이 깨지면 `$env:PYTHONUTF8 = "1"`을 먼�
 
 | 자료 | 용도 |
 | --- | --- |
-| [`notebooks/learning_walkthrough.ipynb`](notebooks/learning_walkthrough.ipynb) | 처음 학습할 때 위에서부터 실행하는 노트북(1분 이내). 본편은 규칙 베이스라인 → 혼동행렬과 지표 → 첫 모델(전처리·학습·예측·평가) → 임계값·ROC-AUC → Pipeline → 교차검증 → 불균형 처리 → 회귀와 규제 순서로 진행한다. 부록에서 RF 튜닝, 승인·보류·거절 정책, 특징 중요도, 학습 곡선, Custom Transformer를 다룬다. 출력 읽는 법과 확인 질문을 포함한다 |
+| [`notebooks/learning_walkthrough.ipynb`](notebooks/learning_walkthrough.ipynb) | 처음 학습할 때 위에서부터 실행하는 노트북(1분 이내). 본편은 규칙 베이스라인 → 혼동행렬과 지표 → 첫 모델(표준편차·표준화·빈 값 채우기, 로지스틱 회귀의 계산 과정, 표준화를 뺐을 때의 차이) → 임계값·ROC-AUC → Pipeline → 교차검증 → 불균형 처리 → 회귀와 규제(R² 계산, 최소제곱법, Ridge·Lasso 계수 변화) 순서로 진행한다. 부록에서 결정 나무와 RF 튜닝, 승인·보류·거절 정책, 특징 중요도, 학습 곡선(편향·분산), Custom Transformer를 다루고, 마지막 F에 노트북과 `src`의 대응표가 있다. 출력 읽는 법과 확인 질문을 포함한다 |
 | [`notebooks/analysis_report.ipynb`](notebooks/analysis_report.ipynb) | 최종 실험 보고서. `src/` 모듈을 단계별로 불러 결과와 그래프를 보여준다. 계산 로직은 노트북에 두지 않는다 |
 | [`study/a5-1.html`](study/a5-1.html) | 인터넷 없이 여는 HTML 학습 자료 12장. 규칙, 임계값, Alpha, 승인·보류·거절 정책을 직접 조작하며 지표 변화를 본다. 계산은 scikit-learn 결과와 일치하도록 검증한다([`study/README.md`](study/README.md)) |
 | [`study/anatomy/two-predictions.html`](study/anatomy/two-predictions.html) | 같은 고객을 회귀·분류로 예측한 뒤 정답을 공개해 출력과 평가 방식의 차이를 비교하는 시각 자료 |
@@ -101,7 +101,11 @@ uv run --group dev python tools/check_notebook_kernel.py
 
 - RMSE 약 30은 생성 노이즈의 표준편차 30과 같다. 선형 모델이 줄일 수 있는 오차를 거의 다 줄였다.
 - **Lasso는 α=1에서 노이즈 변수를 정확히 0으로 만든다.** 나이·소비 점수·카드 수·부채액·연령대 5개가 0이 되고 소득·부채 비율·연체 횟수만 남는다. 생성 공식과 같은 결과다. α=10에서는 신호 변수까지 줄어 RMSE가 35.24로 나빠지고, α=100에서는 모든 계수가 0이 되어 평균 예측과 같아진다.
-- **Ridge는 α=100에서도 거의 변하지 않는다.** scikit-learn의 Ridge는 오차 제곱의 합에, Lasso는 평균의 1/2에 규제를 더한다. 그래서 Train 8,000건에서는 같은 α라도 Ridge 규제가 훨씬 약하다. 범위를 넓힌 [보충 그래프](results/figures/03_ridge_extended_alpha.png)에서는 α가 수천 이상이 되어야 계수가 줄어든다.
+- **Ridge는 α=100에서도 거의 변하지 않는다.** scikit-learn의 Ridge는 오차 제곱의 합에, Lasso는 평균의 1/2에 규제를 더한다. 그래서 Train 8,000건에서는 같은 α라도 Ridge 규제가 훨씬 약하다. 범위를 넓힌 보충 그래프에서는 α가 수천 이상이 되어야 계수가 줄어든다.
+
+![Ridge의 Alpha를 넓힌 계수 변화](results/figures/03_ridge_extended_alpha.png)
+
+- 위 그래프의 회색 선 9개(노이즈·파생 변수)는 한 묶음으로 그려서 개별 값이 보이지 않는다. 노이즈 변수 세 개(나이·소비 점수·카드 수)만 확대해 Ridge와 Lasso를 나란히 보려면 학습 노트북 10-3의 그래프를 본다. 그 그래프는 설명을 위해 모델마다 Alpha 범위를 다르게 잡았다(Ridge 1~10만, Lasso 0.01~100). 이 README의 그래프는 미션이 정한 0.01~100(위)과 확장 범위(아래)다. 노트북에서 더 촘촘히 보면 Lasso가 노이즈 변수 세 개를 0으로 만드는 지점은 α 0.3 안팎이다.
 - 같은 데이터라도 회귀는 오차 크기(RMSE·MAE)와 설명력(R²)으로, 분류는 혼동 행렬 지표와 순위 지표(AUC)로 평가한다. 점수 30점 오차는 회귀에서는 작지만, 292점 경계를 넘으면 분류에서는 정답이 바뀐다.
 
 ### 불균형 처리: class_weight vs SMOTE
