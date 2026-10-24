@@ -92,7 +92,38 @@ print("주문 수:", transactions["order_id"].nunique())
 print("고객 수:", transactions["customer_id"].nunique())
 print("상품 수:", products["product_id"].nunique())''')
     md('''**확인 질문:** 고객 한 명이 몇 번 샀는지(구매 횟수)를 셀 때, 그 고객의 거래 행 수를 세면 왜 틀릴까?
-<details><summary>답 확인</summary>상품 세 개를 한 번에 산 주문은 세 행이다. 행을 세면 한 번 산 것을 세 번 산 것으로 센다. 구매 횟수는 서로 다른 <code>order_id</code>의 수로 세야 한다(7장).</details>''')
+<details><summary>답 확인</summary>상품 세 개를 한 번에 산 주문은 세 행이다. 행을 세면 한 번 산 것을 세 번 산 것으로 센다. 구매 횟수는 서로 다른 <code>order_id</code>의 수로 세야 한다. 7장에서 실제로 행 수로 세어 결과가 어떻게 틀어지는지 확인한다.</details>''')
+    md('''### 열마다 무슨 뜻일까
+
+두 표의 열 뜻을 정리한다. 최솟값·최댓값은 실제 데이터에서 계산한다. 글자 열은 비워 둔다.''')
+    code('''column_meanings = {
+    "line_id": "거래 줄 ID. 행마다 하나",
+    "order_id": "주문 ID. 한 주문에 상품 여러 줄이 있을 수 있다",
+    "customer_id": "고객 ID",
+    "order_date": "주문 날짜",
+    "product_id": "상품 ID. 상품 표와 연결하는 열쇠",
+    "unit_price": "판매 단가(원). 상품 1개 가격",
+    "quantity": "수량(개)",
+    "amount": "결제 금액(원) = 단가 × 수량",
+    "country": "주문 국가 (KR, JP, US)",
+    "payment_method": "결제 수단 (Card, Transfer, Wallet)",
+    "shipping_days": "배송에 걸린 일수(일). 일부 비어 있음",
+    "product_name": "상품명. 일부 비어 있음",
+    "category": "카테고리 (Home, Fashion, Beauty, Electronics)",
+    "catalog_price": "상품 표에 적힌 정가(원). 일부 비어 있음",
+    "rating": "상품 평점(점). 일부 비어 있음",
+    "image_index": "이미지 배열에서 이 상품 사진의 위치 번호",
+}
+
+column_guide = pd.DataFrame({"뜻": column_meanings})
+column_guide["표"] = ["거래"] * 11 + ["상품"] * 5
+for column in column_guide.index:
+    table = transactions if column in transactions.columns else products
+    if pd.api.types.is_numeric_dtype(table[column]):
+        column_guide.loc[column, "최솟값"] = table[column].min()
+        column_guide.loc[column, "최댓값"] = table[column].max()
+display(column_guide.fillna(""))''')
+    md('''**출력 읽기:** 거래 표의 `unit_price`와 상품 표의 `catalog_price`는 둘 다 가격이지만 쓰임이 다르다. `unit_price`는 실제로 팔린 가격이라 매출과 RFM 계산에 쓰고, `catalog_price`는 상품의 속성이라 3장에서 빈 값을 채우는 연습에 쓴다. `image_index`는 0~79이므로 이미지 80장 중 하나를 가리킨다.''')
     md('''### 데이터 구조 파악 — `info()`와 `describe()`
 
 - `head()`: 앞의 몇 행을 보여준다. 위에서 이미 봤다.
@@ -108,7 +139,7 @@ print("자료형:", transactions["order_date"].dtype)
 print("첫 거래일:", transactions["order_date"].min().date())
 print("마지막 거래일:", transactions["order_date"].max().date())''')
     code('''display(transactions.describe())''')
-    md('''**출력 읽기:** `25%`, `50%`, `75%`는 **사분위수**다. 값을 작은 순서로 줄 세웠을 때 25%, 50%, 75% 위치에 있는 값이다. `50%`는 가운데 값인 **중앙값**이다.
+    md('''**출력 읽기:** 행 이름은 pandas가 붙인 영어다. `count`는 개수, `mean`은 평균, `std`는 표준편차(흩어진 정도, 4장에서 직접 계산한다), `min`·`max`는 최솟값·최댓값이다. `25%`, `50%`, `75%`는 **사분위수**다. 값을 작은 순서로 줄 세웠을 때 25%, 50%, 75% 위치에 있는 값이다. `50%`는 가운데 값인 **중앙값**이다.
 
 `shipping_days`를 보자. 75%가 7일 이하인데 최댓값은 60일이다. 대부분과 동떨어진 값이 섞여 있다는 신호다(5장).
 
@@ -192,15 +223,23 @@ display(missing_counts[missing_counts.sum(axis=1) > 0])''')
     code('''category_median_price = products.groupby("category")["catalog_price"].median()
 display(category_median_price)
 print("전체 상품의 중앙값:", products["catalog_price"].median())''')
-    md('''**출력 읽기:** Electronics의 중앙값은 다른 카테고리보다 두 배 이상 높다. 전체 중앙값 하나로 채우면 Electronics 상품의 가격을 크게 낮춰 잡게 된다.
+    md('''**출력 읽기:** Electronics의 중앙값은 다른 카테고리보다 두 배 이상 높다. 가격이 빈 상품 12개를 두 방법으로 채워 비교한다.''')
+    code('''missing_price = products[products["catalog_price"].isna()]
+fill_comparison = pd.DataFrame({
+    "카테고리": missing_price["category"],
+    "카테고리 중앙값으로": missing_price["category"].map(category_median_price),
+    "전체 중앙값으로": products["catalog_price"].median(),
+})
+display(fill_comparison.groupby("카테고리").first())''')
+    md('''**출력 읽기:** 전체 중앙값으로 채우면 Electronics 상품 3개가 카테고리 중앙값의 절반 정도 가격을 받고, Home·Fashion·Beauty 상품은 더 비싸게 잡힌다. 카테고리 중앙값은 비슷한 상품끼리의 기준이라 이런 쏠림이 작다.
 
-이 결과는 카테고리당 한 값(4개)이다. 상품 80개의 각 행에 "내 카테고리의 중앙값"을 붙이려면 `transform`을 쓴다. 작은 예로 본다.''')
+카테고리별 중앙값은 카테고리당 한 값(4개)이다. 상품 80개의 각 행에 "내 카테고리의 중앙값"을 붙이려면 `transform`을 쓴다. 작은 예로 본다.''')
     code('''mini = pd.DataFrame({
     "category": ["A", "A", "A", "B", "B"],
     "price": [10, 40, np.nan, 100, np.nan],
 })
-mini["group_median"] = mini.groupby("category")["price"].transform("median")
-mini["price_filled"] = mini["price"].fillna(mini["group_median"])
+mini["그룹 중앙값"] = mini.groupby("category")["price"].transform("median")
+mini["채운 가격"] = mini["price"].fillna(mini["그룹 중앙값"])
 display(mini)''')
     md('''**출력 읽기:** A 묶음의 값은 10과 40이므로 중앙값은 25다. 비어 있는 값(NaN)은 계산에서 빠진다. `transform`은 묶음의 결과를 **원래 행 개수 그대로** 돌려주므로 A의 세 행 모두에 25가 붙는다. `fillna`는 빈 칸에만 그 값을 넣고, 이미 값이 있는 칸은 그대로 둔다.
 
@@ -213,12 +252,17 @@ products_filled["product_name"] = products_filled["product_name"].fillna("Unknow
 
 was_missing = products["catalog_price"].isna()
 comparison = products.loc[was_missing, ["product_id", "category", "catalog_price"]].head(4)
-comparison["filled_price"] = products_filled.loc[was_missing, "catalog_price"].head(4)
+comparison["채운 가격"] = products_filled.loc[was_missing, "catalog_price"].head(4)
 display(comparison)
 print("남은 결측치:", products_filled[["catalog_price", "rating", "product_name"]].isna().sum().to_dict())''')
     md('''**출력 읽기:** 가격이 비어 있던 Home 상품에는 Home의 중앙값이, Electronics 상품에는 Electronics의 중앙값이 들어갔다. 위에서 계산한 카테고리별 중앙값과 같은 숫자다.
 
-**왜 거래 표가 아니라 상품 표에서 채울까?** 10원 상품과 40원 상품이 하나씩 있고, 10원 상품만 세 번 팔렸다고 하자. 상품 표의 중앙값은 (10, 40)의 가운데인 25원이다. 거래 표 [10, 10, 10, 40]의 중앙값은 10원이다. 거래 표에서 계산하면 많이 팔린 상품의 가격이 더 큰 비중을 가진다. 상품의 속성은 상품 하나당 한 번씩 세는 것이 맞다.
+**왜 거래 표가 아니라 상품 표에서 채울까?** 10원 상품과 40원 상품이 하나씩 있고, 10원 상품만 세 번 팔렸다고 하자. 상품 표의 중앙값은 (10, 40)의 가운데인 25원이다. 거래 표 [10, 10, 10, 40]의 중앙값은 10원이다. 거래 표에서 계산하면 많이 팔린 상품의 가격이 더 큰 비중을 가진다. 실제 데이터로 두 중앙값을 비교한다.''')
+    code('''display(pd.DataFrame({
+    "상품 표에서 (상품마다 한 번)": products.groupby("category")["catalog_price"].median(),
+    "거래 표에서 (팔린 횟수만큼)": joined.groupby("category")["catalog_price"].median(),
+}))''')
+    md('''**출력 읽기:** Fashion은 17,750원과 20,300원으로 차이가 크고, Beauty도 조금 다르다. 거래 표의 중앙값은 "어떤 상품이 많이 팔렸나"에 따라 움직인다. 상품의 속성은 상품 하나당 한 번씩 세는 것이 맞다.
 
 채운 상품 속성을 거래 표에 다시 붙인다. `set_index("product_id")`로 상품 ID를 찾아보기 기준으로 만들고, `map`으로 거래마다 그 상품의 값을 찾아온다.''')
     code('''product_lookup = products_filled.set_index("product_id")
@@ -266,14 +310,29 @@ plt.show()''')
 이미지 한 장에는 16 × 16 × 3 = 768개의 숫자가 있다. 이것을 두 숫자로 요약한다.
 
 - **평균**: 전체적으로 얼마나 밝은가.
-- **표준편차**: 값이 평균에서 얼마나 흩어져 있는가. [0, 0, 100, 100]과 [50, 50, 50, 50]은 평균이 50으로 같지만, 표준편차는 50과 0이다. 무늬가 많고 거칠수록 커진다.''')
+- **표준편차**: 값이 평균에서 보통 얼마나 떨어져 있는가. 무늬가 많고 거칠수록 커진다.
+
+표준편차는 네 단계로 계산한다. [0, 0, 100, 100]으로 따라간다.
+
+1. 값마다 평균과의 차이를 구한다.
+2. 차이를 제곱한다. −50과 +50을 그냥 더하면 0이 되어 흩어짐이 사라지므로, 제곱해서 모두 양수로 만든다.
+3. 제곱한 값의 평균을 낸다(**분산**).
+4. 제곱근을 씌운다. 제곱하면서 단위도 제곱(밝기²)이 되었으므로 원래 단위로 되돌린다.''')
+    code('''values = np.array([0, 0, 100, 100])
+differences = values - values.mean()
+squared = differences ** 2
+variance = squared.mean()
+print("평균:", values.mean())
+print("1 평균과의 차이:", differences)
+print("2 제곱:", squared)
+print("3 제곱의 평균(분산):", variance)
+print("4 제곱근(표준편차):", np.sqrt(variance), " np.std:", values.std())
+print("[50, 50, 50, 50]의 표준편차:", np.std([50, 50, 50, 50]))''')
+    md('''**출력 읽기:** 두 배열은 평균이 50으로 같지만 표준편차는 50과 0이다. 모든 값이 평균에서 50씩 떨어진 배열과 하나도 떨어지지 않은 배열이다. 이제 이미지 한 장에 적용한다.''')
     code('''first_image = images[0]
 print("0번 이미지의 숫자 개수:", first_image.size)
 print("0번 이미지 평균:", first_image.mean())
-print("0번 이미지 표준편차:", first_image.std())
-
-print("[0, 0, 100, 100] 표준편차:", np.std([0, 0, 100, 100]))
-print("[50, 50, 50, 50] 표준편차:", np.std([50, 50, 50, 50]))''')
+print("0번 이미지 표준편차:", first_image.std())''')
     md('''### 80장을 한 번에 — `axis`와 벡터 연산
 
 반복문으로 80장을 하나씩 계산할 수도 있다. 하지만 미션은 **반복문 대신 배열 연산**(벡터 연산)을 쓰라고 한다. NumPy는 `axis`로 "어느 축을 따라 계산할지"를 지정하면 배열 전체를 한 번에 계산한다. 반복문보다 짧고 훨씬 빠르다.
@@ -376,11 +435,11 @@ IQR은 "확인해 볼 후보"를 알려줄 뿐, 그 값이 잘못됐다고 판�
 removed = shipping[shipping.between(lower, upper)]
 
 display(pd.DataFrame({
-    "rows": [len(shipping), len(clipped), len(removed)],
-    "mean": [shipping.mean(), clipped.mean(), removed.mean()],
-    "median": [shipping.median(), clipped.median(), removed.median()],
-    "max": [shipping.max(), clipped.max(), removed.max()],
-}, index=["original", "clip", "remove"]))''')
+    "행 수": [len(shipping), len(clipped), len(removed)],
+    "평균": [shipping.mean(), clipped.mean(), removed.mean()],
+    "중앙값": [shipping.median(), clipped.median(), removed.median()],
+    "최댓값": [shipping.max(), clipped.max(), removed.max()],
+}, index=["원본", "clip(자르기)", "remove(빼기)"]))''')
     md('''**출력 읽기:** 15건 때문에 평균이 눈에 띄게 올라가 있었다. 처리하면 평균은 내려가지만, 중앙값은 거의 그대로다. 중앙값이 극단값에 강하다는 것을 숫자로 확인할 수 있다.
 
 미션은 처리 전후의 분포 변화를 시각화하라고 한다. **박스플롯**으로 비교한다.''')
@@ -416,9 +475,11 @@ joined["shipping_days_is_outlier"] = is_outlier''')
 - **표준편차**: 평균 주변으로 얼마나 퍼져 있나.
 - **사분위수**(25%·50%·75%): 분포의 아래·가운데·위 위치.
 
-`describe()`의 결과를 `.T`로 뒤집으면(행과 열 교환) 변수 하나가 한 행이 되어 읽기 편하다.''')
+`describe()`의 결과를 `.T`로 뒤집으면(행과 열 교환) 변수 하나가 한 행이 되어 읽기 편하다. 열 이름은 한국어로 바꿔 표시한다.''')
     code('''numeric_columns = ["unit_price", "quantity", "amount", "shipping_days", "image_mean", "image_std"]
-display(joined[numeric_columns].describe().T)''')
+korean_stat_names = {"count": "개수", "mean": "평균", "std": "표준편차", "min": "최솟값",
+                     "25%": "Q1(25%)", "50%": "중앙값(50%)", "75%": "Q3(75%)", "max": "최댓값"}
+display(joined[numeric_columns].describe().T.rename(columns=korean_stat_names))''')
     md('''**출력 읽기:** 금액(`amount`)은 평균(약 10만 원)이 중앙값(7만 5천 원)보다 크다. 큰 주문 일부가 평균을 위로 끌어올린 것이다. 이럴 때 "보통 주문 한 줄의 금액"을 말하려면 중앙값이 더 대표적이다. 단가는 평균과 중앙값이 비슷하다.
 
 이 통계는 거래 행 기준이다. 많이 팔린 상품의 가격은 여러 번 들어간다. 상품 80개를 하나씩 센 가격 분포와는 다르다.
@@ -432,7 +493,26 @@ plt.show()''')
 
 ### 상관계수 — 두 변수가 함께 움직이는 정도
 
-**상관계수**(Pearson r)는 −1~1 사이 값이다. 1에 가까우면 한쪽이 클 때 다른 쪽도 크고, −1에 가까우면 반대로 움직이며, 0에 가까우면 직선 관계가 거의 없다. 미션은 최소 2쌍을 계산하고 해석하라고 한다.''')
+**상관계수**(Pearson r)는 −1~1 사이 값이다. 1에 가까우면 한쪽이 클 때 다른 쪽도 크고, −1에 가까우면 반대로 움직이며, 0에 가까우면 직선 관계가 거의 없다.
+
+계산은 세 단계다.
+
+1. 두 변수를 각각 **표준화**한다: (값 − 평균) ÷ 표준편차. 단위가 사라지고 "평균보다 표준편차 몇 개만큼 큰가"만 남는다. 단가(원)와 수량(개)처럼 단위가 다른 변수를 비교하려면 이 단계가 필요하다.
+2. 같은 행끼리 곱한다. 둘 다 평균보다 크거나 둘 다 작으면 곱이 양수, 한쪽만 크면 음수다.
+3. 곱의 평균을 낸다. 같은 방향으로 움직인 행이 많을수록 양수로 커진다.
+
+x = [1, 2, 3, 4], y = [2, 4, 5, 8]로 따라간다.''')
+    code('''x = pd.Series([1, 2, 3, 4])
+y = pd.Series([2, 4, 5, 8])
+x_standardized = (x - x.mean()) / x.std(ddof=0)
+y_standardized = (y - y.mean()) / y.std(ddof=0)
+products_of_pairs = x_standardized * y_standardized
+
+display(pd.DataFrame({"x 표준화": x_standardized, "y 표준화": y_standardized, "곱": products_of_pairs}))
+print("곱의 평균(직접 계산):", products_of_pairs.mean(), " corr():", x.corr(y))''')
+    md('''**출력 읽기:** 처음 두 행은 둘 다 평균보다 작고, 뒤 두 행은 둘 다 평균보다 커서 곱이 모두 양수다. 그래서 r이 1에 가깝다. `ddof=0`은 표준편차를 n으로 나누라는 뜻이다. 4장의 `np.std`와 같은 방식이다.
+
+미션은 최소 2쌍을 계산하고 해석하라고 한다.''')
     code('''pairs = [("unit_price", "amount"), ("quantity", "amount"),
          ("image_mean", "unit_price"), ("shipping_days", "amount")]
 for left, right in pairs:
@@ -456,7 +536,7 @@ plt.show()''')
 
 `dt.to_period("M")`은 날짜를 "2026-03" 같은 월로 바꾼다. 월로 묶어 금액을 더하면 월별 매출이다. 시간에 따른 변화는 **라인차트**로 그린다.''')
     code('''monthly_revenue = joined.groupby(joined["order_date"].dt.to_period("M"))["amount"].sum()
-display(monthly_revenue.to_frame("revenue"))
+display(monthly_revenue.to_frame("매출(원)"))
 
 fig, ax = plt.subplots(figsize=(9, 4))
 ax.plot(monthly_revenue.index.to_timestamp(), monthly_revenue.values, marker="o")
@@ -524,8 +604,8 @@ R·F·M은 단위가 다르다(일, 회, 원). 비교하기 쉽게 각각을 1~5
 
 작은 예로 본다.''')
     code('''example = pd.DataFrame({"frequency": [3, 1, 4, 1, 5]}, index=["A", "B", "C", "D", "E"])
-example["percentile"] = example["frequency"].rank(pct=True)
-example["score"] = np.ceil(example["percentile"] * 5).astype(int)
+example["백분위"] = example["frequency"].rank(pct=True)
+example["점수"] = np.ceil(example["백분위"] * 5).astype(int)
 display(example)''')
     md('''**출력 읽기:** B와 D는 둘 다 1회로 공동 1·2등이라 평균 순위 1.5를 받고, 1.5 / 5명 = 0.3 → 2점이 된다. 가장 많이 산 E는 5점이다.
 
@@ -579,17 +659,26 @@ display(rfm["segment"].value_counts())''')
     md('''**출력 읽기:** 네 그룹에 60명씩 나뉘었고 Regular는 0명이다. 1장에서 본 생성 규칙의 네 유형과 맞는지 표로 확인한다. `pd.crosstab`은 두 분류를 가로·세로로 놓고 사람 수를 센다.''')
     code('''customer_number = rfm.index.str[1:].astype(int)   # "C061" → 61
 generated_type = pd.cut(customer_number, bins=[0, 60, 120, 180, 240], right=False,
-                        labels=["C000-059 (frequent, expensive)", "C060-119 (steady)",
-                                "C120-179 (first purchase)", "C180-239 (absent)"])
-display(pd.crosstab(generated_type, rfm["segment"]))''')
+                        labels=["C000~059 (자주, 비싸게)", "C060~119 (꾸준히)",
+                                "C120~179 (첫 구매)", "C180~239 (오래 안 옴)"])
+display(pd.crosstab(generated_type, rfm["segment"], rownames=["생성 유형"], colnames=["RFM 그룹"]))''')
     md('''**출력 읽기:** 각 유형이 정확히 한 그룹에 들어갔다. 합성 데이터를 네 유형이 뚜렷하게 갈리도록 만들었기 때문이다. 실제 고객은 경계에 걸친 사람이 많아 이렇게 깔끔하게 나뉘지 않는다.
 
 그룹은 기준값에 따라 달라진다. "최근"을 30일 대신 14일로 좁혀 본다.''')
     code('''display(pd.DataFrame({
-    "recent_days=30": assign_segments(rfm).value_counts(),
-    "recent_days=14": assign_segments(rfm, recent_days=14).value_counts(),
+    "최근 기준 30일": assign_segments(rfm).value_counts(),
+    "최근 기준 14일": assign_segments(rfm, recent_days=14).value_counts(),
 }).fillna(0).astype(int))''')
     md('''**출력 읽기:** 기준을 14일로 좁히자 VIP 6명이 Loyal로 옮겨 갔다. 마지막 구매가 15~30일 전이라 "최근" 조건에서 빠졌지만, 4회 이상 샀으므로 Loyal 조건에는 맞는다. New는 모두 7일 이내에 첫 구매를 해서 그대로다. 데이터가 그룹을 정해 주는 것이 아니라, 분석자가 정한 기준이 그룹을 만든다. 그래서 기준값과 그 이유를 함께 적어야 한다.
+
+### F를 행 수로 세면 어떻게 될까
+
+1장의 확인 질문을 실제로 실행해 본다. F를 주문 수 대신 거래 행 수로 바꾸고, 나머지는 그대로 둔 채 그룹을 다시 나눈다.''')
+    code('''rfm_by_rows = rfm.copy()
+rfm_by_rows["frequency"] = joined.groupby("customer_id").size()   # 주문 수가 아닌 행 수
+display(pd.crosstab(rfm["segment"], assign_segments(rfm_by_rows),
+                    rownames=["F = 주문 수"], colnames=["F = 행 수"]))''')
+    md('''**출력 읽기:** New 60명 중 42명이 Regular로 바뀌었다. 첫 주문 한 번에 상품 여러 개를 담은 고객은 행 수로 세면 F가 2 이상이 되어 "F = 1" 조건에서 빠진다. 다른 그룹은 그대로다. 집계 단위를 잘못 고르면 오류 없이 그룹만 틀어진다.
 
 그룹별 고객 수는 **막대그래프**로, 고객별 F와 M의 관계는 **산점도**로 그린다. 산점도는 점 하나가 고객 한 명이다.''')
     code('''segment_colors = {"VIP": "#0072B2", "Loyal": "#E69F00", "New": "#009E73",
@@ -610,7 +699,11 @@ plt.show()''')
     md('''**출력 읽기:** VIP(파랑)는 오른쪽 위에 따로 떨어져 있다. 주문이 많고 금액도 크다. New(초록)는 왼쪽 아래 F = 1에 세로로 모여 있다. Loyal과 Inactive는 가운데에서 겹치는데, 이 둘을 가르는 것은 그림에 없는 R(최근성)이다.
 
 **확인 질문:** 그룹을 점수 합계(`rfm_score`)로 나누면 어떤 문제가 생길까? 예를 들어 R=1, F=5, M=5인 고객과 R=5, F=3, M=3인 고객을 생각해 본다.
-<details><summary>답 확인</summary>두 고객 모두 합계가 11점이다. 앞 고객은 예전에 많이 샀지만 오래 오지 않은 고객이고, 뒤 고객은 최근에 보통 정도로 사는 고객이다. 필요한 대응이 전혀 다르다. 합계는 이런 차이를 지우므로, 그룹은 R·F·M 각각의 조건으로 정한다.</details>''')
+<details><summary>답 확인</summary>두 고객 모두 합계가 11점이다. 앞 고객은 예전에 많이 샀지만 오래 오지 않은 고객이고, 뒤 고객은 최근에 보통 정도로 사는 고객이다. 필요한 대응이 전혀 다르다. 합계는 이런 차이를 지우므로, 그룹은 R·F·M 각각의 조건으로 정한다.</details>
+
+실제 데이터에서 점수 합계별로 그룹을 세어 본다.''')
+    code('''display(pd.crosstab(rfm["rfm_score"], rfm["segment"], rownames=["점수 합계"], colnames=["RFM 그룹"]))''')
+    md('''**출력 읽기:** 합계 6점 줄에는 Inactive 21명과 New 21명이 함께 있다. 오래 오지 않은 고객과 방금 첫 구매를 한 고객이 같은 점수를 받았다. 합계로 그룹을 나누면 이 둘을 구분할 수 없다.''')
 
     # ------------------------------------------------------------------ 8
     md('''## 8. 그룹 비교와 비즈니스 인사이트
@@ -625,7 +718,10 @@ plt.show()''')
 )
 segment_summary["customer_share_pct"] = segment_summary["customers"] / segment_summary["customers"].sum() * 100
 segment_summary["revenue_share_pct"] = segment_summary["revenue"] / segment_summary["revenue"].sum() * 100
-display(segment_summary.round(1))''')
+summary_labels = {"customers": "고객 수", "mean_recency": "평균 R(일)", "mean_frequency": "평균 F(회)",
+                  "mean_monetary": "평균 M(원)", "revenue": "매출 합계(원)",
+                  "customer_share_pct": "고객 비중(%)", "revenue_share_pct": "매출 비중(%)"}
+display(segment_summary.rename(columns=summary_labels))''')
     md('''**출력 읽기:** 고객 비중은 모두 25%로 같지만, 매출 비중은 VIP가 70%가 넘는다. 고객 넷 중 하나가 매출 대부분을 만든다. New는 고객 수는 같지만 매출 비중이 가장 작다. 아직 한 번 샀을 뿐이기 때문이다.
 
 ### 인사이트 쓰는 법 — 근거·실행·검증
