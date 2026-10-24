@@ -205,6 +205,33 @@ print("모두 정상 — F1:", f1_score(y_classification_test, all_normal_predic
 
 전처리부터 한다. 소득(수천 단위)과 부채 비율(0~1)은 크기가 전혀 달라서, 각 열을 "평균 0, 표준편차 1"로 바꾼다(**표준화**). 비어 있는 값을 중앙값으로 채우는 단계도 넣는다. 이 데이터에는 빈 값이 없지만, 새 데이터에는 생길 수 있다.
 
+### 5-0. 전처리에 쓰는 개념 셋: 표준편차, 표준화, 빈 값 채우기
+
+- **표준편차**(standard deviation)는 값들이 평균에서 보통 얼마나 떨어져 있는지를 나타내는 수다. ① 값마다 평균과의 차이를 구하고 ② 제곱해서(음수와 양수가 서로 상쇄되지 않게) ③ 평균 내고 ④ 제곱근으로 단위를 되돌린다.
+- **표준화**는 `(값 − 평균) ÷ 표준편차`다. 결과는 "평균에서 표준편차 몇 개만큼 떨어져 있나"이고, 단위(만원, 세, 회)가 사라진다. 바꾼 열은 평균이 0, 표준편차가 1이 된다.
+- **`SimpleImputer`**는 빈 값(`NaN`)을 채우는 도구다. 로지스틱 회귀 등 많은 모델은 빈 값이 있으면 에러를 낸다. `strategy="median"`은 열마다 빈 값이 아닌 값들의 중앙값으로 채운다. 평균은 극단값 하나에 끌려가지만 중앙값은 덜 흔들린다.
+
+세 가지를 값 몇 개로 직접 계산해 본다.''')
+    code('''from sklearn.impute import SimpleImputer
+
+# 표준편차: 평균과의 차이 → 제곱 → 평균 → 제곱근
+toy_values = np.array([2, 4, 6])
+differences = toy_values - toy_values.mean()
+toy_std = np.sqrt((differences ** 2).mean())
+print("평균:", toy_values.mean(), " 평균과의 차이:", differences)
+print("표준편차(단계별 계산):", toy_std, " np.std:", toy_values.std())
+
+# 표준화: (값 - 평균) / 표준편차
+print("표준화한 값:", (toy_values - toy_values.mean()) / toy_std)
+
+# 빈 값 채우기: 소득 열에 빈 값(np.nan)이 하나 있는 작은 예
+toy_incomes = pd.DataFrame({"annual_income": [3000, 4000, np.nan, 100000]})
+print("평균:", toy_incomes["annual_income"].mean(), " 중앙값:", toy_incomes["annual_income"].median())
+print("median으로 채운 결과:", SimpleImputer(strategy="median").fit_transform(toy_incomes).ravel())''')
+    md('''**출력 읽기:** 평균과의 차이는 −2, 0, 2이고 표준편차는 약 1.63이다. 표준화하면 가운데 값은 0, 양쪽 값은 평균에서 표준편차의 약 1.2배 떨어진 위치(±1.22)가 된다. 빈 값은 4000으로 채워졌다. 평균(약 35667)은 100000 하나에 끌려 올라가서 나머지 고객들의 소득과 한참 멀다.
+
+이 표준편차 계산은 `StandardScaler`가 쓰는 계산(`np.std`)과 같다.
+
 중요한 점은 평균·중앙값 같은 기준을 **Train에서만** 배운다는 것이다. `fit_transform`은 "기준을 배우고 바꾸기", `transform`은 "이미 배운 기준으로 바꾸기"다.''')
     code('''from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import StandardScaler
@@ -289,6 +316,86 @@ display(pd.DataFrame({
 
 **확인 질문:** 실제 서비스에서는 대출 신청 고객이 한 명씩 들어온다. 그 한 명에게 `fit_transform`을 쓰면 어떻게 될까?
 <details><summary>답 확인</summary>고객 한 명의 평균은 그 사람 값 자체이고 표준편차는 0이다. 기준을 만들 수 없으니 변환이 의미를 잃는다(StandardScaler는 모든 값을 0으로 만든다). 그래서 학습할 때 Train으로 정한 기준을 저장해 두고, 새 고객에게는 `transform`만 쓴다. Test에 `transform`만 쓰는 것은 이 실제 상황을 흉내 낸 것이다.</details>''')
+
+    md('''### 5-2. 로지스틱 회귀는 안에서 무엇을 계산하나
+
+이 모델에는 은닉층이 없다. 신경망으로 비유하면 **층 하나, 뉴런 하나**이고, 계산은 세 단계다.
+
+1. **점수 z:** `z = b + w₁x₁ + w₂x₂ + … + w₆x₆`. 선형 회귀와 같은 식이고, 값의 범위는 제한이 없다. `w`는 변수마다 하나인 가중치(`coef_`), `b`는 절편(`intercept_`)이다.
+2. **확률 p:** `p = 1 / (1 + e^(−z))`. 이 **시그모이드** 함수가 어떤 z든 0~1 사이로 눌러 준다. z = 0이면 p = 0.5이고, z가 커지면 1에, 작아지면 0에 가까워진다.
+3. **판정:** `p ≥ 0.5`이면 연체(1)다. 이것은 `z ≥ 0`과 같은 조건이다.
+
+학습된 모델에서 `w`와 `b`를 꺼내 `predict_proba`를 직접 재현한다.''')
+    code('''weights = logistic_model.coef_[0]        # 변수마다 w 하나 (6개)
+bias = logistic_model.intercept_[0]      # b
+display(pd.Series(weights, index=feature_columns, name="w"))
+print("b:", bias)
+
+scores = X_test_prepared[:5] @ weights + bias     # 점수 z. 고객마다 (변수 × w)의 합 + b
+probabilities_by_hand = 1 / (1 + np.exp(-scores))
+display(pd.DataFrame({
+    "z": scores,
+    "p (by hand)": probabilities_by_hand,
+    "predict_proba": overdue_probabilities[:5],
+}))''')
+    md('''**출력 읽기:** 직접 계산한 확률이 `predict_proba`와 같다. `w`의 부호와 크기가 모델이 배운 내용이다. 표준화한 입력이므로 w는 "그 변수가 표준편차 1만큼 클 때 z가 얼마나 변하나"다. 소득의 w는 음수(소득이 높으면 연체 확률 감소), 부채 비율과 연체 횟수의 w는 양수(증가)이고, 나이 등은 0에 가깝다.
+
+**학습**은 이 `w`와 `b`를 고르는 일이다. 기준은 **로그 손실**(log loss)이다.
+
+`손실 = −평균[ y·log(p) + (1−y)·log(1−p) ]`
+
+실제 연체(y=1)인 고객의 p가 0.01이면 `−log(0.01)`이 커서 벌점이 크고, p가 0.99이면 거의 0이다. 확신하면서 틀릴수록 벌점이 급격히 커진다. 손실을 줄이는 방법은 **경사하강법**이다. 손실을 w로 미분한 기울기는 이렇게 단순하다.
+
+`∂손실/∂wⱼ = 평균[ (p − y) · xⱼ ]` ("틀린 만큼 × 그 변수의 값")
+
+기울기 반대 방향으로 w를 조금씩 옮기는 일을 반복한다. 연체자(y=1)를 p=0.3으로 예측했고 부채 변수가 +2라면 `(0.3−1)×2 = −1.4`로 기울기가 음수라서, 부채의 w가 커지는 쪽으로 움직인다. 그러면 다음번에 이 고객의 p가 올라간다. 이 과정을 직접 구현해서 sklearn과 비교한다.''')
+    code('''y_train_values = y_classification_train.to_numpy()
+learned_weights = np.zeros(len(feature_columns))   # 아무것도 모르는 상태에서 출발
+learned_bias = 0.0
+learning_rate = 0.5                                # 한 번에 움직이는 크기
+
+for step in range(3001):
+    p = 1 / (1 + np.exp(-(X_train_prepared @ learned_weights + learned_bias)))
+    loss = -np.mean(y_train_values * np.log(p) + (1 - y_train_values) * np.log(1 - p))
+    if step in (0, 10, 100, 3000):
+        print("step", step, " 손실:", round(loss, 4))
+    error = p - y_train_values                     # 틀린 만큼 (p - y)
+    learned_weights -= learning_rate * (X_train_prepared.T @ error) / len(error)
+    learned_bias -= learning_rate * error.mean()
+
+no_penalty_model = LogisticRegression(C=np.inf, max_iter=2000)   # C=inf: 벌점 없음
+no_penalty_model.fit(X_train_prepared, y_classification_train)
+display(pd.DataFrame({
+    "gradient descent (by hand)": np.append(learned_weights, learned_bias),
+    "sklearn (no penalty)": np.append(no_penalty_model.coef_[0], no_penalty_model.intercept_[0]),
+    "sklearn (default)": np.append(weights, bias),
+}, index=feature_columns + ["bias"]))''')
+    md('''**출력 읽기:** 처음에는 모든 고객의 p가 0.5라서 손실이 0.693(= log 2)이다. 반복할수록 손실이 줄고, 직접 구한 w가 sklearn과 거의 같은 값에 도달한다. sklearn은 같은 일을 더 똑똑한 방법(기본 `lbfgs`)으로 몇 번 만에 끝낸다. `max_iter=2000`은 이 반복 횟수의 상한이다.
+
+세 번째 열(기본 설정)이 조금 작은 이유는 sklearn이 기본으로 **L2 벌점**을 더하기 때문이다. 손실에 `‖w‖²`에 비례하는 항을 더해 w가 지나치게 커지지 않게 누르는 장치이고, 세기는 `C`로 정하며 기본값은 1이다(`C`가 작을수록 벌점이 강하다). 첫 두 열은 벌점이 없다.
+
+### 5-3. 표준화를 빼면 무엇이 달라지나
+
+소득과 부채 비율의 크기가 달라도 이론상으로는 같은 답에 도달할 수 있다. 하지만 실제로는 두 가지가 문제가 된다.
+
+- **학습이 어렵다.** 소득은 수천 단위라서 w가 아주 작아야 하고, 부채 비율은 0~1이라서 w가 커야 한다. 위 반복문의 `learning_rate` 하나로 두 w를 함께 맞추기 어렵다.
+- **벌점이 불공평하다.** 작은 단위의 변수(부채 비율)는 효과를 내려면 w가 커야 해서 L2 벌점을 많이 받고, 큰 단위의 변수(소득)는 w가 작아도 되니 벌점을 거의 받지 않는다. 같은 정보량이어도 단위 때문에 대접이 달라진다.
+
+표준화 없이 같은 모델을 학습해서 비교한다.''')
+    code('''raw_model = LogisticRegression(max_iter=2000, random_state=RANDOM_STATE)
+raw_model.fit(X_train_imputed, y_classification_train)      # 표준화하지 않은 값
+
+print("반복 횟수 — 표준화 O:", logistic_model.n_iter_[0], " 표준화 X:", raw_model.n_iter_[0])
+print("Test F1  — 표준화 O:", f1_score(y_classification_test, predicted_labels),
+      " 표준화 X:", f1_score(y_classification_test, raw_model.predict(X_test_imputed)))
+
+display(pd.DataFrame({
+    "standardized (per original unit)": weights / scaler.scale_,   # 표준편차당 w를 원래 단위당 w로 되돌림
+    "raw": raw_model.coef_[0],
+}, index=feature_columns))''')
+    md('''**출력 읽기:** 표준화하지 않으면 수렴까지 걸리는 반복 횟수가 크게 늘어난다. 이 데이터에서는 예측 성능(F1)은 거의 같다. 즉 여기서 표준화는 결과를 바꾸기보다 계산을 쉽게 만든다. 표 두 열은 원래 단위(소득 1만원, 부채 비율 1 등)로 맞춘 w인데 비슷하지만, 벌점 때문에 완전히 같지는 않다.
+
+표준화의 영향은 모델에 따라 다르다. 거리를 쓰는 방법(SMOTE, k-최근접 이웃)에서는 단위가 큰 변수가 거리를 지배하므로 표준화가 결과를 직접 바꾼다. 결정 나무는 크기 비교만 하므로 필요 없다.''')
 
     md('''## 6. 임계값 — 0.5는 바꿀 수 있다
 
