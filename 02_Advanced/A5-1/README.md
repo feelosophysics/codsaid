@@ -35,7 +35,7 @@ Windows 콘솔에서 한글 출력이 깨지면 `$env:PYTHONUTF8 = "1"`을 먼�
 
 | 자료 | 용도 |
 | --- | --- |
-| [`notebooks/learning_walkthrough.ipynb`](notebooks/learning_walkthrough.ipynb) | 처음 학습할 때 위에서부터 실행하는 노트북. 첫 모델은 전처리·학습·예측·평가를 펼쳐 쓰고, 이후 Pipeline, 불균형 처리, 회귀와 규제, RF 튜닝, 임계값, Custom Transformer·모듈화로 확장한다. 출력 읽는 법과 확인 질문을 포함한다 |
+| [`notebooks/learning_walkthrough.ipynb`](notebooks/learning_walkthrough.ipynb) | 처음 학습할 때 위에서부터 실행하는 노트북(1분 이내). 본편은 규칙 베이스라인 → 혼동행렬과 지표 → 첫 모델(전처리·학습·예측·평가) → 임계값·ROC-AUC → Pipeline → 교차검증 → 불균형 처리 → 회귀와 규제 순서로 진행한다. 부록에서 RF 튜닝, 승인·보류·거절 정책, 특징 중요도, 학습 곡선, Custom Transformer를 다룬다. 출력 읽는 법과 확인 질문을 포함한다 |
 | [`notebooks/analysis_report.ipynb`](notebooks/analysis_report.ipynb) | 최종 실험 보고서. `src/` 모듈을 단계별로 불러 결과와 그래프를 보여준다. 계산 로직은 노트북에 두지 않는다 |
 | [`study/a5-1.html`](study/a5-1.html) | 인터넷 없이 여는 HTML 학습 자료 12장. 규칙, 임계값, Alpha, 승인·보류·거절 정책을 직접 조작하며 지표 변화를 본다. 계산은 scikit-learn 결과와 일치하도록 검증한다([`study/README.md`](study/README.md)) |
 | [`study/anatomy/two-predictions.html`](study/anatomy/two-predictions.html) | 같은 고객을 회귀·분류로 예측한 뒤 정답을 공개해 출력과 평가 방식의 차이를 비교하는 시각 자료 |
