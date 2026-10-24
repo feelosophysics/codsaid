@@ -6,8 +6,6 @@
 
 ## 실행
 
-**Mac 시연:** [`run_mac_demo.command`](run_mac_demo.command)를 열면 기존 uv 환경을 준비하고 분석을 실행한다. Intel Mac(macOS 11 이상)에서는 동봉한 `environment/mac-intel-openmp/`의 런타임을 검증하고 이번 실행에만 연결한다. 관리자 권한과 Homebrew 설치는 필요 없다. 실행 권한이 없을 때는 터미널에 `bash `를 입력하고 파일을 끌어다 놓는다. 결과는 `results/mac-demo/`에 저장한다. 상세 안내와 학습 검사만 하는 방법은 [`MAC_DEMO.md`](MAC_DEMO.md)에 있다.
-
 환경은 [uv](https://docs.astral.sh/uv/)로 관리한다. 이 README가 있는 A5-1 폴더에서 실행한다.
 
 ```powershell
@@ -17,31 +15,41 @@ uv run python -m src.run_all
 uv run python -m unittest discover -s tests -v
 ```
 
-`uv sync`는 `.python-version`(3.12.13)과 `uv.lock`에 맞춰 `.venv`를 만든다. `data_gen.py`는 `finance_data.csv`를 만들며, 이 CSV는 `.gitignore`의 `*.csv` 규칙으로 저장소에 올라가지 않는다. `src.run_all`은 그래프 10개와 `results/metrics.json`, `results/report.md`, 학습 자료용 `results/test_predictions.json`을 만든다.
+`uv sync`는 `.python-version`(3.12.13)과 `uv.lock`에 맞춰 `.venv`를 만든다. `data_gen.py`는 `finance_data.csv`를 만든다(CSV는 저장소에 올리지 않는다). `src.run_all`은 그래프 10개와 `results/metrics.json`, `results/report.md`, 학습 자료용 `results/test_predictions.json`을 만든다.
 
-그리드 탐색은 기본적으로 CPU 코어 2개만 쓴다. 다른 작업과 함께 돌려도 컴퓨터가 멈추지 않게 하기 위해서다. 검증 환경(코어 2개)에서 약 12분 걸렸다. 전용으로 빠르게 돌리려면 모든 코어를 쓴다. 코어 2개와 전체 코어로 각각 실행한 결과는 소수점 16번째 자리의 부동소수점 차이 하나를 빼고 모두 같았다.
+그리드 탐색은 기본적으로 CPU 코어 2개만 쓰며 약 12분 걸린다. 다른 작업과 함께 돌려도 컴퓨터가 멈추지 않게 하기 위해서다. 모든 코어를 쓰려면 아래처럼 실행한다. 결과 수치는 코어 수와 관계없이 같다.
 
 ```powershell
 $env:A5_N_JOBS = "-1"; uv run python -m src.run_all
 ```
 
-Windows 콘솔에서 한글 출력이 깨지면 `$env:PYTHONUTF8 = "1"`을 먼저 설정한다. uv가 없는 환경에서는 `pip install -r requirements.txt`로 같은 버전을 설치할 수 있다. `requirements.txt`는 `uv export`로 `uv.lock`에서 만든 사본이다.
+Windows 콘솔에서 한글 출력이 깨지면 `$env:PYTHONUTF8 = "1"`을 먼저 설정한다. uv가 없으면 `pip install -r requirements.txt`로 같은 버전을 설치할 수 있다(`uv.lock`에서 내보낸 파일).
 
-| 검증 조합 | 결과 |
+| 검증 환경 | 결과 |
 | --- | --- |
-| Windows, Python 3.12.13, scikit-learn 1.9.1, imbalanced-learn 0.14.2, XGBoost 3.4.1, pandas 3.0.6 | 테스트 17개, 전체 실행, 노트북, HTML 검증 통과 |
+| Windows, Python 3.12.13, scikit-learn 1.9.1, imbalanced-learn 0.14.2, XGBoost 3.4.1, pandas 3.0.6 | 단위 테스트, 전체 실행, 노트북 실행 통과 |
+
+**Mac에서 실행하기.** Finder에서 [`run_mac_demo.command`](run_mac_demo.command)를 더블클릭하면 환경 준비부터 전체 분석까지 진행하고 결과를 `results/mac-demo/`에 저장한다. Intel Mac(macOS 11 이상)에서는 XGBoost가 요구하는 OpenMP 런타임을 `environment/mac-intel-openmp/`에 동봉해 사용하므로 Homebrew나 관리자 권한이 필요 없다. 실행 권한 오류가 나면 터미널에 `bash `(뒤에 공백)를 입력하고 파일을 끌어다 놓은 뒤 Enter를 누른다. 자세한 내용은 [`MAC_DEMO.md`](MAC_DEMO.md)에 있다.
 
 ## 노트북과 학습 자료
 
-VS Code에서는 Microsoft의 Python·Jupyter 확장을 설치한다. Windows는 노트북의 **Select Kernel → Select Another Kernel → Python Environments**에서 이 폴더의 `.venv/Scripts/python.exe`를 선택한다. **Mac은 [Mac 노트북 안내](MAC_DEMO.md#노트북을-셀별로-실행하기)에 따라 등록한 `A5-1 Mac (uv + libomp)`를 Jupyter Kernel 목록에서 선택한다.** 커널이 준비됐는지 확인하려면 `uv run --group dev python tools/check_notebook_kernel.py`를 실행한다(Mac은 끝에 `--kernel a5-1-mac-demo` 추가). 실제 커널을 `notebooks/`에서 시작해 `3 + 7`, 노트북 첫 코드 셀, 주요 라이브러리 import, 데이터 10,000행 로딩을 검사하며 모델을 재학습하거나 노트북 파일을 수정하지 않는다.
+| 자료 | 용도 |
+| --- | --- |
+| [`notebooks/learning_walkthrough.ipynb`](notebooks/learning_walkthrough.ipynb) | 처음 학습할 때 위에서부터 실행하는 노트북. 첫 모델은 전처리·학습·예측·평가를 펼쳐 쓰고, 이후 Pipeline, 불균형 처리, 회귀와 규제, RF 튜닝, 임계값, Custom Transformer·모듈화로 확장한다. 출력 읽는 법과 확인 질문을 포함한다 |
+| [`notebooks/analysis_report.ipynb`](notebooks/analysis_report.ipynb) | 최종 실험 보고서. `src/` 모듈을 단계별로 불러 결과와 그래프를 보여준다. 계산 로직은 노트북에 두지 않는다 |
+| [`study/a5-1.html`](study/a5-1.html) | 인터넷 없이 여는 HTML 학습 자료 12장. 규칙, 임계값, Alpha, 승인·보류·거절 정책을 직접 조작하며 지표 변화를 본다. 계산은 scikit-learn 결과와 일치하도록 검증한다([`study/README.md`](study/README.md)) |
+| [`study/anatomy/two-predictions.html`](study/anatomy/two-predictions.html) | 같은 고객을 회귀·분류로 예측한 뒤 정답을 공개해 출력과 평가 방식의 차이를 비교하는 시각 자료 |
+| [`study/anatomy/threshold.html`](study/anatomy/threshold.html) | 임계값에 따라 고객 판정과 분류 지표가 바뀌는 시각 실험 |
 
-Windows의 앱 실행 제어가 켜진 환경에서는 uv의 마이너 버전 추적용 실행기가 차단될 수 있어, 이 프로젝트는 Python을 `3.12.13`으로 고정한다. 새 환경은 `uv venv --python 3.12.13` 후 `uv sync --frozen --group dev`로 구성할 수 있다. 기존 환경이 있다면 먼저 보존하고 재생성한다. 패키지·잠금 파일 관리는 계속 uv로 수행하며, 이 구성에 전역 Python 설치나 보안 설정 해제가 필요하지 않다.
+학습 노트북은 이해를 위해 원본 6개 입력과 작은 RF 격자(8조합)를 쓰므로, 파생 변수와 더 큰 격자를 쓰는 아래 성능표와 수치가 다를 수 있다. `finance_data.csv`가 없으면 노트북이 `data_gen.py`를 실행해 만든다.
 
-- [`study/anatomy/two-predictions.html`](study/anatomy/two-predictions.html): ‘같은 고객, 두 가지 예측’ 시각 장치. 같은 입력으로 회귀·분류를 예측한 뒤 정답을 공개해 출력과 평가의 차이를 비교한다. 초보자에게 설명할 순서와 확인 질문을 포함한다.
-- [`study/anatomy/threshold.html`](study/anatomy/threshold.html): 임계값에 따라 고객 판정과 분류 지표가 바뀌는 시각 실험.
+노트북은 VS Code의 Python·Jupyter 확장으로 연다. Windows는 **Select Kernel → Select Another Kernel → Python Environments**에서 이 폴더의 `.venv/Scripts/python.exe`를, Mac은 [Mac 노트북 안내](MAC_DEMO.md#노트북을-셀별로-실행하기)에 따라 등록한 `A5-1 Mac (uv + libomp)` 커널을 선택한다. 커널이 동작하는지는 아래 명령으로 확인한다(Mac은 끝에 `--kernel a5-1-mac-demo` 추가). 모델을 학습하거나 노트북을 수정하지 않고 import와 데이터 로딩만 검사한다.
 
-- [`notebooks/analysis_report.ipynb`](notebooks/analysis_report.ipynb): `src/` 모듈을 단계별로 불러 실행 결과와 그래프를 보여주는 보고서. 계산 로직은 노트북에 없다. `uv run python tools/execute_notebook.py`로 처음부터 실행하고 출력을 저장한다.
-- [`study/a5-1.html`](study/a5-1.html): 인터넷 없이 여는 HTML 학습 자료 12장. 규칙 켜고 끄기, 임계값, Alpha, 승인·보류·거절 정책을 직접 조작하며 지표 변화를 볼 수 있다. 페이지의 계산은 scikit-learn 결과와 대조 검증했다. 생성·검증 방법은 [`study/README.md`](study/README.md)에 있다.
+```powershell
+uv run --group dev python tools/check_notebook_kernel.py
+```
+
+두 노트북을 처음부터 실행해 출력을 저장하려면 `tools/execute_learning_notebook.py`, `tools/execute_notebook.py`를 `uv run --group dev python`으로 실행한다. 학습 노트북 내용은 `tools/build_learning_notebook.py`에서 생성하므로, 수정할 때는 이 파일을 고친 뒤 다시 생성·실행한다.
 
 ## 데이터와 처리 원칙
 
@@ -52,10 +60,10 @@ Windows의 앱 실행 제어가 켜진 환경에서는 uv의 마이너 버전 �
 | `credit_score` | 회귀 타깃. 위 세 변수의 선형 결합 + 표준편차 30 노이즈, 0~1000으로 자름 |
 | `is_overdue` | 분류 타깃. 점수 하위 15%(292점 미만) 중 무작위 80%만 1. 연체 비율 12.01% |
 
-- **데이터 수정 없음.** 생성 코드의 주석은 "소득이 음수면 0"이지만 실제로는 1,500 미만을 1,500으로 올린다(408행). 미션 지시대로 데이터는 그대로 사용한다.
+- **데이터 수정 없음.** 생성 코드의 주석은 "소득이 음수면 0"이지만 실제로는 1,500 미만을 1,500으로 올린다(10,000명 중 408명이 1,500). 미션 지시대로 데이터는 그대로 사용한다.
 - **두 타깃은 서로의 입력이 아니다.** `is_overdue`는 `credit_score`로 만들어졌으므로 분류 입력에 신용 점수를 넣으면 정답 누수가 된다. 두 모델 모두 원본 6개 변수만 입력으로 쓴다.
 - **분할.** 8:2 층화 분할, `random_state=42`. Train·Test 연체 비율은 12.01%·12.00%다.
-- **전처리.** `DerivedFeatures`(보너스 1)가 연령대(범주)와 부채액(소득×부채 비율)을 만든다. 수치형은 중앙값 대치 → 표준화, 범주형은 최빈값 대치 → 원-핫 인코딩한다. 원본에는 범주형 변수와 결측치가 없다. 그래서 연령대를 만들어 인코딩 경로를 실제로 쓰고, 결측치와 처음 보는 연령대를 넣은 테스트로 대치 단계가 동작함을 확인했다.
+- **전처리.** `DerivedFeatures`(보너스 1)가 연령대(범주)와 부채액(소득×부채 비율)을 만든다. 수치형은 중앙값 대치 → 표준화, 범주형은 최빈값 대치 → 원-핫 인코딩한다. 원본에는 범주형 변수와 결측치가 없으므로, 연령대를 만들어 인코딩 경로를 실제로 쓰고 결측치·처음 보는 연령대 처리는 테스트로 확인한다.
 - **누수 방지.** 전처리와 SMOTE를 모두 Pipeline 안에 두어, Train(교차 검증에서는 각 fold의 학습 부분)에서만 fit한다. SMOTE는 imblearn Pipeline 안에 있어 예측 단계에서는 건너뛴다. 모델·Alpha·임계값은 모두 Train 5-fold 교차 검증으로 고르고, Test는 마지막 평가에만 쓴다.
 
 ## 성능 비교 리포트
@@ -108,7 +116,7 @@ Windows의 앱 실행 제어가 켜진 환경에서는 uv의 마이너 버전 �
 | RF + SMOTE | max_depth=16, min_samples_leaf=1, n_estimators=400 | 30 | 0.665±0.018 |
 | XGB + scale_pos_weight | learning_rate=0.1, max_depth=4, n_estimators=200 | 16 | 0.656±0.018 |
 
-파라미터당 후보는 5개 이하, 조합은 100개 이하다. 탐색은 Train 5-fold CV에서 F1 기준으로 했다(ROC-AUC도 함께 기록). 처음 격자에서 RF가 max_depth 경계값(12)을 골라 범위를 16·None까지 넓혔다.
+파라미터당 후보는 5개 이하, 조합은 100개 이하다. 탐색은 Train 5-fold CV에서 F1 기준으로 했다(ROC-AUC도 함께 기록). RF의 max_depth 후보는 4·8·12·16·None으로, 최적값이 격자 끝에 걸리지 않도록 넓게 잡았다.
 
 **지표에 따라 승자가 다르다.** 임계값 0.5의 F1은 RF가 근소하게 높지만, ROC-AUC와 PR-AUC는 로지스틱이 더 높다. 연체 라벨은 신호 변수의 선형 결합에 경계를 그어 만들었기 때문에 선형 모델이 구조에 맞는다. 앙상블은 비선형 관계나 변수 간 상호작용이 있을 때 강하다.
 
@@ -162,8 +170,11 @@ CV F1 최고는 RF + SMOTE(0.665±0.018)다. **1-표준오차 규칙**을 적용
 | `src/diagnostics.py` | 불순도·permutation 중요도, 학습 곡선 |
 | `src/report.py` | 그래프 10종과 Markdown 보고서 |
 | `src/run_all.py` | 전체 실행 진입점 |
-| `tests/test_pipeline.py` | 데이터 재현성, 규칙, 변환기 규약, Train 전용 fit, 결측 대치, SMOTE 위치, 선택 규칙, 정책 테스트 17개 |
-| `tools/` | 노트북 생성·실행, 학습 자료 생성·검증 |
+| `tests/test_pipeline.py` | 데이터 재현성, 규칙, 변환기 규약, Train 전용 fit, 결측 대치, SMOTE 위치, 선택 규칙, 정책 테스트 |
+| `tests/test_mac_demo.py` | Mac 실행기의 OpenMP 런타임 선택·검사, 커널 등록 테스트 |
+| `notebooks/`, `study/` | 노트북과 HTML 학습 자료 (위 표 참고) |
+| `tools/` | 노트북 생성·실행, 커널 확인, 학습 자료 생성·검증, Mac 실행기 |
+| `run_mac_demo.command`, `environment/` | Mac 실행 파일과 Intel Mac용 OpenMP 런타임 |
 
 그래프 레이블은 시스템 한글 폰트에 의존하지 않도록 영어로 쓰고, 해석은 이 README와 학습 자료에서 한국어로 한다.
 
@@ -177,15 +188,3 @@ CV F1 최고는 RF + SMOTE(0.665±0.018)다. **1-표준오차 규칙**을 적용
 ## 과정 내 위치
 
 [심화 과정 목차](../README.md) · [전체 과정](../../README.md)
-
-## 한 단계씩 배우는 노트북
-
-처음 학습할 때는 [`notebooks/learning_walkthrough.ipynb`](notebooks/learning_walkthrough.ipynb)를 위에서부터 실행한다. 첫 모델은 전처리·학습·예측·평가를 펼쳐 쓰고, 이후 Pipeline, 불균형 처리, 회귀와 규제, RF 튜닝, 임계값, 보너스·모듈화로 확장한다. 출력 읽는 법과 확인 질문을 포함한다. 기존 `analysis_report.ipynb`는 최종 실험 보고서다.
-
-학습용 기본 실험은 원본 6개 입력과 RF 8조합 탐색을 사용하므로, 파생 변수와 더 큰 격자를 사용하는 위 성능표와 수치가 다를 수 있다. 범주형 인코딩과 Custom Transformer는 뒤쪽 확장에서 실제 실행한다. 기존 CSV는 수정하지 않으며, 파일이 없을 때만 제공 생성기를 실행한다. 새 커널에서 처음부터 실행할 수 있다.
-
-```text
-uv run --group dev python tools/execute_learning_notebook.py
-```
-
-노트북 내용을 수정하려면 `tools/build_learning_notebook.py`를 고치고 `uv run --group dev python tools/build_learning_notebook.py`로 재생성한다. 이후 자동 실행으로 출력을 저장한다.
