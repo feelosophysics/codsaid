@@ -13,6 +13,10 @@ Python과 AI 개념을 처음 익히는 독자를 위해 `src/`의 모든 함수
 docstring에서, 새 문법·데이터 모양 변화·선택 이유는 해당 코드 옆에서 읽는다.
 이 미션은 데이터 준비와 통계·규칙 기반 RFM 분석이며 예측 모델을 학습하지 않는다.
 
+처음 학습한다면 [`notebooks/learning_walkthrough.ipynb`](notebooks/learning_walkthrough.ipynb)부터 실행한다(10초 안팎). 클래스 없이 Pandas·NumPy로 한 단계씩 직접 계산한다. 행의 단위 → 표 연결 → 그룹 중앙값 대치 → 이미지 축과 벡터 연산 → IQR → 통계·상관 → RFM 점수와 그룹 → 근거·실행·검증 인사이트 순서로 진행하고, 마지막 장에서 같은 단계를 `DataAnalyzer`로 묶어 결과가 같은지 확인한다. 부록에서 보너스 3종을 다룬다. 출력 읽는 법과 확인 질문을 포함하며 `results/`에 파일을 쓰지 않는다. 내용은 `tools/build_learning_notebook.py`에서 생성하므로, 수정할 때는 이 파일을 고친 뒤 `uv run --group dev python tools/build_learning_notebook.py`와 `uv run --group dev python tools/execute_learning_notebook.py`로 다시 생성·실행한다. 부록 C의 Plotly 차트는 인터넷에 연결되어 있어야 보인다.
+
+이어서 제출용 분석 노트북으로 같은 흐름을 클래스 중심으로 다시 본다.
+
 1. [`notebooks/analysis_report.ipynb`](notebooks/analysis_report.ipynb)를 위에서 아래로 실행한다. 행의 단위 → 결측치 → 이미지 축 → IQR → 통계 → RFM → 차트·해석이 한 파일에서 이어진다.
 2. 작은 예제와 실제 입력의 계산을 먼저 따라가고, `DataAnalyzer`의 반환값·내부 상태 및 직접 계산과의 대조 결과를 확인한다. 기본 분석을 시연할 때는 **기본 시연 마무리**에서 멈춰도 된다.
 3. 반복 계산과 입력 검증의 구현은 [`src/pipeline.py`](src/pipeline.py), 같은 단계를 묶은 CLI는 [`src/run_analysis.py`](src/run_analysis.py)에서 읽는다.
