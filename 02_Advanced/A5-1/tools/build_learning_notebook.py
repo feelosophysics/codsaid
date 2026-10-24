@@ -51,12 +51,7 @@ print("프로젝트:", project_root.name)''')
 
     md('''## 1. 데이터 — 입력과 정답
 
-데이터는 함께 제공된 생성 코드(`data_gen.py`)로 만든다. 생성 규칙은 이렇다.
-
-- 신용 점수 = 소득·부채 비율·최근 6개월 연체 횟수로 계산한 값 + 무작위 잡음
-- 연체 = 신용 점수 하위 15%인 고객 중 무작위로 약 80%
-
-그래서 전체 고객의 약 12%가 연체다. 나이·소비 점수·카드 수는 어느 정답에도 쓰이지 않은 변수다. 모델이 이 사실을 알아내는지 나중에 확인한다.''')
+데이터는 함께 제공된 생성 코드(`data_gen.py`)로 만든다. 한 행이 고객 한 명이다.''')
     code('''data_path = project_root / "finance_data.csv"
 if not data_path.exists():
     subprocess.run([sys.executable, str(project_root / "data_gen.py")],
@@ -66,6 +61,30 @@ customers = pd.read_csv(data_path)
 print("고객 수:", len(customers))
 print("연체 비율:", customers["is_overdue"].mean())
 display(customers.head())''')
+    md('''각 열의 뜻은 아래와 같다. 최솟값·최댓값은 실제 데이터에서 계산한다.''')
+    code('''column_guide = pd.DataFrame({
+    "column": ["age", "annual_income", "spending_score", "debt_ratio",
+               "credit_card_count", "overdue_count_6m", "credit_score", "is_overdue"],
+    "meaning": ["나이(세)",
+                "연 소득(만원). 4000이면 연 4,000만 원",
+                "소비 점수(1~99). 소비 성향을 점수로 나타낸 가상 지표",
+                "소득 대비 부채 비율. 0.5면 빚이 연 소득의 절반",
+                "보유 신용카드 수(장)",
+                "최근 6개월 동안 연체한 횟수. 대부분 0회",
+                "신용 점수 — 회귀 정답",
+                "연체 여부(0 = 정상, 1 = 연체) — 분류 정답"],
+    "used_to_make_answer": ["아니오", "예", "아니오", "예", "아니오", "예", "", ""],
+}).set_index("column")
+column_guide["min"] = customers.min()
+column_guide["max"] = customers.max()
+display(column_guide)''')
+    md('''**정답을 만든 규칙:** 생성 코드는 신용 점수를 이 공식으로 만들었다.
+
+> 신용 점수 = 300 + 0.03 × 연 소득(만원) − 50 × 연체 횟수 − 100 × 부채 비율 + 잡음(평균 0, 표준편차 30)
+
+예를 들어 소득 5,000만 원, 연체 0회, 부채 비율 0.5인 고객은 300 + 150 − 0 − 50 = 400점 근처다. 그다음 신용 점수 하위 15%인 고객 중 무작위로 약 80%를 연체(1)로 표시했다. 그래서 전체의 약 12%가 연체다.
+
+나이·소비 점수·카드 수는 공식에 없다. 즉 정답과 상관없는 **잡음 변수**다. 실제 데이터에서는 이런 공식을 모르지만, 여기서는 정답 공식을 알고 있으니 모델이 이것을 얼마나 알아내는지 확인할 수 있다(10장).''')
     md('''머신러닝에서는 예측할 때 받는 정보를 **X(입력)**, 맞혀야 할 답을 **y(정답)**라고 부른다. 정답 열 두 개는 입력에서 뺀다. 특히 연체 라벨은 신용 점수로 만들었으므로, 신용 점수를 입력에 넣으면 답을 보고 문제를 푸는 셈이다. 이것을 **정답 누수**라고 한다.''')
     code('''feature_columns = [
     "age", "annual_income", "spending_score", "debt_ratio",
@@ -204,6 +223,36 @@ display(pd.DataFrame({
 }, index=feature_columns))''')
     md('''**출력 읽기:** 첫 번째 Train 고객의 값이 표준화 전후로 어떻게 바뀌었는지 본다. 0보다 크면 평균보다 큰 값, 작으면 평균보다 작은 값이다.
 
+### 5-1. `fit`과 `transform`은 각각 무엇을 하나
+
+전처리 도구는 두 가지 일을 한다.
+
+| 메서드 | 하는 일 | 표준화 도구(`StandardScaler`)의 경우 |
+| --- | --- | --- |
+| `fit(데이터)` | 데이터를 보고 **기준을 배워 저장**한다. 데이터는 바꾸지 않는다 | 열마다 평균과 표준편차를 계산해 `mean_`, `scale_`에 저장 |
+| `transform(데이터)` | **저장된 기준으로** 데이터를 바꾼다. 새로 배우지 않는다 | 값마다 (값 − 저장된 평균) ÷ 저장된 표준편차 |
+| `fit_transform(데이터)` | 같은 데이터로 `fit`한 뒤 곧바로 `transform`하는 줄임 | 위 두 단계를 한 번에 |
+
+헷갈리기 쉬운 점: **Test는 "정답 데이터"가 아니다.** Test는 시험용으로 떼어 둔 고객 2,000명이고, 그 고객들의 입력(`X_test`)과 정답(`y_test`)이 모두 있다. 전처리는 입력에만 한다. 정답은 전처리하지 않는다. 핵심은 **기준(평균·표준편차)을 어느 고객들로 배우느냐**다. 아래에서 저장된 기준을 꺼내 직접 계산해 본다.''')
+    code('''income_column = feature_columns.index("annual_income")
+train_income_mean = scaler.mean_[income_column]    # fit이 Train에서 배워 저장한 값
+train_income_std = scaler.scale_[income_column]
+print("Train에서 배운 소득 평균:", train_income_mean, " 표준편차:", train_income_std)
+
+first_test_income = X_test["annual_income"].iloc[0]
+print("첫 Test 고객의 소득:", first_test_income)
+print("직접 계산 (소득 - Train 평균) / Train 표준편차:", (first_test_income - train_income_mean) / train_income_std)
+print("scaler.transform 결과:", X_test_prepared[0, income_column])''')
+    md('''**출력 읽기:** 직접 계산한 값과 `transform` 결과가 같다. `transform`은 Train에서 배운 평균·표준편차라는 "자"로 Test 고객을 잰 것이다.
+
+만약 Test에 `fit_transform`을 쓰면 Test 고객 2,000명의 평균으로 자를 새로 만든다. 같은 고객이 어떻게 달라지는지 본다.''')
+    code('''wrong_scaler = StandardScaler()
+X_test_wrongly_prepared = wrong_scaler.fit_transform(X_test_imputed)   # 하면 안 되는 방법
+print("Test로 새로 배운 소득 평균:", wrong_scaler.mean_[income_column])
+print("같은 고객의 소득 — Train 기준 변환:", X_test_prepared[0, income_column])
+print("같은 고객의 소득 — Test로 다시 배운 기준 변환:", X_test_wrongly_prepared[0, income_column])''')
+    md('''**출력 읽기:** 같은 고객, 같은 소득인데 숫자가 달라졌다. 여기서는 Train과 Test의 평균이 비슷해 차이가 작다. 하지만 Test 고객의 분포가 다르면 차이가 커진다. 모델은 Train의 자로 잰 숫자에 맞춰 가중치를 배웠으므로, 자가 바뀌면 예측이 어긋난다. 또 시험지(Test)의 정보가 전처리 기준에 섞인다(**데이터 누수**).
+
 이제 학습하고 예측한다. `predict_proba`는 고객마다 [정상일 확률, 연체일 확률] 두 숫자를 준다. `[:, 1]`은 그중 두 번째 열인 연체 확률만 꺼낸다.''')
     code('''from sklearn.linear_model import LogisticRegression
 
@@ -238,8 +287,8 @@ display(pd.DataFrame({
 }, index=["accuracy", "precision", "recall", "f1"]))''')
     md('''**출력 읽기:** 모델은 규칙보다 F1이 두 배 가까이 높다. 정상 고객을 덜 잘못 찍어서(FP 감소) Precision이 크게 올랐다. 대신 Recall은 내려갔다. 연체자 240명 중 100명 이상을 놓친다(FN).
 
-**확인 질문:** 왜 Test에는 `fit_transform`이 아니라 `transform`만 썼을까?
-<details><summary>답 확인</summary>Test는 시험지다. Test의 평균으로 기준을 다시 배우면 시험지 정보가 학습에 섞인다. 실제 서비스에서 새 고객이 들어올 때도, 학습할 때 정한 기준으로 바꾼다.</details>''')
+**확인 질문:** 실제 서비스에서는 대출 신청 고객이 한 명씩 들어온다. 그 한 명에게 `fit_transform`을 쓰면 어떻게 될까?
+<details><summary>답 확인</summary>고객 한 명의 평균은 그 사람 값 자체이고 표준편차는 0이다. 기준을 만들 수 없으니 변환이 의미를 잃는다(StandardScaler는 모든 값을 0으로 만든다). 그래서 학습할 때 Train으로 정한 기준을 저장해 두고, 새 고객에게는 `transform`만 쓴다. Test에 `transform`만 쓰는 것은 이 실제 상황을 흉내 낸 것이다.</details>''')
 
     md('''## 6. 임계값 — 0.5는 바꿀 수 있다
 
@@ -259,27 +308,33 @@ display(pd.DataFrame(threshold_rows))''')
 
 여기서는 변화를 관찰하려고 Test를 썼다. 실제로 임계값을 **정할** 때는 Test가 아니라 Train으로 정해야 한다(부록 B).
 
-### 6-1. ROC-AUC — 임계값과 상관없는 점수
+### 6-1. ROC 곡선과 AUC — 모든 임계값을 한 장에
 
-임계값마다 지표가 바뀌니, 기준과 무관하게 모델을 평가할 방법도 필요하다. **ROC-AUC**는 이렇게 읽는다.
+임계값마다 지표가 바뀌니, 임계값 하나에 묶이지 않고 모델을 평가하는 방법이 필요하다.
 
-> 연체자 한 명과 정상 고객 한 명을 무작위로 뽑았을 때, 모델이 연체자에게 더 높은 위험 점수를 줄 확률
+**이름의 뜻:** ROC는 *Receiver Operating Characteristic*(수신자 조작 특성)의 줄임말이다. 2차 세계대전 때 레이더 신호에서 "진짜 비행기"와 "잡음"을 가려내는 성능을 평가하려고 만든 그래프라서 이런 이름이 붙었다. AUC는 *Area Under the Curve*, 곧 **곡선 아래 넓이**다.
 
-1.0이면 항상 연체자를 더 위험하게 보고, 0.5면 동전 던지기 수준이다. 아래에서 실제로 무작위 쌍을 뽑아 확인한다.''')
-    code('''from sklearn.metrics import roc_auc_score
+**만드는 법:** 임계값 하나를 정하면 혼동행렬 하나가 나오고, 거기서 두 비율을 계산해 그래프에 **점 하나**를 찍는다.
 
-y_test_array = y_classification_test.to_numpy()
-overdue_scores = overdue_probabilities[y_test_array == 1]
-normal_scores = overdue_probabilities[y_test_array == 0]
+- x축 **FPR(False Positive Rate, 오탐률)** = FP / (FP + TN) = 실제 정상 고객 중 연체로 잘못 찍힌 비율 (낮을수록 좋다)
+- y축 **TPR(True Positive Rate)** = TP / (TP + FN) = 실제 연체자 중 잡아낸 비율. 4장의 Recall과 같다 (높을수록 좋다)
 
-rng = np.random.default_rng(RANDOM_STATE)
-picked_overdue = rng.choice(overdue_scores, size=10_000)
-picked_normal = rng.choice(normal_scores, size=10_000)
-print("무작위 10,000쌍에서 연체자 점수가 더 높은 비율:", np.mean(picked_overdue > picked_normal))
-print("roc_auc_score:", roc_auc_score(y_classification_test, overdue_probabilities))''')
-    md('''**출력 읽기:** 두 값이 거의 같다. AUC는 "순서를 얼마나 잘 매기는가"를 잰다.
+임계값을 1에서 0까지 내리며 찍은 점들을 이으면 ROC 곡선이 된다. 몇 개만 직접 계산해 본다.''')
+    code('''roc_point_rows = []
+for threshold in [0.9, 0.7, 0.5, 0.3, 0.1, 0.02]:
+    labels_at_threshold = (overdue_probabilities >= threshold).astype(int)
+    tn_t, fp_t, fn_t, tp_t = confusion_matrix(y_classification_test, labels_at_threshold).ravel()
+    roc_point_rows.append({
+        "threshold": threshold,
+        "FP": fp_t, "TN": tn_t, "TP": tp_t, "FN": fn_t,
+        "FPR (x)": fp_t / (fp_t + tn_t),
+        "TPR (y)": tp_t / (tp_t + fn_t),
+    })
+roc_points = pd.DataFrame(roc_point_rows)
+display(roc_points)''')
+    md('''**출력 읽기:** 임계값을 내릴수록 더 많은 고객을 연체로 찍으므로 두 비율이 모두 커진다. 연체자를 더 잡는 대신(TPR↑) 정상 고객도 더 잘못 찍는다(FPR↑). 좋은 모델은 FPR이 조금만 늘어도 TPR이 빠르게 오른다.
 
-규칙에도 AUC를 매길 수 있다. 0/1 판정 대신 "걸린 규칙의 개수"를 위험 점수로 쓰면 된다. 아래 그래프(**ROC 곡선**)는 임계값을 바꿔 가며 x축 오탐률(정상 고객을 잘못 찍은 비율)과 y축 재현율을 이은 선이다. 선 아래 넓이가 AUC다.''')
+규칙의 곡선도 함께 그린다. 규칙은 0/1 판정 대신 "걸린 규칙의 개수"를 위험 점수로 쓴다. 개수가 많을수록 위험한 고객으로 본다.''')
     code('''def count_risk_rules(customer):
     count = 0
     count += int(customer["overdue_count_6m"] >= 2)
@@ -290,24 +345,60 @@ print("roc_auc_score:", roc_auc_score(y_classification_test, overdue_probabiliti
     count += int(customer["credit_card_count"] >= 8)
     return count
 
-rule_scores = X_test.apply(count_risk_rules, axis=1)
-print("규칙 AUC:", roc_auc_score(y_classification_test, rule_scores))
-print("로지스틱 AUC:", roc_auc_score(y_classification_test, overdue_probabilities))''')
+rule_scores = X_test.apply(count_risk_rules, axis=1)''')
     code('''from sklearn.metrics import RocCurveDisplay
 
 fig, ax = plt.subplots(figsize=(5, 5))
 RocCurveDisplay.from_predictions(y_classification_test, rule_scores, ax=ax, name="Rules")
 RocCurveDisplay.from_predictions(y_classification_test, overdue_probabilities, ax=ax, name="Logistic")
-ax.plot([0, 1], [0, 1], linestyle="--", color="gray", label="Random")
-ax.set_xlabel("False positive rate")
-ax.set_ylabel("Recall (true positive rate)")
-ax.legend()
+ax.scatter(roc_points["FPR (x)"], roc_points["TPR (y)"], color="black", zorder=3,
+           label="Points computed above")
+for _, point in roc_points.iterrows():
+    ax.annotate(f'{point["threshold"]}', (point["FPR (x)"], point["TPR (y)"]),
+                textcoords="offset points", xytext=(6, -12), fontsize=8)
+ax.plot([0, 1], [0, 1], linestyle="--", color="gray", label="Random guess")
+ax.set_xlabel("False positive rate (FPR)")
+ax.set_ylabel("True positive rate (TPR = recall)")
+ax.legend(loc="lower right")
 plt.tight_layout()
 plt.show()''')
+    md('''**출력 읽기:**
+
+- 검은 점은 위 표에서 직접 계산한 점이고, 옆의 숫자는 그 점의 임계값이다. 로지스틱 곡선 위에 정확히 놓인다. 곡선은 이런 점을 모든 임계값에 대해 이은 것이다.
+- **왼쪽 위 모서리**(FPR 0, TPR 1)는 정상 고객은 한 명도 잘못 찍지 않으면서 연체자는 모두 잡는 완벽한 상태다. 곡선이 이 모서리에 가깝게 붙을수록 좋은 모델이고, 그만큼 곡선 아래 넓이(AUC)도 1에 가까워진다.
+- **회색 대각선**은 동전을 던져 판정하는 경우다. 무작위로 찍으면 정상 고객과 연체자가 같은 비율로 찍히므로 FPR = TPR이다. 넓이는 0.5다.
+- 로지스틱 곡선이 규칙 곡선보다 전체적으로 위에 있다. 같은 오탐률에서 연체자를 더 많이 잡는다는 뜻이다. 범례 옆의 AUC 숫자로도 비교할 수 있다.
+
+**넓이를 말로 바꾸면:** AUC는 이렇게도 해석된다.
+
+> 연체자 한 명과 정상 고객 한 명을 무작위로 뽑았을 때, 모델이 연체자에게 더 높은 위험 점수를 줄 확률
+
+실제로 무작위 쌍을 뽑아 확인한다.''')
+    code('''from sklearn.metrics import roc_auc_score
+
+y_test_array = y_classification_test.to_numpy()
+overdue_scores = overdue_probabilities[y_test_array == 1]
+normal_scores = overdue_probabilities[y_test_array == 0]
+
+rng = np.random.default_rng(RANDOM_STATE)
+picked_overdue = rng.choice(overdue_scores, size=10_000)
+picked_normal = rng.choice(normal_scores, size=10_000)
+print("무작위 10,000쌍에서 연체자 점수가 더 높은 비율:", np.mean(picked_overdue > picked_normal))
+print("로지스틱 AUC (roc_auc_score):", roc_auc_score(y_classification_test, overdue_probabilities))
+print("규칙 AUC (roc_auc_score):", roc_auc_score(y_classification_test, rule_scores))''')
+    md('''**출력 읽기:** 무작위 쌍으로 센 비율과 AUC가 거의 같다. 그래서 AUC는 "위험한 순서대로 얼마나 잘 줄 세우는가"를 잰다고 말한다. 임계값을 정하기 전 단계의 실력이므로, 임계값에 따라 바뀌는 F1과 함께 본다.''')
 
     md('''## 7. Pipeline — 지금까지의 단계를 하나로 묶기
 
-5장에서 빈 값 채우기 → 표준화 → 모델을 따로 실행했다. **Pipeline**은 이 순서를 하나의 객체로 묶는다. `fit` 한 번이면 각 단계가 Train으로 차례로 배우고, `predict` 때는 배운 기준을 그대로 적용한다. 같은 일을 하는지 결과를 비교해 확인한다.''')
+5장에서 빈 값 채우기 → 표준화 → 모델을 따로 실행했다. **Pipeline**은 이 순서를 하나의 객체로 묶는다. Pipeline의 메서드 하나가 5장의 여러 줄을 대신한다.
+
+| Pipeline 호출 | 안에서 차례로 일어나는 일 (5장에서 직접 쓴 코드) |
+| --- | --- |
+| `pipeline.fit(X_train, y_train)` | `imputer.fit_transform(X_train)` → `scaler.fit_transform(...)` → `model.fit(..., y_train)` |
+| `pipeline.predict(X_test)` | `imputer.transform(X_test)` → `scaler.transform(...)` → `model.predict(...)` |
+| `pipeline.predict_proba(X_test)` | 위와 같은 변환 → `model.predict_proba(...)` |
+
+즉 **학습할 때는 앞 단계들이 fit_transform을, 예측할 때는 transform만** 하도록 Pipeline이 알아서 나눠 준다. 5-1에서 본 "Test에는 transform만" 규칙을 사람이 실수로 어길 수 없게 된다. 특히 8장의 교차검증처럼 학습·검증을 여러 번 반복할 때 이 차이가 중요하다. 같은 일을 하는지 결과를 비교해 확인한다.''')
     code('''from sklearn.pipeline import Pipeline
 from sklearn.base import clone
 
@@ -405,11 +496,31 @@ display(pd.DataFrame(classification_rows))''')
 
     md('''## 10. 회귀 — 같은 입력으로 신용 점수 예측하기
 
-이제 정답(y)만 신용 점수로 바꾼다. 회귀는 "얼마나 가깝게 맞혔나"로 평가한다.
+이제 정답(y)만 신용 점수로 바꾼다. 회귀는 "얼마나 가깝게 맞혔나"로 평가한다. 고객마다 **오차 = 실제 점수 − 예측 점수**를 구한 뒤, 오차들을 하나의 숫자로 요약하는 방법이 지표마다 다르다.
 
-- **MAE** = 오차(실제 − 예측) 크기의 평균. "평균 몇 점 틀렸나"
-- **RMSE** = 오차를 제곱해 평균 낸 뒤 제곱근. 큰 오차에 더 민감하다. 단위는 MAE와 같은 "점"이다.
-- **R²** = "모두에게 평균 점수를 예측하는 것"보다 얼마나 나은가. 1이면 완벽, 0이면 평균 예측과 같다.
+| 지표 | 계산 | 단위 | 읽는 법 |
+| --- | --- | --- | --- |
+| **MAE** (Mean Absolute Error) | 오차의 절댓값을 평균 | 점 | 평균 몇 점 틀렸나 |
+| **MSE** (Mean Squared Error) | 오차를 **제곱**해 평균 | 점² | 큰 오차에 벌점을 크게 준다. 단위가 제곱이라 직관적으로 읽기 어렵다 |
+| **RMSE** (Root MSE) | MSE에 **제곱근(루트)** | 점 | MSE를 원래 단위로 되돌린 것 |
+
+큰 오차에 민감하게 만드는 것은 **제곱**이다. 루트는 민감도를 바꾸지 않고 단위만 점²에서 점으로 되돌린다. MSE가 작은 모델이 RMSE도 작으므로, 두 지표로 모델 순위를 매기면 결과가 같다. 작은 예로 확인한다. 두 모델이 고객 4명의 점수를 예측했고, 오차 크기의 합(40점)은 같다.''')
+    code('''errors_model_a = np.array([10, -10, 10, -10])   # 고르게 조금씩 틀림
+errors_model_b = np.array([0, 0, 0, 40])        # 세 명은 정확, 한 명을 크게 틀림
+
+error_summary = pd.DataFrame({
+    "MAE": [np.mean(np.abs(errors_model_a)), np.mean(np.abs(errors_model_b))],
+    "MSE": [np.mean(errors_model_a ** 2), np.mean(errors_model_b ** 2)],
+    "RMSE": [np.sqrt(np.mean(errors_model_a ** 2)), np.sqrt(np.mean(errors_model_b ** 2))],
+}, index=["model A", "model B"])
+display(error_summary)''')
+    md('''**출력 읽기:** MAE는 둘 다 10점이다. 하지만 제곱을 쓰는 MSE·RMSE는 크게 한 번 틀린 B를 더 나쁘게 본다. 40점 오차가 제곱되어 1,600이 되기 때문이다. 큰 실수 한 번이 치명적인 문제라면 RMSE를, 평균적인 오차 크기가 궁금하면 MAE를 본다.
+
+**R²(결정계수)**는 단위가 없는 점수다. "모두에게 평균 점수를 예측하는 가장 단순한 방법"과 비교해 오차를 얼마나 줄였는지를 잰다.
+
+> R² = 1 − (모델의 오차 제곱 합) ÷ (평균만 예측했을 때의 오차 제곱 합)
+
+1이면 오차가 0인 완벽한 예측, 0이면 평균만 예측하는 것과 같은 수준, 음수면 그보다도 나쁘다. 아래에서 실제 모델로 직접 계산해 본다.
 
 비교 기준으로 모든 고객에게 Train 평균 점수를 예측하는 모델을 함께 만든다.''')
     code('''from sklearn.dummy import DummyRegressor
@@ -447,6 +558,12 @@ regression_rows = [
     evaluate_regressor("Linear", y_regression_test, linear_predictions),
 ]
 display(pd.DataFrame(regression_rows))''')
+    code('''linear_errors = y_regression_test - linear_predictions
+baseline_errors = y_regression_test - y_regression_test.mean()   # 평균만 예측했을 때의 오차
+r2_by_hand = 1 - np.sum(linear_errors ** 2) / np.sum(baseline_errors ** 2)
+print("선형 회귀 R² 직접 계산:", r2_by_hand)
+print("선형 회귀 R² (r2_score):", r2_score(y_regression_test, linear_predictions))''')
+    md('''**출력 읽기:** 직접 계산한 R²가 라이브러리 값과 같다. 0.86이면 "평균만 예측할 때의 오차 제곱 합을 86% 줄였다"는 뜻이다. 표에서 평균 모델의 R²가 0이 아니라 0보다 아주 조금 작은 것은, 이 공식이 Test 점수의 평균과 비교하는데 평균 모델은 Train의 평균을 예측했기 때문이다.''')
     code('''plt.figure(figsize=(5, 5))
 plt.scatter(y_regression_test, linear_predictions, s=5, alpha=0.25)
 plt.plot([0, 1000], [0, 1000], color="red", label="Perfect prediction")
@@ -455,7 +572,7 @@ plt.ylabel("Predicted credit score")
 plt.legend()
 plt.tight_layout()
 plt.show()''')
-    md('''**출력 읽기:** 점들이 빨간 대각선(완벽한 예측) 주변에 모여 있다. RMSE가 약 30인데, 데이터를 만들 때 넣은 잡음의 크기(표준편차 30)와 같다. 잡음은 어떤 모델로도 예측할 수 없으므로, 선형 회귀가 줄일 수 있는 오차는 거의 다 줄였다는 뜻이다. 평균 모델의 R²가 0보다 아주 조금 작은 것은 Test가 아니라 Train의 평균을 예측했기 때문이다.
+    md('''**출력 읽기:** 점들이 빨간 대각선(완벽한 예측) 주변에 모여 있다. RMSE가 약 30인데, 데이터를 만들 때 넣은 잡음의 크기(표준편차 30)와 같다. 잡음은 어떤 모델로도 예측할 수 없으므로, 선형 회귀가 줄일 수 있는 오차는 거의 다 줄였다는 뜻이다.
 
 ### 10-1. 과대적합 확인 — Train과 Test 오차 비교
 
@@ -464,14 +581,50 @@ plt.show()''')
 linear_test_rmse = np.sqrt(mean_squared_error(y_regression_test, linear_predictions))
 print("선형 회귀 Train RMSE:", linear_train_rmse)
 print("선형 회귀 Test RMSE:", linear_test_rmse)''')
-    md('''**출력 읽기:** 두 오차가 거의 같다. 변수 6개에 학습 고객 8,000명이면, 선형 모델이 잡음을 외울 여지가 거의 없다. 이 데이터의 선형 회귀는 과대적합이 아니다. 다음 절의 규제는 과대적합을 줄이는 대표적인 방법이므로, 여기서는 성능을 크게 바꾸지 못할 것이라고 예상할 수 있다.
+    md('''**출력 읽기:** 두 오차가 거의 같다. 변수 6개에 학습 고객 8,000명이면, 선형 모델이 잡음을 외울 여지가 거의 없다. 이 데이터의 선형 회귀는 과대적합이 아니다. 10-3의 규제는 과대적합을 줄이는 대표적인 방법이므로, 여기서는 성능을 크게 바꾸지 못할 것이라고 예상할 수 있다.
 
-### 10-2. 규제 — 쓸모없는 변수의 영향 줄이기
+### 10-2. 선형 회귀가 배운 것 — 가중치(계수)
 
-선형 회귀는 변수마다 **계수**(그 변수가 1 표준편차 커질 때 점수가 몇 점 변하는가)를 배운다. 계수가 지나치게 커지면 학습 데이터의 우연한 패턴에 민감해져 과대적합이 생긴다. **규제**는 계수가 커지는 것에 벌점을 줘서, 도움이 적은 변수의 계수를 작게 만든다. 벌점의 세기는 **Alpha**로 정한다.
+선형 회귀는 이런 식으로 점수를 예측한다.
 
-- **Lasso:** 계수를 정확히 0으로 만들 수 있다. 그 변수를 아예 안 쓰게 된다.
-- **Ridge:** 계수를 줄이기만 하고 0으로 만들지는 않는다.''')
+> 예측 점수 = 절편 + w₁ × 나이 + w₂ × 소득 + … + w₆ × 연체 횟수
+
+w를 **계수**(coefficient)라고 부르고, **가중치**(weight)라고 불러도 같은 뜻이다. "그 변수가 1만큼 커질 때 예측 점수가 몇 점 바뀌는가"다. scikit-learn에서는 `coef_`에 저장된다. **절편**(intercept)은 모든 변수가 0일 때의 값인데, 여기서는 표준화를 했으므로 "모든 변수가 평균인 고객"의 예측 점수가 된다.
+
+표준화한 입력으로 배웠으므로 w는 "1 **표준편차**당 몇 점"이다. 표준편차로 나누면 원래 단위(1만원, 1회 등)당 효과로 되돌릴 수 있다. 1장의 정답 공식과 비교한다.''')
+    code('''linear_weights = linear_pipeline.named_steps["model"].coef_
+feature_std = linear_pipeline.named_steps["preprocessing"].named_steps["scaler"].scale_
+
+weight_table = pd.DataFrame({
+    "weight_per_1_std": linear_weights,
+    "feature_std": feature_std,
+    "weight_per_1_unit": linear_weights / feature_std,
+    "true_formula": [0, 0.03, 0, -100, 0, -50],
+}, index=feature_columns)
+display(weight_table)
+print("절편(모든 변수가 평균인 고객의 예측 점수):", linear_pipeline.named_steps["model"].intercept_)''')
+    md('''**출력 읽기:** `weight_per_1_unit` 열을 `true_formula`와 비교한다. 소득 1만원당 +0.03점, 부채 비율 1당 −100점, 연체 1회당 −50점이다. 모델은 공식을 본 적이 없는데 데이터만 보고 거의 정확히 찾아냈다.
+
+잡음 변수(나이·소비 점수·카드 수)의 가중치는 0에 가깝지만 **정확히 0은 아니다**. 8,000명이라는 한정된 표본에서는 우연히 신용 점수와 아주 약하게 같이 움직이는 부분이 생기고, 모델은 그것이 우연인지 알 수 없어서 조금씩 가중치를 준다. 이 작은 가중치를 0으로 눌러 주는 것이 다음 절의 규제다.
+
+### 10-3. 규제 — Ridge와 Lasso
+
+**Ridge와 Lasso는 새로운 종류의 모델이 아니라, 선형 회귀에 벌점을 더한 변형이다.** 예측하는 식은 위의 선형 회귀와 똑같다. 다른 것은 가중치를 고르는 기준(**손실 함수**)뿐이다.
+
+| | 가중치를 고르는 기준 (이 값이 가장 작아지는 가중치를 찾는다) |
+| --- | --- |
+| 선형 회귀 | 오차 제곱의 합 |
+| Ridge (L2 규제) | 오차 제곱의 합 **+ α × (w₁² + w₂² + … )** |
+| Lasso (L1 규제) | 오차 제곱 평균의 절반 **+ α × (\\|w₁\\| + \\|w₂\\| + … )** |
+
+가중치를 키우면 오차는 줄지만 벌점이 늘어난다. 그래서 모델은 "오차를 충분히 줄여 주는 변수"에만 큰 가중치를 주고, 도움이 적은 변수의 가중치는 줄인다. **α(Alpha)**는 벌점의 세기다. 0이면 선형 회귀와 같고, 클수록 가중치를 강하게 누른다. scikit-learn에서는 `Ridge`, `Lasso`라는 별도 클래스로 제공해서 흔히 "Ridge 모델"이라고도 부른다. 정확히는 "L2 규제를 건 선형 회귀", "L1 규제를 건 선형 회귀"다.
+
+벌점 모양의 차이 때문에 결과가 다르다.
+
+- **Lasso:** 가중치를 정확히 0으로 만들 수 있다. 그 변수를 아예 안 쓰게 된다.
+- **Ridge:** 가중치를 줄이기만 하고 0으로 만들지는 않는다.
+
+α 다섯 개로 두 모델을 학습해 가중치가 어떻게 변하는지 본다.''')
     code('''from sklearn.linear_model import Ridge, Lasso
 
 alpha_values = [0.01, 0.1, 1, 10, 100]
@@ -497,7 +650,13 @@ ridge_coefficient_table = pd.DataFrame(ridge_coefficients, index=alpha_values, c
 lasso_coefficient_table = pd.DataFrame(lasso_coefficients, index=alpha_values, columns=feature_columns)
 lasso_coefficient_table.index.name = "alpha"
 display(lasso_coefficient_table)''')
-    md('''**출력 읽기 (Lasso 표):** 한 행이 Alpha 하나다. Alpha = 1에서 나이·소비 점수·카드 수의 계수가 0이 된다(`-0.0000`도 0이다). 1장에서 말한 "정답에 쓰이지 않은 변수" 세 개를 모델이 스스로 골라낸 것이다. Alpha = 100에서는 모든 계수가 0이 되어, 모두에게 같은 점수를 주는 평균 모델과 같아진다. 아래 그래프로 두 방법을 비교한다.''')
+    md('''**출력 읽기 (Lasso 표):** 한 행이 α 하나다.
+
+- α = 0.01, 0.1에서는 잡음 변수의 가중치도 아직 0이 아니다(나이 −0.22, −0.13). α와 상관없이 0이 되는 것이 아니다.
+- α = 1에서 나이·소비 점수·카드 수의 가중치가 0이 된다(`-0.0000`은 아주 작은 음수 계산 오차를 표시한 것으로, 0과 같다). 1장의 잡음 변수 세 개를 모델이 스스로 골라낸 것이다.
+- α = 10에서는 신호 변수의 가중치까지 줄어들고, α = 100에서는 모두 0이 되어 평균 모델과 같아진다.
+
+아래 그래프로 두 방법을 비교한다.''')
     code('''fig, axes = plt.subplots(1, 2, figsize=(13, 4))
 ridge_coefficient_table.plot(ax=axes[0], logx=True, title="Ridge coefficients")
 lasso_coefficient_table.plot(ax=axes[1], logx=True, title="Lasso coefficients")
@@ -507,9 +666,55 @@ for axis in axes:
     axis.axhline(0, color="gray", linewidth=0.7)
 plt.tight_layout()
 plt.show()''')
-    md('''**출력 읽기:** Lasso는 Alpha가 커지면 계수가 하나씩 0으로 떨어진다. Ridge는 이 범위에서 거의 변하지 않는다. scikit-learn에서는 같은 Alpha 값이라도 Ridge 쪽 벌점이 데이터 수만큼 상대적으로 약하기 때문이다. Alpha의 숫자 크기를 두 모델 사이에 그대로 비교하지 않는다.
+    md('''**출력 읽기:** Lasso는 α가 커지면 가중치가 하나씩 0으로 떨어진다. Ridge는 이 범위에서 거의 변하지 않는다. 잡음 변수의 선은 두 그래프 모두 0 위에 겹쳐 보인다. 하지만 세로축이 −36~58까지라 −0.2 같은 값은 0과 구별되지 않을 뿐, 위 표처럼 작은 α에서는 0이 아니다.
 
-### 10-3. Alpha 고르기 — 8장의 교차검증 사용
+### 10-4. 작동 방식을 숫자로 확인하기
+
+이 데이터의 6개 변수는 서로 거의 상관없이 만들어졌다. 이런 경우 두 규제의 효과를 간단한 계산으로 정확히 설명할 수 있다.
+
+- **Lasso:** 각 가중치의 크기에서 **α만큼 빼고, 0에 닿으면 0에서 멈춘다.**
+- **Ridge:** 각 가중치에 **n ÷ (n + α)를 곱한다** (n = 학습 고객 수 8,000).
+
+먼저 Lasso다. 10-2의 선형 회귀 가중치에 "α 빼기"를 적용해 실제 Lasso 결과와 비교한다.''')
+    code('''lasso_by_shortcut = []
+for alpha in alpha_values:
+    shrunk_size = np.maximum(np.abs(linear_weights) - alpha, 0)   # 크기에서 alpha를 빼되 0 아래로는 내려가지 않음
+    lasso_by_shortcut.append(np.sign(linear_weights) * shrunk_size)  # 원래 부호(+/-)를 붙임
+
+lasso_shortcut_table = pd.DataFrame(lasso_by_shortcut, index=alpha_values, columns=feature_columns)
+lasso_shortcut_table.index.name = "alpha"
+display(lasso_shortcut_table)
+print("실제 Lasso 가중치와의 최대 차이:", np.abs(lasso_shortcut_table - lasso_coefficient_table).to_numpy().max())''')
+    md('''**출력 읽기:** 간단한 계산이 실제 Lasso 표와 거의 같다. 이제 질문에 답할 수 있다.
+
+- **나이는 왜 α = 1에서 0이 됐나?** 선형 회귀에서 나이의 가중치 크기는 약 0.23이다. α = 0.1이면 0.23 − 0.1 = 0.13이 남고, α = 1이면 0.23 − 1이 음수가 되므로 0에서 멈춘다.
+- **소득은 왜 α = 100에서야 0이 됐나?** 소득의 가중치는 약 58이다. α가 58보다 커져야 0이 된다.
+- **왜 정확히 0이 되나?** Lasso의 벌점 α × |w|는 w가 작아져도 같은 힘(α)으로 0 쪽으로 민다. 그래서 오차를 줄이는 힘이 α보다 약한 작은 가중치는 0까지 밀려난다.
+
+다음은 Ridge다. Ridge의 벌점 α × w²는 w가 작아질수록 미는 힘도 작아진다(w가 절반이 되면 힘도 절반). 그래서 0에 가까워질 뿐 정확히 0에 닿지 않는다. "n ÷ (n + α) 곱하기"를 소득 가중치로 확인하고, α를 훨씬 크게도 키워 본다.''')
+    code('''n_train = len(X_train)
+ridge_rows = []
+for alpha in [1, 100, 1_000, 8_000, 80_000]:
+    ridge_model = Pipeline([
+        ("preprocessing", clone(numeric_preprocessor)),
+        ("model", Ridge(alpha=alpha)),
+    ])
+    ridge_model.fit(X_train, y_regression_train)
+    income_weight = ridge_model.named_steps["model"].coef_[income_column]
+    ridge_rows.append({
+        "alpha": alpha,
+        "income_weight": income_weight,
+        "ratio_to_linear": income_weight / linear_weights[income_column],
+        "shortcut_n/(n+alpha)": n_train / (n_train + alpha),
+    })
+display(pd.DataFrame(ridge_rows))''')
+    md('''**출력 읽기:** 실제 비율과 n ÷ (n + α)가 거의 같다.
+
+- **왜 Ridge 그래프는 변화가 없어 보였나?** α = 100이면 8000 ÷ 8100 = 0.988, 즉 가중치를 1.2%만 줄인다. 그래프에서 보이지 않을 만큼 작다.
+- α가 n과 같은 8,000이 되어야 가중치가 절반이 된다. 80,000이면 0.09배로 크게 줄지만 여전히 0은 아니다.
+- 같은 α라도 Lasso는 크기에서 α를 **빼고**, Ridge는 n ÷ (n + α)를 **곱한다**. 그래서 두 모델의 α 숫자를 그대로 비교하지 않는다.
+
+### 10-5. Alpha 고르기 — 8장의 교차검증 사용
 
 Alpha를 Test나 그래프를 보고 고르지 않는다. **GridSearchCV**는 후보마다 8장의 교차검증을 실행해 평균 점수가 가장 좋은 후보를 고르는 도구다. 마지막에 그 설정으로 Train 전체를 다시 학습한다.
 
@@ -538,12 +743,12 @@ print("Lasso가 고른 Alpha:", lasso_search.best_params_["model__alpha"])
 regression_rows.append(evaluate_regressor("Ridge (CV)", y_regression_test, ridge_search.predict(X_test)))
 regression_rows.append(evaluate_regressor("Lasso (CV)", y_regression_test, lasso_search.predict(X_test)))
 display(pd.DataFrame(regression_rows))''')
-    md('''**출력 읽기:** 10-1에서 예상한 대로, 규제를 넣어도 Test 오차는 선형 회귀와 거의 같다. 줄일 과대적합이 없고, 쓸모없는 변수의 계수도 원래 작았기 때문이다. 이 데이터에서 규제의 쓸모는 성능보다 "어떤 변수가 필요 없는지 알려준다"(10-2의 Lasso 표)는 데 있다.
+    md('''**출력 읽기:** 10-1에서 예상한 대로, 규제를 넣어도 Test 오차는 선형 회귀와 거의 같다. 줄일 과대적합이 없고, 쓸모없는 변수의 계수도 원래 작았기 때문이다. 이 데이터에서 규제의 쓸모는 성능보다 "어떤 변수가 필요 없는지 알려준다"(10-3의 Lasso 표)는 데 있다.
 
 **확인 질문:** Lasso의 계수가 모두 0이 되면 어떤 예측이 남을까?
 <details><summary>답 확인</summary>계수가 모두 0이면 입력과 상관없이 절편(Train 평균 점수)만 남는다. 모든 고객에게 같은 점수를 주므로 평균 모델과 같아진다. Alpha가 클수록 좋은 것이 아니다.</details>
 
-### 10-4. 같은 고객, 두 가지 예측 — 회귀와 분류 비교
+### 10-6. 같은 고객, 두 가지 예측 — 회귀와 분류 비교
 
 같은 입력으로 만든 두 모델을 한 고객씩 나란히 놓는다. 1장에서 본 대로 연체 라벨은 "신용 점수가 하위 15% 기준점보다 낮은가"로 만들어졌다. 기준점 근처 고객을 골라 본다.''')
     code('''score_threshold = customers["credit_score"].quantile(0.15)   # 데이터 생성에 쓰인 연체 기준점
@@ -582,7 +787,7 @@ print("나머지 고객의 분류 오류율:", logistic_wrong[~is_near].mean())'
 | 5~6 | 로지스틱 회귀, 임계값, ROC-AUC | 판정 = 확률 + 임계값. AUC는 임계값과 무관한 순서 능력이다 |
 | 7~8 | Pipeline, 교차검증 | 전처리 기준도 학습의 일부다. 설정 비교는 Train 안에서 한다 |
 | 9 | class_weight, SMOTE | 효과는 주로 판정 기준을 연체 쪽으로 옮기는 것 |
-| 10 | 선형 회귀, 과대적합 확인, Ridge·Lasso, 회귀와 분류 비교 | 회귀는 오차 크기로 평가한다. 규제는 과대적합을 줄이는 도구이고, Lasso는 쓸모없는 변수를 0으로 만든다. 같은 입력이라도 문제 유형에 따라 출력·지표·해석이 다르다 |
+| 10 | 선형 회귀와 가중치, 과대적합 확인, Ridge·Lasso, 회귀와 분류 비교 | 회귀는 오차 크기(MAE·RMSE)와 R²로 평가한다. Ridge·Lasso는 선형 회귀에 벌점을 더한 것으로, Lasso는 가중치에서 α를 빼서 작은 가중치를 0으로, Ridge는 비율로 줄여 0 근처까지만 보낸다. 같은 입력이라도 문제 유형에 따라 출력·지표·해석이 다르다 |
 
 여기까지 Test는 각 모델을 채점할 때만 썼다. 다만 여러 모델의 Test 점수를 계속 비교해 하나를 고르면, 그것도 Test에 맞춘 선택이 된다. 최종 모델은 교차검증 점수로 고른다.
 
@@ -594,7 +799,32 @@ print("나머지 고객의 분류 오류율:", logistic_wrong[~is_near].mean())'
 
     md('''## A. 앙상블 — Random Forest와 GridSearchCV
 
-**Random Forest(RF)**는 조금씩 다르게 학습한 결정 나무 여러 그루의 판정을 모으는 모델이다. 나무 한 그루보다 덜 흔들린다. 먼저 기본 설정을 교차검증으로 평가하고, GridSearchCV로 설정을 탐색해 비교한다. 설명이 목적이므로 탐색은 8가지 조합으로 작게 잡았다.''')
+### A-1. 재료: 결정 나무
+
+**결정 나무**(decision tree)는 "소득이 ○○ 이하인가?" 같은 예/아니오 질문을 차례로 던져 고객을 나누는 모델이다. 3장의 if문 규칙과 모양이 같지만, **어떤 변수로 어떤 기준값에서 나눌지를 사람이 아니라 데이터에서 배운다.** 질문 두 번(깊이 2)까지만 하는 작은 나무를 학습해 본다. 나무는 크기 비교만 하므로 표준화가 필요 없어 원본 값으로 학습한다.''')
+    code('''from sklearn.tree import DecisionTreeClassifier, export_text
+
+small_tree = DecisionTreeClassifier(max_depth=2, class_weight="balanced", random_state=RANDOM_STATE)
+small_tree.fit(X_train, y_classification_train)
+print(export_text(small_tree, feature_names=feature_columns))''')
+    md('''**출력 읽기:** 들여쓰기 한 단계가 질문 하나이고, `class: 1`로 끝나는 경로가 연체 판정이다. 이 나무는 "소득이 4,310.5 이하이면 연체, 그보다 많아도 최근 연체가 2회 이상이면 연체"라고 판정한다. 3장의 규칙도 소득과 연체 횟수를 썼지만 기준값(소득 3,000 등)은 사람이 골랐다. 나무는 6개 변수와 가능한 모든 기준값 중에서 연체자와 정상 고객을 가장 잘 가르는 질문을 데이터에서 찾았다. 잡음 변수(나이·소비 점수·카드 수)는 고르지 않았다. (`class_weight="balanced"`로 연체자에게 더 큰 무게를 줬기 때문에 연체 판정이 넉넉한 편이다.)
+
+나무는 깊게 키울수록 Train을 더 잘게 나눠 외운다. 그래서 학습 데이터가 조금만 달라져도 모양이 크게 바뀐다(부록 D의 과대적합). 이 약점을 여러 모델을 합쳐 보완하는 방법이 앙상블이다.
+
+### A-2. 앙상블 — 여러 모델의 판단을 합치기
+
+**앙상블**(ensemble)은 여러 모델의 예측을 합쳐 하나의 예측을 만드는 방법이다. 결정 나무를 재료로 하는 대표적인 방식이 두 가지다.
+
+| | **배깅(Bagging)** — 예: Random Forest | **부스팅(Boosting)** — 예: Gradient Boosting, XGBoost |
+| --- | --- | --- |
+| 나무를 만드는 순서 | 서로 독립적으로, 동시에 | 하나씩 차례로 |
+| 나무끼리의 차이 | 나무마다 Train에서 무작위로 다시 뽑은 고객으로 학습하고, 질문마다 변수 일부만 후보로 써서 서로 다른 나무가 된다 | 다음 나무는 앞의 나무들이 **틀린 부분**을 고치도록 학습한다 |
+| 합치는 방법 | 나무들의 확률을 평균(다수결) | 나무들의 예측을 차례로 더함 |
+| 주로 줄이는 것 | 깊은 나무 한 그루의 흔들림(분산) | 얕은 나무 한 그루의 단순함(편향) |
+
+이 노트북에서는 **Random Forest(RF)**를 실습한다. 서로 조금씩 다른 나무 수백 그루가 각자 판단하고, 그 평균을 최종 확률로 쓴다. 한 그루가 우연히 틀려도 다른 나무들이 바로잡는다.
+
+먼저 기본 설정의 RF를 교차검증으로 평가한다.''')
     code('''from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import ParameterGrid
 
@@ -607,6 +837,22 @@ default_forest_cv = cross_val_score(default_forest, X_train, y_classification_tr
                                     scoring="f1", cv=classification_cv)
 default_forest.fit(X_train, y_classification_train)
 print("기본 RF 교차검증 F1:", default_forest_cv.mean())''')
+    md('''### A-3. GridSearchCV — 하이퍼파라미터 탐색
+
+**하이퍼파라미터**는 학습 전에 사람이 정하는 설정값이고, **파라미터**는 학습이 데이터에서 정하는 값이다.
+
+| 구분 | 누가 정하나 | 이 노트북의 예 |
+| --- | --- | --- |
+| 하이퍼파라미터 | 사람이 학습 **전에** | RF의 나무 수(`n_estimators`)·최대 깊이(`max_depth`)·마지막 칸의 최소 고객 수(`min_samples_leaf`), 10장의 α, `class_weight` |
+| 파라미터 | 학습(`fit`)이 데이터에서 | 10-2의 가중치와 절편, A-1의 질문과 기준값 |
+
+**GridSearchCV**는 하이퍼파라미터의 좋은 값을 찾아 주는 도구다. 이름 그대로 동작한다.
+
+1. **Grid(격자):** 하이퍼파라미터마다 후보값을 적으면, 모든 조합을 만든다. 아래는 2 × 2 × 2 = 8가지다.
+2. **CV(교차검증):** 조합마다 8장의 5-fold 교차검증을 한다. 8조합 × 5번 = 모델 40개를 학습한다.
+3. 평균 점수가 가장 좋은 조합을 고르고, 그 조합으로 Train 전체를 한 번 더 학습한다(`best_estimator_`).
+
+후보값은 사람이 정하므로, 격자 밖의 값은 찾지 못한다. 설명이 목적이라 여기서는 작은 격자를 쓴다.''')
     code('''forest_grid = {
     "model__n_estimators": [100, 200],     # 나무 수
     "model__max_depth": [8, 12],           # 나무 깊이 제한
@@ -618,7 +864,17 @@ forest_search = GridSearchCV(clone(default_forest), param_grid=forest_grid,
 forest_search.fit(X_train, y_classification_train)
 tuned_forest = forest_search.best_estimator_
 print("고른 설정:", forest_search.best_params_)
-print("고른 설정의 교차검증 F1:", forest_search.best_score_)''')
+print("고른 설정의 교차검증 F1:", forest_search.best_score_)
+
+# 8개 조합 각각의 5-fold 평균 점수
+search_results = pd.DataFrame(forest_search.cv_results_)[[
+    "param_model__n_estimators", "param_model__max_depth", "param_model__min_samples_leaf",
+    "mean_test_score", "std_test_score", "rank_test_score",
+]].sort_values("rank_test_score")
+display(search_results)''')
+    md('''**출력 읽기:** 한 행이 조합 하나이고, `mean_test_score`가 5개 검증 묶음의 평균 F1이다. 1등(`rank_test_score` = 1) 조합이 위의 "고른 설정"이다. 1등과 2등의 차이는 0.003 정도로, `std_test_score`(fold 사이의 흔들림, 약 0.02)보다 훨씬 작다. 그래서 정확한 순위보다 경향을 읽는 편이 낫다. 위쪽 네 줄은 모두 `max_depth` 12이고 아래쪽 네 줄은 모두 8이다. "나무를 더 깊게 허용하는 쪽이 이 데이터에서 일관되게 낫다"는 것이 이 탐색에서 믿을 만한 결론이다.
+
+이제 기본 RF와 튜닝한 RF를 Test로 채점해 앞의 모델들과 비교한다.''')
     code('''classification_rows.append(evaluate_classifier("RF default", default_forest, X_test, y_classification_test))
 classification_rows.append(evaluate_classifier("RF tuned", tuned_forest, X_test, y_classification_test))
 display(pd.DataFrame(classification_rows))''')
