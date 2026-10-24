@@ -1119,7 +1119,7 @@ display(pd.DataFrame(classification_rows))''')
 
     md('''## B. 승인·보류·거절 — 임계값 두 개 정하기
 
-6장에서는 임계값 하나로 0/1을 나눴다. 대출 심사라면 기준을 두 개 두고 세 구간으로 나눌 수 있다.
+6장에서는 임계값 하나로 0/1을 나눴다. 분류 모델의 출력은 0/1 판정이 아니라 연체 **확률**이고, 이 확률을 업무 규칙으로 바꾸는 단계가 실제 서비스에서는 따로 필요하다. 예를 들어 확률이 애매한 고객까지 기계가 판정하면 위험하므로, 대출 심사라면 기준을 두 개 두고 세 구간으로 나누어 애매한 고객은 사람에게 넘긴다. 본편의 모델 학습·평가를 이해하는 데 꼭 필요한 내용은 아니어서 부록에 둔다.
 
 - 연체 확률 < 보류 기준 → **승인**
 - 보류 기준 ≤ 확률 < 거절 기준 → **보류**(사람이 심사)
@@ -1181,14 +1181,21 @@ plt.show()''')
 
     md('''## D. Learning Curve — 데이터가 많아지면 나아질까
 
-Train의 20%, 50%, 100%만 써서 학습하고, 각 크기에서 학습한 데이터의 점수(Train)와 교차검증 점수(Validation)를 비교한다.
+학습에 쓰는 고객 수를 20%, 50%, 100%로 바꿔 가며 학습하고, 각 크기에서 **학습에 쓴 고객으로 채점한 점수(Train)**와 **학습에 쓰지 않은 고객으로 채점한 교차검증 점수(Validation)**를 비교한다. 가로축은 학습에 쓴 고객 수다(5-fold 교차검증이라 가장 큰 크기는 Train 8,000명의 80%인 6,400명이다). Test 고객 수가 아니다.
 
-- 두 선의 간격이 크면, 학습 데이터를 외워서 새 데이터에서는 덜 맞는다(**과대적합**).
-- 두 선이 붙어 있는데 점수가 낮으면, 모델이나 데이터 자체의 한계다.''')
+과대적합은 점수가 오르거나 내리는 방향이 아니라, **같은 모델의 Train 점수와 Validation 점수의 간격**으로 판단한다. 10-1에서 Train RMSE와 Test RMSE를 비교한 것과 같은 방법이다. 모델은 학습한 고객을 이미 봤으니 Train 점수가 높은 것은 당연하다. 그런데 처음 보는 고객(Validation)에서 점수가 크게 떨어진다면, 학습 데이터의 우연한 무늬(잡음)까지 외웠다는 증거다.
+
+이 곡선은 **편향**과 **분산**이라는 두 가지 오차를 구분해서 읽게 해 준다.
+
+- **편향**(bias): 모델이 너무 단순해서, 데이터를 아무리 많이 줘도 못 맞히는 체계적인 오차다. 두 선이 모두 낮고 붙어 있으면 편향이 큰 쪽이다.
+- **분산**(variance): 학습 데이터가 조금만 달라져도 학습 결과가 크게 달라지는 정도다. Train은 높은데 Validation이 낮아 간격이 크면 분산이 큰 쪽이다(과대적합).
+
+**편향-분산 트레이드오프**는 모델을 복잡하게 만들수록(깊은 나무) 편향은 줄지만 분산이 커지고, 단순하게 만들수록(직선 하나) 분산은 줄지만 편향이 커진다는 뜻이다. 둘 사이에서 새 데이터에 가장 잘 맞는 중간 지점을 찾는 것이 모델 선택이다. 여기에 어떤 모델로도 줄일 수 없는 오차(이 데이터의 신용 점수 잡음 30점, 연체 라벨의 무작위 20%)가 더해진다.''')
     code('''from sklearn.model_selection import learning_curve
 
 fig, axes = plt.subplots(1, 2, figsize=(11, 4))
 curve_models = [("Logistic + class_weight", balanced_logistic), ("Tuned RF", tuned_forest)]
+curve_rows = []
 for axis, (model_name, estimator) in zip(axes, curve_models):
     sizes, train_scores, validation_scores = learning_curve(
         clone(estimator), X_train, y_classification_train,
@@ -1200,9 +1207,18 @@ for axis, (model_name, estimator) in zip(axes, curve_models):
     axis.set_xlabel("Training rows")
     axis.set_ylabel("F1")
     axis.legend()
+    for size, train_score, validation_score in zip(sizes, train_scores.mean(axis=1), validation_scores.mean(axis=1)):
+        curve_rows.append({"model": model_name, "training_rows": size, "train_f1": train_score,
+                           "validation_f1": validation_score, "gap": train_score - validation_score})
 plt.tight_layout()
-plt.show()''')
-    md('''**출력 읽기:** 로지스틱 회귀는 두 선이 붙어 있다. 데이터를 더 모아도 크게 나아지지 않는다. RF는 Train 점수가 훨씬 높아 간격이 크다. 깊은 나무가 학습 데이터의 잡음까지 외운 것이다.''')
+plt.show()
+display(pd.DataFrame(curve_rows))''')
+    md('''**출력 읽기:** 표의 `gap`(Train − Validation)을 본다.
+
+- **로지스틱 회귀:** 간격이 거의 0(0.01 안팎)이고 Validation도 0.64 근처에서 거의 오르지 않는다. 분산이 작아서 학습 고객을 늘려도 점수가 오르지 않는다. 점수 자체가 낮은 것은 이 모델이 단순해서(편향)일 수도 있고 줄일 수 없는 잡음 탓일 수도 있다. 이 표만으로는 둘을 나눌 수 없다.
+- **Random Forest:** Train F1이 0.97 → 0.84로 매우 높고 Validation은 0.62 → 0.67이라 간격이 0.35 → 0.17이다. 깊은 나무가 학습 고객의 잡음까지 외워서(분산이 커서) Train에서만 잘 맞는다. 고객이 늘수록 간격이 줄고 Validation이 오르므로, 데이터를 더 모으면 더 좋아질 여지가 있다. 다만 6,400명에서도 Validation이 0.67에 머물러서 로지스틱 회귀(0.65)와 큰 차이는 없다.
+
+Train 점수는 RF에서 오히려 **내려간다**(0.97 → 0.84). 고객이 많아질수록 전부 외우기 어려워지기 때문이다. 그래서 점수가 내려가는 것 자체는 과대적합의 판단 근거가 아니다.''')
 
     md('''## E. 범주형 변수와 나만의 변환기(Custom Transformer)
 
@@ -1220,6 +1236,8 @@ plt.show()''')
 
 display(add_derived_features(X_train.head()))''')
     md('''이 함수를 Pipeline에 넣으려면 `fit`과 `transform`을 가진 클래스로 감싼다. 이것이 **Custom Transformer**다. 이 변환은 Train에서 배울 것이 없으므로 `fit`은 아무것도 하지 않고 자기 자신을 돌려준다.
+
+클래스 선언의 `TransformerMixin, BaseEstimator`는 scikit-learn이 제공하는 부모 클래스다. 상속하는 이유는 코드로 확인한다(아래 셀). 간단히 말하면 `TransformerMixin`은 `fit_transform`을 공짜로 만들어 주고, `BaseEstimator`는 교차검증·`GridSearchCV`가 모델을 복제할 때 필요한 `get_params`를 만들어 준다.
 
 범주형 열은 **원-핫 인코딩**으로 바꾼다. 연령대 하나를 "20-29인가? 30-39인가? …" 0/1 열 여러 개로 펼치는 방식이다. `ColumnTransformer`는 숫자 열과 범주 열에 서로 다른 전처리를 적용한다.''')
     code('''from sklearn.base import BaseEstimator, TransformerMixin
@@ -1254,7 +1272,56 @@ display(extended_logistic.named_steps["columns"].get_feature_names_out())
 display(pd.DataFrame([balanced_result,
                       evaluate_classifier("Logistic + class_weight + derived", extended_logistic,
                                           X_test, y_classification_test)]))''')
-    md('''**출력 읽기:** 연령대 한 열이 `age_group_20-29` 같은 0/1 열 다섯 개로 펼쳐졌다. 점수는 새 열이 없을 때와 거의 같다. 연령대와 부채액은 정답을 만들 때 쓰이지 않은 정보이기 때문이다. 실제 대출 심사에서는 나이 같은 정보를 쓰는 것 자체가 공정성 검토 대상이 된다.''')
+    md('''**출력 읽기:** 연령대 한 열이 `age_group_20-29` 같은 0/1 열 다섯 개로 펼쳐졌다. 점수는 새 열이 없을 때와 거의 같다. 연령대와 부채액은 정답을 만들 때 쓰이지 않은 정보이기 때문이다. 실제 대출 심사에서는 나이 같은 정보를 쓰는 것 자체가 공정성 검토 대상이 된다.
+
+**왜 두 부모 클래스를 상속하나.** 상속 없이 `fit`과 `transform`만 만든 클래스와 비교한다.''')
+    code('''class PlainDerivedFeatures:                  # 상속 없이 fit·transform만 정의
+    def fit(self, X, y=None):
+        return self
+
+    def transform(self, X):
+        return add_derived_features(X)
+
+print("fit_transform이 있나 — 상속함:", hasattr(LearningDerivedFeatures(), "fit_transform"),
+      " 상속 안 함:", hasattr(PlainDerivedFeatures(), "fit_transform"))
+print("상속한 변환기의 설정값(get_params):", LearningDerivedFeatures().get_params())
+print("clone 결과:", clone(LearningDerivedFeatures()))
+try:
+    clone(PlainDerivedFeatures())
+except TypeError:
+    print("상속 안 한 클래스는 clone이 TypeError를 낸다")''')
+    md('''**출력 읽기:**
+
+- `TransformerMixin`: 우리가 쓰지 않은 `fit_transform`이 자동으로 생겼다(`fit` 후 `transform`).
+- `BaseEstimator`: `get_params`로 자기 설정값을 알려 준다. 이 변환기는 설정값이 없어 빈 딕셔너리지만, `clone`이 "같은 설정으로 새 객체를 만든다"를 하려면 이 메서드가 있어야 한다.
+- 교차검증(8장)과 `GridSearchCV`는 fold마다 Pipeline 전체를 `clone`해서 처음부터 다시 학습한다. 그래서 Pipeline에 넣는 모든 단계가 `clone`을 통과해야 한다. 상속 없이 직접 만든 클래스는 여기서 막힌다.
+
+참고로 `best_estimator_`(A-3)는 `GridSearchCV`가 가장 좋은 설정으로 다시 학습해 보관한 모델을 가리키는 이름이고, 상속하는 클래스와는 관계없다.''')
+
+    md('''## F. 노트북과 프로젝트 소스(`src`) 대응표
+
+이 노트북의 코드는 모두 노트북 안에 있고 `src`를 불러 쓰지 않는다. `src`는 같은 로직을 함수와 모듈로 나눠 정리한 최종 구현이다. 노트북에서 이해한 내용을 소스에서 찾을 때 아래 표를 쓴다. 소스는 이 노트북이 있는 폴더의 한 단계 위에 있다.
+
+| 주제 | 노트북 | 소스 | 차이점 |
+| --- | --- | --- | --- |
+| 데이터 읽기·분할 | 1장, 2장 | [`data.py`](../src/data.py)의 `load_data`, `split_data` | 소스는 필수 컬럼과 0/1 검증을 추가하고, 회귀·분류 두 정답을 `Split`에 함께 담는다 |
+| 상수 | 0장(`RANDOM_STATE` 등) | [`config.py`](../src/config.py) | 소스는 seed, 입력 변수, Alpha 목록, CPU 코어 수를 한 파일에 모은다 |
+| 규칙 베이스라인 | 3장 | [`baseline.py`](../src/baseline.py)의 `RULES`, `rule_based_predict`, `RuleBasedClassifier` | 규칙 내용은 같다. 소스는 규칙을 표(데이터)로 정의하고 scikit-learn 모델처럼 쓰는 래퍼를 제공한다 |
+| 평가 지표 | 4장 | [`classification.py`](../src/classification.py)의 `classification_metrics` | 같은 지표이고 소스는 PR-AUC도 계산한다 |
+| 전처리 | 5장(단계별) | [`features.py`](../src/features.py)의 `build_preprocessor` | 노트북 본편은 입력 6개만 쓴다. 소스는 파생 변수와 범주형 전처리까지 포함한다 |
+| Pipeline | 7장 | `classification.make_pipeline`, [`regression.py`](../src/regression.py)의 `make_pipeline` | 회귀와 분류가 같은 `build_preprocessor`를 불러 쓴다 |
+| 교차검증 | 8장 | `classification.cv_splitter`, `fit_models` | 소스는 모든 후보 모델을 같은 교차검증으로 비교한다 |
+| 임계값·ROC | 6장 | [`report.py`](../src/report.py)의 `roc_pr_curves` | 노트북이 계산 과정을 더 자세히 푼다 |
+| 불균형 처리 | 9장 | `make_pipeline(imbalance=...)`, `candidate_models` | SMOTE를 imblearn Pipeline 안에 두는 것은 같다 |
+| 회귀·Ridge·Lasso | 10장 | `regression.py`의 `coefficient_paths`, `extended_ridge_path`, `tune_and_compare` | 노트북은 계수 변화를 숫자로 풀어 설명한다 |
+| 앙상블·GridSearchCV | 부록 A | `classification.py`의 `RF_GRID`, `XGB_GRID`, `fit_models` | 노트북은 RF 8조합, 소스는 RF 30조합과 XGBoost까지 다룬다 |
+| 승인·보류·거절 | 부록 B | `classification.decision_policy` | 같은 방식(OOF 예측으로 임계값 결정)이다 |
+| 특징 중요도 | 부록 C | [`diagnostics.py`](../src/diagnostics.py)의 `tree_importance`, `permutation_on_test` | 소스는 permutation 중요도까지 계산한다 |
+| 학습곡선 | 부록 D | `diagnostics.py`의 학습곡선 함수 | 노트북은 3단계, 소스는 8단계다 |
+| 커스텀 변환기 | 부록 E | `features.DerivedFeatures` | 소스는 입력 검증과 `get_feature_names_out`을 추가한다 |
+| 최종 모델 선택 | (없음) | `classification.select_final` | 1-표준오차 규칙. 소스에만 있다 |
+| 그래프·보고서 | (노트북 안에서 직접) | `report.py` | 그래프 10종과 `report.md`를 만든다 |
+| 전체 실행 | (셀 순서대로) | [`run_all.py`](../src/run_all.py) | 위 단계를 같은 순서로 호출하는 진입점이다 |''')
 
     notebook = nbformat.v4.new_notebook(cells=cells)
     notebook.metadata.kernelspec = {"display_name": "Python 3", "language": "python", "name": "python3"}
