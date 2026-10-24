@@ -135,12 +135,19 @@ print("실제 연체 고객:", y_classification_test.sum())''')
 
 rule_matrix = confusion_matrix(y_classification_test, rule_predictions)
 display(pd.DataFrame(rule_matrix,
-                     index=["actual normal", "actual overdue"],
-                     columns=["predicted normal", "predicted overdue"]))
+                     index=["실제: 정상", "실제: 연체"],
+                     columns=["예측: 정상", "예측: 연체"]))
 
 tn, fp, fn, tp = rule_matrix.ravel()   # 네 칸을 순서대로 꺼낸다
 print("TN:", tn, " FP:", fp, " FN:", fn, " TP:", tp)''')
-    md('''네 칸으로 주요 지표를 직접 계산한다.
+    md('''**출력 읽기:** 행(가로줄)은 실제, 열(세로줄)은 예측이다.
+
+- 가로줄을 더하면 실제 인원이다. "실제: 정상" 줄의 합은 Test의 정상 고객 수, "실제: 연체" 줄의 합은 연체자 수(240명)다.
+- 세로줄을 더하면 예측 인원이다. "예측: 연체" 열의 합은 3장에서 규칙이 연체로 판정한 고객 수와 같다.
+
+TN·FP·FN·TP는 두 글자로 읽는다. 뒤 글자 **P/N**은 무엇으로 예측했나(Positive = 연체, Negative = 정상), 앞 글자 **T/F**는 그 예측이 맞았나(True = 맞음, False = 틀림)다. 예를 들어 FP는 "연체라고 예측했는데 틀렸다", 즉 정상 고객을 잘못 찍은 경우다.
+
+이제 네 칸으로 주요 지표를 직접 계산한다.
 
 - **Accuracy(정확도)** = 맞힌 수 / 전체 = (TN + TP) / 전체
 - **Precision(정밀도)** = 연체로 찍은 사람 중 진짜 연체자 비율 = TP / (TP + FP)
@@ -216,8 +223,8 @@ display(pd.DataFrame({
 print("predict와 '확률 >= 0.5' 판정이 모두 같은가:", np.array_equal(predicted_labels, labels_at_half))''')
     code('''logistic_matrix = confusion_matrix(y_classification_test, predicted_labels)
 display(pd.DataFrame(logistic_matrix,
-                     index=["actual normal", "actual overdue"],
-                     columns=["predicted normal", "predicted overdue"]))
+                     index=["실제: 정상", "실제: 연체"],
+                     columns=["예측: 정상", "예측: 연체"]))
 
 display(pd.DataFrame({
     "rules": [accuracy_score(y_classification_test, rule_predictions),
@@ -373,7 +380,7 @@ X_resampled, y_resampled = SMOTE(random_state=RANDOM_STATE).fit_resample(
 display(pd.DataFrame({
     "before": y_classification_train.value_counts(),
     "after SMOTE": pd.Series(y_resampled).value_counts(),
-}).rename(index={0: "normal", 1: "overdue"}))''')
+}).rename(index={0: "정상", 1: "연체"}))''')
     md('''**출력 읽기:** 연체자가 정상 고객 수만큼 늘었다. 늘어난 것은 실제 고객이 아니라 합성된 표본이다.
 
 SMOTE도 Pipeline에 넣는다. 일반 Pipeline 대신 imbalanced-learn의 Pipeline을 쓰면 SMOTE는 `fit`(학습) 때만 실행되고 `predict`(예측) 때는 건너뛴다. Test는 실제 비율 그대로 채점해야 하기 때문이다.''')
