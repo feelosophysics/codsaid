@@ -84,7 +84,9 @@ display(column_guide)''')
 
 예를 들어 소득 5,000만 원, 연체 0회, 부채 비율 0.5인 고객은 300 + 150 − 0 − 50 = 400점 근처다. 그다음 신용 점수 하위 15%인 고객 중 무작위로 약 80%를 연체(1)로 표시했다. 그래서 전체의 약 12%가 연체다.
 
-나이·소비 점수·카드 수는 공식에 없다. 즉 정답과 상관없는 **잡음 변수**다. 실제 데이터에서는 이런 공식을 모르지만, 여기서는 정답 공식을 알고 있으니 모델이 이것을 얼마나 알아내는지 확인할 수 있다(10장).''')
+나이·소비 점수·카드 수는 공식에 없다. 생성 코드가 이 세 열을 다른 열과 무관하게 무작위 숫자로 뽑았기 때문에, 정답과 상관없는 **잡음 변수**다. 실제 고객 데이터라면 소비 패턴이 신용 상태와 관련 있을 수 있지만, 이 합성 데이터에는 그런 관계를 넣지 않았다. 실제 데이터에서는 이런 공식을 모르지만, 여기서는 정답 공식을 알고 있으니 모델이 이것을 얼마나 알아내는지 확인할 수 있다(10장).
+
+**`is_overdue`가 뜻하는 것:** 이 열은 연체 위험을 따로 판단한 값이 아니라, 위 규칙으로 기계적으로 붙인 정답 표시다. 이 데이터에는 시점 정보(언제 대출했고 언제 연체했나)가 없다. 실제 서비스에서는 "과거에 대출한 고객이 일정 기간 안에 실제로 연체했는가"의 기록이 이 자리에 들어가고, 모델은 새 신청 고객의 입력으로 그 위험을 예측한다. 이 노트북의 분류 모델도 같은 역할을 흉내 낸다. 입력 6개를 보고 이 고객이 연체(1)로 표시될 확률을 낸다. `overdue_count_6m`은 별개의 열이다. 최근 6개월의 연체 횟수라는 **입력**이고, `is_overdue`는 맞혀야 할 **정답**이다.''')
     md('''머신러닝에서는 예측할 때 받는 정보를 **X(입력)**, 맞혀야 할 답을 **y(정답)**라고 부른다. 정답 열 두 개는 입력에서 뺀다. 특히 연체 라벨은 신용 점수로 만들었으므로, 신용 점수를 입력에 넣으면 답을 보고 문제를 푸는 셈이다. 이것을 **정답 누수**라고 한다.''')
     code('''feature_columns = [
     "age", "annual_income", "spending_score", "debt_ratio",
@@ -623,13 +625,42 @@ error_summary = pd.DataFrame({
 display(error_summary)''')
     md('''**출력 읽기:** MAE는 둘 다 10점이다. 하지만 제곱을 쓰는 MSE·RMSE는 크게 한 번 틀린 B를 더 나쁘게 본다. 40점 오차가 제곱되어 1,600이 되기 때문이다. 큰 실수 한 번이 치명적인 문제라면 RMSE를, 평균적인 오차 크기가 궁금하면 MAE를 본다.
 
-**R²(결정계수)**는 단위가 없는 점수다. "모두에게 평균 점수를 예측하는 가장 단순한 방법"과 비교해 오차를 얼마나 줄였는지를 잰다.
+**R²(결정계수)**는 "아무 정보 없이 찍는 방법보다 오차를 몇 %나 줄였나"를 나타내는, 단위 없는 점수다. 아무 정보가 없을 때 가장 무난하게 찍는 값은 평균이다. 세 단계로 읽는다.
 
-> R² = 1 − (모델의 오차 제곱 합) ÷ (평균만 예측했을 때의 오차 제곱 합)
+1. **기준선 오차 A:** 모두에게 평균을 예측하면 고객마다 (실제 − 평균)만큼 틀린다. 이것을 제곱해서 모두 더한 값이 A다. 점수들이 평균 주변에 흩어져 있는 정도가 클수록 A가 크다.
+2. **모델 오차 B:** 모델이 남긴 오차, 즉 (실제 − 예측)을 제곱해서 모두 더한 값이다.
+3. **B ÷ A:** 기준선 오차 중 모델이 **못 없앤** 비율이다. 여기서 1을 빼면 **없앤 비율**, 곧 R²가 된다.
 
-1이면 오차가 0인 완벽한 예측, 0이면 평균만 예측하는 것과 같은 수준, 음수면 그보다도 나쁘다. 아래에서 실제 모델로 직접 계산해 본다.
+> R² = 1 − B ÷ A = 1 − (모델의 오차 제곱 합) ÷ (평균만 예측했을 때의 오차 제곱 합)
 
-비교 기준으로 모든 고객에게 Train 평균 점수를 예측하는 모델을 함께 만든다.''')
+고객 4명의 작은 예로 계산한다. 실제 점수는 300, 400, 500, 600이고 평균은 450이다.''')
+    code('''toy_actual = np.array([300, 400, 500, 600])
+toy_mean = toy_actual.mean()
+
+toy_predictions = {
+    "평균만 예측": np.full(4, toy_mean),
+    "잘 맞히는 모델": np.array([320, 380, 520, 580]),
+    "거꾸로 예측": np.array([600, 500, 400, 300]),
+}
+
+baseline_sum = np.sum((toy_actual - toy_mean) ** 2)    # A: 평균만 예측했을 때의 오차 제곱 합
+print("A (평균만 예측했을 때 오차 제곱 합):", baseline_sum)
+
+toy_r2_rows = []
+for name, predictions in toy_predictions.items():
+    model_sum = np.sum((toy_actual - predictions) ** 2)   # B: 이 예측의 오차 제곱 합
+    toy_r2_rows.append({"예측": name, "B": model_sum, "B / A": model_sum / baseline_sum,
+                        "R2 = 1 - B/A": 1 - model_sum / baseline_sum})
+display(pd.DataFrame(toy_r2_rows))''')
+    md('''**출력 읽기:** A는 (−150)² + (−50)² + 50² + 150² = 50,000이다.
+
+- **평균만 예측:** B가 A와 같아서 B/A = 1, R² = 0이다. 기준선 자체이므로 하나도 못 줄였다.
+- **잘 맞히는 모델:** 오차가 ±20이라 B = 1,600이다. B/A = 0.032이므로 기준선 오차의 3.2%만 남았고, R² = 0.968(96.8%를 없앰)이다.
+- **거꾸로 예측:** B가 A의 4배라서 R²가 −3이다. 평균만 찍는 것보다 나쁜 모델은 R²가 음수가 된다.
+
+R²가 1이면 오차가 전혀 없는 완벽한 예측이다.
+
+이제 실제 데이터에서 계산한다. 비교 기준으로 모든 고객에게 Train 평균 점수를 예측하는 모델을 함께 만든다.''')
     code('''from sklearn.dummy import DummyRegressor
 from sklearn.linear_model import LinearRegression
 
@@ -649,7 +680,15 @@ display(pd.DataFrame({
     "mean_model": mean_predictions[:5],
     "linear_model": linear_predictions[:5],
 }))''')
-    md('''**출력 읽기:** 평균 모델은 모두에게 같은 점수를 주고, 선형 회귀는 고객마다 다른 점수를 준다. 이제 지표로 채점한다.''')
+    md('''**출력 읽기:** 한 행이 Test 고객 한 명이고, 세 열은 모두 그 고객의 신용 점수다. 누가 낸 값인지가 다르다.
+
+| 열 | 뜻 |
+| --- | --- |
+| `actual` | 정답. 데이터에 들어 있는 실제 신용 점수 |
+| `mean_model` | 비교 기준 모델의 예측. 고객 정보를 보지 않고 Train 평균 점수를 모두에게 똑같이 준다 |
+| `linear_model` | 선형 회귀의 예측. 6개 변수를 보고 고객마다 다른 점수를 준다 |
+
+평균 모델을 함께 두는 이유는, "오차가 몇 점"이라는 숫자만으로는 좋고 나쁨을 알 수 없기 때문이다. 아무것도 안 하고 평균만 찍는 방법보다 얼마나 나은지가 기준이 된다. 고객마다 각 예측이 정답에서 얼마나 떨어졌는지 비교해 보면 된다. 다섯 명만 보면 선형 회귀가 정답에서 더 먼 고객도 섞여 있는데, 전체 고객으로 채점한 결과는 아래 표에서 확인한다.''')
     code('''from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 
 def evaluate_regressor(model_name, actual_scores, predicted_scores):
@@ -714,6 +753,29 @@ print("절편(모든 변수가 평균인 고객의 예측 점수):", linear_pipe
 
 잡음 변수(나이·소비 점수·카드 수)의 가중치는 0에 가깝지만 **정확히 0은 아니다**. 8,000명이라는 한정된 표본에서는 우연히 신용 점수와 아주 약하게 같이 움직이는 부분이 생기고, 모델은 그것이 우연인지 알 수 없어서 조금씩 가중치를 준다. 이 작은 가중치를 0으로 눌러 주는 것이 다음 절의 규제다.
 
+**선형 회귀는 이 w와 절편을 어떻게 구했나.** 기준은 하나다. 고객마다 오차(실제 − 예측)를 제곱해 모두 더한 **오차 제곱의 합**이 가장 작아지는 w와 절편을 고른다. 변수가 하나라면, 점들 사이에 직선을 긋되 각 점에서 직선까지 세로 거리의 제곱 합이 최소인 직선을 찾는 일이다. 위에서 R²를 계산할 때 쓴 B가 바로 이 값이다.
+
+로지스틱 회귀(5-2)는 반복해서 조금씩 옮겨 갔지만, 선형 회귀는 반복이 필요 없다. 오차 제곱의 합은 w에 대한 이차식이라서 그릇 모양이고, 가장 낮은 지점이 하나뿐이어서 식을 풀어 한 번에 구할 수 있기 때문이다(**최소제곱법**). 같은 해를 직접 구해 본다. 절편도 함께 구하도록 값이 항상 1인 열을 하나 붙인다.''')
+    code('''prepared_train = linear_pipeline.named_steps["preprocessing"].transform(X_train)
+design_matrix = np.column_stack([np.ones(len(prepared_train)), prepared_train])   # 첫 열 1은 절편 몫
+y_train_scores = y_regression_train.to_numpy()
+
+by_hand_solution = np.linalg.lstsq(design_matrix, y_train_scores, rcond=None)[0]   # 최소제곱 해
+fitted_model = linear_pipeline.named_steps["model"]
+display(pd.DataFrame({
+    "least squares (by hand)": by_hand_solution,
+    "LinearRegression": np.append(fitted_model.intercept_, fitted_model.coef_),
+}, index=["intercept"] + feature_columns))
+
+def sum_squared_errors(intercept_and_weights):
+    return np.sum((y_train_scores - design_matrix @ intercept_and_weights) ** 2)
+
+moved_solution = by_hand_solution.copy()
+moved_solution[feature_columns.index("annual_income") + 1] += 5   # 소득의 w만 5점 올려 본다
+print("구한 w의 오차 제곱 합:", sum_squared_errors(by_hand_solution))
+print("소득 w를 5 올린 경우:   ", sum_squared_errors(moved_solution))''')
+    md('''**출력 읽기:** 직접 푼 값이 `LinearRegression`이 저장한 `coef_`·`intercept_`와 같다. 이 모델의 `fit`은 이 계산을 하는 것이다. 마지막 두 줄은 구한 값에서 w 하나만 바꿔도 오차 제곱의 합이 커진다는 것을 보여 준다. 구한 값이 최저점이라는 뜻이다.
+
 ### 10-3. 규제 — Ridge와 Lasso
 
 **Ridge와 Lasso는 새로운 종류의 모델이 아니라, 선형 회귀에 벌점을 더한 변형이다.** 예측하는 식은 위의 선형 회귀와 똑같다. 다른 것은 가중치를 고르는 기준(**손실 함수**)뿐이다.
@@ -730,6 +792,10 @@ print("절편(모든 변수가 평균인 고객의 예측 점수):", linear_pipe
 
 - **Lasso:** 가중치를 정확히 0으로 만들 수 있다. 그 변수를 아예 안 쓰게 된다.
 - **Ridge:** 가중치를 줄이기만 하고 0으로 만들지는 않는다.
+
+Lasso는 이 노트북만의 모델이 아니라 통계와 머신러닝에서 널리 쓰는 표준 기법(1996년 제안)이다. 다른 곳의 Lasso도 같은 모델이고, 결과가 다른 것은 데이터와 α, 전처리가 다르기 때문이다. 다만 α의 숫자는 라이브러리마다 오차를 합으로 쓸지 평균으로 쓸지가 달라서 그대로 옮겨 쓸 수 없다. 위 표에서도 scikit-learn의 Ridge는 오차 제곱의 **합**, Lasso는 **평균**의 절반을 쓴다.
+
+Lasso가 0을 만드는 이유는 벌점의 모양이다. `|w|` 벌점은 w가 아무리 작아도 줄일 때마다 같은 만큼(α) 이득이 생긴다. 그 변수가 오차를 줄여 주는 효과가 α보다 작으면, 가중치를 0까지 내리는 편이 이득이다. 반면 `w²` 벌점은 w가 0에 가까울수록 이득이 사라져서 0에 닿지 못한다. 이 계산은 10-4에서 숫자로 확인한다.
 
 α 다섯 개로 두 모델을 학습해 가중치가 어떻게 변하는지 본다.''')
     code('''from sklearn.linear_model import Ridge, Lasso
@@ -760,20 +826,48 @@ display(lasso_coefficient_table)''')
     md('''**출력 읽기 (Lasso 표):** 한 행이 α 하나다.
 
 - α = 0.01, 0.1에서는 잡음 변수의 가중치도 아직 0이 아니다(나이 −0.22, −0.13). α와 상관없이 0이 되는 것이 아니다.
-- α = 1에서 나이·소비 점수·카드 수의 가중치가 0이 된다(`-0.0000`은 아주 작은 음수 계산 오차를 표시한 것으로, 0과 같다). 1장의 잡음 변수 세 개를 모델이 스스로 골라낸 것이다.
+- α = 1에서 나이·소비 점수·카드 수의 가중치가 0이 된다(`-0.0000`은 아주 작은 음수 계산 오차를 표시한 것으로, 0과 같다). 1장의 잡음 변수 세 개다. 모델이 이 변수들이 잡음임을 이해한 것이 아니다. 선형 회귀에서 이 세 변수의 가중치가 0.17~0.23점(표준편차당)으로 α = 1보다 작았기 때문에 0까지 내려간 것이다. 같은 이유로 효과가 작은 진짜 변수가 있었다면 그것도 0이 된다.
 - α = 10에서는 신호 변수의 가중치까지 줄어들고, α = 100에서는 모두 0이 되어 평균 모델과 같아진다.
 
-아래 그래프로 두 방법을 비교한다.''')
-    code('''fig, axes = plt.subplots(1, 2, figsize=(13, 4))
-ridge_coefficient_table.plot(ax=axes[0], logx=True, title="Ridge coefficients")
-lasso_coefficient_table.plot(ax=axes[1], logx=True, title="Lasso coefficients")
-for axis in axes:
+아래 그래프로 두 방법을 비교한다. Ridge는 α가 100이어도 거의 변하지 않으므로(위 계산의 n ÷ (n + α)는 10-4에서 설명한다), 그래프에서는 두 모델의 α 범위를 다르게 잡는다. 윗줄은 6개 변수 전체이고, 아랫줄은 값이 작은 잡음 변수 세 개만 확대한 것이다.''')
+    code('''ridge_path_alphas = np.logspace(0, 5, 25)    # Ridge는 알파가 수천은 되어야 눈에 띄게 줄어든다
+lasso_path_alphas = np.logspace(-2, 2, 25)
+
+def coefficient_path(model_class, alphas):
+    path_rows = []
+    for alpha in alphas:
+        path_pipeline = Pipeline([
+            ("preprocessing", clone(numeric_preprocessor)),
+            ("model", model_class(alpha=alpha, max_iter=50_000)),
+        ])
+        path_pipeline.fit(X_train, y_regression_train)
+        path_rows.append(path_pipeline.named_steps["model"].coef_)
+    return pd.DataFrame(path_rows, index=alphas, columns=feature_columns)
+
+ridge_path = coefficient_path(Ridge, ridge_path_alphas)
+lasso_path = coefficient_path(Lasso, lasso_path_alphas)
+noise_columns = ["age", "spending_score", "credit_card_count"]
+
+fig, axes = plt.subplots(2, 2, figsize=(12, 8))
+ridge_path.plot(ax=axes[0, 0], logx=True, title="Ridge: all coefficients")
+lasso_path.plot(ax=axes[0, 1], logx=True, title="Lasso: all coefficients")
+ridge_path[noise_columns].plot(ax=axes[1, 0], logx=True, title="Ridge: noise variables (zoom)")
+lasso_path[noise_columns].plot(ax=axes[1, 1], logx=True, title="Lasso: noise variables (zoom)")
+for axis in axes.ravel():
     axis.set_xlabel("Alpha (log scale)")
     axis.set_ylabel("Coefficient")
     axis.axhline(0, color="gray", linewidth=0.7)
+for axis in axes[0]:
+    axis.legend(fontsize=8, ncol=2, loc="center left", bbox_to_anchor=(0.02, 0.62))
+for axis in axes[1]:
+    axis.legend(fontsize=8, loc="best")
 plt.tight_layout()
 plt.show()''')
-    md('''**출력 읽기:** Lasso는 α가 커지면 가중치가 하나씩 0으로 떨어진다. Ridge는 이 범위에서 거의 변하지 않는다. 잡음 변수의 선은 두 그래프 모두 0 위에 겹쳐 보인다. 하지만 세로축이 −36~58까지라 −0.2 같은 값은 0과 구별되지 않을 뿐, 위 표처럼 작은 α에서는 0이 아니다.
+    md('''**출력 읽기:**
+
+- **윗줄:** Lasso는 α가 커지면 가중치가 하나씩 0으로 떨어진다. Ridge는 α가 수천을 넘어야 눈에 띄게 줄어들고, 큰 신호 변수들이 비슷한 비율로 함께 줄어든다. Ridge는 α가 10만이어도 소득의 가중치가 약 4.3으로 0이 아니다.
+- **아랫줄(확대):** Lasso의 잡음 변수 세 개는 α가 0.3 안팎을 넘는 곳에서 0에 닿은 뒤 그대로 붙어 있다. Ridge의 잡음 변수는 0에 닿지 않고, 오히려 α가 수천일 때까지는 조금 커졌다가(나이 −0.23에서 −0.40까지) 줄어든다. 큰 신호 변수의 가중치가 눌리는 동안 잡음 변수가 남은 오차의 우연한 흐름을 더 따라가기 때문으로 보인다.
+- 두 모델의 α는 범위가 다르다. 같은 α에서의 세기를 비교하는 그래프가 아니다.
 
 ### 10-4. 작동 방식을 숫자로 확인하기
 
@@ -908,7 +1002,43 @@ print("나머지 고객의 분류 오류율:", logistic_wrong[~is_near].mean())'
 
 ### A-1. 재료: 결정 나무
 
-**결정 나무**(decision tree)는 "소득이 ○○ 이하인가?" 같은 예/아니오 질문을 차례로 던져 고객을 나누는 모델이다. 3장의 if문 규칙과 모양이 같지만, **어떤 변수로 어떤 기준값에서 나눌지를 사람이 아니라 데이터에서 배운다.** 질문 두 번(깊이 2)까지만 하는 작은 나무를 학습해 본다. 나무는 크기 비교만 하므로 표준화가 필요 없어 원본 값으로 학습한다.''')
+**결정 나무**(decision tree)는 "소득이 ○○ 이하인가?" 같은 예/아니오 질문을 차례로 던져 고객을 나누는 모델이다. 3장의 if문 규칙과 모양이 같지만, **어떤 변수로 어떤 기준값에서 나눌지를 사람이 아니라 데이터에서 배운다.**
+
+**질문을 고르는 방법:** 질문은 고객을 두 묶음으로 나눈다. 좋은 질문은 각 묶음이 연체 또는 정상 한쪽으로 쏠리게(**순수하게**) 만드는 질문이다. 순수한 정도는 **지니 불순도**로 잰다.
+
+> 지니 불순도 = 1 − (연체 비율)² − (정상 비율)²
+
+한 묶음이 전부 정상이면 0, 반반이면 0.5로 가장 높다. 학습은 모든 변수와 가능한 모든 기준값을 하나씩 시험해서, 나눈 두 묶음의 불순도(고객 수로 가중 평균)가 가장 낮아지는 질문을 고른다. 그다음 나뉜 묶음마다 같은 일을 반복하고, 정해 둔 깊이(`max_depth`)에서 멈춘다. 예측은 고객이 도착한 마지막 칸에서 다수인 쪽이다. 아래에서 첫 질문을 직접 찾아본다.''')
+    code('''from sklearn.tree import DecisionTreeClassifier
+
+def gini(positive_count, total_count):
+    positive_rate = positive_count / total_count
+    return 1 - positive_rate ** 2 - (1 - positive_rate) ** 2
+
+train_labels = y_classification_train.to_numpy()
+print("나누기 전 불순도:", gini(train_labels.sum(), len(train_labels)))
+
+best_split_rows = []
+for feature in feature_columns:
+    values = X_train[feature].to_numpy()
+    order = np.argsort(values, kind="stable")                  # 값이 작은 고객부터 세운다
+    sorted_values, sorted_labels = values[order], train_labels[order]
+    left_total = np.arange(1, len(sorted_labels))              # i번째 앞에서 자르면 왼쪽 고객 수
+    left_positive = np.cumsum(sorted_labels)[:-1]              # 왼쪽의 연체자 수
+    right_total = len(sorted_labels) - left_total
+    right_positive = sorted_labels.sum() - left_positive
+    after_split = (left_total * gini(left_positive, left_total)
+                   + right_total * gini(right_positive, right_total)) / len(sorted_labels)
+    after_split = np.where(sorted_values[:-1] != sorted_values[1:], after_split, np.inf)  # 같은 값 사이는 못 자른다
+    best = after_split.argmin()
+    best_split_rows.append({"feature": feature,
+                            "best_threshold": (sorted_values[best] + sorted_values[best + 1]) / 2,
+                            "impurity_after_split": after_split[best]})
+display(pd.DataFrame(best_split_rows).set_index("feature"))
+
+stump = DecisionTreeClassifier(max_depth=1, random_state=RANDOM_STATE).fit(X_train, y_classification_train)
+print("scikit-learn이 고른 첫 질문:", feature_columns[stump.tree_.feature[0]], "<=", stump.tree_.threshold[0])''')
+    md('''**출력 읽기:** 변수마다 가장 좋은 기준값과 그때의 불순도가 나온다. 소득이 불순도를 가장 많이 낮추고(나누기 전 약 0.211에서 약 0.179), 연체 횟수와 부채 비율이 뒤를 잇는다. 잡음 변수는 거의 줄이지 못한다(0.211 근처). scikit-learn이 고른 첫 질문도 소득 3316.5 이하인가로, 직접 찾은 결과와 같다. 이제 질문 두 번(깊이 2)까지만 하는 작은 나무를 학습해 본다. 나무는 크기 비교만 하므로 표준화가 필요 없어 원본 값으로 학습한다.''')
     code('''from sklearn.tree import DecisionTreeClassifier, export_text
 
 small_tree = DecisionTreeClassifier(max_depth=2, class_weight="balanced", random_state=RANDOM_STATE)
@@ -953,7 +1083,7 @@ print("기본 RF 교차검증 F1:", default_forest_cv.mean())''')
 | 하이퍼파라미터 | 사람이 학습 **전에** | RF의 나무 수(`n_estimators`)·최대 깊이(`max_depth`)·마지막 칸의 최소 고객 수(`min_samples_leaf`), 10장의 α, `class_weight` |
 | 파라미터 | 학습(`fit`)이 데이터에서 | 10-2의 가중치와 절편, A-1의 질문과 기준값 |
 
-**GridSearchCV**는 하이퍼파라미터의 좋은 값을 찾아 주는 도구다. 이름 그대로 동작한다.
+**GridSearchCV**는 하이퍼파라미터의 좋은 값을 찾아 주는 도구다. 다만 후보값과 채점 기준(F1 등)은 사람이 정하고, 도구는 그 후보들을 전부 시험해 점수가 가장 높은 것을 고를 뿐이다. 후보 밖의 값은 시험하지 않는다. 이름 그대로 동작한다.
 
 1. **Grid(격자):** 하이퍼파라미터마다 후보값을 적으면, 모든 조합을 만든다. 아래는 2 × 2 × 2 = 8가지다.
 2. **CV(교차검증):** 조합마다 8장의 5-fold 교차검증을 한다. 8조합 × 5번 = 모델 40개를 학습한다.
