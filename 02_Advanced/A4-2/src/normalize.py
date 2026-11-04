@@ -22,6 +22,7 @@ BIG_UNITS = {"만": 10**4, "억": 10**8, "조": 10**12}
 MONTHS = {m: i for i, m in enumerate(
     ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"], start=1)}
 
+# 금액 문자열을 숫자(쉼표·소수점 포함), 한글 숫자, 작은 단위, 큰 단위 토큰으로 자른다
 _AMOUNT_TOKEN = re.compile(r"[0-9][0-9,]*(?:\.[0-9]+)?|[일이삼사오육칠팔구]|[십백천]|[만억조]")
 
 
@@ -47,6 +48,8 @@ def parse_korean_amount(text: str) -> int | None:
     """
     s = text.replace(" ", "")
     if not re.search(r"[0-9십백천만억조]", s):
+        return None
+    if s in ("억", "조"):  # '조원'(팀원), '조원석'(이름)처럼 숫자 없는 억·조는 금액으로 보지 않는다
         return None
     tokens = _AMOUNT_TOKEN.findall(s)
     if "".join(tokens) != s:

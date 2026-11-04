@@ -60,13 +60,6 @@ def extract(text: str, types=CORE_TYPES) -> list[Entity]:
     return resolve_overlaps(candidates(text, types))
 
 
-def extract_grouped(text: str, types=CORE_TYPES) -> dict[str, list]:
-    out: dict[str, list] = {t: [] for t in types}
-    for e in extract(text, types):
-        out[e.type].append(e.value)
-    return out
-
-
 # ─────────────────────────────── 보너스 1: 마스킹 ───────────────────────────────
 
 def mask_value(e: Entity) -> str:

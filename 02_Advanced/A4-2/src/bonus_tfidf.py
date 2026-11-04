@@ -23,7 +23,6 @@ from .metrics import classification_report
 from .sentiment import FINAL_CONFIG, REQUIRED_CONFIG, SentimentAnalyzer
 
 SIZES = [10, 30, 100, 300, 1000, 3000, 10000]
-MISSION_SIZES = (10, 100, 1000)
 
 
 def seeds_for(n: int) -> int:

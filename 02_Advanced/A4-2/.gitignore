@@ -2,5 +2,3 @@
 data/downloads/
 .run_all.log
 .notebook-runtime/
-# Local conversation handoff; not part of the public mission deliverables.
-/HANDOFF.md

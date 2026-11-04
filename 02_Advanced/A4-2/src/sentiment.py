@@ -17,7 +17,7 @@ from __future__ import annotations
 
 import re
 import unicodedata
-from dataclasses import asdict, dataclass, field, replace
+from dataclasses import asdict, dataclass, field
 
 from .lexicon import Hit, Matcher, base, build_entries, is_syllable, split_syllable
 
@@ -59,6 +59,7 @@ JOSA = sorted(["은", "는", "이", "가", "을", "를", "에", "에서", "에�
                "하고", "이랑", "랑", "까지", "부터", "보다", "처럼", "같이", "이나", "나", "께서", "한테", "이다", "입니다", "이에요", "예요"],
               key=len, reverse=True)
 
+# 문장을 글자 종류별 토큰으로 나눈다: 한글 / 얼굴 이모티콘(^^, -_-, ;;, ♥) / 자모(ㅋㅋ, ㅠㅠ) / 영문 소문자 / 숫자(쉼표·소수점 포함) / 문장부호 / 그 밖의 한 글자
 TOKEN_RE = re.compile(
     r"(?P<hangul>[가-힣]+)"
     r"|(?P<emo>\^[_\-.ㅡ~o]?\^|[-ㅡ][_.][-ㅡ]|;{2,}|[♥♡❤]+)"
@@ -70,6 +71,7 @@ TOKEN_RE = re.compile(
 )
 CLAUSE_PUNCT = set(".!?…~,")
 STRONG_CONJ = {"하지만", "그러나", "그런데", "근데", "그래도", "반면", "반면에", "그치만", "그렇지만", "허나", "다만"}
+# 평점 언급: "1점", "9.5 점". 앞이 숫자면 더 긴 수의 일부로 보고, "10점 만점"과 "점수"는 뺀다
 RATING_RE = re.compile(r"(?<![0-9.])(-?[0-9]{1,2}(?:\.[0-9])?)[ ]?점(?![ ]?만점)(?!수)")
 STAR_RE = re.compile(r"별[ ]?(?:0|1|한|하나|반)[ ]?개")  # 별 한 개, 별반개, 별1개
 
@@ -196,12 +198,6 @@ class SentimentAnalyzer:
         self.matcher = Matcher(build_entries(source, knu))
         self.config = config
 
-    def with_config(self, **kw) -> "SentimentAnalyzer":
-        clone = object.__new__(SentimentAnalyzer)
-        clone.source, clone.matcher = self.source, self.matcher
-        clone.config = replace(self.config, **kw)
-        return clone
-
     # 문장 하나 분석
     def analyze(self, raw: str, config: Config | None = None) -> Result:
         cfg = config or self.config
@@ -302,8 +298,6 @@ class SentimentAnalyzer:
     def predict(self, texts, config: Config | None = None) -> list[int]:
         return [self.analyze(t, config).label for t in texts]
 
-    def scores(self, texts, config: Config | None = None) -> list[float]:
-        return [self.analyze(t, config).score for t in texts]
 
 
 def _contrast(cfg: Config, last_strong: int | None, pos: int) -> float:
@@ -312,7 +306,7 @@ def _contrast(cfg: Config, last_strong: int | None, pos: int) -> float:
     return 0.5 if pos < last_strong else 1.5
 
 
-# 연결 어미 '-지'. 조사 '까지'의 '지'는 제외한다("연기까지 못함"). 규칙 고정 뒤 단위 테스트에서 찾은 구현 버그다
+# 연결 어미 '-지'. 조사 '까지'의 '지'는 제외한다("연기까지 못함"). 규칙 고정 뒤 찾은 구현 버그이며, 고쳐도 test 정확도는 바뀌지 않았다
 AFTER_JI = re.compile(r"(?<!까)지(?:는|도|를|가|들)?[ ]?$")
 
 

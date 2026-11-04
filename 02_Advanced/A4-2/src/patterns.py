@@ -67,6 +67,7 @@ PHONE = r"""
 (?![0-9-])
 """
 
+# 영문 월 이름. 약어와 전체 이름을 모두 받는다 (Mar, March, Sept, September)
 _MONTHS = "Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|June?|July?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?"
 
 DATE = r"""
@@ -101,6 +102,7 @@ _SEG = r"(?:" + _NUM + r"?[일이삼사오육칠팔구십백천]*)"
 MONEY = r"""
 (?<![0-9.,])                          # 앞이 숫자·쉼표·점이면 다른 숫자의 일부다
 (?:
+  (?:(?<![가-힣])|(?![만억조]))        # 만·억·조로 시작하면 앞에 한글이 없어야 한다 ("불만 원인", "좋지만 원래" 제외)
   (?P<krw>                            # (1) 원화: 10,000원 / 50000원 / 5만 원 / 1억 2천만원 / 2.5억원 / 오천원
     (?:""" + _SEG + r"""[만억조][ ]?)*   #     큰 단위(만·억·조)로 끝나는 묶음 0개 이상, 묶음 사이 공백 허용 ("1억 2천만")
     """ + _SEG + r"""                 #     마지막 묶음 (없을 수도 있다: "5만원")
@@ -167,6 +169,7 @@ CARD = r"""
 (?![0-9-])                            # 뒤에 숫자가 이어지면 카드번호가 아니다
 """
 
+# 시·도 이름. 뒤의 행정 단위(특별시, 도 등)는 ADDRESS 패턴이 따로 받는다
 _SIDO = "서울|부산|대구|인천|광주|대전|울산|세종|경기|강원|충북|충남|전북|전남|경북|경남|제주|충청북|충청남|전라북|전라남|경상북|경상남"
 
 ADDRESS = r"""
@@ -207,42 +210,3 @@ LABELS = {
     "email": "이메일", "phone": "전화", "date": "날짜", "money": "금액", "url": "URL",
     "rrn": "주민등록번호", "card": "카드번호", "address": "주소",
 }
-
-
-def to_js_source(verbose_src: str) -> str:
-    """VERBOSE 패턴에서 공백과 주석을 지우고 JS 문법으로 바꾼다. 학습 자료 HTML이 쓴다.
-
-    - 문자 클래스 [...] 밖의 공백·주석을 지운다. 클래스 안은 그대로 둔다.
-    - (?P<name> → (?<name>,  (?P=name) → \\k<name>,  \\# → #
-    """
-    out = []
-    i, n = 0, len(verbose_src)
-    in_class = False
-    while i < n:
-        c = verbose_src[i]
-        if c == "\\":
-            pair = verbose_src[i:i + 2]
-            out.append("#" if pair == "\\#" else pair)
-            i += 2
-            continue
-        if in_class:
-            if c == "]":
-                in_class = False
-            out.append(c)
-        elif c == "[":
-            in_class = True
-            out.append(c)
-            # 클래스 첫 글자 ']'나 '^]'는 리터럴이지만 여기서는 쓰지 않는다
-        elif c == "#":
-            while i < n and verbose_src[i] != "\n":
-                i += 1
-            continue
-        elif c.isspace():
-            pass
-        else:
-            out.append(c)
-        i += 1
-    s = "".join(out)
-    s = re.sub(r"\(\?P<", "(?<", s)
-    s = re.sub(r"\(\?P=(\w+)\)", r"\\k<\1>", s)
-    return s
