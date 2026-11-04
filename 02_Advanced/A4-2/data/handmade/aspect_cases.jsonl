@@ -1,0 +1,48 @@
+{"id": "a01", "domain": "service", "text": "음식은 맛있는데 가격이 비싸요", "gold": [["맛", "pos"], ["가격", "neg"]], "note": "미션 예시"}
+{"id": "a02", "domain": "service", "text": "가격 대비 품질은 괜찮은데 배송이 너무 느려요", "gold": [["품질", "pos"], ["배송", "neg"]], "note": "미션 실패 사례 예시. '가격 대비'는 평가 대상이 아니다"}
+{"id": "a03", "domain": "service", "text": "배송이 빠르고 포장도 꼼꼼했어요", "gold": [["배송", "pos"]]}
+{"id": "a04", "domain": "service", "text": "직원분들이 정말 친절하고 분위기도 좋았어요", "gold": [["서비스", "pos"], ["분위기", "pos"]]}
+{"id": "a05", "domain": "service", "text": "맛은 평범했지만 양이 푸짐해서 좋았어요", "gold": [["맛", "neg"]], "note": "'양'은 속성 사전에 없다. 뒤 절은 전체 감성으로 간다"}
+{"id": "a06", "domain": "service", "text": "가격은 싸지만 품질이 별로예요", "gold": [["가격", "pos"], ["품질", "neg"]]}
+{"id": "a07", "domain": "service", "text": "사장님이 불친절해서 다시는 안 갈 거예요", "gold": [["서비스", "neg"]]}
+{"id": "a08", "domain": "service", "text": "국물이 너무 짜요", "gold": [["맛", "neg"]], "note": "'짜다'는 맛 속성에서만 부정"}
+{"id": "a09", "domain": "service", "text": "배송이 하루 늦었지만 제품은 만족합니다", "gold": [["배송", "neg"], ["품질", "pos"]]}
+{"id": "a10", "domain": "service", "text": "인테리어가 예쁘고 자리도 넓어요", "gold": [["분위기", "pos"]]}
+{"id": "a11", "domain": "service", "text": "가성비 최고!", "gold": [["가격", "pos"]]}
+{"id": "a12", "domain": "service", "text": "음식은 맛있었는데 직원이 불친절했어요", "gold": [["맛", "pos"], ["서비스", "neg"]]}
+{"id": "a13", "domain": "service", "text": "배송은 빨랐는데 상품에 하자가 있었어요", "gold": [["배송", "pos"], ["품질", "neg"]]}
+{"id": "a14", "domain": "service", "text": "디자인은 예쁜데 가격이 너무 비싸요", "gold": [["품질", "pos"], ["가격", "neg"]]}
+{"id": "a15", "domain": "service", "text": "요리가 다 식어서 나왔고 직원도 무심했어요", "gold": [["맛", "neg"], ["서비스", "neg"]], "fail": "사전 미등록", "note": "'식다', '무심하다'가 사전에 없다"}
+{"id": "a16", "domain": "service", "text": "메뉴가 다양하고 맛도 훌륭합니다", "gold": [["맛", "pos"]]}
+{"id": "a17", "domain": "service", "text": "가격이 착해요", "gold": [["가격", "pos"]]}
+{"id": "a18", "domain": "service", "text": "택배 상자가 찌그러져서 왔어요", "gold": [["배송", "neg"]], "fail": "사전 미등록", "note": "'찌그러지다'가 사전에 없다"}
+{"id": "a19", "domain": "service", "text": "응대가 빠르고 친절했습니다", "gold": [["서비스", "pos"]]}
+{"id": "a20", "domain": "service", "text": "맛있긴 한데 가격이 좀 아쉬워요", "gold": [["맛", "pos"], ["가격", "neg"]], "note": "'맛있다' 안의 '맛'이 암시적 속성"}
+{"id": "a21", "domain": "service", "text": "품질이 좋지 않아서 반품했어요", "gold": [["품질", "neg"]]}
+{"id": "a22", "domain": "service", "text": "배송이 빠르지 않았어요", "gold": [["배송", "neg"]], "note": "문맥 의존어에도 부정어 규칙이 적용되는지"}
+{"id": "a23", "domain": "service", "text": "음식이 짜지 않고 담백해서 좋았어요", "gold": [["맛", "pos"]]}
+{"id": "a24", "domain": "service", "text": "서비스는 최악이었지만 음식 맛은 최고였어요", "gold": [["서비스", "neg"], ["맛", "pos"]]}
+{"id": "a25", "domain": "service", "text": "분위기는 좋은데 가격이 부담스러워요", "gold": [["분위기", "pos"], ["가격", "neg"]], "fail": "사전 미등록", "note": "'부담스럽다'가 사전에 없다"}
+{"id": "a26", "domain": "service", "text": "매장이 깨끗하고 직원들도 친절해요", "gold": [["분위기", "pos"], ["서비스", "pos"]], "fail": "사전 미등록", "note": "'깨끗하다'가 사전에 없다"}
+{"id": "a27", "domain": "service", "text": "제품은 훌륭한데 배송이 너무 늦었어요", "gold": [["품질", "pos"], ["배송", "neg"]]}
+{"id": "a28", "domain": "service", "text": "가격도 저렴하고 맛도 좋아요", "gold": [["가격", "pos"], ["맛", "pos"]]}
+{"id": "a29", "domain": "service", "text": "직원이 친절하지 않았어요", "gold": [["서비스", "neg"]]}
+{"id": "a30", "domain": "service", "text": "음식은 별로였는데 분위기는 최고였어요", "gold": [["맛", "neg"], ["분위기", "pos"]]}
+{"id": "b01", "domain": "movie", "text": "연기는 좋았지만 스토리가 최악이다", "gold": [["연기", "pos"], ["스토리", "neg"]]}
+{"id": "b02", "domain": "movie", "text": "배우들 연기가 훌륭하고 음악도 아름다웠다", "gold": [["연기", "pos"], ["음악", "pos"]]}
+{"id": "b03", "domain": "movie", "text": "스토리는 뻔한데 영상미는 정말 좋았다", "gold": [["스토리", "neg"], ["연출", "pos"]]}
+{"id": "b04", "domain": "movie", "text": "감독의 연출이 엉성하고 결말도 허무하다", "gold": [["연출", "neg"], ["스토리", "neg"]]}
+{"id": "b05", "domain": "movie", "text": "OST가 너무 좋아서 계속 듣고 있어요", "gold": [["음악", "pos"]]}
+{"id": "b06", "domain": "movie", "text": "주연 배우의 발연기 때문에 몰입이 안 된다", "gold": [["연기", "neg"]]}
+{"id": "b07", "domain": "movie", "text": "반전이 대박이다", "gold": [["스토리", "pos"]]}
+{"id": "b08", "domain": "movie", "text": "액션은 화려한데 내용이 없다", "gold": [["연출", "pos"], ["스토리", "neg"]], "fail": "사전 미등록", "note": "'화려하다'가 사전에 없다. '내용이 없다'는 고립 부정어로 잡힌다"}
+{"id": "b09", "domain": "movie", "text": "CG는 어색했지만 배우들 연기는 볼만했다", "gold": [["연출", "neg"], ["연기", "pos"]], "fail": "사전 미등록", "note": "'어색하다'가 사전에 없다"}
+{"id": "b10", "domain": "movie", "text": "개연성이 부족하고 전개가 지루하다", "gold": [["스토리", "neg"]]}
+{"id": "b11", "domain": "movie", "text": "음악은 좋은데 캐스팅이 아쉽다", "gold": [["음악", "pos"], ["연기", "neg"]]}
+{"id": "b12", "domain": "movie", "text": "결말이 너무 뜬금없다", "gold": [["스토리", "neg"]]}
+{"id": "b13", "domain": "movie", "text": "촬영과 편집이 훌륭하다", "gold": [["연출", "pos"]]}
+{"id": "b14", "domain": "movie", "text": "아역 배우가 정말 귀엽고 연기도 잘한다", "gold": [["연기", "pos"]]}
+{"id": "b15", "domain": "movie", "text": "소재는 신선했지만 감독의 연출이 산만했다", "gold": [["스토리", "pos"], ["연출", "neg"]]}
+{"id": "b16", "domain": "movie", "text": "화면은 예쁜데 줄거리가 이해가 안 된다", "gold": [["연출", "pos"], ["스토리", "neg"]]}
+{"id": "b17", "domain": "movie", "text": "주인공 연기 빼고는 다 별로", "gold": [["연기", "pos"]], "fail": "한정·제외 표현", "note": "'~빼고는'이 평가 대상을 뒤집는다"}
+{"id": "b18", "domain": "movie", "text": "음악 감독이 누군지 몰라도 OST는 최고", "gold": [["음악", "pos"]], "note": "'감독'은 연출 속성어지만 여기서는 평가 대상이 아니다"}

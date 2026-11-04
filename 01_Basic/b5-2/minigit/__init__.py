@@ -1,0 +1,3 @@
+"""
+Mini Git Package
+"""

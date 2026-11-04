@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<!-- HTML은 화면의 구조를 정합니다. 태그는 구역/버튼/입력칸을 뜻하고 class는 CSS 모양, id는 JS가 찾는 -->
+<!-- 이름입니다. -->
+<!-- 주석은 브라우저 화면에는 표시되지 않지만 페이지 소스에는 보이므로 비밀을 적지 않습니다. CSS는 모양, -->
+<!-- JavaScript는 클릭/요청 동작을 맡습니다. -->
+<html lang="ko">
+  <!-- 화면에 직접 보이지 않는 문서 정보와 스타일/라이브러리를 연결합니다. viewport는 모바일 화면 폭에 맞추는 -->
+  <!-- 설정입니다. -->
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#142e25">
+    <meta name="description" content="건설의 질문을 이해하기 쉬운 지식으로. 현장노트 건설 지식 AI 어시스턴트.">
+    <title>
+      지식 채팅 · 현장노트
+    </title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <!-- 스크립트는 적힌 순서대로 연결됩니다. 공통 설정/도구를 먼저 읽고 페이지 전용 코드가 이를 사용합니다. -->
+    <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js">
+    </script>
+    <!-- 스크립트는 적힌 순서대로 연결됩니다. 공통 설정/도구를 먼저 읽고 페이지 전용 코드가 이를 사용합니다. -->
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.4.16/dist/purify.min.js">
+    </script>
+  </head>
+  <!-- 브라우저에 실제로 표시되는 영역입니다. 아래 id를 바꾸면 해당 요소를 찾는 JavaScript도 함께 확인해야 -->
+  <!-- 합니다. -->
+  <body data-page="chat">
+    <a class="skip-link" href="#mainContent">
+      본문으로 바로가기
+    </a>
+    <div class="app-shell">
+      <button class="sidebar-backdrop" onclick="toggleSidebar(false)" aria-label="작업 공간 메뉴 닫기">
+      </button>
+      <!-- 옆 메뉴입니다. 작은 화면에서는 접어서 메뉴 버튼으로 열고 닫습니다. -->
+      <aside class="sidebar" id="sidebar" aria-label="작업 공간 메뉴">
+        <a class="brand" href="index.html" aria-label="현장노트 홈">
+          <span class="brand-mark" aria-hidden="true">
+            N
+          </span>
+          <span>
+            <span class="brand-title">
+              현장노트
+            </span>
+            <span class="brand-sub" style="display:block">
+              FIELDNOTE · CONSTRUCTION
+            </span>
+          </span>
+        </a>
+        <div class="workspace-label">
+          나의 작업 공간
+        </div>
+        <!-- 관련 화면/계정으로 이동하는 메뉴입니다. aria-label은 보조기기에 메뉴의 의미를 알려 줍니다. -->
+        <nav class="rail-nav" aria-label="주 메뉴">
+          <a class="rail-link active" href="index.html" aria-current="page">
+            <i class="fa-regular fa-comment" aria-hidden="true">
+            </i>
+            지식 채팅
+          </a>
+          <a class="rail-link " href="logs.html" >
+            <i class="fa-solid fa-layer-group" aria-hidden="true">
+            </i>
+            대화 기록
+          </a>
+        </nav>
+        <button class="new-chat" onclick="createNewSession()">
+          <i class="fa-solid fa-plus" aria-hidden="true">
+          </i>
+          새 대화 시작
+        </button>
+        <div class="rail-section-title">
+          <span>
+            최근 대화
+          </span>
+          <i class="fa-regular fa-clock" aria-hidden="true">
+          </i>
+        </div>
+        <div id="sessionsList" class="session-list">
+          <div class="rail-empty">
+            대화를 불러오는 중…
+          </div>
+        </div>
+        <div class="rail-footer">
+          <span class="dot" aria-hidden="true">
+          </span>
+          BUILD YOUR UNDERSTANDING
+        </div>
+      </aside>
+      <div class="main-column">
+        <!-- 상단 안내와 계정 메뉴입니다. 로그인 정보에 맞춰 JavaScript가 authNav 내용을 채웁니다. -->
+        <header class="topbar">
+          <button class="icon-button mobile-menu" onclick="toggleSidebar()" aria-label="작업 공간 메뉴 열기" aria-expanded="false" aria-controls="sidebar">
+            <i class="fa-solid fa-bars" aria-hidden="true">
+            </i>
+          </button>
+          <div class="breadcrumb">
+            <span class="breadcrumb-root">
+              나의 작업 공간
+            </span>
+            <span class="slash">
+              /
+            </span>
+            <strong>
+              지식 채팅
+            </strong>
+          </div>
+          <!-- 관련 화면/계정으로 이동하는 메뉴입니다. aria-label은 보조기기에 메뉴의 의미를 알려 줍니다. -->
+          <nav id="authNav" class="auth-nav" aria-label="계정 메뉴">
+          </nav>
+        </header>
+        <!-- 이 화면의 핵심 작업 영역입니다. 로그인/채팅/기록 중 해당 페이지의 기능을 담습니다. -->
+        <main class="chat-workspace" id="mainContent">
+          <div class="workspace-top">
+            <div class="session-heading">
+              <h1 id="currentSessionTitle">
+                새로운 질문을 시작하세요
+              </h1>
+            </div>
+            <span class="quiet-label">
+              CONSTRUCTION KNOWLEDGE
+            </span>
+          </div>
+          <div id="messagesContainer" class="messages" aria-label="대화 내용">
+            <div id="welcomeHero" class="welcome">
+              <div class="welcome-intro">
+                <div>
+                  <div class="eyebrow">
+                    A NOTE FOR YOUR NEXT QUESTION
+                  </div>
+                  <h2>
+                    건설의 궁금함을,
+                    <br>
+                    <span>
+                      이해가 되는 지식으로.
+                    </span>
+                  </h2>
+                  <p class="welcome-description">
+                    낯선 현장 용어부터 시공의 원리까지.
+                    <br>
+                    질문을 남기면, 함께 차근차근 풀어갑니다.
+                  </p>
+                </div>
+                <svg class="plan-art" viewBox="0 0 220 190" fill="none" aria-hidden="true">
+                  <g stroke="#819873" stroke-width="1">
+                    <path d="M23 30h174v125H23zM27 34h166v117H27z"/>
+                    <path d="M95 34v67H27m68 0h44v50m0-57h54M95 67h98M57 101v50"/>
+                    <path d="M95 84a17 17 0 0 0 17 17m-17-17h17v17M139 114a20 20 0 0 0 20-20m-20 20V94h20"/>
+                    <path d="M36 41h43v16H36zM36 60h43v16H36zM155 106h29v36h-29zM104 112h25v30h-25z"/>
+                    <path d="M13 30v125m-4-125h8m-8 125h8M23 171h174m-174-4v8m174-8v8" stroke-dasharray="2 3"/>
+                    <path d="M15 13h17m-8-8v16M187 169h23m-11-11v23"/>
+                  </g>
+                  <g fill="#819873" font-family="monospace" font-size="6">
+                    <text x="104" y="48">
+                      FIELD NOTE / 01
+                    </text>
+                    <text x="53" y="90">
+                      KNOWLEDGE
+                    </text>
+                    <text x="102" y="180">
+                      1 : 100
+                    </text>
+                  </g>
+                  <rect x="164" y="44" width="21" height="14" fill="#ccd6b5" opacity=".4"/>
+                  <circle cx="44" cy="128" r="6" stroke="#a8b880"/>
+                  <path d="m203 12 2 7h-4l2-7z" fill="#8ca477"/>
+                  <path d="M203 19v10" stroke="#8ca477"/>
+                </svg>
+              </div>
+              <div class="topics-heading">
+                <h3>
+                  어디서부터 시작할까요?
+                </h3>
+                <span>
+                  주제를 선택해 질문해 보세요
+                </span>
+              </div>
+              <div class="topic-grid">
+                <button class="topic-card" onclick="sendQuickPrompt('철근콘크리트에서 철근과 콘크리트의 역할을 쉽게 설명해 줘.')">
+                  <span class="topic-top">
+                    <span class="topic-icon">
+                      <i class="fa-solid fa-cubes-stacked" aria-hidden="true">
+                      </i>
+                    </span>
+                    <span class="topic-number">
+                      01 / STRUCTURE
+                    </span>
+                  </span>
+                  <h4>
+                    자재와 구조
+                  </h4>
+                  <p>
+                    철근과 콘크리트는 어떤 역할을 할까요?
+                  </p>
+                  <i class="fa-solid fa-arrow-up-right-from-square topic-arrow" aria-hidden="true">
+                  </i>
+                </button>
+                <button class="topic-card" onclick="sendQuickPrompt('골조 공사부터 마감까지, 건물 시공 순서를 큰 단계로 설명해 줘.')">
+                  <span class="topic-top">
+                    <span class="topic-icon">
+                      <i class="fa-solid fa-ruler-combined" aria-hidden="true">
+                      </i>
+                    </span>
+                    <span class="topic-number">
+                      02 / PROCESS
+                    </span>
+                  </span>
+                  <h4>
+                    시공과 공정
+                  </h4>
+                  <p>
+                    건물이 완성되는 과정을 알아보세요.
+                  </p>
+                  <i class="fa-solid fa-arrow-up-right-from-square topic-arrow" aria-hidden="true">
+                  </i>
+                </button>
+                <button class="topic-card" onclick="sendQuickPrompt('건설 프로젝트에서 발주자, 시공사, 감리자의 역할을 비교해 줘.')">
+                  <span class="topic-top">
+                    <span class="topic-icon">
+                      <i class="fa-regular fa-handshake" aria-hidden="true">
+                      </i>
+                    </span>
+                    <span class="topic-number">
+                      03 / PEOPLE
+                    </span>
+                  </span>
+                  <h4>
+                    계약과 참여자
+                  </h4>
+                  <p>
+                    발주자, 시공사, 감리자의 차이는 무엇일까요?
+                  </p>
+                  <i class="fa-solid fa-arrow-up-right-from-square topic-arrow" aria-hidden="true">
+                  </i>
+                </button>
+                <button class="topic-card" onclick="sendQuickPrompt('리모델링, 재건축, 신축의 의미와 차이를 간단히 비교해 줘.')">
+                  <span class="topic-top">
+                    <span class="topic-icon">
+                      <i class="fa-regular fa-building" aria-hidden="true">
+                      </i>
+                    </span>
+                    <span class="topic-number">
+                      04 / CONCEPT
+                    </span>
+                  </span>
+                  <h4>
+                    개념과 용어
+                  </h4>
+                  <p>
+                    비슷해 보이는 건설 용어를 구분해 보세요.
+                  </p>
+                  <i class="fa-solid fa-arrow-up-right-from-square topic-arrow" aria-hidden="true">
+                  </i>
+                </button>
+              </div>
+              <div class="welcome-foot">
+                <i class="fa-regular fa-bookmark" aria-hidden="true">
+                </i>
+                대화는 나의 기록에 저장되어 언제든 다시 볼 수 있어요.
+              </div>
+            </div>
+          </div>
+          <!-- 나중에 복사해 사용할 화면 조각입니다. 여기에 정의한 내용은 그대로는 표시되지 않습니다. -->
+          <template id="welcomeTemplate">
+            <div id="welcomeHero" class="welcome">
+              <div class="welcome-intro">
+                <div>
+                  <div class="eyebrow">
+                    A NOTE FOR YOUR NEXT QUESTION
+                  </div>
+                  <h2>
+                    건설의 궁금함을,
+                    <br>
+                    <span>
+                      이해가 되는 지식으로.
+                    </span>
+                  </h2>
+                  <p class="welcome-description">
+                    낯선 현장 용어부터 시공의 원리까지.
+                    <br>
+                    질문을 남기면, 함께 차근차근 풀어갑니다.
+                  </p>
+                </div>
+                <svg class="plan-art" viewBox="0 0 220 190" fill="none" aria-hidden="true">
+                  <g stroke="#819873" stroke-width="1">
+                    <path d="M23 30h174v125H23zM27 34h166v117H27z"/>
+                    <path d="M95 34v67H27m68 0h44v50m0-57h54M95 67h98M57 101v50"/>
+                    <path d="M95 84a17 17 0 0 0 17 17m-17-17h17v17M139 114a20 20 0 0 0 20-20m-20 20V94h20"/>
+                    <path d="M36 41h43v16H36zM36 60h43v16H36zM155 106h29v36h-29zM104 112h25v30h-25z"/>
+                    <path d="M13 30v125m-4-125h8m-8 125h8M23 171h174m-174-4v8m174-8v8" stroke-dasharray="2 3"/>
+                    <path d="M15 13h17m-8-8v16M187 169h23m-11-11v23"/>
+                  </g>
+                  <g fill="#819873" font-family="monospace" font-size="6">
+                    <text x="104" y="48">
+                      FIELD NOTE / 01
+                    </text>
+                    <text x="53" y="90">
+                      KNOWLEDGE
+                    </text>
+                    <text x="102" y="180">
+                      1 : 100
+                    </text>
+                  </g>
+                  <rect x="164" y="44" width="21" height="14" fill="#ccd6b5" opacity=".4"/>
+                  <circle cx="44" cy="128" r="6" stroke="#a8b880"/>
+                  <path d="m203 12 2 7h-4l2-7z" fill="#8ca477"/>
+                  <path d="M203 19v10" stroke="#8ca477"/>
+                </svg>
+              </div>
+              <div class="topics-heading">
+                <h3>
+                  어디서부터 시작할까요?
+                </h3>
+                <span>
+                  주제를 선택해 질문해 보세요
+                </span>
+              </div>
+              <div class="topic-grid">
+                <button class="topic-card" onclick="sendQuickPrompt('철근콘크리트에서 철근과 콘크리트의 역할을 쉽게 설명해 줘.')">
+                  <span class="topic-top">
+                    <span class="topic-icon">
+                      <i class="fa-solid fa-cubes-stacked" aria-hidden="true">
+                      </i>
+                    </span>
+                    <span class="topic-number">
+                      01 / STRUCTURE
+                    </span>
+                  </span>
+                  <h4>
+                    자재와 구조
+                  </h4>
+                  <p>
+                    철근과 콘크리트는 어떤 역할을 할까요?
+                  </p>
+                  <i class="fa-solid fa-arrow-up-right-from-square topic-arrow" aria-hidden="true">
+                  </i>
+                </button>
+                <button class="topic-card" onclick="sendQuickPrompt('골조 공사부터 마감까지, 건물 시공 순서를 큰 단계로 설명해 줘.')">
+                  <span class="topic-top">
+                    <span class="topic-icon">
+                      <i class="fa-solid fa-ruler-combined" aria-hidden="true">
+                      </i>
+                    </span>
+                    <span class="topic-number">
+                      02 / PROCESS
+                    </span>
+                  </span>
+                  <h4>
+                    시공과 공정
+                  </h4>
+                  <p>
+                    건물이 완성되는 과정을 알아보세요.
+                  </p>
+                  <i class="fa-solid fa-arrow-up-right-from-square topic-arrow" aria-hidden="true">
+                  </i>
+                </button>
+                <button class="topic-card" onclick="sendQuickPrompt('건설 프로젝트에서 발주자, 시공사, 감리자의 역할을 비교해 줘.')">
+                  <span class="topic-top">
+                    <span class="topic-icon">
+                      <i class="fa-regular fa-handshake" aria-hidden="true">
+                      </i>
+                    </span>
+                    <span class="topic-number">
+                      03 / PEOPLE
+                    </span>
+                  </span>
+                  <h4>
+                    계약과 참여자
+                  </h4>
+                  <p>
+                    발주자, 시공사, 감리자의 차이는 무엇일까요?
+                  </p>
+                  <i class="fa-solid fa-arrow-up-right-from-square topic-arrow" aria-hidden="true">
+                  </i>
+                </button>
+                <button class="topic-card" onclick="sendQuickPrompt('리모델링, 재건축, 신축의 의미와 차이를 간단히 비교해 줘.')">
+                  <span class="topic-top">
+                    <span class="topic-icon">
+                      <i class="fa-regular fa-building" aria-hidden="true">
+                      </i>
+                    </span>
+                    <span class="topic-number">
+                      04 / CONCEPT
+                    </span>
+                  </span>
+                  <h4>
+                    개념과 용어
+                  </h4>
+                  <p>
+                    비슷해 보이는 건설 용어를 구분해 보세요.
+                  </p>
+                  <i class="fa-solid fa-arrow-up-right-from-square topic-arrow" aria-hidden="true">
+                  </i>
+                </button>
+              </div>
+              <div class="welcome-foot">
+                <i class="fa-regular fa-bookmark" aria-hidden="true">
+                </i>
+                대화는 나의 기록에 저장되어 언제든 다시 볼 수 있어요.
+              </div>
+            </div>
+          </template>
+          <div class="composer-wrap">
+            <div id="errorBanner" class="error-banner hidden" role="alert">
+              <span id="errorBannerText">
+              </span>
+              <button onclick="document.getElementById('errorBanner').classList.add('hidden')" aria-label="오류 안내 닫기">
+                <i class="fa-solid fa-xmark" aria-hidden="true">
+                </i>
+              </button>
+            </div>
+            <!-- 입력을 묶어 제출하는 폼입니다. onsubmit의 JS 함수가 기본 이동을 막고 API 요청을 -->
+            <!-- 보냅니다. -->
+            <form id="chatForm" class="composer" onsubmit="handleChatSubmit(event)">
+              <label class="sr-only" for="chatInput">
+                건설 지식 질문
+              </label>
+              <textarea id="chatInput" rows="1" maxlength="2000" required placeholder="궁금한 건설 지식, 편하게 물어보세요." oninput="autoResizeTextarea(this)" onkeydown="handleKeyDown(event)"></textarea>
+              <div class="composer-bottom">
+                <!-- 선택 컨트롤을 입력창 안에 붙이고 지원 목록은 서버에서 가져옵니다. -->
+                <div id="aiSettings" class="composer-tools" hidden>
+                  <label class="tool-select model-picker" title="답변 모델">
+                    <i class="fa-solid fa-cube" aria-hidden="true"></i>
+                    <span class="sr-only">모델</span>
+                    <select id="modelSelect" aria-label="답변 모델" onchange="updateModelOptions()"></select>
+                    <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+                  </label>
+                  <label class="tool-select reasoning-picker" title="추론 강도">
+                    <i class="fa-solid fa-brain" aria-hidden="true"></i>
+                    <span class="sr-only">추론 강도</span>
+                    <select id="thinkingSelect" aria-label="추론 강도"></select>
+                    <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+                  </label>
+                  <label class="search-toggle" title="웹 검색 켜기/끄기">
+                    <input id="searchEnabled" type="checkbox" role="switch" aria-label="웹 검색">
+                    <span class="search-toggle-face"><i class="fa-solid fa-globe" aria-hidden="true"></i><span>검색</span><span class="switch-track" aria-hidden="true"></span></span>
+                  </label>
+                  <details id="generationSettings" class="generation-settings">
+                    <summary aria-label="생성 옵션" title="생성 옵션"><i class="fa-solid fa-sliders" aria-hidden="true"></i></summary>
+                    <div class="generation-panel">
+                      <strong>생성 옵션</strong>
+                      <label for="temperatureInput">Temperature <span>답변 표현의 다양성</span></label>
+                      <input id="temperatureInput" type="number" min="0" max="2" step="0.1" placeholder="기본값">
+                      <p>낮으면 일관된 표현, 높으면 다양한 표현을 사용합니다. 추론 강도를 높이면 응답이 느려질 수 있습니다.</p>
+                      <button type="button" onclick="resetAIOptions()">기본값으로</button>
+                    </div>
+                  </details>
+                </div>
+                <div class="send-controls">
+                  <span id="charCounter" class="char-counter">
+                    0 / 2000
+                  </span>
+                  <button type="submit" id="sendBtn" class="send-button" aria-label="질문 보내기">
+                    <i class="fa-solid fa-arrow-up" aria-hidden="true">
+                    </i>
+                  </button>
+                </div>
+              </div>
+            </form>
+            <p class="composer-note">
+              답변은 학습을 위한 참고 정보입니다. 현장 적용 시 관련 기준과 전문가의 검토를 함께 확인하세요.
+            </p>
+          </div>
+        </main>
+      </div>
+    </div>
+    <div id="toast-container" class="toast-container" role="status" aria-live="polite">
+    </div>
+    <!-- 스크립트는 적힌 순서대로 연결됩니다. 공통 설정/도구를 먼저 읽고 페이지 전용 코드가 이를 사용합니다. -->
+    <script src="js/config.js">
+    </script>
+    <!-- 스크립트는 적힌 순서대로 연결됩니다. 공통 설정/도구를 먼저 읽고 페이지 전용 코드가 이를 사용합니다. -->
+    <script src="js/api.js">
+    </script>
+    <!-- 스크립트는 적힌 순서대로 연결됩니다. 공통 설정/도구를 먼저 읽고 페이지 전용 코드가 이를 사용합니다. -->
+    <script src="js/ui.js">
+    </script>
+    <!-- 스크립트는 적힌 순서대로 연결됩니다. 공통 설정/도구를 먼저 읽고 페이지 전용 코드가 이를 사용합니다. -->
+    <script src="js/chat.js">
+    </script>
+  </body>
+</html>

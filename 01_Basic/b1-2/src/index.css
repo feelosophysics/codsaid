@@ -1,0 +1,237 @@
+/*
+ * ============================================================
+ * index.css — 글로벌 스타일 & 디자인 토큰(CSS 변수)
+ * ============================================================
+ * 
+ * 이 파일은 앱 전체에 적용되는 기본 스타일과 CSS 변수를 정의합니다.
+ * CSS 변수란? → --변수이름 형태로 선언하고, var(--변수이름)으로 사용하는 것.
+ *              한 곳에서 값을 바꾸면 전체 앱에 반영되므로 유지보수가 편합니다.
+ * 
+ * [라이트 모드]와 [다크 모드] 두 가지 테마를 지원합니다.
+ * data-theme 속성을 <html> 태그에 붙여서 테마를 전환합니다.
+ */
+
+/* ======================== */
+/* Google Fonts 임포트       */
+/* ======================== */
+/* Inter: 현대적이고 가독성 좋은 산세리프 폰트 */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+/* ======================== */
+/* 라이트 모드 (기본 테마)    */
+/* ======================== */
+/* :root = HTML 문서의 최상위 요소. 여기에 정의한 변수는 모든 곳에서 사용 가능 */
+:root {
+  /* --- 배경색 --- */
+  --bg-primary: #f8f9fc;          /* 메인 배경 */
+  --bg-secondary: #ffffff;        /* 카드/섹션 배경 */
+  --bg-tertiary: #f1f3f9;         /* 약간 어두운 배경 (호버 등) */
+
+  /* --- 텍스트 색상 --- */
+  --text-primary: #1a1d29;        /* 주요 텍스트 (거의 검정) */
+  --text-secondary: #5f6578;      /* 보조 텍스트 (회색) */
+  --text-tertiary: #9096a8;       /* 부가 텍스트 (연한 회색) */
+
+  /* --- 브랜드 컬러 (포인트 색상) --- */
+  --accent-primary: #6366f1;      /* 인디고 — 메인 액센트 */
+  --accent-primary-hover: #5457e5; /* 메인 액센트 호버 */
+  --accent-primary-light: #eef2ff; /* 메인 액센트 연한 버전 */
+  --accent-secondary: #f59e0b;    /* 앰버 — 별점 등에 사용 */
+  --accent-danger: #ef4444;       /* 빨간색 — 삭제/에러 */
+  --accent-danger-hover: #dc2626; /* 삭제/에러 호버 */
+  --accent-success: #10b981;      /* 초록 — 성공 */
+
+  /* --- 보더(테두리) --- */
+  --border-color: #e2e5f1;        /* 기본 테두리 */
+  --border-color-focus: #6366f1;  /* 포커스 시 테두리 */
+
+  /* --- 그림자 --- */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.1);
+  --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.15);
+
+  /* --- 기타 --- */
+  --radius-sm: 8px;               /* 작은 둥근 모서리 */
+  --radius-md: 12px;              /* 중간 둥근 모서리 */
+  --radius-lg: 16px;              /* 큰 둥근 모서리 */
+  --radius-xl: 24px;              /* 아주 큰 둥근 모서리 */
+  --transition-fast: 0.15s ease;  /* 빠른 전환 애니메이션 */
+  --transition-normal: 0.25s ease; /* 보통 전환 애니메이션 */
+  --transition-slow: 0.4s ease;   /* 느린 전환 애니메이션 */
+
+  /* --- Navbar 높이 --- */
+  --navbar-height: 64px;
+}
+
+/* ======================== */
+/* 다크 모드                 */
+/* ======================== */
+/* [data-theme="dark"] → HTML 태그에 data-theme="dark" 속성이 있을 때 적용 */
+[data-theme="dark"] {
+  --bg-primary: #0f1117;
+  --bg-secondary: #1a1d2e;
+  --bg-tertiary: #252838;
+
+  --text-primary: #e8eaf0;
+  --text-secondary: #9096a8;
+  --text-tertiary: #5f6578;
+
+  --accent-primary: #818cf8;
+  --accent-primary-hover: #6366f1;
+  --accent-primary-light: rgba(99, 102, 241, 0.15);
+
+  --border-color: #2a2d3e;
+  --border-color-focus: #818cf8;
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.4);
+  --shadow-glow: 0 0 20px rgba(129, 140, 248, 0.2);
+}
+
+/* ======================== */
+/* CSS 초기화 (Reset)       */
+/* ======================== */
+/* 브라우저마다 다른 기본 스타일을 통일시킵니다 */
+*,
+*::before,
+*::after {
+  margin: 0;            /* 모든 요소의 바깥 여백 제거 */
+  padding: 0;           /* 모든 요소의 안쪽 여백 제거 */
+  box-sizing: border-box; /* 너비/높이에 padding과 border를 포함 */
+}
+
+/* ======================== */
+/* 기본 요소 스타일           */
+/* ======================== */
+html {
+  font-size: 16px;        /* 기본 글자 크기 = 16px (1rem) */
+  scroll-behavior: smooth; /* 부드러운 스크롤 */
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background-color: var(--bg-primary);  /* CSS 변수로 배경색 지정 */
+  color: var(--text-primary);           /* CSS 변수로 글자색 지정 */
+  line-height: 1.6;                     /* 줄 간격 (가독성 향상) */
+  min-height: 100vh;                    /* 최소 높이: 화면 전체 */
+  transition: background-color var(--transition-normal), /* 테마 전환 시 부드러운 전환 */
+              color var(--transition-normal);
+  -webkit-font-smoothing: antialiased;  /* Mac에서 글자를 부드럽게 렌더링 */
+}
+
+/* 모든 링크의 기본 스타일 */
+a {
+  color: var(--accent-primary);
+  text-decoration: none;   /* 밑줄 제거 */
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--accent-primary-hover);
+}
+
+/* 이미지가 부모 요소를 넘치지 않게 */
+img {
+  max-width: 100%;
+  display: block;
+}
+
+/* 버튼, 입력 필드에도 같은 폰트 적용 */
+button, input, textarea, select {
+  font-family: inherit;  /* 부모 요소의 폰트를 상속 */
+  font-size: inherit;
+}
+
+/* ======================== */
+/* 유틸리티 클래스            */
+/* ======================== */
+/* 자주 사용되는 스타일을 클래스로 만들어 재사용 */
+
+/* 페이지 컨테이너 — 최대 너비 제한 + 가운데 정렬 */
+.page-container {
+  max-width: 1200px;
+  margin: 0 auto;       /* 가로 중앙 정렬 */
+  padding: 2rem 1.5rem;
+  /* Navbar 높이만큼 위에 여백을 줘서 컨텐츠가 가려지지 않게 */
+  padding-top: calc(var(--navbar-height) + 2rem);
+}
+
+/* 페이지 제목 */
+.page-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 1.5rem;
+}
+
+/* 화면 전체 중앙 배치 (로딩, 에러 등) */
+.center-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - var(--navbar-height) - 4rem);
+}
+
+/* ======================== */
+/* 스크롤바 커스텀            */
+/* ======================== */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-tertiary);
+}
+
+/* ======================== */
+/* 애니메이션 키프레임         */
+/* ======================== */
+
+/* 페이드인 + 위로 슬라이드 — 페이지/카드 등장 시 사용 */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 페이드인 — 단순 투명도 전환 */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* 스핀 — 로딩 스피너에 사용 */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* 펄스 — 스켈레톤 로딩에 사용 */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* 바운스 — 주의를 끌 때 사용 */
+@keyframes bounce {
+  0%, 20%, 53%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-10px); }
+  60% { transform: translateY(-5px); }
+}

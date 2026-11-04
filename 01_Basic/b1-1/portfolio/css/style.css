@@ -1,0 +1,692 @@
+/* =========================================
+   1. CSS 변수 및 테마 설정 (CSS Variables & Theme Setup)
+   ========================================= */
+
+:root {
+  /* 따뜻한 파스텔톤 컬러 팔레트 */
+  --color-bg: #fffbf7;
+  /* 아주 연한 베이지 (주 배경) */
+  --color-bg-alt: #fceceb;
+  /* 연한 핑크베이지 (서브 배경) */
+  --color-text: #4a403d;
+  /* 부드러운 다크브라운 (텍스트) */
+  --color-text-muted: #8c827f;
+  /* 보조 텍스트 */
+  --color-primary: #f2a6a6;
+  /* 파스텔 코랄 (포인트 컬러) */
+  --color-primary-hover: #e08b8b;
+  --color-border: #f0dedd;
+  --color-error: #e57373;
+  --color-success: #81c784;
+  --color-card-bg: #ffffff;
+  --color-card-shadow: rgba(0, 0, 0, 0.627);
+
+  /* Fonts */
+  --font-main: 'Inter', sans-serif;
+
+  /* Layout */
+  --nav-height: 70px;
+  --container-width: 1100px;
+}
+
+/* 다크 모드 변수 매핑 */
+[data-theme="dark"] {
+  --color-bg: #2d2a2a;
+  /* 따뜻한 다크 그레이 */
+  --color-bg-alt: #383434;
+  --color-text: #f5f0f0;
+  --color-text-muted: #b8b1b1;
+  --color-primary: #f5baba;
+  --color-primary-hover: #e8a7a7;
+  --color-border: #4d4848;
+  --color-card-bg: #3b3737;
+  --color-card-shadow: rgba(0, 0, 0, 0.2);
+}
+
+/* =========================================
+   2. 리셋 및 기본 스타일 (Reset & Base Styles)
+   ========================================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-main);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.6;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+ul {
+  list-style: none;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.container {
+  max-width: var(--container-width);
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.section {
+  padding: 100px 0;
+}
+
+.section__title {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 3rem;
+  color: var(--color-text);
+  position: relative;
+}
+
+.section__title::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 3px;
+  background-color: var(--color-primary);
+  border-radius: 2px;
+}
+
+/* =========================================
+   3. 버튼 공통 스타일 (Buttons)
+   ========================================= */
+.btn {
+  display: inline-block;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+
+  transition: all 0.3s ease;
+  border: none;
+  font-family: var(--font-main);
+  font-size: 1rem;
+}
+
+.btn--primary {
+  background-color: var(--color-primary);
+  color: #fff;
+}
+
+/* 버튼 호버 효과 */
+.btn--primary:hover {
+  background-color: var(--color-primary-hover);
+  transform: translateY(-2px);
+}
+
+.btn--outline {
+  background-color: transparent;
+  border: 2px solid var(--color-primary);
+  color: var(--color-primary);
+}
+
+.btn--outline:hover {
+  background-color: var(--color-primary);
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+/* =========================================
+   4. 헤더 & 네비게이션 (Header & Navigation)
+   ========================================= */
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: var(--nav-height);
+  background-color: var(--color-bg);
+  z-index: 100;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* 스크롤 시 헤더 스타일 변경 (JS 연동) */
+.header.scrolled {
+  box-shadow: 0 4px 20px var(--color-card-shadow);
+}
+
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+}
+
+.nav__logo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.nav__menu {
+  display: flex;
+}
+
+.nav__list {
+  display: flex;
+  gap: 2rem;
+}
+
+.nav__link {
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.nav__link:hover {
+  color: var(--color-primary);
+}
+
+.nav__actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.theme-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: var(--color-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 햄버거 메뉴 버튼 (모바일 전용) */
+.nav__toggle {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+}
+
+.nav__toggle .bar {
+  width: 25px;
+  height: 3px;
+  background-color: var(--color-text);
+  transition: all 0.3s ease;
+}
+
+/* =========================================
+   5. 히어로 섹션 (Hero Section)
+   ========================================= */
+.hero {
+  min-height: 100vh;
+  /* 화면의 총 높이(Viewport Height)의 100%를 확보해 꽉 찬 화면을 만듭니다. */
+  display: flex;
+  align-items: center;
+  padding-top: var(--nav-height);
+  background-color: var(--color-bg-alt);
+}
+
+.hero__content {
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.hero__title {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  line-height: 1.2;
+}
+
+.hero__subtitle {
+  font-size: 1.2rem;
+  color: var(--color-text-muted);
+  margin-bottom: 2rem;
+}
+
+.hero__buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+/* 
+  [타이핑 깜빡임 효과 커서 애니메이션]
+  opacity를 1에서 0으로 반복하여 깜빡이는 텍스트 에디터의 커서 느낌을 구현합니다.
+*/
+.cursor {
+  display: inline-block;
+  width: 3px;
+  animation: blink 1s infinite;
+  /* 1초 간격으로 blink 키프레임 무한 반복 */
+  color: var(--color-primary);
+}
+
+@keyframes blink {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
+}
+
+/* =========================================
+   6. 소개 섹션 (About Section)
+   ========================================= */
+.about__container {
+  display: flex;
+  align-items: center;
+  gap: 4rem;
+}
+
+.about__img-wrapper {
+  flex: 1;
+  max-width: 400px;
+}
+
+.about__img {
+  border-radius: 20px;
+  box-shadow: 0 10px 30px var(--color-card-shadow);
+  transition: transform 0.3s ease;
+}
+
+.about__img:hover {
+  transform: translateY(-10px);
+}
+
+.about__info {
+  flex: 1;
+}
+
+.about__info p {
+  margin-bottom: 1rem;
+  color: var(--color-text-muted);
+}
+
+/* =========================================
+   7. 기술 섹션 (Skills Section)
+   ========================================= */
+.skills {
+  background-color: var(--color-bg-alt);
+}
+
+.skills__container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+}
+
+.skills__card {
+  background-color: var(--color-card-bg);
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px var(--color-card-shadow);
+  text-align: center;
+  transition: transform 0.3s ease;
+}
+
+.skills__card:hover {
+  transform: translateY(-5px);
+}
+
+.skills__card h3 {
+  margin-bottom: 1rem;
+  color: var(--color-primary);
+}
+
+.skills__card ul li {
+  margin-bottom: 0.5rem;
+  color: var(--color-text-muted);
+}
+
+/* =========================================
+   8. 프로젝트 섹션 (Projects Section)
+   ========================================= */
+.projects__filter {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 3rem;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  background-color: transparent;
+  border: 1px solid var(--color-border);
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  color: var(--color-text);
+  transition: all 0.3s ease;
+  font-family: inherit;
+}
+
+.filter-btn:hover,
+.filter-btn.active {
+  background-color: var(--color-primary);
+  color: #fff;
+  border-color: var(--color-primary);
+}
+
+.projects__container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+/* 동적으로 추가되는 프로젝트 카드 스타일 */
+.project-card {
+  background-color: var(--color-card-bg);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 5px 15px var(--color-card-shadow);
+  transition: transform 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.project-card:hover {
+  transform: translateY(-5px);
+}
+
+.project-card h3 {
+  margin-bottom: 0.5rem;
+}
+
+.project-card p {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  flex-grow: 1;
+  margin-bottom: 1rem;
+}
+
+.project-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  border-top: 1px solid var(--color-border);
+  padding-top: 1rem;
+}
+
+/* 로딩, 오류, 비었을 때의 안내 문구 스타일 */
+.projects__loading,
+.projects__error,
+.projects__empty {
+  text-align: center;
+  grid-column: 1 / -1;
+  padding: 2rem;
+  color: var(--color-text-muted);
+}
+
+.projects__error button {
+  margin-top: 1rem;
+}
+
+/* =========================================
+   9. 문의 섹션 (Contact Section)
+   ========================================= */
+.contact {
+  background-color: var(--color-bg-alt);
+}
+
+.contact__container {
+  max-width: 600px;
+  margin: 0 auto;
+  background-color: var(--color-card-bg);
+  padding: 2.5rem;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px var(--color-card-shadow);
+}
+
+.form__group {
+  margin-bottom: 1.5rem;
+}
+
+.form__label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.form__input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 1rem;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  transition: border-color 0.3s ease;
+}
+
+.form__input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+/* 입력값 무효 시 스타일 (JS 연동) */
+.form__input.invalid {
+  border-color: var(--color-error);
+}
+
+/* 에러 메시지 스타일 */
+.form__error {
+  display: none;
+  color: var(--color-error);
+  font-size: 0.85rem;
+  margin-top: 0.3rem;
+}
+
+.form__submit {
+  width: 100%;
+}
+
+/* 문의 전송 완료 성공 메시지 (기본 숨김) */
+.form__success {
+  display: none;
+  text-align: center;
+  color: var(--color-success);
+  margin-top: 1rem;
+  font-weight: 500;
+}
+
+/* =========================================
+   10. 푸터 (Footer)
+   ========================================= */
+.footer {
+  background-color: var(--color-bg);
+  padding: 2rem 0;
+  text-align: center;
+  border-top: 1px solid var(--color-border);
+}
+
+.footer__container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.footer__social-link {
+  color: var(--color-primary);
+  font-weight: 500;
+}
+
+.footer__social-link:hover {
+  text-decoration: underline;
+}
+
+/* =========================================
+   11. 스크롤 최상단 이동 버튼 (Scroll Top Button)
+   ========================================= */
+.scroll-top {
+  position: fixed;
+  bottom: -50px;
+  right: 20px;
+  background-color: var(--color-primary);
+  color: #fff;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  z-index: 99;
+  opacity: 0;
+}
+
+/* 스크롤 시 버튼 표시 (JS 연동) */
+.scroll-top.show {
+  bottom: 20px;
+  opacity: 1;
+}
+
+.scroll-top:hover {
+  background-color: var(--color-primary-hover);
+  transform: translateY(-3px);
+}
+
+/* =========================================
+   12. 스크롤 페이드인 애니메이션 (Scroll Animation Classes)
+   ========================================= */
+.fade-in {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+/* 화면에 진입했을 때의 애니메이션 (JS 연동) */
+.fade-in.appear {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* =========================================
+   13. 미디어 쿼리 (Media Queries - 반응형 웹 디자인)
+   ========================================= */
+
+/* ---- 모바일 전용 기본 오버라이드 및 레이아웃 (화면 너비 < 768px 일 때 작동) ---- */
+.nav__menu {
+  position: fixed;
+  top: var(--nav-height);
+  right: -100%;
+  width: 70%;
+  height: calc(100vh - var(--nav-height));
+  background-color: var(--color-bg);
+  flex-direction: column;
+  padding: 2rem;
+  box-shadow: -2px 0 10px var(--color-card-shadow);
+  transition: right 0.3s ease;
+}
+
+/* 메뉴 활성화 스타일 (JS 연동) */
+.nav__menu.active {
+  right: 0;
+}
+
+.nav__list {
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.nav__toggle {
+  display: flex;
+}
+
+/* active 상태의 햄버거 버튼 X자 애니메이션 */
+.nav__toggle.active .bar:nth-child(1) {
+  transform: translateY(8px) rotate(45deg);
+}
+
+.nav__toggle.active .bar:nth-child(2) {
+  opacity: 0;
+}
+
+.nav__toggle.active .bar:nth-child(3) {
+  transform: translateY(-8px) rotate(-45deg);
+}
+
+.about__container {
+  flex-direction: column;
+  text-align: center;
+}
+
+.hero__title {
+  font-size: 2.2rem;
+}
+
+.hero__buttons {
+  flex-direction: column;
+}
+
+.section {
+  padding: 60px 0;
+}
+
+/* ---- 태블릿 및 데스크톱 (화면 너비 768px 이상) ---- */
+@media screen and (min-width: 768px) {
+
+  .nav__menu {
+    position: static;
+    width: auto;
+    height: auto;
+    background-color: transparent;
+    flex-direction: row;
+    padding: 0;
+    box-shadow: none;
+  }
+
+  .nav__list {
+    flex-direction: row;
+    gap: 2rem;
+  }
+
+  .nav__toggle {
+    display: none;
+  }
+
+  .about__container {
+    flex-direction: row;
+    text-align: left;
+  }
+
+  .hero__title {
+    font-size: 3rem;
+  }
+
+  .hero__buttons {
+    flex-direction: row;
+  }
+
+  .section {
+    padding: 100px 0;
+  }
+}
+
+/* ---- 대화면 데스크톱 (화면 너비 1024px 이상) ---- */
+@media screen and (min-width: 1024px) {
+}

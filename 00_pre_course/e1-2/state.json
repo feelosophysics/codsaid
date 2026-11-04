@@ -1,0 +1,85 @@
+{
+    "best_score": 0,
+    "quizzes": [
+        {
+            "question": "파이썬의 창시자는 누구일까요?",
+            "choices": [
+                "귀도 반 로섬",
+                "제임스 고슬링",
+                "빌 게이츠",
+                "스티브 잡스"
+            ],
+            "answer": 1
+        },
+        {
+            "question": "리스트에 요소를 추가하는 메서드는?",
+            "choices": [
+                "add()",
+                "append()",
+                "push()",
+                "insert_end()"
+            ],
+            "answer": 2
+        },
+        {
+            "question": "다음 중 기본 자료형이 아닌 것은?",
+            "choices": [
+                "int",
+                "str",
+                "boolean",
+                "dictionary"
+            ],
+            "answer": 4
+        },
+        {
+            "question": "반복문을 중단할 때 사용하는 키워드는?",
+            "choices": [
+                "stop",
+                "exit",
+                "break",
+                "continue"
+            ],
+            "answer": 3
+        },
+        {
+            "question": "출력을 위해 사용하는 함수는?",
+            "choices": [
+                "input()",
+                "print()",
+                "show()",
+                "write()"
+            ],
+            "answer": 2
+        },
+        {
+            "question": "do you love me?",
+            "choices": [
+                "yes",
+                "no",
+                "know",
+                "don't know"
+            ],
+            "answer": 3
+        },
+        {
+            "question": "고양이의 이름은?",
+            "choices": [
+                "고양이",
+                "야옹",
+                "meow",
+                "meovv"
+            ],
+            "answer": 1
+        },
+        {
+            "question": "정재윤",
+            "choices": [
+                "잘생겼다",
+                "못생겼다",
+                "잘났다",
+                "운동잘함"
+            ],
+            "answer": 1
+        }
+    ]
+}

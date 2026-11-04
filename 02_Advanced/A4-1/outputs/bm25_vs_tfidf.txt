@@ -1,0 +1,55 @@
+=== BM25 vs TF-IDF (보너스 2) ===
+BM25 설정: k1=1.5, b=0.75, idf=ln((N-df+0.5)/(df+0.5)+1), 문서 길이=전처리 후 토큰 수
+방법         docP@10  docMAP@10  handP@5  handP@10
+TF-IDF      0.7400     0.6609    0.930     0.905
+BM25        0.7670     0.7010    0.960     0.960
+
+상위 10개 결과 문서의 토큰 수(평가 쿼리 20개, 평균 / 중앙값): TF-IDF 183.9 / 32, BM25 195.2 / 49, 전체 문서 92.0 / 35
+
+k1 × b 격자 — Doc-query MAP@10 (행 k1, 열 b)
+        b=0     b=0.25  b=0.5   b=0.75  b=1     
+k1=0.5 0.3623  0.6493  0.6933  0.6987  0.6977  
+k1=1.2 0.3563  0.6815  0.7013  0.7030  0.6912  
+k1=1.5 0.3549  0.6856  0.7051  0.7010  0.6888  
+k1=2   0.3525  0.6887  0.7055  0.7015  0.6827  
+k1 × b 격자 — Hand-query P@10
+k1=0.5 0.910   0.940   0.940   0.950   0.960   
+k1=1.2 0.910   0.955   0.960   0.960   0.950   
+k1=1.5 0.895   0.950   0.960   0.960   0.950   
+k1=2   0.885   0.935   0.940   0.955   0.950   
+
+Query: "space shuttle launch"  (top-5 겹침 3/5)
+  1. TF-IDF doc 3165 (space   ,   83 tok)   BM25 doc 576  (space   ,   48 tok)
+  2. TF-IDF doc 279  (space   ,   25 tok)   BM25 doc 279  (space   ,   25 tok)
+  3. TF-IDF doc 4214 (space   ,   20 tok)   BM25 doc 1174 (space   ,  121 tok)
+  4. TF-IDF doc 576  (space   ,   48 tok)   BM25 doc 3165 (space   ,   83 tok)
+  5. TF-IDF doc 660  (space   , 3190 tok)   BM25 doc 1936 (space   ,  130 tok)
+
+Query: "hockey playoff goalie"  (top-5 겹침 2/5)
+  1. TF-IDF doc 4186 (hockey  ,   41 tok)   BM25 doc 4186 (hockey  ,   41 tok)
+  2. TF-IDF doc 1703 (hockey  ,   67 tok)   BM25 doc 4044 (hockey  ,   39 tok)
+  3. TF-IDF doc 3121 (hockey  ,   47 tok)   BM25 doc 3308 (hockey  ,   27 tok)
+  4. TF-IDF doc 3329 (baseball,   13 tok)   BM25 doc 3039 (hockey  ,   30 tok)
+  5. TF-IDF doc 4044 (hockey  ,   39 tok)   BM25 doc 2890 (hockey  ,   16 tok)
+
+Query: "x window server display"  (top-5 겹침 0/5)
+  1. TF-IDF doc 1776 (x       ,    7 tok)   BM25 doc 1975 (x       ,   74 tok)
+  2. TF-IDF doc 1844 (x       ,   10 tok)   BM25 doc 3344 (x       ,   43 tok)
+  3. TF-IDF doc 2515 (x       ,   65 tok)   BM25 doc 4008 (x       ,   46 tok)
+  4. TF-IDF doc 1528 (x       ,   32 tok)   BM25 doc 3423 (x       ,  129 tok)
+  5. TF-IDF doc 770  (x       ,  133 tok)   BM25 doc 1277 (x       ,  114 tok)
+
+Query: "3d rendering image format"  (top-5 겹침 2/5)
+  1. TF-IDF doc 3366 (graphics,   33 tok)   BM25 doc 911  (graphics,   30 tok)
+  2. TF-IDF doc 3062 (graphics,   23 tok)   BM25 doc 4221 (graphics,   28 tok)
+  3. TF-IDF doc 4221 (graphics,   28 tok)   BM25 doc 3880 (graphics,   36 tok)
+  4. TF-IDF doc 838  (graphics,    7 tok)   BM25 doc 4605 (x       ,   34 tok)
+  5. TF-IDF doc 911  (graphics,   30 tok)   BM25 doc 3796 (graphics,   32 tok)
+
+Query: "baseball pitcher"  (top-5 겹침 2/5)
+  1. TF-IDF doc 3002 (baseball,   93 tok)   BM25 doc 3002 (baseball,   93 tok)
+  2. TF-IDF doc 4108 (baseball,    5 tok)   BM25 doc 4768 (baseball,   42 tok)
+  3. TF-IDF doc 3533 (baseball,   88 tok)   BM25 doc 3533 (baseball,   88 tok)
+  4. TF-IDF doc 3070 (baseball,   64 tok)   BM25 doc 4150 (baseball,   52 tok)
+  5. TF-IDF doc 3226 (baseball,   52 tok)   BM25 doc 2184 (baseball,   70 tok)
+

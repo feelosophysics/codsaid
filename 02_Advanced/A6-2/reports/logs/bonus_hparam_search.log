@@ -1,0 +1,38 @@
+[coarse  1] Validation MSE 0.7991 (skill 0.624) lr=0.00023, hidden=39, layers=1, dropout=0.19, window=14, weight_decay=2.6e-05  61초
+[coarse  2] Validation MSE 0.7727 (skill 0.603) lr=0.0038, hidden=76, layers=2, dropout=0.33, window=7, weight_decay=1.6e-05  19초
+[coarse  3] Validation MSE 0.7575 (skill 0.592) lr=0.0086, hidden=79, layers=1, dropout=0.38, window=30, weight_decay=0.00011  44초
+[coarse  4] Validation MSE 0.7552 (skill 0.590) lr=0.0045, hidden=24, layers=1, dropout=0.14, window=14, weight_decay=8e-06  23초
+[coarse  5] Validation MSE 0.7733 (skill 0.604) lr=0.0011, hidden=23, layers=1, dropout=0.0064, window=30, weight_decay=6.2e-05  34초
+[coarse  6] Validation MSE 0.7880 (skill 0.615) lr=0.00054, hidden=13, layers=1, dropout=0.22, window=30, weight_decay=1.6e-05  19초
+[coarse  7] Validation MSE 0.7917 (skill 0.618) lr=0.00026, hidden=70, layers=2, dropout=0.3, window=60, weight_decay=2.4e-05  281초
+[coarse  8] Validation MSE 0.7615 (skill 0.595) lr=0.0078, hidden=32, layers=2, dropout=0.45, window=14, weight_decay=1.9e-05  15초
+[coarse  9] Validation MSE 0.7598 (skill 0.593) lr=0.0025, hidden=17, layers=1, dropout=0.35, window=14, weight_decay=8.2e-06  11초
+[coarse 10] Validation MSE 0.7546 (skill 0.589) lr=0.00097, hidden=34, layers=2, dropout=0.37, window=7, weight_decay=0.00016  16초
+[coarse 11] Validation MSE 0.7715 (skill 0.603) lr=0.0017, hidden=20, layers=1, dropout=0.25, window=14, weight_decay=7.6e-05  7초
+[coarse 12] Validation MSE 0.7253 (skill 0.566) lr=0.0022, hidden=34, layers=2, dropout=0.0009, window=14, weight_decay=0.0015  23초
+[coarse 13] Validation MSE 0.7512 (skill 0.587) lr=0.0011, hidden=18, layers=2, dropout=0.047, window=14, weight_decay=0.0042  22초
+[coarse 14] Validation MSE 0.7490 (skill 0.585) lr=0.0095, hidden=9, layers=1, dropout=0.37, window=14, weight_decay=1.8e-05  6초
+[coarse 15] Validation MSE 0.7591 (skill 0.593) lr=0.0014, hidden=23, layers=1, dropout=0.48, window=60, weight_decay=0.0036  40초
+[coarse 16] Validation MSE 0.7521 (skill 0.587) lr=0.0017, hidden=12, layers=1, dropout=0.012, window=60, weight_decay=1.6e-05  32초
+
+좁힌 범위: lr=(0.0008804365281624718, 0.01), hidden=(8, 38.83314444871218), layers=(1, 2), dropout=(0.0, 0.401445401120155), window=(14, 60), weight_decay=(8.87237682571113e-06, 0.007271334723340199)
+[fine   17] Validation MSE 0.7705 (skill 0.602) lr=0.0017, hidden=23, layers=1, dropout=0.037, window=14, weight_decay=9.7e-06  9초
+[fine   18] Validation MSE 0.7385 (skill 0.577) lr=0.0038, hidden=17, layers=2, dropout=0.23, window=60, weight_decay=0.0035  39초
+[fine   19] Validation MSE 0.7495 (skill 0.585) lr=0.0082, hidden=11, layers=1, dropout=0.32, window=60, weight_decay=0.00065  12초
+[fine   20] Validation MSE 0.7219 (skill 0.564) lr=0.0044, hidden=19, layers=2, dropout=0.094, window=60, weight_decay=0.00049  74초
+[fine   21] Validation MSE 0.7756 (skill 0.606) lr=0.0064, hidden=10, layers=2, dropout=0.16, window=60, weight_decay=0.0015  23초
+[fine   22] Validation MSE 0.7744 (skill 0.605) lr=0.001, hidden=21, layers=2, dropout=0.25, window=60, weight_decay=7.7e-05  82초
+[fine   23] Validation MSE 0.7552 (skill 0.590) lr=0.0043, hidden=14, layers=2, dropout=0.052, window=60, weight_decay=5.8e-05  29초
+[fine   24] Validation MSE 0.7818 (skill 0.611) lr=0.00095, hidden=9, layers=2, dropout=0.093, window=60, weight_decay=0.00028  38초
+
+중요도 (η², Spearman ρ):
+  lr            η²=0.313  ρ=-0.550
+  weight_decay  η²=0.235  ρ=-0.286
+  dropout       η²=0.220  ρ=+0.067
+  window        η²=0.052  ρ=+0.029
+  layers        η²=0.034  ρ=-0.072
+  hidden        η²=0.031  ρ=+0.166
+
+최적 설정(trial 20)을 seed 3개로 다시 학습 (epoch 150, patience 20)
+  기본 설정: Test MAE 1.3973 ± 0.0127, RMSE 1.9024
+  탐색 최적: Test MAE 1.4013 ± 0.0200, RMSE 1.9218

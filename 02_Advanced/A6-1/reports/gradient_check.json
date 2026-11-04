@@ -1,0 +1,312 @@
+{
+  "epsilon": 1e-05,
+  "threshold": 1e-07,
+  "max_difference": 5.234648495473323e-11,
+  "passed": true,
+  "checks": [
+    {
+      "case": "Add (broadcast)",
+      "tensor": "Add (broadcast).a",
+      "analytic": 1.8481672953210666,
+      "numerical": 1.8481672953374326,
+      "difference": 6.240885056906189e-12,
+      "passed": true
+    },
+    {
+      "case": "Add (broadcast)",
+      "tensor": "Add (broadcast).b",
+      "analytic": 2.9698091883224262,
+      "numerical": 2.9698091883689766,
+      "difference": 7.66672090232913e-12,
+      "passed": true
+    },
+    {
+      "case": "Sub (broadcast)",
+      "tensor": "Sub (broadcast).a",
+      "analytic": 1.1456772338915662,
+      "numerical": 1.1456772338824806,
+      "difference": 5.7659455003725515e-12,
+      "passed": true
+    },
+    {
+      "case": "Sub (broadcast)",
+      "tensor": "Sub (broadcast).b",
+      "analytic": 2.0690023278452356,
+      "numerical": 2.0690023278646663,
+      "difference": 6.854506205409989e-12,
+      "passed": true
+    },
+    {
+      "case": "Mul (broadcast)",
+      "tensor": "Mul (broadcast).a",
+      "analytic": -1.1693521210668318,
+      "numerical": -1.1693521210665025,
+      "difference": 9.442561885875729e-12,
+      "passed": true
+    },
+    {
+      "case": "Mul (broadcast)",
+      "tensor": "Mul (broadcast).b",
+      "analytic": -1.7872730725363806,
+      "numerical": -1.7872730725398964,
+      "difference": 4.8112598428555346e-12,
+      "passed": true
+    },
+    {
+      "case": "Div (broadcast)",
+      "tensor": "Div (broadcast).a",
+      "analytic": 0.48878752461565306,
+      "numerical": 0.4887875246106787,
+      "difference": 6.993058525602457e-12,
+      "passed": true
+    },
+    {
+      "case": "Div (broadcast)",
+      "tensor": "Div (broadcast).b",
+      "analytic": -0.4195102139187677,
+      "numerical": -0.4195102139559203,
+      "difference": 3.842040968488251e-11,
+      "passed": true
+    },
+    {
+      "case": "Div (broadcast)",
+      "tensor": "Div (broadcast).c",
+      "analytic": 0.5042305459273448,
+      "numerical": 0.504230545883555,
+      "difference": 3.919911481925424e-11,
+      "passed": true
+    },
+    {
+      "case": "MatMul",
+      "tensor": "MatMul.a",
+      "analytic": -3.218643923070667,
+      "numerical": -3.218643923075248,
+      "difference": 1.0552505385444683e-11,
+      "passed": true
+    },
+    {
+      "case": "MatMul",
+      "tensor": "MatMul.b",
+      "analytic": 5.883311991033999,
+      "numerical": 5.883311991095041,
+      "difference": 6.078978544675684e-12,
+      "passed": true
+    },
+    {
+      "case": "Pow",
+      "tensor": "Pow.a",
+      "analytic": -7.492352930245471,
+      "numerical": -7.49235293038275,
+      "difference": 1.1727587906461188e-11,
+      "passed": true
+    },
+    {
+      "case": "Exp",
+      "tensor": "Exp.a",
+      "analytic": -4.873893937104033,
+      "numerical": -4.873893937329399,
+      "difference": 2.2367297909734882e-11,
+      "passed": true
+    },
+    {
+      "case": "Log",
+      "tensor": "Log.a",
+      "analytic": 3.046245582266182,
+      "numerical": 3.0462455825108754,
+      "difference": 3.2773342493490406e-11,
+      "passed": true
+    },
+    {
+      "case": "Sum(axis=0)",
+      "tensor": "Sum(axis=0).a",
+      "analytic": -1.524253538123898,
+      "numerical": -1.524253538121023,
+      "difference": 4.745347556519061e-12,
+      "passed": true
+    },
+    {
+      "case": "Mean(axis=1, keepdims)",
+      "tensor": "Mean(axis=1, keepdims).a",
+      "analytic": 0.6627911323662816,
+      "numerical": 0.6627911323553448,
+      "difference": 9.623360407528018e-12,
+      "passed": true
+    },
+    {
+      "case": "Reshape+Transpose",
+      "tensor": "Reshape+Transpose.a",
+      "analytic": 2.415134147835628,
+      "numerical": 2.4151341478706456,
+      "difference": 1.557864790009324e-11,
+      "passed": true
+    },
+    {
+      "case": "Getitem (fancy index)",
+      "tensor": "Getitem (fancy index).a",
+      "analytic": 1.4808975265173612,
+      "numerical": 1.4808975265179212,
+      "difference": 7.307510991241792e-12,
+      "passed": true
+    },
+    {
+      "case": "Reuse (x*x + x)",
+      "tensor": "Reuse (x*x + x).a",
+      "analytic": -5.9357583861232275,
+      "numerical": -5.935758386188538,
+      "difference": 4.655455691585534e-12,
+      "passed": true
+    },
+    {
+      "case": "Linear",
+      "tensor": "Linear.input",
+      "analytic": -1.945075629319424,
+      "numerical": -1.9450756293171165,
+      "difference": 8.330569610038647e-12,
+      "passed": true
+    },
+    {
+      "case": "Linear",
+      "tensor": "Linear.W",
+      "analytic": 3.7594877793795307,
+      "numerical": 3.759487779331216,
+      "difference": 9.844494789767122e-12,
+      "passed": true
+    },
+    {
+      "case": "Linear",
+      "tensor": "Linear.b",
+      "analytic": 3.436623874413421,
+      "numerical": 3.436623874430999,
+      "difference": 3.3286801235850983e-12,
+      "passed": true
+    },
+    {
+      "case": "ReLU",
+      "tensor": "ReLU.input",
+      "analytic": 1.3182312782876608,
+      "numerical": 1.3182312782911154,
+      "difference": 5.312783978420399e-12,
+      "passed": true
+    },
+    {
+      "case": "Sigmoid",
+      "tensor": "Sigmoid.input",
+      "analytic": 0.31680548399599007,
+      "numerical": 0.316805483990823,
+      "difference": 3.0463290531955926e-11,
+      "passed": true
+    },
+    {
+      "case": "Softmax",
+      "tensor": "Softmax.input",
+      "analytic": 0.397244379808463,
+      "numerical": 0.3972443797906066,
+      "difference": 3.150952722812104e-11,
+      "passed": true
+    },
+    {
+      "case": "Tanh",
+      "tensor": "Tanh.input",
+      "analytic": 3.0879891804051764,
+      "numerical": 3.0879891802948474,
+      "difference": 1.6402623084891422e-11,
+      "passed": true
+    },
+    {
+      "case": "LeakyReLU",
+      "tensor": "LeakyReLU.input",
+      "analytic": -1.3600035711217535,
+      "numerical": -1.3600035711824885,
+      "difference": 2.1261409707109523e-11,
+      "passed": true
+    },
+    {
+      "case": "ELU",
+      "tensor": "ELU.input",
+      "analytic": 1.808981393255326,
+      "numerical": 1.808981393236486,
+      "difference": 9.884632600074633e-12,
+      "passed": true
+    },
+    {
+      "case": "Dropout",
+      "tensor": "Dropout.input",
+      "analytic": -3.203085622384287,
+      "numerical": -3.203085622338619,
+      "difference": 1.1686561540657571e-11,
+      "passed": true
+    },
+    {
+      "case": "MSELoss",
+      "tensor": "MSELoss.pred",
+      "analytic": 0.7974089698504097,
+      "numerical": 0.7974089698326025,
+      "difference": 3.1447130997408214e-11,
+      "passed": true
+    },
+    {
+      "case": "BCELoss",
+      "tensor": "BCELoss.logit",
+      "analytic": -0.13918461170463833,
+      "numerical": -0.1391846117027029,
+      "difference": 1.819385721261981e-11,
+      "passed": true
+    },
+    {
+      "case": "BCEWithLogitsLoss",
+      "tensor": "BCEWithLogitsLoss.logit",
+      "analytic": -0.13918461170463833,
+      "numerical": -0.13918461171380514,
+      "difference": 2.5393318172195602e-11,
+      "passed": true
+    },
+    {
+      "case": "CrossEntropyLoss",
+      "tensor": "CrossEntropyLoss.logits",
+      "analytic": -0.15826451414650067,
+      "numerical": -0.15826451414957532,
+      "difference": 5.234648495473323e-11,
+      "passed": true
+    },
+    {
+      "case": "Softmax+NLLLoss",
+      "tensor": "NLLLoss.logits",
+      "analytic": -0.15826451414650067,
+      "numerical": -0.15826451414957532,
+      "difference": 4.8078838510623134e-11,
+      "passed": true
+    },
+    {
+      "case": "MLP (Linear_1→ReLU→Linear_2→CE)",
+      "tensor": "Linear_1.W",
+      "analytic": -0.26492193450127843,
+      "numerical": -0.2649219345007836,
+      "difference": 4.2989470047124605e-11,
+      "passed": true
+    },
+    {
+      "case": "MLP (Linear_1→ReLU→Linear_2→CE)",
+      "tensor": "Linear_1.b",
+      "analytic": 0.24650914305310176,
+      "numerical": 0.24650914306478808,
+      "difference": 2.4711741402433567e-11,
+      "passed": true
+    },
+    {
+      "case": "MLP (Linear_1→ReLU→Linear_2→CE)",
+      "tensor": "Linear_2.W",
+      "analytic": -0.268260198321681,
+      "numerical": -0.2682601983106103,
+      "difference": 2.907917468942674e-11,
+      "passed": true
+    },
+    {
+      "case": "MLP (Linear_1→ReLU→Linear_2→CE)",
+      "tensor": "Linear_2.b",
+      "analytic": -0.2012914404367857,
+      "numerical": -0.20129144043812272,
+      "difference": 1.1585218632281418e-11,
+      "passed": true
+    }
+  ]
+}

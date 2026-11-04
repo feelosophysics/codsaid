@@ -1,0 +1,40 @@
+{"id": "neg01", "tag": "negation", "text": "재미있지 않았다", "label": 0}
+{"id": "neg02", "tag": "negation", "text": "연기가 좋지 않다", "label": 0}
+{"id": "neg03", "tag": "negation", "text": "안 좋아요", "label": 0}
+{"id": "neg04", "tag": "negation", "text": "몰입이 안 된다", "label": 0}
+{"id": "neg05", "tag": "negation", "text": "감동은 없었다", "label": 0}
+{"id": "neg06", "tag": "negation", "text": "재미가 하나도 없음", "label": 0}
+{"id": "neg07", "tag": "negation", "text": "이 식당은 정말 맛있지 않았어요", "label": 0}
+{"id": "neg08", "tag": "negation", "text": "직원이 친절하지 않았어요", "label": 0}
+{"id": "neg09", "tag": "negation", "text": "포장이 깔끔하지 않았다", "label": 0}
+{"id": "neg10", "tag": "negation", "text": "기대했던 만큼 훌륭하지 못했다", "label": 0}
+{"id": "neg11", "tag": "negation", "text": "실망스럽지 않았다", "label": 1}
+{"id": "neg12", "tag": "negation", "text": "지루하지 않고 좋았다", "label": 1}
+{"id": "neg13", "tag": "negation", "text": "나쁘지 않은 영화", "label": 1}
+{"id": "neg14", "tag": "negation", "text": "아깝지 않은 시간이었다", "label": 1}
+{"id": "neg15", "tag": "negation", "text": "후회 안 합니다", "label": 1}
+{"id": "neg16", "tag": "negation", "text": "최악은 아니었다", "label": 1}
+{"id": "neg17", "tag": "negation", "text": "불친절하지 않았어요", "label": 1}
+{"id": "neg18", "tag": "negation", "text": "별로 재미없지는 않았다", "label": 1, "note": "어려운 사례: '별로'는 극성을 고정해 둔 말이라 부정어와 함께 쓰면 상쇄된다"}
+{"id": "dbl01", "tag": "double_negation", "text": "재미있지 않을 수 없다", "label": 1}
+{"id": "dbl02", "tag": "double_negation", "text": "최고가 아닐 수 없다", "label": 1}
+{"id": "dbl03", "tag": "double_negation", "text": "감동하지 않을 수 없었다", "label": 1}
+{"id": "dbl04", "tag": "double_negation", "text": "좋지 않은 건 아니다", "label": 1}
+{"id": "dbl05", "tag": "double_negation", "text": "안 좋은 건 아니다", "label": 1}
+{"id": "dbl06", "tag": "double_negation", "text": "지루하지 않을 수 없다", "label": 0}
+{"id": "dbl07", "tag": "double_negation", "text": "싫지 않은 것은 아니다", "label": 0}
+{"id": "dbl08", "tag": "double_negation", "text": "만족하지 않을 수 없는 서비스", "label": 1}
+{"id": "con01", "tag": "contrast", "text": "연기는 좋았지만 스토리가 최악이다", "label": 0}
+{"id": "con02", "tag": "contrast", "text": "초반은 지루했지만 결말이 정말 좋았다", "label": 1}
+{"id": "con03", "tag": "contrast", "text": "비싸지만 맛있어요", "label": 1}
+{"id": "con04", "tag": "contrast", "text": "맛은 좋은데 너무 비싸요", "label": 0}
+{"id": "con05", "tag": "contrast", "text": "배우는 멋있었다. 하지만 내용이 별로였다", "label": 0}
+{"id": "con06", "tag": "contrast", "text": "뻔한 내용이지만 재밌게 봤어요", "label": 1}
+{"id": "con07", "tag": "contrast", "text": "재미는 있었다. 그러나 다시 보고 싶지는 않다", "label": 0}
+{"id": "con08", "tag": "contrast", "text": "배송은 느렸으나 품질이 훌륭하다", "label": 1}
+{"id": "pln01", "tag": "plain", "text": "정말 감동적인 영화", "label": 1}
+{"id": "pln02", "tag": "plain", "text": "시간 아깝다", "label": 0}
+{"id": "pln03", "tag": "plain", "text": "꿀잼 인정", "label": 1}
+{"id": "pln04", "tag": "plain", "text": "핵노잼", "label": 0}
+{"id": "pln05", "tag": "plain", "text": "배우들 연기가 아름다워요", "label": 1}
+{"id": "pln06", "tag": "plain", "text": "직원분이 너무 불친절해서 화가 났다", "label": 0}

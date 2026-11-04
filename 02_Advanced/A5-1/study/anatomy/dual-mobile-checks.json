@@ -1,0 +1,11 @@
+[
+ ["click","[data-sample='1']"],
+ ["click","#predict"],
+ ["until","document.body.dataset.ready==='true'",2000],
+ ["click","#reveal"],
+ ["eval","(()=>{if(!document.querySelector('#risk-truth').textContent.includes('TP'))throw Error('customer B expected TP');if(document.documentElement.scrollWidth>innerWidth)throw Error('390px overflow');return 'reduced motion, customer B and mobile overflow verified'})()"],
+ ["lines"],
+ ["shot","study/anatomy/shots/dual-phone.png","main",1],
+ ["click","#reset"],
+ ["eval","(()=>{if(document.body.dataset.phase!=='0'||!document.querySelector('#reg-truth').hidden)throw Error('reset failed');return 'reset hides ground truth verified'})()"]
+]

@@ -1,0 +1,24 @@
+{
+  "products": 80,
+  "histogram_bins": 8,
+  "feature_columns": [
+    "image_hist_0",
+    "image_hist_1",
+    "image_hist_2",
+    "image_hist_3",
+    "image_hist_4",
+    "image_hist_5",
+    "image_hist_6",
+    "image_hist_7",
+    "image_edge_mean",
+    "image_entropy"
+  ],
+  "histogram_sum_max_error": 0.0,
+  "signups": 240,
+  "cohorts": 12,
+  "observation_end": "2026-10-09",
+  "fully_observed_cells": 66,
+  "masked_cells": 78,
+  "interactive_customers": 240,
+  "interactive_segments": 4
+}

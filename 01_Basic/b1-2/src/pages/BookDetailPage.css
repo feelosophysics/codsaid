@@ -1,0 +1,116 @@
+/*
+ * BookDetailPage.css — 상세 페이지 스타일
+ */
+
+.book-detail-page {
+  max-width: 800px;
+}
+
+/* 뒤로 가기 링크 */
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+  transition: color var(--transition-fast);
+}
+
+.back-link:hover {
+  color: var(--accent-primary);
+}
+
+/* 상세 카드 */
+.detail-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 2.5rem;
+  animation: fadeInUp 0.4s ease;
+}
+
+/* 헤더 */
+.detail-header {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.detail-title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 0.4rem;
+  line-height: 1.3;
+}
+
+.detail-author {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+/* 메타 정보 */
+.detail-meta {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.detail-meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.detail-meta-label {
+  font-size: 0.8rem;
+  color: var(--text-tertiary);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.detail-meta-value {
+  font-size: 0.95rem;
+  color: var(--text-primary);
+}
+
+/* 감상문 */
+.detail-content {
+  margin-bottom: 2rem;
+}
+
+.detail-content-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.75rem;
+}
+
+.detail-content-text {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.8;
+  white-space: pre-wrap; /* 줄바꿈을 유지 */
+}
+
+/* 등록일/수정일 */
+.detail-dates {
+  display: flex;
+  gap: 1.5rem;
+  font-size: 0.8rem;
+  color: var(--text-tertiary);
+  margin-bottom: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-color);
+}
+
+/* 액션 버튼 */
+.detail-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}

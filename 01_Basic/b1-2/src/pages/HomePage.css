@@ -1,0 +1,243 @@
+/*
+ * HomePage.css — 메인 페이지 스타일
+ */
+
+.home-page {
+  overflow: hidden; /* 배경 장식이 넘치지 않게 */
+}
+
+/* ======================== */
+/* 히어로 섹션               */
+/* ======================== */
+.hero {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 5rem 1.5rem 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 3rem;
+  position: relative;
+  min-height: calc(100vh - var(--navbar-height) - 4rem);
+}
+
+/* 배경 그라디언트 장식 */
+.hero-bg-decoration {
+  position: absolute;
+  top: -100px;
+  right: -200px;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(
+    circle,
+    rgba(99, 102, 241, 0.12) 0%,
+    transparent 70%
+  );
+  border-radius: 50%;
+  pointer-events: none; /* 클릭 이벤트 무시 */
+  z-index: -1;
+}
+
+/* 히어로 콘텐츠 */
+.hero-content {
+  flex: 1;
+  max-width: 560px;
+  animation: fadeInUp 0.6s ease;
+}
+
+/* 배지 */
+.hero-badge {
+  display: inline-block;
+  background: var(--accent-primary-light);
+  color: var(--accent-primary);
+  padding: 0.4rem 1rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+
+/* 히어로 제목 */
+.hero-title {
+  font-size: 3rem;
+  font-weight: 800;
+  line-height: 1.2;
+  color: var(--text-primary);
+  margin-bottom: 1.25rem;
+}
+
+.hero-title-accent {
+  /* 그라디언트 텍스트 — 제목의 일부를 그라디언트로 표시 */
+  background: linear-gradient(135deg, var(--accent-primary), #a78bfa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* 히어로 설명 */
+.hero-description {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  margin-bottom: 2rem;
+}
+
+/* CTA 버튼 영역 */
+.hero-actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+/* ======================== */
+/* 히어로 일러스트            */
+/* ======================== */
+.hero-illustration {
+  flex-shrink: 0;
+  position: relative;
+  width: 300px;
+  height: 300px;
+  animation: fadeIn 0.8s ease 0.2s both;
+}
+
+/* 플로팅 카드 효과 */
+.hero-card {
+  position: absolute;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  box-shadow: var(--shadow-lg);
+}
+
+.hero-card-1 {
+  width: 160px;
+  height: 160px;
+  top: 20px;
+  left: 10px;
+  animation: float 3s ease-in-out infinite;
+}
+
+.hero-card-2 {
+  width: 120px;
+  height: 120px;
+  top: 50px;
+  right: 10px;
+  animation: float 3s ease-in-out infinite 0.5s;
+}
+
+.hero-card-3 {
+  width: 100px;
+  height: 100px;
+  bottom: 30px;
+  left: 60px;
+  animation: float 3s ease-in-out infinite 1s;
+}
+
+/* 플로팅 애니메이션 */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-15px); }
+}
+
+/* ======================== */
+/* 기능 소개 섹션             */
+/* ======================== */
+.features {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 4rem 1.5rem 5rem;
+}
+
+.features-title {
+  text-align: center;
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 3rem;
+  color: var(--text-primary);
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+
+.feature-item {
+  text-align: center;
+  padding: 2rem 1.5rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-normal);
+  animation: fadeInUp 0.4s ease both;
+}
+
+.feature-item:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.feature-item:nth-child(3) {
+  animation-delay: 0.2s;
+}
+
+.feature-item:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--accent-primary);
+}
+
+.feature-icon {
+  font-size: 2.5rem;
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.feature-name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.feature-desc {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* ======================== */
+/* 반응형 — 작은 화면         */
+/* ======================== */
+@media (max-width: 768px) {
+  .hero {
+    flex-direction: column;
+    text-align: center;
+    padding-top: 3rem;
+    min-height: auto;
+  }
+
+  .hero-title {
+    font-size: 2rem;
+  }
+
+  .hero-actions {
+    justify-content: center;
+  }
+
+  .hero-illustration {
+    width: 220px;
+    height: 220px;
+  }
+
+  .hero-card-1 { width: 120px; height: 120px; }
+  .hero-card-2 { width: 90px; height: 90px; }
+  .hero-card-3 { width: 80px; height: 80px; }
+
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+}

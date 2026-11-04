@@ -1,0 +1,22 @@
+=== 분류 성능 평가 ===
+모델: Logistic Regression (sklearn, lbfgs, max_iter=2000, random_state=42)
+특성: 직접 구현 TF-IDF (tf=raw, smooth_idf=True, norm='l2', min_df=5, max_df=0.5), Train으로만 학습한 어휘 7357개
+데이터: Train 3704 / Test 927 (8:2, stratify, random_state=42)
+C 선택(Train 5-fold 교차검증, macro F1): C=1: 0.9023, C=10: 0.9028, C=100: 0.8966 → C=10
+
+정확도: 0.9008
+F1-Score (macro): 0.9006
+
+범주                   precision    recall        f1  support
+comp.graphics           0.8516    0.8424    0.8470      184
+comp.windows.x          0.8901    0.8526    0.8710      190
+rec.sport.baseball      0.9274    0.9222    0.9248      180
+rec.sport.hockey        0.9319    0.9519    0.9418      187
+sci.space               0.9016    0.9355    0.9182      186
+
+혼동 행렬 (행=실제, 열=예측): graphics, x, baseball, hockey, space
+  graphics    155    17     2     0    10
+  x            21   162     4     0     3
+  baseball      0     1   166    11     2
+  hockey        0     1     4   178     4
+  space         6     1     3     2   174

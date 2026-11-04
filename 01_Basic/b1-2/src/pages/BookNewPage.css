@@ -1,0 +1,14 @@
+/*
+ * BookNewPage.css & BookEditPage.css — 폼 페이지 공통 스타일
+ */
+
+.book-form-page {
+  max-width: 700px;
+}
+
+.page-subtitle {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
+  margin-top: -0.75rem;
+}

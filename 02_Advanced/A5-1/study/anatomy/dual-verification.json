@@ -1,0 +1,14 @@
+{
+  "records": 2000,
+  "dataArraysIdentical": true,
+  "sourceHashesMatch": true,
+  "regressionMetrics": {
+    "rmse": 30.128787953703537,
+    "mae": 23.931659109817527,
+    "r2": 0.8611575908989588
+  },
+  "referenceMetricsMatch": true,
+  "teachingExamplesValidated": true,
+  "localLinks": 7,
+  "offline": true
+}

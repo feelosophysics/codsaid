@@ -1,0 +1,75 @@
+/*
+ * ProfilePage.css — 프로필 페이지 스타일
+ */
+
+.profile-page {
+  max-width: 600px;
+}
+
+.profile-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 2.5rem;
+  text-align: center;
+  animation: fadeInUp 0.4s ease;
+}
+
+/* 프로필 아바타 */
+.profile-avatar {
+  width: 80px;
+  height: 80px;
+  background: var(--accent-primary-light);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem;
+  border: 2px solid var(--accent-primary);
+}
+
+.profile-avatar-emoji {
+  font-size: 2.5rem;
+}
+
+/* 사용자 정보 */
+.profile-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  text-align: left;
+}
+
+.profile-field {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-sm);
+}
+
+.profile-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.profile-value {
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.profile-id {
+  font-family: monospace;
+  font-size: 0.8rem;
+  color: var(--text-tertiary);
+}
+
+/* 액션 버튼 */
+.profile-actions {
+  display: flex;
+  justify-content: center;
+}

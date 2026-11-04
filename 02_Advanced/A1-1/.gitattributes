@@ -1,0 +1,12 @@
+# Use LF for text files on Windows, macOS and Linux.
+* text=auto eol=lf
+
+# Windows batch scripts use CRLF.
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Preserve image and NumPy array bytes without newline conversion.
+*.png -text
+*.jpg -text
+*.jpeg -text
+*.npy -text

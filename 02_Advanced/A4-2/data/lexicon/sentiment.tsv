@@ -1,0 +1,429 @@
+# 직접 구축한 감성 사전. 영화 리뷰(NSMC)와 고객 문의·상품 리뷰(통합 파이프라인, 보너스 3)를 겨냥했다.
+# 열: term	score	pos	domain	match	note
+#  score  : -3(매우 부정) ~ +3(매우 긍정). 0은 더 짧은 표제어가 잘못 걸리지 않게 막는 차단용이다.
+#  pos    : P 용언 어간(활용형 변이를 자동 생성), N 체언·고정 표현, E 이모티콘·영어(토큰 전체 일치)
+#  domain : general 일반어, movie 영화 도메인 특화어, service 고객·상품 도메인 특화어
+#  match  : 비우면 어절 어디서든 일치. start=어절 처음에서만, end=한글이 거기서 끝날 때만, exact=어절 전체가 일치,
+#           noext=마지막 음절에 받침이 붙은 형태는 인정하지 않음, keep=부정어로 뒤집지 않음
+# 일치 방식: 마지막 음절에 받침이 없으면 받침이 더해진 형태도 일치로 본다(지루하 → 지루한·지루할·지루함).
+# 위치마다 가장 긴 표제어 하나만 쓴다(재미 < 재밌 < 재미없).
+#
+# ───── 일반 긍정: 용언 ─────
+좋	2	P	general		좋다
+재밌	2	P	general		재밌다
+재미있	2	P	general		재미있다
+재밋	2	P	general		'재밌'의 흔한 오타
+재미나	2	P	general		재미나다
+잼있	2	P	general		재미있다의 축약
+잼나	2	P	general		재미나다의 축약
+즐겁	2	P	general		즐겁다(ㅂ 불규칙: 즐거운·즐거워)
+기쁘	2	P	general		기쁘다
+행복하	2	P	general		행복하다
+훌륭하	3	P	general		훌륭하다
+멋지	2	P	general		멋지다
+멋있	2	P	general		멋있다
+멋잇	2	P	general		'멋있'의 오타
+아름답	2	P	general		아름답다
+예쁘	2	P	general		예쁘다
+이쁘	2	P	general		이쁘다
+귀엽	2	P	general		귀엽다
+사랑스럽	2	P	general		사랑스럽다
+따뜻하	2	P	general		따뜻하다
+따듯하	2	P	general		따듯하다
+훈훈하	2	P	general		훈훈하다
+고맙	1	P	general		고맙다
+감사하	1	P	general		감사하다
+만족하	2	P	general		만족하다
+만족스럽	2	P	general		만족스럽다
+대단하	2	P	general		대단하다
+뛰어나	2	P	general		뛰어나다
+탁월하	3	P	general		탁월하다
+완벽하	3	P	general		완벽하다
+신선하	1	P	general		신선하다
+흥미롭	2	P	general		흥미롭다
+흥미진진하	2	P	general		흥미진진하다
+유쾌하	2	P	general		유쾌하다
+통쾌하	2	P	general		통쾌하다
+상큼하	1	P	general		상큼하다
+깔끔하	1	P	general		깔끔하다
+괜찮	1	P	general		괜찮다
+괜찬	1	P	general		'괜찮'의 오타
+설레	2	P	general		설레다
+짜릿하	2	P	general		짜릿하다
+뭉클하	2	P	general		뭉클하다
+감동하	2	P	general		감동하다
+감동받	2	P	general		감동받다
+웃기	1	P	general		웃기다(코미디에서는 칭찬)
+기대되	1	P	general		기대되다
+그립	1	P	general		그립다
+공감가	1	P	general		공감가다
+공감되	1	P	general		공감되다
+잘하	1	P	general		잘하다(연기를 잘해요)
+잘만들	2	P	general		잘 만들다를 붙여 쓴 형태
+잘 만들	2	P	general	start	잘 만들다(띄어 쓴 구)
+잘 만든	2	N	general	start	잘 만들다의 관형형(ㄹ 탈락은 자동 변이로 안 잡힌다)
+잘만든	2	N	general		잘만들다의 관형형
+잘 봤	1	N	general	start	잘 봤습니다(감상 인사, 대부분 긍정)
+잘봤	1	N	general		잘 봤다를 붙여 쓴 형태
+잘 보았	1	N	general	start	잘 보았습니다
+알차	2	P	general		알차다
+특별하	1	P	general		특별하다
+소중하	1	P	general		소중하다
+착하	1	P	general		착하다
+순수하	1	P	general		순수하다
+달달하	1	P	general		달달하다(로맨스 칭찬)
+풋풋하	1	P	general		풋풋하다
+잔잔하	1	P	general		잔잔하다
+친근하	1	P	general		친근하다
+편하	1	P	general		편하다
+편리하	1	P	general		편리하다
+든든하	1	P	general		든든하다
+반갑	1	P	general		반갑다
+부럽	1	P	general		부럽다
+신나	2	P	general		신나다
+즐기	1	P	general		즐기다
+사랑하	1	P	general		사랑하다
+좋아하	1	P	general		좋아하다
+빠져들	2	P	general		빠져들다
+놀랍	2	P	general		놀랍다
+경이롭	2	P	general		경이롭다
+인상깊	2	P	general		인상 깊다
+강렬하	1	P	general		강렬하다
+충실하	1	P	general		충실하다
+탄탄하	2	P	general		탄탄하다
+세련되	2	P	general		세련되다
+치밀하	2	P	general		치밀하다
+아련하	1	P	general		아련하다
+쩔	2	N	general		속어: 대단하다(쩔어요·쩔더라)
+쩐다	2	N	general		속어: 대단하다
+괜츈	1	N	general		괜찮다의 변형
+제밌	2	N	general		재밌다의 오타
+지존	2	N	general		지존
+끝판왕	2	N	general		끝판왕
+호감	1	N	general		호감
+공감	1	N	general		공감(공감 안 되는 → 부정어 규칙)
+말이 필요없	2	N	general		말이 필요 없다(찬사)
+말이 필요 없	2	N	general		말이 필요 없다(찬사)
+# ───── 일반 긍정: 체언·고정 표현 ─────
+최고	3	N	general		최고(최고봉·최고다 포함)
+최상	2	N	general		최상
+대박	2	N	general		대박
+짱	2	N	general		짱(스릴도짱이고처럼 붙여 써도 잡는다)
+굿	2	N	general	start	굿(굿바이는 차단어로 막는다)
+굿바이	0	N	general		차단: 굿바이
+감동	2	N	general		감동(감동적·감동이 포함)
+감동적	3	N	general		감동적
+매력	2	N	general		매력(매력적·매력있 포함)
+행복	2	N	general		행복
+만족	2	N	general		만족
+추천	2	N	general		추천
+강추	3	N	general		강력 추천
+감탄	2	N	general		감탄
+찬사	2	N	general		찬사
+훌륭	3	N	general		'훌륭' 뒤 오타형까지
+환상적	3	N	general		환상적
+인상적	1	N	general		인상적
+독창적	2	N	general		독창적
+매혹적	2	N	general		매혹적
+완벽	3	N	general		완벽
+레전드	2	N	general		레전드
+기대 이상	2	N	general		기대 이상
+기대이상	2	N	general		기대이상
+웃음	1	N	general		웃음
+즐거움	2	N	general		즐거움
+재미	1	N	general		재미(재미없·재미있은 더 긴 표제어가 이긴다)
+잼	1	N	general		재미의 줄임(꿀잼·노잼은 더 긴 표제어)
+꿀잼	3	N	general		꿀잼
+존잼	3	N	general		존잼
+핵잼	3	N	general		핵잼
+개꿀잼	3	N	general		개꿀잼
+대단	2	N	general		대단(대단해·대단함)
+훈훈	2	N	general		훈훈
+희망	1	N	general		희망
+위로	1	N	general		위로
+힐링	2	N	general		힐링
+# ───── 일반 부정: 용언 ─────
+싫	-2	P	general		싫다
+나쁘	-2	P	general		나쁘다
+지루하	-2	P	general		지루하다
+지겹	-2	P	general		지겹다(ㅂ 불규칙)
+짜증나	-2	P	general		짜증나다
+짱나	-2	P	general		짜증나다의 속어(짱보다 길어서 이긴다)
+화나	-2	P	general		화나다
+실망하	-2	P	general		실망하다
+실망스럽	-2	P	general		실망스럽다
+어이없	-2	P	general		어이없다
+황당하	-2	P	general		황당하다
+허접하	-2	P	general		허접하다
+유치하	-2	P	general		유치하다
+엉성하	-2	P	general		엉성하다
+어설프	-2	P	general		어설프다
+허술하	-2	P	general		허술하다
+답답하	-2	P	general		답답하다
+불쾌하	-2	P	general		불쾌하다
+역겹	-2	P	general		역겹다
+거북하	-2	P	general		거북하다
+거북스럽	-2	P	general		거북스럽다
+찝찝하	-1	P	general		찝찝하다
+민망하	-1	P	general		민망하다
+졸리	-2	P	general		졸리다(졸려·졸린)
+망하	-2	P	general		망하다
+망치	-2	P	general		망치다
+후회하	-2	P	general		후회하다
+부족하	-1	P	general		부족하다
+모자라	-1	P	general		모자라다
+아쉽	-1	P	general		아쉽다(긍정 리뷰에도 자주 나와 약하게)
+안타깝	-1	P	general		안타깝다
+한심하	-2	P	general		한심하다
+멍청하	-2	P	general		멍청하다
+불편하	-2	P	general		불편하다
+무의미하	-2	P	general		무의미하다
+의미없	-2	P	general		의미 없다를 붙여 쓴 형태
+쓸데없	-2	P	general		쓸데없다
+형편없	-3	P	general		형편없다
+재미없	-2	P	general		재미없다
+재미업	-2	P	general		'재미없'의 오타
+재미 없	-2	N	general	start	재미 없다(띄어 쓴 구. '재미'+부정어보다 강하게)
+재밌지않	-2	N	general		붙여 쓴 '재밌지 않'
+노잼	-3	N	general		노잼
+핵노잼	-3	N	general		핵노잼
+개노잼	-3	N	general		개노잼
+어이가 없	-2	N	general		어이가 없다
+어이 없	-2	N	general		어이 없다
+잔인하	-1	P	general		잔인하다
+난잡하	-2	P	general		난잡하다
+산만하	-2	P	general		산만하다
+조잡하	-2	P	general		조잡하다
+더럽	-2	P	general		더럽다
+징그럽	-1	P	general		징그럽다
+괴롭	-2	P	general		괴롭다
+귀찮	-1	P	general		귀찮다
+미흡하	-1	P	general		미흡하다
+아깝	-2	P	general		아깝다(시간·돈이 아깝다)
+암걸리	-2	P	general		속어: 답답해서 병 걸리겠다
+낚이	-2	P	general		낚이다(속았다)
+속았	-2	N	general		속았다
+욕나오	-2	P	general		욕 나오다
+화가 나	-2	N	general	start	화가 나다(띄어 쓴 구)
+화가나	-2	N	general	start	화가 나다를 붙여 쓴 형태
+뜬금없	-2	P	general		뜬금없다
+할말을 잃	-2	N	general		할 말을 잃다
+할말없	-1	N	general		할 말 없다
+꺼져	-2	N	general		꺼져('꺼지'로 두면 '옛날꺼지만'에 걸린다)
+한심스럽	-2	P	general		한심스럽다
+떨어지	-1	P	general		떨어지다(몰입도가 떨어짐)
+평범하	-1	P	general		평범하다
+애매하	-1	P	general		애매하다
+끔찍하	-2	P	general		끔찍하다
+갑갑하	-2	P	general		갑갑하다
+갑갑	-2	N	general		갑갑함
+불가능	-1	N	general		불가능
+소용없	-1	P	general		소용없다
+모르겠	-1	N	general		모르겠다(뭔지 모르겠다)
+이해가 안	-2	N	general	start	이해가 안 된다
+이해가안	-2	N	general		이해가 안 된다를 붙여 쓴 형태
+이해 안	-2	N	general	start	이해 안 된다
+이해안	-2	N	general		이해 안 된다를 붙여 쓴 형태
+글쎄	-1	N	general		글쎄
+뭐냐	-1	N	general		뭐냐(이게 뭐냐)
+뭐야	-1	N	general		뭐야
+왜 만든	-2	N	general		왜 만든 영화
+왜 만드	-2	N	general		왜 만드는지
+왜만든	-2	N	general		붙여 쓴 형태
+왜만드	-2	N	general		붙여 쓴 형태
+유치	-2	N	general	end	유치....처럼 어간만 쓴 경우(유치원을 피하려고 어절 전체만)
+엉성	-2	N	general	end	엉성...
+지루	-2	N	general	end	지루...
+허접	-2	N	general	end	허접
+식상	-2	N	general	end	식상
+진부	-2	N	general	end	진부
+어설퍼	-2	N	general		어설퍼
+한심	-2	N	general		한심
+허무	-1	N	general		허무
+한계	-1	N	general		한계
+삽질	-2	N	general		삽질
+바보	-1	N	general		바보
+또라이	-2	N	general		또라이
+비호감	-2	N	general		비호감(호감보다 길다)
+안습	-2	N	general		안구에 습기(안타까움·한심함)
+어이상실	-2	N	general		어이상실
+헛웃음	-2	N	general		헛웃음
+무가치	-2	N	general		무가치
+질 낮	-2	N	general		질 낮은
+쯧쯧	-2	N	general		혀 차는 소리
+워스트	-3	N	general		워스트
+# ───── 일반 부정: 체언·고정 표현 ─────
+별로	-2	N	general	keep	별로('별로 ~지 않다'에서도 부정. 부정어로 뒤집지 않는다)
+최악	-3	N	general		최악
+쓰레기	-3	N	general		쓰레기
+쓰래기	-3	N	general		'쓰레기'의 오타
+실망	-2	N	general		실망
+짜증	-2	N	general		짜증(짜증스럽 포함)
+후회	-2	N	general		후회
+불만	-2	N	general		불만
+엉망	-2	N	general		엉망
+엉망진창	-3	N	general		엉망진창
+저질	-2	N	general		저질
+저급	-2	N	general		저급
+삼류	-2	N	general		삼류
+3류	-2	N	general		3류
+막장	-2	N	general		막장
+개판	-2	N	general		개판
+억지	-2	N	general		억지(억지스럽 포함)
+낭비	-2	N	general		시간낭비·전파낭비
+기대이하	-2	N	general		기대이하
+기대 이하	-2	N	general		기대 이하
+비추	-2	N	general		비추천
+노답	-2	N	general		노답
+답없	-2	N	general		답이 없다
+극혐	-3	N	general		극혐
+최하	-2	N	general		최하
+한숨	-1	N	general		한숨
+허세	-1	N	general		허세
+거품	-1	N	general		거품
+똥	-2	N	general	start	똥같은(어절 처음에서만)
+똥망	-3	N	general		똥망
+망할	-1	N	general		망할
+에러	-1	N	general		에러
+병맛	-1	N	general		병맛
+어쩔	0	N	general		차단: '어쩔 수 없'의 '쩔'이 속어 칭찬으로 잡히지 않게
+저질러	0	N	general		차단: 저지르다의 활용형(저질렀)이 '저질'로 잡히지 않게
+밖에없	0	N	general		차단: '~밖에 없다'(오직)의 '없'은 부정어가 아니다
+밖에 없	0	N	general		차단
+못지않	1	N	general		못지않다(뒤지지 않는다)
+못된	-1	N	general		못되다
+편안하	1	P	general		편안하다('안하'가 부정어로 잡히지 않게)
+불안하	-1	P	general		불안하다
+미안하	0	P	general		차단
+더럽게	0	N	general		차단: '재미 더럽게 없다'의 더럽게는 강조어(modifiers.tsv)
+미친	0	N	general		차단: 칭찬·욕 양쪽으로 쓰여 0
+어쩔수없	0	N	general		차단: '없'이 부정어로 잡히지 않게
+어쩔 수 없	0	N	general		차단
+상관없	0	N	general		차단
+끊임없	0	N	general		차단
+틀림없	0	N	general		차단
+아낌없	1	N	general		아낌없다(찬사)
+손색없	2	N	general		손색없다
+빠짐없	0	N	general		차단
+# ───── 영화 도메인 특화어 ─────
+명작	3	N	movie		명작
+걸작	3	N	movie		걸작
+수작	2	N	movie		수작
+대작	2	N	movie		대작
+띵작	3	N	movie		명작의 변형 표기
+인생영화	3	N	movie		인생영화
+인생작	3	N	movie		인생작
+명연기	3	N	movie		명연기
+명장면	2	N	movie		명장면
+연기파	2	N	movie		연기파
+일품	2	N	movie		일품
+압권	2	N	movie		압권
+백미	2	N	movie		백미
+여운	2	N	movie		여운
+몰입	2	N	movie		몰입(몰입감·몰입도 포함, '몰입이 안'은 부정어 규칙)
+흡입력	2	N	movie		흡입력
+긴장감	1	N	movie		긴장감
+볼거리	1	N	movie		볼거리('볼거리 없음'은 부정어 규칙)
+볼만하	2	P	movie		볼만하다
+볼만	2	N	movie		볼만(볼만함·볼만했)
+개연성	0	N	movie		차단: 중립 속성어. "개연성 없·부족"은 부정어·부족이 판단한다
+웰메이드	2	N	movie		웰메이드
+킬링타임	1	N	movie		킬링타임
+소름돋	2	P	movie		소름 돋다
+소름	1	N	movie		소름
+카타르시스	2	N	movie		카타르시스
+전율	2	N	movie		전율
+영상미	2	N	movie		영상미
+연출력	0	N	movie		차단: 중립 속성어
+괴작	-2	N	movie		괴작
+빵점	-2	N	movie		빵점
+흔한	-1	N	movie		흔한 액션물(새로움이 없다)
+아류	-1	N	movie		아류작
+기대했	-1	N	movie		기대했는데(영화 리뷰에서는 대개 실망)
+슬프	1	P	movie		슬프다(영화에서는 대개 감동)
+울었	1	N	movie		울었다(영화에서는 대개 감동)
+눈물	1	N	movie		눈물
+졸작	-3	N	movie		졸작
+망작	-3	N	movie		망작
+범작	-1	N	movie		범작
+발연기	-3	N	movie		발연기
+국어책	-2	N	movie		국어책 읽는 연기
+뻔하	-2	P	movie		뻔하다(뻔한 스토리)
+뻔히	-1	N	movie		뻔히
+식상하	-2	P	movie		식상하다
+진부하	-2	P	movie		진부하다
+신파	-1	N	movie		신파
+클리셰	-1	N	movie		클리셰
+오글거리	-1	P	movie		오글거리다
+오그라들	-1	P	movie		오그라들다
+오그라드	-1	N	movie		오그라드는(ㄹ 탈락)
+오글	-1	N	movie		오글
+재탕	-2	N	movie		재탕
+우려먹	-2	P	movie		우려먹다
+울궈먹	-2	P	movie		'우려먹'의 구어형
+질질	-2	N	movie		질질 끌다
+늘어지	-1	P	movie		늘어지다
+산으로	-1	N	movie		이야기가 산으로 간다
+알바	-1	N	movie		평점 알바(대부분 높은 평점을 비난하는 부정 리뷰)
+알바생	-1	N	movie		평점 알바
+시간아깝	-3	P	movie		시간 아깝다를 붙여 쓴 형태
+돈아깝	-3	P	movie		돈 아깝다를 붙여 쓴 형태
+1점도 아깝	-3	N	movie	keep	1점도 아깝다(뒤 문장의 '없나' 같은 말로 뒤집지 않는다)
+아동용	-1	N	movie		아동용
+다큐	0	N	movie		차단: 장르명
+B급	0	N	movie		차단: 장르명
+# ───── 고객 문의·상품 리뷰 도메인 특화어 ─────
+친절하	2	P	service		친절하다
+불친절하	-3	P	service		불친절하다(친절하보다 길어서 이긴다)
+친절	2	N	service		친절
+불친절	-3	N	service		불친절
+신속하	2	P	service		신속하다
+꼼꼼하	1	P	service		꼼꼼하다
+맛있	2	P	service		맛있다
+맛잇	2	P	service		'맛있'의 오타
+맛나	2	P	service		맛나다
+맛없	-2	P	service		맛없다
+맛 없	-2	N	service		맛 없다
+푸짐하	2	P	service		푸짐하다
+저렴하	1	P	service		저렴하다
+비싸	-2	P	service		비싸다
+느리	-1	P	service		느리다
+지연	-2	N	service		배송 지연
+누락	-2	N	service		누락
+파손	-2	N	service		파손
+불량	-2	N	service		불량
+하자	-2	N	service		하자
+고장	-2	N	service		고장
+오배송	-2	N	service		오배송
+환불	-1	N	service		환불 요청은 대개 불만
+반품	-1	N	service		반품
+바가지	-2	N	service		바가지
+가성비	1	N	service		가성비('가성비 별로'는 별로가 더 강하다)
+혜자	2	N	service		혜자(값에 비해 푸짐함)
+정성	1	N	service		정성
+싸구려	-2	N	service		싸구려
+엉터리	-2	N	service		엉터리
+# ───── 이모티콘·자모·영어 (토큰 전체가 일치해야 한다. 같은 글자 반복은 2개로 줄여 비교) ─────
+^^	1	E	general		웃는 얼굴
+♥	2	E	general		하트
+♡	2	E	general		하트
+ㅎㅎ	1	E	general		웃음
+ㅋㅋ	0.5	E	general		웃음. 비꼬는 부정 리뷰에도 많이 나와 약하게
+ㅡㅡ	-2	E	general		못마땅한 얼굴
+-_-	-1	E	general		못마땅한 얼굴
+;;	-1	E	general		당황
+ㅉㅉ	-2	E	general		혀 차는 소리
+ㅗ	-3	E	general		욕설 손짓
+bb	2	E	general		엄지 두 개
+good	2	E	general		영어
+great	2	E	general		영어
+best	3	E	general		영어
+love	1	E	general		영어
+nice	2	E	general		영어
+awesome	3	E	general		영어
+amazing	3	E	general		영어
+bad	-2	E	general		영어
+worst	-3	E	general		영어
+boring	-2	E	general		영어
+oo	-1	E	general		NSMC가 욕설을 OO로 가린 흔적
+ㅠㅠ	1	E	general		우는 얼굴(영화 리뷰에서는 감동이 더 많다. ㅜㅜ도 ㅠㅠ로 모은다)

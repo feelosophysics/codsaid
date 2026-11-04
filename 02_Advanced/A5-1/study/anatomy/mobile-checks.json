@@ -1,0 +1,13 @@
+[
+  ["wait", 200],
+  ["shot", "study/anatomy/shots/phone.png", "main", 1],
+  ["eval", "(()=>{if(document.documentElement.scrollWidth>innerWidth)throw Error('horizontal overflow');return '390px overflow check passed'})()"],
+  ["key", "End", "#stage"],
+  ["eval", "(()=>{if(window.__result.tp!==0||window.__result.fn!==240)throw Error('reduced motion End failed');return 'reduced motion and threshold 1 verified'})()"],
+  ["lines"],
+  ["key", "Home", "#stage"],
+  ["eval", "(()=>{if(window.__result.tp!==240||window.__result.fp!==1760)throw Error('threshold 0 failed');return 'threshold 0 verified'})()"],
+  ["lines"],
+  ["click", "#near"],
+  ["shot", "study/anatomy/shots/mechanism-light-4x.png", ".iso-plate", 4]
+]

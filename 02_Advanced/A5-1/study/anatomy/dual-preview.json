@@ -1,0 +1,9 @@
+[
+ ["click","[data-sample='2']"],
+ ["click","#predict"],
+ ["until","document.body.dataset.ready==='true'",6000],
+ ["click","#reveal"],
+ ["eval","document.activeElement.blur()"],
+ ["shot","study/anatomy/shots/dual-scene.png",".dual-layout",1],
+ ["shot","study/anatomy/shots/dual-mechanism-light.png",".iso-plate",4]
+]

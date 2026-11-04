@@ -1,0 +1,33 @@
+/*
+ * ThemeToggle.css — 테마 토글 버튼 스타일
+ */
+
+.theme-toggle {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 50%;        /* 원형 버튼 */
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.theme-toggle:hover {
+  background: var(--accent-primary-light);
+  border-color: var(--accent-primary);
+  transform: rotate(20deg) scale(1.1); /* 살짝 회전 + 확대 */
+}
+
+.theme-toggle-icon {
+  font-size: 1.2rem;
+  line-height: 1;
+  transition: transform var(--transition-normal);
+}
+
+/* 클릭 시 — 아이콘이 살짝 줄어드는 효과 */
+.theme-toggle:active .theme-toggle-icon {
+  transform: scale(0.85);
+}
