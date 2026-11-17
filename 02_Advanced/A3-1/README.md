@@ -98,6 +98,7 @@ uv run python -m src.run_all --data data/real --out outputs/real
 | 사진 한 장이 스캔본이 되는 계산을 숫자로 따라가고 싶을 때 | [실행 노트북](notebooks/scanner_walkthrough.ipynb) |
 | 블러·Canny·투시 변환을 브라우저에서 직접 조작해 보고 싶을 때 | [HTML 학습 자료](study/a3-1.html) |
 | 함수별 역할과 코드 읽는 순서가 궁금할 때 | [코드 해설](study/code-walkthrough.md) |
+| 꼭짓점 정렬·투시 변환 같은 핵심 개념을 직접 움직여 보며 익히고 싶을 때 | [개념 연습장](study/concept-lab.html) |
 | 실패 분석과 실험 전체를 보고 싶을 때 | [분석 보고서](REPORT.md) |
 
 ## 자세한 근거

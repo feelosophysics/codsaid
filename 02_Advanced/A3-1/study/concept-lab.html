@@ -1,0 +1,868 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A3-1 개념 연습장</title>
+<style>
+:root{--bg:#fbfaf7;--surface:#fff;--ink:#1f1e1b;--muted:#64625b;--line:#dcd9cf;--soft:#f1efe8;--coral:#c4512a;--coral-soft:#fbe7dd;--teal:#13785a;--teal-soft:#dcf1e8;--amber:#9a650f;--amber-soft:#faefd9;--mono:ui-monospace,SFMono-Regular,Consolas,monospace}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1a1917;--surface:#23221f;--ink:#ebe9e3;--muted:#a9a69c;--line:#3b3a35;--soft:#2c2b27;--coral:#f08a62;--coral-soft:#3e2518;--teal:#4fc89d;--teal-soft:#15322a;--amber:#e8b45a;--amber-soft:#3a2c12}}
+:root[data-theme="dark"]{--bg:#1a1917;--surface:#23221f;--ink:#ebe9e3;--muted:#a9a69c;--line:#3b3a35;--soft:#2c2b27;--coral:#f08a62;--coral-soft:#3e2518;--teal:#4fc89d;--teal-soft:#15322a;--amber:#e8b45a;--amber-soft:#3a2c12}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.75 system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;word-break:keep-all;overflow-wrap:anywhere}
+main,header,footer{max-width:880px;margin:0 auto;padding:0 16px}
+header{padding-top:48px;padding-bottom:8px}
+h1{font-size:30px;line-height:1.3;margin:0 0 12px;letter-spacing:-.01em}
+h2{font-size:23px;line-height:1.4;margin:0 0 6px}
+h3{font-size:18px;margin:34px 0 8px}
+p{margin:10px 0}
+a{color:var(--teal)}
+code{font-family:var(--mono);font-size:.88em;background:var(--soft);padding:1px 5px;border-radius:5px}
+.lead{color:var(--muted);font-size:17px;margin:0 0 20px}
+.flow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:18px 0 8px;font-size:14px}
+.flow a{display:inline-block;text-decoration:none;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:4px 12px}
+.flow a:hover{border-color:var(--teal)}
+.flow span{color:var(--muted)}
+section{padding:44px 0 24px;border-top:1px solid var(--line);margin-top:28px}
+.kicker{font-size:13px;letter-spacing:.06em;color:var(--teal);font-weight:600;margin:0 0 4px}
+.q{color:var(--muted);margin:0 0 18px}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:15px;display:block;overflow-x:auto}
+th,td{border-bottom:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{font-weight:600;background:var(--soft)}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+.hl{background:var(--coral-soft)}
+.ok{color:var(--teal);font-weight:600}
+.bad{color:var(--coral);font-weight:600}
+.formula{font-family:var(--mono);background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--teal);border-radius:0;padding:10px 14px;margin:14px 0;font-size:15px;overflow-x:auto;white-space:pre}
+.lab{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;margin:22px 0}
+.lab-title{font-weight:600;margin:0 0 2px}
+.lab-hint{color:var(--muted);font-size:14px;margin:0 0 12px}
+.lab svg{display:block;width:100%;height:auto;touch-action:none;user-select:none;-webkit-user-select:none}
+#vec-svg,#cnt-svg{max-width:540px;margin:0 auto}
+.controls{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin:12px 0 4px;font-size:14px}
+.controls label{display:flex;align-items:center;gap:6px}
+.controls input[type=range]{width:150px;accent-color:var(--teal)}
+.controls output{font-family:var(--mono);min-width:3.2em;display:inline-block}
+.btns{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 0}
+button{font:inherit;font-size:13px;color:var(--ink);background:var(--soft);border:1px solid var(--line);border-radius:8px;padding:5px 10px;cursor:pointer}
+button:hover{border-color:var(--teal)}
+button.on{background:var(--teal-soft);border-color:var(--teal)}
+.readout{font-size:14px;margin-top:12px;background:var(--soft);border-radius:10px;padding:10px 12px}
+.readout table{margin:6px 0 0;font-size:13px}
+.readout td,.readout th{padding:4px 8px}
+.calc{display:flex;flex-wrap:wrap;gap:4px 18px;font-family:var(--mono);font-size:14px}
+.answer{border:1.5px solid var(--teal);background:var(--teal-soft);border-radius:14px;padding:14px 18px;margin:26px 0 12px}
+.answer .tag{font-size:13px;font-weight:700;color:var(--teal);letter-spacing:.04em;margin:0}
+.answer p{margin:8px 0}
+.answer .follow{border-top:1px dashed var(--teal);margin-top:12px;padding-top:6px;font-size:15px}
+.trap{border-left:4px solid var(--coral);background:var(--coral-soft);padding:8px 14px;margin:16px 0;border-radius:0}
+.trap b{color:var(--coral)}
+.trap ul{margin:4px 0;padding-left:20px}
+details.check{border:1px solid var(--line);border-radius:10px;padding:8px 14px;margin:8px 0;background:var(--surface)}
+details.check summary{cursor:pointer;font-weight:500}
+details.check[open] summary{margin-bottom:6px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.three{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.cap{font-size:13px;color:var(--muted);margin:4px 0 0;text-align:center}
+.stack{position:relative}
+.stack canvas{display:block;width:100%;height:auto;border-radius:6px;image-rendering:pixelated}
+.stack svg{position:absolute;inset:0;width:100%;height:100%}
+.matrix{display:inline-grid;grid-template-columns:repeat(3,auto);gap:2px 14px;font-family:var(--mono);font-size:13px;border-left:2px solid var(--muted);border-right:2px solid var(--muted);padding:2px 10px;vertical-align:middle}
+.matrix span{text-align:right}
+.note{font-size:14px;color:var(--muted)}
+.tx{fill:var(--ink);font-size:13px}
+.tx-m{fill:var(--muted);font-size:12px}
+.tx-c{fill:var(--coral);font-size:13px;font-weight:700}
+.tx-t{fill:var(--teal);font-size:13px;font-weight:700}
+.axis{stroke:var(--muted);stroke-width:1}
+.guide{stroke:var(--muted);stroke-width:1;stroke-dasharray:4 4;fill:none;opacity:.7}
+.ln-teal{stroke:var(--teal);stroke-width:2.5;fill:none}
+.ln-coral{stroke:var(--coral);stroke-width:2.5;fill:none}
+.ln-muted{stroke:var(--muted);stroke-width:1.6;fill:none}
+.dash{stroke-dasharray:6 4}
+.poly{fill:var(--soft);stroke:var(--muted);stroke-width:1}
+.handle{fill:var(--surface);stroke:var(--ink);stroke-width:2;cursor:grab}
+.handle:hover{stroke:var(--teal);stroke-width:3}
+.dot-c{fill:var(--coral)}.dot-t{fill:var(--teal)}.dot-m{fill:var(--muted)}
+.mk-teal{stroke:var(--teal)}.mk-coral{stroke:var(--coral)}.mk-muted{stroke:var(--muted)}
+footer{color:var(--muted);font-size:14px;padding-top:30px;padding-bottom:60px;border-top:1px solid var(--line);margin-top:40px}
+@media (max-width:640px){h1{font-size:25px}h2{font-size:20px}.two,.three{grid-template-columns:1fr}.controls input[type=range]{width:120px}}
+</style>
+</head>
+<body>
+<header>
+<p class="kicker">A3-1 문서 스캐너</p>
+<h1>문서 스캐너의 핵심 개념, 직접 움직여 보며 익히기</h1>
+<p class="lead">사진 속 종이를 찾아 반듯하게 펴는 과정을 단계마다 직접 움직여 본다. 각 장 끝의 <b>한 문단 정리</b>를 보지 않고 자기 말로 설명할 수 있으면 그 장의 핵심을 잡은 것이다.</p>
+<div class="flow">
+<a href="#basics">0. 점·화살표·방향</a><span>→</span>
+<a href="#canny">1. Canny 엣지</a><span>→</span>
+<a href="#contour">2. 윤곽선에서 사각형</a><span>→</span>
+<a href="#order">3. 꼭짓점 정렬</a><span>→</span>
+<a href="#warp">4. 투시 변환</a><span>→</span>
+<a href="#adaptive">5. 적응형 이진화</a>
+</div>
+<p class="note">장 순서는 실제 파이프라인 순서(<code>scan()</code>: 회색·블러 → Canny → 윤곽선 → 정렬 → 펴기 → 이진화)와 같다. 0장은 3장과 4장에서 쓰는 도구를 미리 만든다.</p>
+</header>
+
+<main>
+
+<!-- ───────────── 0 ───────────── -->
+<section id="basics">
+<p class="kicker">0장 · 준비</p>
+<h2>점, 화살표, 그리고 "얼마나 오른쪽을 향하나"</h2>
+<p class="q">3장의 꼭짓점 정렬과 2장의 볼록 판정은 모두 이 장의 도구 세 개로 계산한다.</p>
+
+<h3>좌표: (x, y)는 "오른쪽으로 몇 칸, 아래로 몇 칸"</h3>
+<p>원점 (0, 0)은 이미지의 <b>왼쪽 위</b>다. x는 오른쪽으로, y는 <b>아래로</b> 커진다. 이미지가 맨 윗줄부터 한 줄씩 저장되기 때문이다. 그래서 (300, 50)은 (100, 400)보다 위에 있다.</p>
+<p>헷갈리는 이유는 같은 점을 두 가지 순서로 쓰기 때문이다.</p>
+<table>
+<tr><th>쓰는 곳</th><th>순서</th><th>예</th></tr>
+<tr><td>OpenCV의 점 좌표</td><td>(x, y) = (가로, 세로)</td><td><code>(300, 50)</code></td></tr>
+<tr><td>NumPy 배열 인덱스</td><td>[y, x] = [행, 열]</td><td><code>image[50, 300]</code> — 같은 점</td></tr>
+<tr><td>이미지 <code>shape</code></td><td>(높이, 너비)</td><td><code>(960, 720)</code> = 세로 960, 가로 720</td></tr>
+</table>
+
+<h3>벡터: 점이 아니라 "이동"</h3>
+<p>점 A(100, 100)은 <b>위치</b>다. B − A = (300, 150) − (100, 100) = (200, 50)은 <b>이동</b>이다. "오른쪽으로 200, 아래로 50 가라"는 길 안내라서 출발점 정보는 없다. 사각형의 꼭짓점에서 다음 꼭짓점을 빼면 그 <b>변이 어느 쪽으로 얼마나 뻗었는지</b>가 나온다. 이것을 변 벡터라 부르고, 두 숫자를 각각 <b>dx</b>(오른쪽으로 간 양), <b>dy</b>(아래로 간 양)라 부른다. 여기서 d는 "차이(difference)"이고 미분과는 상관없다.</p>
+
+<h3>오른쪽 정도: 거리를 빼고 방향만 남기기</h3>
+<p>화살표에는 <b>얼마나 멀리</b>와 <b>어느 쪽으로</b>가 섞여 있다. dx만 비교하면 긴 화살표가 무조건 이긴다. (200, 400)은 거의 아래를 향하는데도 dx가 200이라 (100, 0)보다 "더 오른쪽"처럼 보인다. 그래서 모든 화살표를 <b>길이 1로 줄인 뒤</b> x값을 비교한다.</p>
+<div class="formula">① dx, dy를 읽는다
+② 길이 = √(dx² + dy²)        ← 직각삼각형의 빗변 (피타고라스). (3, 4)면 √25 = 5
+③ 오른쪽 정도 = dx ÷ 길이     ← 1이면 정확히 오른쪽, 0이면 위나 아래, −1이면 정확히 왼쪽</div>
+<p>수학에서는 ③을 cos(코사인)이라 부른다. 코드에서는 <a href="../src/geometry.py#L96"><code>alignment = edges[:, 0] / lengths</code></a> 한 줄이다.</p>
+
+<div class="lab">
+<p class="lab-title">직접 해 보기 · 화살표 끝을 끌어 보자</p>
+<p class="lab-hint">초록 화살표가 변 벡터, 점선 원 위의 주황 화살표가 "길이 1로 줄인" 같은 방향 화살표다. 주황 점이 가로축에 닿는 위치가 오른쪽 정도다.</p>
+<svg id="vec-svg" viewBox="0 0 400 280" aria-label="벡터와 오른쪽 정도"></svg>
+<div class="readout" id="vec-out"></div>
+</div>
+
+<details class="check"><summary>예측: (3, 0)과 (300, 0) 중 어느 쪽이 "더 오른쪽"을 향하나?</summary>
+같다. 둘 다 길이로 나누면 (1, 0)이고 오른쪽 정도는 1이다. (300, 0)은 100배 <b>멀리</b> 갈 뿐 100배 더 오른쪽을 <b>향하지는</b> 않는다.</details>
+<details class="check"><summary>계산: (8, 6)의 오른쪽 정도는?</summary>
+길이 = √(64 + 36) = 10, 오른쪽 정도 = 8 ÷ 10 = <b>0.8</b>.</details>
+</section>
+
+<!-- ───────────── 1 ───────────── -->
+<section id="canny">
+<p class="kicker">1장 · Canny 엣지</p>
+<h2>Canny는 왜 임계값이 두 개인가?</h2>
+<p class="q">다루는 것: low와 high가 각각 하는 일, 그리고 임계값 하나로는 안 되는 이유.</p>
+
+<h3>비교하는 것은 밝기가 아니라 기울기</h3>
+<p>엣지는 <b>밝기가 급하게 바뀌는 곳</b>이다. Canny는 그 "급함"을 숫자로 잰 <b>기울기 크기</b>(옆 픽셀과의 밝기 차이)를 임계값과 비교한다. 밝기 200으로 균일한 종이 한가운데는 밝기는 높지만 옆도 200이라 기울기가 0에 가깝다. 그래서 엣지가 아니다. 어두운 책상(80)과 흰 종이(200)가 맞닿은 곳은 기울기가 크다.</p>
+<p>Canny는 네 단계로 진행한다.</p>
+<ol>
+<li><b>블러</b>로 잡음을 줄인다. 이 프로젝트는 5×5 가우시안 블러를 쓴다.</li>
+<li>픽셀마다 <b>기울기</b>를 계산한다.</li>
+<li>두꺼운 엣지를 가장 강한 한 줄만 남기고 <b>가늘게 깎는다</b>(비최대 억제).</li>
+<li><b>두 임계값</b>으로 판정하고, 이어진 것만 남긴다(이력 임계값, hysteresis).</li>
+</ol>
+<div class="formula">기울기 ≥ high          → 확실한 엣지 ("씨앗")
+low ≤ 기울기 &lt; high   → 씨앗과 이어져 있을 때만 엣지
+기울기 &lt; low          → 버림</div>
+
+<div class="lab">
+<p class="lab-title">직접 해 보기 · 선 하나를 따라 잰 기울기</p>
+<p class="lab-hint">막대 하나가 픽셀 하나의 기울기다. <span class="ok">초록</span> = 남는 엣지, <span class="bad">주황</span> = low는 넘지만 씨앗과 이어지지 않아 버려진 점, 회색 = low 미만. 이 그림은 원리를 보이려고 2차원 이미지를 한 줄로 줄였다(설명용 값).</p>
+<svg id="canny-svg" viewBox="0 0 640 270" aria-label="Canny 이력 임계값"></svg>
+<div class="controls">
+<label>low <input type="range" id="canny-low" min="0" max="250" value="50"><output id="canny-low-o">50</output></label>
+<label>high <input type="range" id="canny-high" min="0" max="250" value="150"><output id="canny-high-o">150</output></label>
+<label><input type="checkbox" id="canny-single"> 임계값 하나만 쓰기</label>
+</div>
+<div class="btns">
+<button data-canny="50,150">기본값 (50, 150)</button>
+<button data-canny="150,150">하나만, 높게 (150)</button>
+<button data-canny="60,60">하나만, 낮게 (60)</button>
+</div>
+<div class="readout" id="canny-out"></div>
+</div>
+
+<p>임계값을 하나만 쓰면 두 문제 중 하나를 고를 수밖에 없다. 높게 잡으면 그림자 구간에서 경계가 <b>끊기고</b>, 끊긴 경계는 윤곽선이 닫히지 않아 2장에서 사각형을 찾지 못한다. 낮게 잡으면 잡음 봉우리까지 엣지가 되어 <b>가짜 윤곽선</b>이 생긴다. 두 임계값은 "출발은 엄격하게(high), 이어 가기는 너그럽게(low)"로 이 둘을 동시에 피한다. 높이가 비슷한 두 구간을 <b>이어져 있느냐</b>로 갈라내는 것이 핵심이다.</p>
+<p>오른쪽의 "약한 경계"처럼 경계 전체가 약하면 씨앗이 없어서 통째로 사라진다. 이 프로젝트에서 사진을 어둡게 만들며 잰 실험(<a href="../outputs/04_darkening.png">04_darkening.png</a>)이 같은 현상을 보인다. 밝기를 0.25배로 줄이자 경계에서 high(150)를 넘는 점이 하나도 남지 않아 검출률이 0%가 됐다. 또 <a href="../outputs/09_dilemma.png">09_dilemma.png</a>에서는 두 사진이 성공하는 (low, high) 영역이 서로 겹치지 않았다. 고정된 숫자 한 쌍으로는 둘 다 성공시킬 수 없다는 뜻이다(실행 결과).</p>
+
+<div class="trap"><b>자주 헷갈리는 점</b>
+<ul>
+<li>"low와 high 사이 값만 엣지다" — 아니다. high 이상은 무조건 남고, 사이 값은 조건부로 남는다.</li>
+<li>"임계값 150 = 밝기 150" — 아니다. 밝기 차이(기울기)의 크기다.</li>
+<li>"low를 낮추면 어두운 사진도 잡힌다" — 씨앗(high 이상)이 하나도 없으면 low가 아무리 낮아도 남는 것이 없다.</li>
+</ul></div>
+
+<div class="answer"><p class="tag">한 문단 정리</p>
+<p>Canny는 블러한 이미지에서 픽셀마다 밝기 기울기를 구하고 엣지를 한 줄로 가늘게 깎은 뒤 두 임계값으로 판정합니다. 기울기가 high 이상인 점은 확실한 엣지로 삼고, low와 high 사이인 점은 확실한 엣지와 이어져 있을 때만 남기며, low 미만은 버립니다.</p>
+<p>임계값을 하나만 높게 잡으면 그림자처럼 약해진 구간에서 경계가 끊기고, 낮게 잡으면 배경 잡음까지 엣지가 됩니다. 그래서 출발은 엄격하게, 이어 가기는 너그럽게 두 기준을 나눕니다.</p>
+<p class="follow"><b>더 들어가면 · "그래도 실패하는 사진은?"</b> 경계 전체가 high 아래로 약하면 씨앗이 없어 경계가 통째로 사라집니다. 이 프로젝트에서는 어두운 사진이 그랬고, 사진마다 맞는 임계값이 달라 고정값 한 쌍으로는 모든 사진을 처리할 수 없었습니다.</p>
+</div>
+<details class="check"><summary>예측: low = 50으로 두고 high만 1000(어떤 기울기도 못 넘는 값)으로 올리면?</summary>
+엣지가 거의 남지 않는다. 씨앗이 하나도 없으니 이어 갈 출발점이 없다.</details>
+</section>
+
+<!-- ───────────── 2 ───────────── -->
+<section id="contour">
+<p class="kicker">2장 · 윤곽선에서 사각형까지</p>
+<h2>사각형의 윤곽선은 어떻게 찾는가?</h2>
+<p class="q">다루는 것: OpenCV가 해 주는 부분과 직접 판단하는 부분의 경계.</p>
+
+<p>Canny 결과(검은 바탕의 흰 선)에서 문서의 네 꼭짓점을 얻기까지 다섯 단계를 거친다. 코드는 <a href="../src/scanner.py#L264"><code>find_document_quad</code></a>다. 아래 숫자는 E01 사진의 실행 결과다.</p>
+<table>
+<tr><th>단계</th><th>하는 일</th><th>누가</th><th class="num">E01</th></tr>
+<tr><td>0. 닫힘 연산</td><td>선의 1–2픽셀 틈을 메워 테두리를 닫는다(선을 두껍게 → 다시 얇게)</td><td>OpenCV</td><td class="num"></td></tr>
+<tr><td>1. <code>findContours</code></td><td>흰 선 덩어리마다 테두리를 따라 돌며 좌표를 기록한다</td><td>OpenCV</td><td class="num">윤곽선 374개</td></tr>
+<tr><td>2. 면적 (R4)</td><td>화면의 5% 미만, 98% 초과는 버린다</td><td>직접</td><td class="num">3개 남음</td></tr>
+<tr><td>3. <code>approxPolyDP</code> (R5)</td><td>구불구불한 점을 꼭짓점만 남기고, <b>정확히 4개</b>인지 본다</td><td>OpenCV + 직접</td><td class="num">점 246개 → 4개</td></tr>
+<tr><td>4. <code>is_convex</code> (R6)</td><td>네 모서리에서 모두 같은 쪽으로 꺾는지 본다</td><td>직접 구현</td><td class="num">통과</td></tr>
+<tr><td>5. 가장 큰 것 (R7)</td><td>남은 후보 중 면적이 가장 큰 것을 고른다</td><td>직접</td><td class="num">최종 사각형</td></tr>
+</table>
+
+<h3><code>findContours</code>는 문서가 뭔지 모른다</h3>
+<p>흰 선 위를 개미가 한 바퀴 걸으며 발자국 좌표를 적는다고 생각하면 된다. 글자, 책상 무늬, 그림자 경계까지 흰 덩어리마다 하나씩 기록하므로 374개나 나온다. 그중 문서를 골라내는 것은 뒤의 규칙들이 하는 일이다.</p>
+
+<h3><code>approxPolyDP</code>: 직선에서 ε 넘게 벗어난 점만 꼭짓점</h3>
+<p>종이 테두리는 픽셀 단위로 보면 울퉁불퉁해서 점이 수백 개다. Douglas–Peucker 알고리즘은 이렇게 줄인다.</p>
+<ol>
+<li>구간의 양 끝을 직선으로 잇는다.</li>
+<li>그 직선에서 <b>가장 멀리 떨어진 점</b>을 찾는다.</li>
+<li>그 거리가 ε보다 크면 진짜 꼭짓점으로 남기고, 그 점을 기준으로 구간을 둘로 나눠 1부터 반복한다. ε 이하면 사이의 점을 모두 지운다.</li>
+</ol>
+<p>ε는 고정 숫자가 아니라 <b>둘레 × 0.02</b>다. E01은 둘레가 2,229라 ε가 약 45px다. 둘레에 비례시키는 이유는 크게 찍힌 문서든 작게 찍힌 문서든 같은 기준으로 판단하기 위해서다. 0장에서 길이로 나눈 것과 같은 발상이다.</p>
+
+<h3><code>is_convex</code>: 둘레를 걸으며 매번 같은 쪽으로 꺾는가</h3>
+<p>꼭짓점이 4개여도 부메랑처럼 한 점이 안으로 들어간 <b>오목</b> 사각형일 수 있다. 평평한 직사각형 종이는 어떤 각도에서 찍어도 사진 속에서 항상 <b>볼록</b>하다. 그래서 오목하면 문서가 아니라고 본다. 꺾는 방향은 들어오는 변 a와 나가는 변 b로 계산한다.</p>
+<div class="formula">aₓ × b_y − a_y × bₓ   &gt; 0 이면 화면에서 오른쪽(시계 방향)으로 꺾음
+                      &lt; 0 이면 왼쪽(반시계 방향)으로 꺾음
+예: 오른쪽으로 가다 (1, 0) 아래로 꺾으면 (0, 1) → 1×1 − 0×0 = 1 &gt; 0</div>
+<table>
+<tr><th>사각형 (둘레 순서)</th><th>네 모서리의 값</th><th>판정</th></tr>
+<tr><td>(0,0) → (4,0) → (4,3) → (0,3)</td><td>12, 12, 12, 12</td><td class="ok">모두 같은 부호 → 볼록</td></tr>
+<tr><td>(0,0) → (4,0) → <b>(1,1)</b> → (0,3)</td><td>4, <b>−5</b>, 3, 12</td><td class="bad">부호가 섞임 → 오목</td></tr>
+</table>
+<p>모두 음수여도 볼록이다. 반대 방향으로 돌았을 뿐이다. 수학에서는 이 계산을 2차원 외적이라 부른다. <a href="../src/geometry.py#L121"><code>is_convex</code></a>는 이 프로젝트에서 직접 구현한 함수이고, OpenCV에도 같은 일을 하는 <code>cv2.isContourConvex</code>가 있다. 이 검사는 점이 둘레 순서대로 있어야 맞게 나오는데, <code>approxPolyDP</code>가 윤곽선을 따라가며 점을 남기므로 이미 그 순서다. 다만 <b>어느 점이 좌상인지는 아직 모른다.</b> 그것이 3장의 일이다.</p>
+
+<div class="lab">
+<p class="lab-title">직접 해 보기 · ε를 바꾸고, 손가락으로 가려 보자</p>
+<p class="lab-hint">회색 점 = <code>findContours</code>가 준 테두리 점, 주황 선 = <code>approxPolyDP</code> 결과. 왼쪽 아래 막대가 ε의 길이다(설명용 도형).</p>
+<svg id="cnt-svg" viewBox="0 0 400 300" aria-label="approxPolyDP 실험"></svg>
+<div class="controls">
+<label>ε 비율 <input type="range" id="cnt-eps" min="1" max="150" value="20"><output id="cnt-eps-o">0.020</output></label>
+<label><input type="checkbox" id="cnt-dent"> 손가락이 윗변을 가림</label>
+</div>
+<div class="readout" id="cnt-out"></div>
+</div>
+
+<div class="trap"><b>자주 헷갈리는 점</b>
+<ul>
+<li>"<code>findContours</code>가 사각형을 찾아 준다" — 흰 덩어리마다 테두리 점 목록을 줄 뿐이다.</li>
+<li>"<code>is_convex</code>가 꼭짓점이 4개인지 센다" — 개수는 <code>approxPolyDP</code> 결과로 본다. <code>is_convex</code>는 꺾는 방향만 본다.</li>
+<li>"ε는 클수록 안정적이다" — 너무 크면 진짜 모서리까지 지워져 꼭짓점이 4개보다 적어진다.</li>
+</ul></div>
+
+<div class="answer"><p class="tag">한 문단 정리</p>
+<p>엣지 이미지에서 OpenCV의 <code>findContours</code>로 흰 선마다 테두리 점 목록을 얻고, 면적이 화면의 5–98%인 것만 남깁니다. 각 윤곽선을 <code>approxPolyDP</code>로 둘레의 2% 오차 안에서 꼭짓점만 남겨 정확히 4개인지 봅니다.</p>
+<p>그다음 직접 구현한 <code>is_convex</code>로 네 모서리에서 꺾는 방향(2차원 외적의 부호)이 모두 같은지 확인합니다. 평평한 종이는 사진에서 항상 볼록하기 때문입니다. 통과한 후보 중 면적이 가장 큰 것을 문서로 고릅니다.</p>
+</div>
+<details class="check"><summary>예측: 손가락이 가장자리를 가려 꼭짓점이 6개가 됐다. 어느 규칙에서 탈락하나?</summary>
+R5(꼭짓점 정확히 4개)에서 탈락한다. 위 실험에서 "손가락" 상자를 켜 확인할 수 있다.</details>
+</section>
+
+<!-- ───────────── 3 ───────────── -->
+<section id="order">
+<p class="kicker">3장 · 꼭짓점 정렬</p>
+<h2>네 꼭짓점을 어떤 기하학적 원리로 정렬하는가?</h2>
+<p class="q">다루는 것: 라이브러리 없이 좌상·우상·우하·좌하를 정하는 원리, 그리고 흔히 쓰는 x+y 방식과의 비교.</p>
+
+<h3>왜 정렬이 필요한가</h3>
+<p>투시 변환(4장)은 "원본의 이 점 → 결과의 좌상 (0, 0)"처럼 점을 <b>짝지어</b> 편다. 짝이 어긋나면 결과가 90°·180° 돌거나 뒤집히고, 같은 점이 두 번 들어가면 아예 깨진다. 그런데 <code>approxPolyDP</code>가 준 네 점은 둘레 순서이긴 해도 <b>어느 점부터 시작하는지</b>, 시계 방향인지 반시계 방향인지가 정해져 있지 않다. 좋은 정렬 규칙은 두 조건을 지켜야 한다.</p>
+<ol>
+<li>네 점에 <b>서로 다른</b> 역할(TL, TR, BR, BL)을 하나씩 준다.</li>
+<li>TL 다음 TR처럼, 순서상 이웃한 점은 실제로 변으로 이어져 있다.</li>
+</ol>
+
+<h3>x+y 방식: 왜 그렇게 정하고, 언제 무너지나</h3>
+<p>네 꼭짓점을 "x가 큰가 작은가, y가 큰가 작은가"로 나누면 규칙이 바로 나온다. x가 작으면 왼쪽, y가 작으면 위다.</p>
+<table>
+<tr><th>꼭짓점</th><th>x</th><th>y</th><th>그래서</th></tr>
+<tr><td>TL (왼쪽 위)</td><td>작음</td><td>작음</td><td>작은 수 + 작은 수 → <b>x+y가 가장 작다</b></td></tr>
+<tr><td>BR (오른쪽 아래)</td><td>큼</td><td>큼</td><td><b>x+y가 가장 크다</b></td></tr>
+<tr><td>TR (오른쪽 위)</td><td>큼</td><td>작음</td><td>작은 수 − 큰 수 → <b>y−x가 가장 작다</b></td></tr>
+<tr><td>BL (왼쪽 아래)</td><td>작음</td><td>큼</td><td><b>y−x가 가장 크다</b></td></tr>
+</table>
+<p>y−x가 따로 필요한 이유는 TR과 BL이 x+y로는 둘 다 중간값이라 구분되지 않기 때문이다. x+y가 같은 점들은 <b>↗ 방향 대각선</b> 한 줄 위에 놓인다. 예를 들어 (300, 100), (200, 200), (100, 300)은 모두 400이다. 그러니 x+y 최솟값을 고르는 것은 화면 왼쪽 위에서 <b>대각선 자</b>를 오른쪽 아래로 밀어 가며 처음 닿는 점을 고르는 것과 같다. y−x는 반대쪽 대각선 자다.</p>
+<p><b>자가 사각형의 변과 평행해지면 그 변의 두 점이 동시에 닿는다.</b> 이것이 동점이다. 다음 사다리꼴은 전혀 돌리지 않았지만 왼쪽·오른쪽 변이 정확히 45°로 기울었다(설명용).</p>
+<table>
+<tr><th>점</th><th>좌표</th><th class="num">x+y</th><th class="num">y−x</th></tr>
+<tr><td>TL</td><td>(300, 100)</td><td class="num hl">400</td><td class="num">−200</td></tr>
+<tr><td>TR</td><td>(500, 100)</td><td class="num">600</td><td class="num hl">−400</td></tr>
+<tr><td>BR</td><td>(700, 300)</td><td class="num">1000</td><td class="num hl">−400</td></tr>
+<tr><td>BL</td><td>(100, 300)</td><td class="num hl">400</td><td class="num">200</td></tr>
+</table>
+<p>동점이면 코드의 <code>argmin</code>은 <b>먼저 들어온 점</b>을 고른다. 그래서 결과가 입력 순서라는 우연에 달린다. 실제로 이 사다리꼴을 BL부터 넣으면 <code>order_points_sum_diff</code>는 네 역할에 서로 다른 점을 <b>두 개만</b> 배정한다(실행 결과). 정확한 동점이 아니어도 차이가 1–2픽셀이면 잡음 하나로 뒤바뀐다. 45° 마름모에서는 맨 위 점이 TL과 TR을 동시에 가져간다.</p>
+<p>그래서 x+y 방식이 무너지는 조건은 "사각형이 45° 돌았을 때"가 아니라 <b>"어떤 변이 45° 대각선과 평행에 가까울 때"</b>다. 마름모나 사다리꼴은 돌리지 않아도 변이 비스듬해서 이 조건에 걸릴 수 있다.</p>
+
+<h3>방향 방식 (<a href="../src/geometry.py#L63"><code>order_points</code></a>): 두 단계</h3>
+<p><b>1단계 · 시계 방향으로 줄 세우기.</b> 네 점의 평균을 중심으로 잡고, 중심에서 각 점을 가리키는 시계 바늘을 상상한다. 각 바늘의 방향을 각도 숫자로 바꾸는 함수가 <code>arctan2</code>이고, 그 각도로 정렬하면 화면에서 시계 방향 순서가 된다. 볼록 사각형이라 이렇게 세우면 이웃끼리 변으로 이어진다(조건 2). 다만 <b>어느 점이 첫 번째인지는 아직 모른다.</b></p>
+<p><b>2단계 · 가장 오른쪽을 향하는 변이 윗변.</b> 둘레를 시계 방향으로 걸으면 윗변에서는 오른쪽, 오른쪽 변에서는 아래, 아랫변에서는 왼쪽, 왼쪽 변에서는 위로 걷는다. <b>오른쪽으로 걷는 변은 윗변뿐이다.</b> 그래서 0장의 오른쪽 정도(dx ÷ 길이)가 가장 큰 변을 윗변으로 보고, 그 변의 시작점을 TL로 둔다. 나머지는 시계 방향 순서대로 TR, BR, BL이다.</p>
+<table>
+<tr><th>변 (시계 방향)</th><th class="num">똑바른 직사각형</th><th class="num">20° 돌린 직사각형</th><th class="num">위 사다리꼴</th></tr>
+<tr><td>윗변</td><td class="num hl">1.00</td><td class="num hl">0.94</td><td class="num hl">1.00</td></tr>
+<tr><td>오른쪽 변</td><td class="num">0</td><td class="num">−0.34</td><td class="num">0.71</td></tr>
+<tr><td>아랫변</td><td class="num">−1.00</td><td class="num">−0.94</td><td class="num">−1.00</td></tr>
+<tr><td>왼쪽 변</td><td class="num">0</td><td class="num">0.34</td><td class="num">0.71</td></tr>
+</table>
+<p>x+y 방식에서 동점이던 사다리꼴도 1.00 대 0.71로 여유 있게 갈린다. 화면에 고정된 대각선 대신 <b>사각형 자기 변들의 방향</b>끼리 비교하기 때문이다. 사각형이 돌아가 45°에 다다르면 윗변과 왼쪽 변이 둘 다 0.71이 되어 동점이다. 이 규칙은 결국 "시계 방향으로 돌 때 오른쪽에 가장 가깝게 진행하는 변을 윗변이라 부르자"는 <b>정의</b>다. 이 정의는 ±45° 안에서 사람이 보는 윗변과 일치하고, 경계인 45°는 원래 모호한 자리다.</p>
+
+<div class="lab">
+<p class="lab-title">직접 해 보기 · 꼭짓점을 끌어 두 방식을 비교하자</p>
+<p class="lab-hint">두 그림은 같은 네 점이다. 어느 쪽에서 끌어도 된다. <b>#0–#3</b>은 <code>approxPolyDP</code>가 점을 준 순서다. "입력 순서 돌리기"를 누르면 x+y 방식의 동점 처리가 순서에 따라 바뀌는 것을 볼 수 있다.</p>
+<div class="btns" id="ord-presets">
+<button data-preset="rect">똑바른 직사각형</button>
+<button data-preset="rot20">20° 회전</button>
+<button data-preset="trap">45° 변 사다리꼴</button>
+<button data-preset="diamond">45° 마름모</button>
+<button data-preset="sliver">길쭉한 사각형</button>
+<button id="ord-rotate">입력 순서 돌리기</button>
+</div>
+<div class="two" style="margin-top:10px">
+<div><svg id="ord-sum" viewBox="0 0 360 300" aria-label="x+y 방식"></svg><p class="cap">x+y 방식 · 점선 = 가장 먼저 닿는 대각선 자</p></div>
+<div><svg id="ord-dir" viewBox="0 0 360 300" aria-label="방향 방식"></svg><p class="cap">방향 방식 · 숫자 = 변의 오른쪽 정도</p></div>
+</div>
+<div class="readout" id="ord-out"></div>
+</div>
+
+<h3>모호할 때 어떻게 실패하느냐가 차이다</h3>
+<table>
+<tr><th>45° 마름모</th><th>x+y 방식</th><th>방향 방식</th></tr>
+<tr><td>역할 배정</td><td class="bad">맨 위 점이 TL과 TR을 동시에</td><td class="ok">네 점이 모두 다른 역할, 이웃 순서 유지</td></tr>
+<tr><td>투시 변환 결과</td><td class="bad">깨짐 (4장: 식이 모자람)</td><td class="ok">정상 직사각형, 방향만 90° 다를 수 있음</td></tr>
+</table>
+<p>45° 마름모의 "진짜 좌상"은 원래 정할 수 없다. 어떤 기하 규칙도 이 모호함을 없애지 못한다. 사진 속 글자가 거꾸로인지도 기하 규칙으로는 알 수 없다. 차이는 모호할 때 "돌아간 정상 결과"를 내느냐, "망가진 결과"를 내느냐다.</p>
+
+<h3>한계: 수평에 가까운 두 변이 이웃할 때</h3>
+<p>실험의 "길쭉한 사각형"을 눌러 보자. 아주 비스듬히 찍힌 종이처럼 한 꼭짓점의 각이 약 10°로 뾰족하고, 거의 수평인 두 변(위의 긴 변 0.99, 아래 변 −1.00)이 <b>마주 보지 않고 이웃해</b> 있다. 방향 방식은 오른쪽 정도가 가장 큰 위의 긴 변을 윗변으로 뽑는다. 하지만 눈으로 보면 아래의 수평 변이 바닥이고, 그 맞은편 짧은 변이 윗변처럼 보인다.</p>
+<p>원인은 방향 방식이 <b>변 하나만</b> 보기 때문이다. 직사각형이라면 윗변과 아랫변은 마주 봐야 한다. 그래서 마주 보는 변을 <b>쌍</b>으로 묶어 평균 수평 정도(부호 무시)를 비교하는 규칙을 생각할 수 있다.</p>
+<table>
+<tr><th>마주 보는 쌍</th><th class="num">각 변의 수평 정도</th><th class="num">평균</th></tr>
+<tr><td>짧은 왼쪽 변 – 위의 긴 변</td><td class="num">0.57, 0.99</td><td class="num">0.78</td></tr>
+<tr><td>위의 짧은 변 – 아래 수평 변</td><td class="num">0.88, 1.00</td><td class="num hl">0.94</td></tr>
+</table>
+<p>더 수평인 쌍을 위·아래로 보면 눈으로 본 결과와 같아진다. 실험의 표에 이 "마주 보는 쌍" 규칙의 결과도 함께 표시했다. 이 규칙은 이 연습장에서만 계산하는 아이디어이고, <code>src/</code> 코드에는 없으며 데이터셋으로 검증하지 않았다. 실제로 이런 모양이 나오려면 종이를 거의 옆에서 스치듯 찍어야 하고, 그런 사진은 어느 규칙으로 펴도 심하게 늘어나 읽기 어렵다. 그래서 실용적인 영향은 작지만, 규칙의 한계로 설명할 가치는 있다.</p>
+
+<div class="answer"><p class="tag">한 문단 정리</p>
+<p>먼저 네 점의 무게중심에서 각 점을 바라본 각도로 정렬해 둘레를 시계 방향으로 도는 순서를 만듭니다. 볼록 사각형이라 이 순서에서 이웃한 점끼리 변으로 이어집니다.</p>
+<p>그다음 이어진 네 변의 방향 벡터를 길이로 나눈 x성분, 즉 오른쪽을 향하는 정도가 가장 큰 변을 윗변으로 봅니다. 시계 방향으로 돌 때 오른쪽으로 진행하는 변은 윗변뿐이기 때문입니다. 그 변의 시작점을 좌상으로 두고, 시계 방향 순서대로 우상·우하·좌하를 정합니다.</p>
+<p class="follow"><b>더 들어가면 · "왜 x+y를 쓰지 않았나요?"</b> x+y와 y−x는 화면에 고정된 45° 대각선을 기준으로 삼습니다. 그래서 사각형의 어떤 변이 그 대각선과 평행하면 두 점이 같은 값을 가져, 한 점이 두 역할을 받을 수 있습니다. 회전하지 않은 사다리꼴에서도 생깁니다. 방향 방식은 사각형 자신의 변끼리 비교하므로 네 점에 항상 서로 다른 역할을 주고, 45°처럼 원래 모호한 경우에도 결과가 90° 돌아갈 뿐 깨지지 않습니다.</p>
+<p class="follow"><b>더 들어가면 · "한계는?"</b> 윗변을 변 하나의 방향으로만 정하기 때문에, 수평에 가까운 두 변이 이웃한 심하게 찌그러진 사각형에서는 사람이 보는 윗변과 다를 수 있습니다. 마주 보는 변 쌍 중 더 수평인 쌍을 위·아래로 정하는 방법을 개선안으로 생각할 수 있습니다.</p>
+</div>
+<details class="check"><summary>예측: x+y 방식에서 동점이 생기는 진짜 조건은?</summary>
+어떤 변이 45° 대각선(대각선 자)과 평행할 때다. 실험에서 "45° 변 사다리꼴"을 고른 뒤 "입력 순서 돌리기"를 눌러 보자.</details>
+<details class="check"><summary>예측: 방향 방식은 왜 오목 사각형에서는 믿을 수 없나?</summary>
+1단계의 "중심 기준 각도 정렬"이 이웃끼리 이어진 순서가 되려면 볼록이어야 한다. 그래서 파이프라인은 정렬 전에 <code>is_convex</code>(R6)로 오목한 후보를 먼저 거른다.</details>
+</section>
+
+<!-- ───────────── 4 ───────────── -->
+<section id="warp">
+<p class="kicker">4장 · 투시 변환</p>
+<h2>투시 변환은 어떻게 동작하는가?</h2>
+<p class="q">다루는 것: <code>getPerspectiveTransform</code>과 <code>warpPerspective</code>의 역할, 그리고 결과 픽셀이 원본을 역참조로 가져오는 과정.</p>
+
+<h3>두 함수의 역할 분담</h3>
+<table>
+<tr><th>함수</th><th>입력</th><th>하는 일</th><th>이미지를 보나?</th></tr>
+<tr><td><code>getPerspectiveTransform</code></td><td>원본 4점, 결과 4점</td><td>변환 <b>공식</b>(3×3 행렬 M)을 구한다</td><td>안 본다. 좌표 8개만 쓴다</td></tr>
+<tr><td><code>warpPerspective</code></td><td>원본 이미지, M, 결과 크기</td><td>결과 픽셀마다 공식을 <b>거꾸로</b> 써서 원본 값을 가져온다</td><td>본다</td></tr>
+</table>
+<p>앞의 함수가 번역 사전을 만들고, 뒤의 함수가 그 사전으로 책 전체를 번역한다고 생각하면 된다. "사각형을 오려 낸 뒤 늘린다"는 단계는 따로 없다. 결과 픽셀들이 원본 사각형 안쪽만 찾아가니 결과적으로 잘린 것처럼 보일 뿐이다.</p>
+
+<h3>공식: 미지수 8개, 식 8개</h3>
+<div class="formula">u = (a·x + b·y + c) ÷ (g·x + h·y + 1)
+v = (d·x + e·y + f) ÷ (g·x + h·y + 1)        원본 (x, y) → 결과 (u, v)</div>
+<p>모르는 숫자가 a부터 h까지 8개다. 점 한 쌍(원본 TL → 결과 (0, 0))을 넣으면 u 식과 v 식, <b>식 2개</b>가 생긴다. 4쌍이면 식 8개라서 연립방정식으로 정확히 풀린다. 양변에 분모를 곱하면 평범한 일차 연립방정식이 된다. 이것이 <code>getPerspectiveTransform</code>이 하는 일의 전부다. 행렬 M은 이 숫자들을 [[a, b, c], [d, e, f], [g, h, 1]] 표에 정리한 표기일 뿐이다.</p>
+<p>3장과 이어지는 지점이 여기다. 정렬이 깨져 같은 점이 두 번 들어가면 서로 다른 쌍이 3개뿐이라 식이 6개밖에 없고, 미지수 8개를 정할 수 없다. 아래 실험의 "같은 점 두 번"으로 확인할 수 있다.</p>
+<p><b>분모가 원근을 만든다.</b> g와 h가 0이면 분모가 항상 1이라, 그림 전체를 같은 비율로 늘리거나 기울이기만 한다. 원근이 있으면 분모가 위치마다 달라 <b>늘리는 비율도 위치마다 다르다.</b> 멀리 있어 작게 찍힌 쪽은 더 많이 늘려야 하기 때문이다.</p>
+
+<h3>역참조: 결과 쪽에서 원본을 찾아간다</h3>
+<p>원본 픽셀을 결과 위치로 하나씩 옮겨 찍으면(정방향), 늘어나는 부분에서 아무 픽셀도 떨어지지 않는 자리, 즉 <b>구멍</b>이 생긴다. 그래서 <code>warpPerspective</code>는 반대로 한다. 결과 픽셀 하나하나에 대해 "너는 원본 어디서 왔니?"를 M의 역으로 계산해 그 값을 가져온다. 모든 결과 픽셀이 값을 하나씩 받으니 구멍이 생기지 않는다. 코드는 M(정방향)을 넘기고, OpenCV가 내부에서 뒤집어 쓴다.</p>
+<p>역참조한 위치는 보통 (152.4, 87.7)처럼 <b>픽셀 사이</b>에 떨어진다. 그래서 주변 픽셀로 값을 추정한다. 이것이 보간이다. 한 줄로 줄여 보면, x = 10의 밝기가 50이고 x = 11의 밝기가 150일 때 x = 10.25는 10 쪽에 더 가까우므로 50 × 0.75 + 150 × 0.25 = <b>75</b>다. 코드의 <code>INTER_CUBIC</code>은 이것을 주변 16픽셀로 더 매끄럽게 한다.</p>
+
+<div class="lab">
+<p class="lab-title">직접 해 보기 · 모서리를 끌고, 정방향과 역참조를 바꿔 보자</p>
+<p class="lab-hint">왼쪽 사진 위 네 점을 끌 수 있다. 점선은 결과의 같은 간격 줄 9개가 원본 어디서 오는지 보여 준다. 정방향 찍기에서 <span class="bad">주황</span> 픽셀이 구멍이다. 사진은 이 페이지가 만든 합성 이미지다.</p>
+<div class="controls" id="warp-mode">
+<label><input type="radio" name="wmode" value="bil" checked> 역참조 + 선형 보간</label>
+<label><input type="radio" name="wmode" value="near"> 역참조 + 가장 가까운 픽셀</label>
+<label><input type="radio" name="wmode" value="fwd"> 정방향 찍기</label>
+</div>
+<div class="controls" id="warp-order">
+<label><input type="radio" name="worder" value="ok" checked> 정렬 올바름</label>
+<label><input type="radio" name="worder" value="swap"> TL·TR 뒤바뀜</label>
+<label><input type="radio" name="worder" value="dup"> 같은 점 두 번</label>
+<button id="warp-reset">모서리 되돌리기</button>
+</div>
+<div class="two" style="grid-template-columns:1.45fr 1fr;align-items:start;margin-top:8px">
+<div><div class="stack"><canvas id="warp-src" width="320" height="240"></canvas><svg id="warp-src-svg" viewBox="0 0 320 240" preserveAspectRatio="none"></svg></div><p class="cap">원본 사진 (위쪽이 카메라에서 먼 쪽)</p></div>
+<div><div class="stack"><canvas id="warp-out" width="180" height="234"></canvas><svg id="warp-out-svg" viewBox="0 0 180 234" preserveAspectRatio="none"></svg></div><p class="cap">결과 180 × 234</p></div>
+</div>
+<div class="readout" id="warp-out-text"></div>
+</div>
+
+<h3>손실은 정말 적은가? 어떻게 찍었는지에 달렸다</h3>
+<table>
+<tr><th>구간</th><th>원본 → 결과</th><th>생기는 일</th></tr>
+<tr><td>카메라에서 먼 쪽</td><td>적은 줄 → 많은 줄 (늘림)</td><td>빈자리를 보간으로 채운다. <b>흐려지고, 없던 세부는 생기지 않는다.</b> 원본이 병목이다.</td></tr>
+<tr><td>카메라에 가까운 쪽</td><td>많은 줄 → 적은 줄 (줄임)</td><td>원본의 넘치는 세부를 버린다. 결과 크기에서는 선명하게 보인다. 결과 크기가 병목이다.</td></tr>
+</table>
+<p>그래서 "손실이 매우 적다"는 <b>정면에 가깝게 찍었을 때만</b> 맞다. 비스듬할수록 먼 쪽 글자가 흐리게 나온다. 가까운 쪽 정보를 살리려고 결과를 크게 만들면 먼 쪽은 더 많이 늘어나 더 흐려진다. 결과 크기를 정하는 일이 이 둘 사이의 타협이고, 투시 변환은 크기를 정해 주지 않는다. 이 프로젝트는 크기를 따로 계산한다. 기본형은 마주 보는 변 중 긴 쪽을 쓰고, 보너스 2는 원근을 보정한 종횡비를 쓴다(<a href="../src/geometry.py#L226"><code>output_size_by_aspect</code></a>).</p>
+
+<div class="answer"><p class="tag">한 문단 정리</p>
+<p><code>getPerspectiveTransform</code>은 원본 네 점과 결과 네 점의 짝으로 미지수 8개짜리 변환 공식을 연립방정식으로 풀어 3×3 행렬로 돌려줍니다. 점 한 쌍이 식 두 개를 주므로 정확히 네 쌍이 필요합니다.</p>
+<p><code>warpPerspective</code>는 그 행렬의 역으로 결과 이미지의 픽셀마다 원본 위치를 계산해 값을 가져오고, 위치가 픽셀 사이에 떨어지면 주변 픽셀로 보간합니다. 정방향으로 옮겨 찍으면 늘어난 부분에 구멍이 생기기 때문에 역방향을 씁니다.</p>
+<p class="follow"><b>더 들어가면 · "펴면 화질이 떨어지나요?"</b> 카메라에서 먼 쪽은 원본 픽셀이 적어 늘려야 하므로 보간으로 흐려지고, 없던 세부는 만들 수 없습니다. 가까운 쪽은 넘치는 세부를 버리지만 결과 크기에서는 선명합니다. 정면에 가까울수록 손실이 적습니다.</p>
+</div>
+<details class="check"><summary>예측: 투시 변환에 점이 정확히 4쌍 필요한 이유는?</summary>
+미지수가 8개이고 점 한 쌍이 식 2개를 주기 때문이다. 3쌍이면 공식이 정해지지 않는다. 5쌍 이상에서 가장 잘 맞는 공식을 찾는 함수는 따로 있다(<code>cv2.findHomography</code>).</details>
+<details class="check"><summary>예측: 실험에서 "TL·TR 뒤바뀜"을 고르면 결과는?</summary>
+좌우가 뒤집힌 거울상이 된다. 짝이 바뀌었을 뿐 공식은 풀리므로 깨지지는 않는다. "같은 점 두 번"은 공식 자체를 정할 수 없다.</details>
+</section>
+
+<!-- ───────────── 5 ───────────── -->
+<section id="adaptive">
+<p class="kicker">5장 · 적응형 이진화</p>
+<h2>적응형 이진화는 그냥 이진화와 무엇이 다른가?</h2>
+<p class="q">다루는 것: "주변 평균"의 범위, 그리고 가우시안 평균과 C가 하는 일.</p>
+
+<div class="formula">일반 이진화   : 기준 = 고정된 숫자 하나 (예: 127)
+적응형 이진화 : 기준 = (그 픽셀 주변 정사각형의 평균) − C   ← 픽셀마다 따로
+픽셀 값 &gt; 기준 → 흰색(255),  아니면 검정(0)</div>
+<p>종이 왼쪽에 그림자가 져서 왼쪽은 배경 100·글자 40, 오른쪽은 배경 220·글자 120이라고 하자(설명용). 일반 이진화로 127을 쓰면 왼쪽 배경(100)까지 검게 뭉개진다. 적응형(C = 10)은 이렇게 된다.</p>
+<table>
+<tr><th>위치</th><th class="num">주변 평균</th><th class="num">기준</th><th>글자</th><th>배경</th></tr>
+<tr><td>왼쪽 (그림자)</td><td class="num">약 90</td><td class="num">약 80</td><td>40 &lt; 80 → <b>검정</b></td><td>100 &gt; 80 → <b>흰색</b></td></tr>
+<tr><td>오른쪽 (밝음)</td><td class="num">약 210</td><td class="num">약 200</td><td>120 &lt; 200 → <b>검정</b></td><td>220 &gt; 200 → <b>흰색</b></td></tr>
+</table>
+<p>그림자가 지면 주변 평균도 함께 내려가서 기준이 저절로 따라 내려간다. 적응형 이진화가 묻는 질문은 "밝은가?"가 아니라 <b>"주변보다 어두운가?"</b>다.</p>
+
+<h3>주변은 얼마나 넓은가 (<code>block_size</code>)</h3>
+<p>이 프로젝트는 결과 이미지 짧은 변의 약 1/20로 정한다(<a href="../src/scanner.py#L346"><code>auto_block_size</code></a>). E01 결과는 623 × 883이라 31 × 31을 쓴다(실행 결과). <b>홀수</b>여야 판정할 픽셀이 정사각형 정중앙에 온다. 31이면 양쪽으로 15칸씩이다.</p>
+<p>블록은 <b>글자 획보다 커야</b> 한다. 굵은 획(40, 7칸)이 흰 배경(220) 사이에 있고, 주변을 자기 포함 3칸으로 잡으면 이렇게 된다(설명용, 단순 평균, C = 10).</p>
+<table>
+<tr><th>픽셀</th><td>220</td><td><b>40</b></td><td><b>40</b></td><td><b>40</b></td><td><b>40</b></td><td><b>40</b></td><td><b>40</b></td><td><b>40</b></td><td>220</td></tr>
+<tr><th>주변 3칸 평균</th><td>160</td><td>100</td><td>40</td><td>40</td><td>40</td><td>40</td><td>40</td><td>100</td><td>160</td></tr>
+<tr><th>결과</th><td>흰</td><td class="bad">검</td><td>흰</td><td>흰</td><td>흰</td><td>흰</td><td>흰</td><td class="bad">검</td><td>흰</td></tr>
+</table>
+<p>획 한가운데는 주변도 온통 40이라 기준이 30이 되고, 40 &gt; 30이라 <b>흰색</b>이 된다. 글자 속이 비고 테두리만 남는다. "작을수록 세밀하다"는 직관이 여기서 틀린다. 반대로 블록이 이미지 전체를 덮으면 모든 픽셀의 주변 평균이 전체 평균으로 같아져 일반 이진화로 돌아가고, 그림자를 따라가지 못한다. <b>블록은 글자보다 크고, 그림자 변화보다는 작아야</b> 한다.</p>
+
+<h3>가우시안 평균과 C</h3>
+<p><b>가우시안 평균</b>(<code>ADAPTIVE_THRESH_GAUSSIAN_C</code>)은 가운데에 가까운 픽셀을 크게, 먼 픽셀을 작게 반영한다. 단순 평균(<code>MEAN_C</code>)은 모두 똑같이 센다. 블록 가장자리에 그림자 경계가 걸려도 기준이 덜 흔들린다.</p>
+<p><b>C</b>는 여유다. 글자 없는 빈 종이에서는 픽셀 값이 평균 근처에서 잡음으로 오르내린다. C가 0이면 그중 절반쯤이 평균보다 살짝 어두워 검은 점이 되고, 빈 종이가 깨처럼 지저분해진다. C = 10이면 평균보다 10 넘게 어두워야 검정이라 빈 종이가 깨끗하다. C를 키울수록 흰 쪽이 늘어난다.</p>
+
+<div class="lab">
+<p class="lab-title">직접 해 보기 · 그림자 진 종이를 이진화하자</p>
+<p class="lab-hint">가운데 그림은 픽셀마다의 <b>기준</b>을 밝기로 그린 것이다. 일반 이진화는 균일한 회색 한 장이고, 적응형은 그림자를 따라 기준이 움직인다. 계산을 가볍게 하려고 이 실험은 단순 평균을 쓴다.</p>
+<div class="controls">
+<label><input type="radio" name="admode" value="global"> 일반 이진화</label>
+<label><input type="radio" name="admode" value="adaptive" checked> 적응형 이진화</label>
+</div>
+<div class="controls">
+<label>기준 T <input type="range" id="ad-t" min="0" max="255" value="127"><output id="ad-t-o">127</output></label>
+<label>블록 <input type="range" id="ad-b" min="3" max="301" step="2" value="31"><output id="ad-b-o">31</output></label>
+<label>C <input type="range" id="ad-c" min="0" max="40" value="10"><output id="ad-c-o">10</output></label>
+</div>
+<div class="btns">
+<button data-ad="global">일반, 127</button>
+<button data-ad="3">블록 3 (너무 작음)</button>
+<button data-ad="31">블록 31</button>
+<button data-ad="301">블록 301 (너무 큼)</button>
+<button data-ad="c0">C = 0</button>
+</div>
+<div class="three" style="margin-top:12px">
+<div class="stack"><canvas id="ad-src" width="360" height="150"></canvas><p class="cap">원본</p></div>
+<div class="stack"><canvas id="ad-thr" width="360" height="150"></canvas><p class="cap">픽셀마다의 기준</p></div>
+<div class="stack"><canvas id="ad-out" width="360" height="150"></canvas><p class="cap">결과</p></div>
+</div>
+<div class="readout" id="ad-text"></div>
+</div>
+<p>실제 사진으로 일반 이진화와 적응형 이진화를 비교한 그림은 <a href="../outputs/14_threshold.png">14_threshold.png</a>에 있다.</p>
+
+<div class="answer"><p class="tag">한 문단 정리</p>
+<p>일반 이진화는 모든 픽셀에 같은 기준 하나를 쓰지만, 적응형 이진화는 픽셀마다 주변 블록의 가우시안 가중 평균에서 C를 뺀 값을 기준으로 씁니다. 그림자가 진 곳은 주변 평균도 함께 낮아지므로, 그림자 안에서도 "주변보다 어두운 글자"만 검게 남습니다.</p>
+<p>블록은 글자 획보다 커야 글자 속이 비지 않고, 그림자 변화보다 작아야 그림자를 따라갑니다. 이 프로젝트는 결과 짧은 변의 약 1/20(E01은 31)을 씁니다. C는 빈 종이의 잡음이 검은 점으로 바뀌지 않게 하는 여유입니다.</p>
+</div>
+<details class="check"><summary>계산: C = 10, 주변 평균 150, 픽셀 145이면?</summary>
+기준 = 150 − 10 = 140. 145 &gt; 140이므로 <b>흰색</b>이다.</details>
+<details class="check"><summary>예측: 블록을 글자 획보다 훨씬 작게 잡으면 굵은 글자는?</summary>
+속이 비고 테두리만 남는다. 위 실험의 "블록 3"으로 확인하자.</details>
+</section>
+</main>
+
+<footer>
+<p><b>표기</b> · "실행 결과"는 이 프로젝트 코드를 실제로 돌려 얻은 값이다(E01 등). "설명용"은 원리를 보이려고 작게 만든 예다. 실험 위젯은 원리를 보이려고 이 페이지 안에서 다시 계산하며, 2장의 도형, 4장의 사진, 5장의 종이는 합성 이미지다.</p>
+<p>코드: <a href="../src/scanner.py">scanner.py</a> · <a href="../src/geometry.py">geometry.py</a> · 실험 결과와 그래프 해석: <a href="../REPORT.md">REPORT.md</a></p>
+</footer>
+
+<script>
+'use strict';
+const $ = (s, r = document) => r.querySelector(s);
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+function rng(seed) { let s = seed >>> 0; return () => { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; }; }
+function toLocal(svg, e) { const p = svg.createSVGPoint(); p.x = e.clientX; p.y = e.clientY; return p.matrixTransform(svg.getScreenCTM().inverse()); }
+function draggable(svg, onMove) {
+  let idx = -1;
+  svg.addEventListener('pointerdown', e => { const t = e.target.closest('[data-i]'); if (!t) return; idx = +t.dataset.i; try { svg.setPointerCapture(e.pointerId); } catch (_) { /* 캡처를 못 해도 끌기는 동작한다 */ } e.preventDefault(); });
+  svg.addEventListener('pointermove', e => { if (idx < 0) return; const p = toLocal(svg, e); onMove(idx, p.x, p.y); });
+  const end = () => { idx = -1; };
+  svg.addEventListener('pointerup', end); svg.addEventListener('pointercancel', end);
+}
+function markers(p) {
+  return '<defs>' + ['teal', 'coral', 'muted'].map(c => `<marker id="${p}-${c}" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" class="mk-${c}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></marker>`).join('') + '</defs>';
+}
+function putGray(canvas, arr, w, h, holeColor) {
+  const ctx = canvas.getContext('2d'); const img = ctx.createImageData(w, h);
+  for (let i = 0; i < w * h; i++) {
+    const v = arr[i];
+    if (v < 0) { img.data.set(holeColor || [216, 90, 48], i * 4); img.data[i * 4 + 3] = 255; continue; }
+    img.data[i * 4] = img.data[i * 4 + 1] = img.data[i * 4 + 2] = v; img.data[i * 4 + 3] = 255;
+  }
+  ctx.putImageData(img, 0, 0);
+}
+function grayFromCanvas(c) {
+  const d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data; const a = new Float32Array(c.width * c.height);
+  for (let i = 0; i < a.length; i++) a[i] = d[i * 4]; return a;
+}
+const f1 = v => (Math.abs(v) < 0.005 ? 0 : v).toFixed(2);
+const pt = p => `(${Math.round(p[0])}, ${Math.round(p[1])})`;
+
+/* ── 0장: 벡터와 오른쪽 정도 ── */
+(function () {
+  const svg = $('#vec-svg'), out = $('#vec-out'); const O = { x: 200, y: 140 }, R = 90; const T = { x: 320, y: 180 };
+  function words(r) { return r > 0.92 ? '거의 정확히 오른쪽' : r > 0.38 ? '오른쪽으로 기운 방향' : r > -0.38 ? '주로 위나 아래' : r > -0.92 ? '왼쪽으로 기운 방향' : '거의 정확히 왼쪽'; }
+  function render() {
+    const dx = Math.round(T.x - O.x), dy = Math.round(T.y - O.y); const L = Math.hypot(dx, dy) || 1; const r = dx / L;
+    const nx = O.x + dx / L * R, ny = O.y + dy / L * R; const ly = ny > O.y ? O.y - 9 : O.y + 18;
+    svg.innerHTML = markers('vm') +
+      `<line x1="16" y1="${O.y}" x2="388" y2="${O.y}" class="axis" marker-end="url(#vm-muted)"/>
+       <line x1="${O.x}" y1="12" x2="${O.x}" y2="270" class="axis" marker-end="url(#vm-muted)"/>
+       <text x="386" y="${O.y - 8}" class="tx-m" text-anchor="end">x +</text>
+       <text x="${O.x + 8}" y="266" class="tx-m">y + (아래)</text>
+       <circle cx="${O.x}" cy="${O.y}" r="${R}" class="guide"/>
+       <line x1="${nx}" y1="${ny}" x2="${nx}" y2="${O.y}" class="guide"/>
+       <line x1="${O.x}" y1="${O.y}" x2="${nx}" y2="${ny}" class="ln-coral dash"/>
+       <circle cx="${nx}" cy="${O.y}" r="4" class="dot-c"/>
+       <text x="${nx}" y="${ly}" class="tx-c" text-anchor="middle">${f1(r)}</text>
+       <line x1="${O.x}" y1="${O.y}" x2="${T.x}" y2="${T.y}" class="ln-teal" marker-end="url(#vm-teal)"/>
+       <circle cx="${O.x}" cy="${O.y}" r="3" class="dot-m"/>
+       <circle cx="${T.x}" cy="${T.y}" r="11" class="handle" data-i="0"/>`;
+    out.innerHTML = `<div class="calc"><span>① dx = <b>${dx}</b>, dy = <b>${dy}</b></span><span>② 길이 = √(${dx}² + ${dy}²) = <b>${L.toFixed(1)}</b></span><span>③ 오른쪽 정도 = ${dx} ÷ ${L.toFixed(1)} = <b>${f1(r)}</b></span></div><div style="margin-top:4px">→ ${words(r)}. 화살표를 같은 방향으로 늘이거나 줄여도 ③은 변하지 않는다.</div>`;
+  }
+  draggable(svg, (i, x, y) => { T.x = clamp(x, 8, 392); T.y = clamp(y, 8, 272); if (Math.hypot(T.x - O.x, T.y - O.y) < 6) T.x = O.x + 6; render(); });
+  render();
+})();
+
+/* ── 1장: Canny 이력 임계값 (한 줄로 줄인 설명용 모형) ── */
+(function () {
+  const N = 160;
+  const ctrl = [[0, 20], [8, 28], [14, 25], [18, 190], [24, 225], [32, 205], [38, 175], [42, 95], [46, 88], [50, 100], [54, 180], [60, 220], [68, 200], [72, 170], [76, 30], [84, 22], [92, 35], [98, 28], [101, 70], [104, 112], [107, 108], [110, 60], [113, 26], [120, 30], [126, 40], [130, 115], [134, 132], [140, 126], [146, 134], [150, 90], [153, 30], [159, 22]];
+  const P = [];
+  for (let i = 0; i < N; i++) { let k = 0; while (ctrl[k + 1][0] < i) k++; const [x0, y0] = ctrl[k], [x1, y1] = ctrl[k + 1]; const t = (i - x0) / (x1 - x0); P.push(Math.max(0, y0 + (y1 - y0) * t + 4 * Math.sin(i * 1.7) + 3 * Math.sin(i * 0.9))); }
+  const REG = { edge: [15, 74], noise: [99, 112], weak: [127, 151] };
+  const svg = $('#canny-svg'), lo = $('#canny-low'), hi = $('#canny-high'), single = $('#canny-single'), out = $('#canny-out');
+  const X = i => 34 + i * 3.6, Y = v => 228 - v * 0.8;
+  function classify(low, high) {
+    const st = new Array(N).fill(0); let i = 0;
+    while (i < N) { if (P[i] < low) { i++; continue; } let j = i, seed = false; while (j < N && P[j] >= low) { if (P[j] >= high) seed = true; j++; } for (let k = i; k < j; k++) st[k] = seed ? 2 : 1; i = j; }
+    return st;
+  }
+  function runs(st, val, a, b) { let n = 0, prev = false; for (let i = a; i <= b; i++) { const on = st[i] === val; if (on && !prev) n++; prev = on; } return n; }
+  function render() {
+    let low = +lo.value, high = +hi.value; if (single.checked) { low = high; lo.value = high; }
+    $('#canny-low-o').textContent = low; $('#canny-high-o').textContent = high; lo.disabled = single.checked;
+    const st = classify(low, high);
+    let s = '';
+    for (const [name, [a, b]] of [['문서 경계', REG.edge], ['잡음 봉우리', REG.noise], ['약한 경계', REG.weak]]) s += `<text x="${(X(a) + X(b)) / 2}" y="252" class="tx-m" text-anchor="middle">${name}</text><line x1="${X(a)}" y1="238" x2="${X(b)}" y2="238" class="axis"/>`;
+    for (let i = 0; i < N; i++) { const cls = st[i] === 2 ? 'var(--teal)' : st[i] === 1 ? 'var(--coral)' : 'var(--line)'; s += `<rect x="${X(i) - 1.4}" y="${Y(P[i])}" width="2.8" height="${228 - Y(P[i])}" style="fill:${cls}"/>`; }
+    s += `<line x1="30" y1="${Y(high)}" x2="612" y2="${Y(high)}" class="ln-muted dash"/><text x="616" y="${Y(high) + 4}" class="tx">high</text>`;
+    if (!single.checked) s += `<line x1="30" y1="${Y(low)}" x2="612" y2="${Y(low)}" class="ln-muted" style="stroke-dasharray:2 4"/><text x="616" y="${Y(low) + 4}" class="tx">low</text>`;
+    s += `<line x1="30" y1="228" x2="612" y2="228" class="axis"/><text x="34" y="14" class="tx-m">기울기 크기</text>`;
+    svg.innerHTML = s;
+    const [ea, eb] = REG.edge; const pieces = runs(st, 2, ea, eb); let kept = 0; for (let i = ea; i <= eb; i++) if (st[i] === 2) kept++;
+    const cover = kept / (eb - ea + 1);
+    const noiseKept = st.slice(REG.noise[0], REG.noise[1] + 1).some(v => v === 2);
+    const weakKept = st.slice(REG.weak[0], REG.weak[1] + 1).some(v => v === 2);
+    const edgeMsg = pieces === 0 ? '<span class="bad">사라짐</span>' : pieces > 1 ? `<span class="bad">${pieces}조각으로 끊김</span> → 윤곽선이 닫히지 않는다` : cover > 0.85 ? '<span class="ok">한 줄로 이어짐</span>' : '<span class="bad">일부만 남음</span>';
+    const noiseMsg = noiseKept ? '<span class="bad">엣지로 남음</span> → 가짜 윤곽선 위험' : '<span class="ok">버림</span>';
+    const weakMsg = weakKept ? '남음' : '버림 (high를 넘는 씨앗이 없음)';
+    out.innerHTML = `문서 경계: ${edgeMsg}<br>잡음 봉우리: ${noiseMsg}<br>약한 경계: ${weakMsg}`;
+  }
+  lo.addEventListener('input', () => { if (+lo.value > +hi.value) hi.value = lo.value; render(); });
+  hi.addEventListener('input', () => { if (+hi.value < +lo.value) lo.value = hi.value; render(); });
+  single.addEventListener('change', render);
+  document.querySelectorAll('[data-canny]').forEach(b => b.addEventListener('click', () => { const [l, h] = b.dataset.canny.split(',').map(Number); single.checked = l === h; hi.value = h; lo.value = l; render(); }));
+  render();
+})();
+
+/* ── 2장: approxPolyDP와 볼록 판정 ── */
+(function () {
+  const svg = $('#cnt-svg'), sl = $('#cnt-eps'), dent = $('#cnt-dent'), out = $('#cnt-out');
+  const Q = [[70, 60], [330, 85], [350, 250], [50, 235]];
+  function build(withDent) {
+    const r = rng(7), pts = [];
+    for (let e = 0; e < 4; e++) {
+      const a = Q[e], b = Q[(e + 1) % 4]; const L = Math.hypot(b[0] - a[0], b[1] - a[1]); const n = Math.round(L / 5);
+      const nx = -(b[1] - a[1]) / L, ny = (b[0] - a[0]) / L;
+      for (let k = 0; k < n; k++) {
+        const t = k / n; let off = (r() - 0.5) * 5;
+        if (withDent && e === 0 && t > 0.4 && t < 0.62) off += 34 * Math.min(1, (t - 0.4) / 0.03, (0.62 - t) / 0.03);
+        pts.push([a[0] + (b[0] - a[0]) * t + nx * off, a[1] + (b[1] - a[1]) * t + ny * off]);
+      }
+    }
+    return pts;
+  }
+  function segDist(p, a, b) { const vx = b[0] - a[0], vy = b[1] - a[1], L2 = vx * vx + vy * vy; if (!L2) return Math.hypot(p[0] - a[0], p[1] - a[1]); const t = clamp(((p[0] - a[0]) * vx + (p[1] - a[1]) * vy) / L2, 0, 1); return Math.hypot(p[0] - a[0] - t * vx, p[1] - a[1] - t * vy); }
+  function dp(pts, eps) {
+    if (pts.length < 3) return pts.slice();
+    const a = pts[0], b = pts[pts.length - 1]; let dmax = 0, idx = 0;
+    for (let i = 1; i < pts.length - 1; i++) { const d = segDist(pts[i], a, b); if (d > dmax) { dmax = d; idx = i; } }
+    if (dmax > eps) { const L = dp(pts.slice(0, idx + 1), eps), R = dp(pts.slice(idx), eps); return L.slice(0, -1).concat(R); }
+    return [a, b];
+  }
+  function dpClosed(pts, eps) {
+    let k = 0, dm = 0; pts.forEach((p, i) => { const d = Math.hypot(p[0] - pts[0][0], p[1] - pts[0][1]); if (d > dm) { dm = d; k = i; } });
+    const r1 = dp(pts.slice(0, k + 1), eps), r2 = dp(pts.slice(k).concat([pts[0]]), eps);
+    return r1.slice(0, -1).concat(r2.slice(0, -1));
+  }
+  function crosses(poly) { return poly.map((p, i) => { const q = poly[(i + 1) % poly.length], s = poly[(i + 2) % poly.length]; const ax = q[0] - p[0], ay = q[1] - p[1], bx = s[0] - q[0], by = s[1] - q[1]; return ax * by - ay * bx; }); }
+  function render() {
+    const ratio = sl.value / 1000; $('#cnt-eps-o').textContent = ratio.toFixed(3);
+    const pts = build(dent.checked); let per = 0; pts.forEach((p, i) => { const q = pts[(i + 1) % pts.length]; per += Math.hypot(q[0] - p[0], q[1] - p[1]); });
+    const eps = ratio * per; const poly = dpClosed(pts, eps);
+    let s = `<polyline points="${pts.map(p => p.join(',')).join(' ')} ${pts[0].join(',')}" class="ln-muted" style="stroke-width:1;opacity:.5"/>`;
+    s += pts.map(p => `<circle cx="${p[0]}" cy="${p[1]}" r="1.6" class="dot-m"/>`).join('');
+    s += `<polygon points="${poly.map(p => p.join(',')).join(' ')}" class="ln-coral" style="fill:none"/>`;
+    s += poly.map(p => `<circle cx="${p[0]}" cy="${p[1]}" r="4.5" class="dot-c"/>`).join('');
+    const bar = Math.min(eps, 330); s += `<line x1="20" y1="286" x2="${20 + bar}" y2="286" class="ln-teal"/><text x="${26 + bar}" y="290" class="tx-t">ε = ${eps.toFixed(0)}px</text>`;
+    svg.innerHTML = s;
+    const k = poly.length; let r6 = '<span class="note">R5에서 탈락해 검사하지 않음</span>';
+    if (k === 4) { const c = crosses(poly).map(v => Math.round(v)); const conv = c.every(v => v > 0) || c.every(v => v < 0); r6 = `꺾임 값 [${c.join(', ')}] → ${conv ? '<span class="ok">볼록, 통과</span>' : '<span class="bad">오목, 탈락</span>'}`; }
+    out.innerHTML = `테두리 점 <b>${pts.length}</b>개 · 둘레 <b>${per.toFixed(0)}</b>px · ε = ${ratio.toFixed(3)} × ${per.toFixed(0)} = <b>${eps.toFixed(1)}</b>px<br>approxPolyDP 결과 꼭짓점 <b>${k}</b>개 → R5 (정확히 4개): ${k === 4 ? '<span class="ok">통과</span>' : '<span class="bad">탈락</span>'}<br>R6 (볼록): ${r6}`;
+  }
+  sl.addEventListener('input', render); dent.addEventListener('change', render); render();
+})();
+
+/* ── 3장: 꼭짓점 정렬 비교 ── */
+(function () {
+  const PRESETS = {
+    rect: [[80, 80], [280, 80], [280, 220], [80, 220]],
+    rot20: [[107, 59], [295, 128], [254, 241], [66, 172]],
+    trap: [[130, 90], [230, 90], [310, 170], [50, 170]],
+    diamond: [[180, 50], [280, 150], [180, 250], [80, 150]],
+    sliver: [[50.92, 136], [60.6, 121.92], [109.44, 95.96], [337.36, 130.28]],
+  };
+  const ROLES = ['TL', 'TR', 'BR', 'BL'];
+  let P = PRESETS.trap.map(p => p.slice());
+  const sSvg = $('#ord-sum'), dSvg = $('#ord-dir'), out = $('#ord-out');
+  const rightness = (a, b) => { const dx = b[0] - a[0], dy = b[1] - a[1]; return dx / (Math.hypot(dx, dy) || 1); };
+  function sumDiff(P) {
+    const s = P.map(p => p[0] + p[1]), d = P.map(p => p[1] - p[0]);
+    const amin = a => a.indexOf(Math.min(...a)), amax = a => a.indexOf(Math.max(...a));
+    return { idx: [amin(s), amin(d), amax(s), amax(d)], s, d };
+  }
+  function direction(P) {
+    const cx = P.reduce((a, p) => a + p[0], 0) / 4, cy = P.reduce((a, p) => a + p[1], 0) / 4;
+    const ang = P.map(p => Math.atan2(p[1] - cy, p[0] - cx));
+    const order = [0, 1, 2, 3].sort((a, b) => ang[a] - ang[b] || a - b);
+    const edges = order.map((k, i) => ({ from: k, to: order[(i + 1) % 4], r: rightness(P[k], P[order[(i + 1) % 4]]) }));
+    let start = 0, best = -Infinity; edges.forEach((e, i) => { const v = Math.round(e.r * 1e9) / 1e9; if (v > best) { best = v; start = i; } });
+    const idx = [0, 1, 2, 3].map(j => order[(start + j) % 4]);
+    const a = (Math.abs(edges[0].r) + Math.abs(edges[2].r)) / 2, b = (Math.abs(edges[1].r) + Math.abs(edges[3].r)) / 2;
+    const pair = Math.round(a * 1e9) >= Math.round(b * 1e9) ? [0, 2] : [1, 3];
+    const top = edges[pair[0]].r >= edges[pair[1]].r ? pair[0] : pair[1];
+    const pairIdx = [0, 1, 2, 3].map(j => order[(top + j) % 4]);
+    return { idx, edges, start, cx, cy, order, pairIdx, pairScore: [a, b] };
+  }
+  function convex(P, order) { const Q = order.map(i => P[i]); const c = Q.map((p, i) => { const q = Q[(i + 1) % 4], s = Q[(i + 2) % 4]; return (q[0] - p[0]) * (s[1] - q[1]) - (q[1] - p[1]) * (s[0] - q[0]); }); return c.every(v => v > 0) || c.every(v => v < 0); }
+  function lineFor(kind, c) {
+    const cand = kind === 's' ? [[0, c], [360, c - 360], [c, 0], [c - 300, 300]] : [[0, c], [360, 360 + c], [-c, 0], [300 - c, 300]];
+    const inb = cand.filter(p => p[0] >= -0.01 && p[0] <= 360.01 && p[1] >= -0.01 && p[1] <= 300.01);
+    return inb.length >= 2 ? inb.slice(0, 2) : null;
+  }
+  function labels(P, idx, cx, cy) {
+    return P.map((p, i) => {
+      const roles = ROLES.filter((_, r) => idx[r] === i); const dx = p[0] - cx, dy = p[1] - cy, L = Math.hypot(dx, dy) || 1;
+      const lx = p[0] + dx / L * 22, ly = p[1] + dy / L * 22 + 4;
+      const txt = roles.length ? roles.join('·') : '역할 없음'; const cls = roles.length === 1 ? 'tx' : 'tx-c';
+      return `<text x="${lx}" y="${ly}" class="${cls}" text-anchor="middle" style="font-weight:700">${txt}</text><text x="${p[0] + 9}" y="${p[1] - 8}" class="tx-m">#${i}</text>`;
+    }).join('');
+  }
+  function handles(P) { return P.map((p, i) => `<circle cx="${p[0]}" cy="${p[1]}" r="9" class="handle" data-i="${i}"/>`).join(''); }
+  function render() {
+    const sd = sumDiff(P), dir = direction(P); const polyPts = dir.order.map(i => P[i].join(',')).join(' ');
+    const cx = dir.cx, cy = dir.cy;
+    let s = `<polygon points="${polyPts}" class="poly"/>`;
+    const ls = lineFor('s', Math.min(...sd.s)), ld = lineFor('d', Math.min(...sd.d));
+    if (ls) s += `<line x1="${ls[0][0]}" y1="${ls[0][1]}" x2="${ls[1][0]}" y2="${ls[1][1]}" class="ln-coral dash" style="stroke-width:1.5"/>`;
+    if (ld) s += `<line x1="${ld[0][0]}" y1="${ld[0][1]}" x2="${ld[1][0]}" y2="${ld[1][1]}" class="ln-teal dash" style="stroke-width:1.5"/>`;
+    s += `<text x="8" y="16" class="tx-c">x+y = ${Math.min(...sd.s)} (TL 후보)</text><text x="8" y="32" class="tx-t">y−x = ${Math.min(...sd.d)} (TR 후보)</text>`;
+    s += labels(P, sd.idx, cx, cy) + handles(P);
+    sSvg.innerHTML = s;
+    let d = markers('om') + `<polygon points="${polyPts}" class="poly" style="stroke:none"/><circle cx="${cx}" cy="${cy}" r="3" class="dot-m"/>`;
+    dir.order.forEach(i => { d += `<line x1="${cx}" y1="${cy}" x2="${P[i][0]}" y2="${P[i][1]}" class="guide"/>`; });
+    dir.edges.forEach((e, i) => {
+      const a = P[e.from], b = P[e.to]; const L = Math.hypot(b[0] - a[0], b[1] - a[1]) || 1; const ux = (b[0] - a[0]) / L, uy = (b[1] - a[1]) / L; const sh = Math.min(10, L / 4);
+      const isTop = i === dir.start; const mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2; const ox = mx - cx, oy = my - cy, oL = Math.hypot(ox, oy) || 1;
+      d += `<line x1="${a[0] + ux * sh}" y1="${a[1] + uy * sh}" x2="${b[0] - ux * sh}" y2="${b[1] - uy * sh}" class="${isTop ? 'ln-coral' : 'ln-muted'}" marker-end="url(#om-${isTop ? 'coral' : 'muted'})"/>`;
+      d += `<text x="${mx + ox / oL * 16}" y="${my + oy / oL * 16 + 4}" class="${isTop ? 'tx-c' : 'tx-m'}" text-anchor="middle">${f1(e.r)}</text>`;
+    });
+    d += labels(P, dir.idx, cx, cy) + handles(P);
+    dSvg.innerHTML = d;
+    const dupS = new Set(sd.idx).size < 4;
+    const sortedS = sd.s.slice().sort((a, b) => a - b), sortedD = sd.d.slice().sort((a, b) => a - b);
+    const gap = Math.min(sortedS[1] - sortedS[0], sortedD[1] - sortedD[0], sortedS[3] - sortedS[2], sortedD[3] - sortedD[2]);
+    const rs = dir.edges.map(e => e.r).sort((a, b) => b - a); const dgap = rs[0] - rs[1];
+    const row = (name, idx, st) => `<tr><td>${name}</td>${idx.map(i => `<td>${pt(P[i])}</td>`).join('')}<td>${st}</td></tr>`;
+    const sState = dupS ? `<span class="bad">같은 점이 두 역할</span>` : gap === 0 ? '<span class="bad">동점 · 입력 순서로 결정</span>' : gap < 6 ? `<span class="bad">거의 동점 (차이 ${gap})</span>` : '<span class="ok">정상</span>';
+    const dState = dgap < 1e-6 ? '<span class="bad">윗변 동점 · 앞선 변 선택</span>' : `<span class="ok">정상</span> (1위와 2위 변 차이 ${dgap.toFixed(2)})`;
+    const same = dir.pairIdx.every((v, i) => v === dir.idx[i]);
+    const pState = same ? '방향 방식과 같음' : '<span class="bad">방향 방식과 다름</span>';
+    const warn = convex(P, dir.order) ? '' : '<div class="bad" style="margin-top:6px">오목 사각형이다. 실제 파이프라인에서는 정렬 전에 is_convex(R6)가 걸러낸다.</div>';
+    out.innerHTML = `<table><tr><th>규칙</th><th>TL</th><th>TR</th><th>BR</th><th>BL</th><th>상태</th></tr>${row('x+y 방식', sd.idx, sState)}${row('방향 방식', dir.idx, dState)}${row('마주 보는 쌍 (실험)', dir.pairIdx, `쌍 평균 ${dir.pairScore[0].toFixed(2)} / ${dir.pairScore[1].toFixed(2)} · ${pState}`)}</table>${warn}`;
+  }
+  const onMove = (i, x, y) => { P[i] = [Math.round(clamp(x, 8, 352)), Math.round(clamp(y, 8, 292))]; render(); };
+  draggable(sSvg, onMove); draggable(dSvg, onMove);
+  document.querySelectorAll('[data-preset]').forEach(b => b.addEventListener('click', () => { P = PRESETS[b.dataset.preset].map(p => p.slice()); render(); }));
+  $('#ord-rotate').addEventListener('click', () => { P.push(P.shift()); render(); });
+  render();
+})();
+
+/* ── 4장: 투시 변환 ── */
+(function () {
+  const SW = 320, SH = 240, OW = 180, OH = 234, DW = 180, DH = 234;
+  const Q0 = [[112, 38], [212, 38], [292, 222], [28, 222]];
+  let Q = Q0.map(p => p.slice());
+  function solve(A, b) {
+    const n = b.length, M = A.map((r, i) => [...r, b[i]]);
+    for (let c = 0; c < n; c++) {
+      let p = c; for (let r = c + 1; r < n; r++) if (Math.abs(M[r][c]) > Math.abs(M[p][c])) p = r;
+      if (Math.abs(M[p][c]) < 1e-9) return null; [M[c], M[p]] = [M[p], M[c]];
+      for (let r = 0; r < n; r++) { if (r === c) continue; const f = M[r][c] / M[c][c]; for (let k = c; k <= n; k++) M[r][k] -= f * M[c][k]; }
+    }
+    return M.map((r, i) => r[n] / r[i]);
+  }
+  function homography(s, d) {
+    const A = [], B = [];
+    for (let i = 0; i < 4; i++) { const [x, y] = s[i], [u, v] = d[i]; A.push([x, y, 1, 0, 0, 0, -u * x, -u * y]); B.push(u); A.push([0, 0, 0, x, y, 1, -v * x, -v * y]); B.push(v); }
+    const h = solve(A, B); return h ? [...h, 1] : null;
+  }
+  const apply = (H, x, y) => { const w = H[6] * x + H[7] * y + H[8]; return [(H[0] * x + H[1] * y + H[2]) / w, (H[3] * x + H[4] * y + H[5]) / w, w]; };
+  function bil(a, w, h, x, y) { if (x < 0 || y < 0 || x > w - 1 || y > h - 1) return -1; const x0 = Math.floor(x), y0 = Math.floor(y), x1 = Math.min(x0 + 1, w - 1), y1 = Math.min(y0 + 1, h - 1), fx = x - x0, fy = y - y0; return (a[y0 * w + x0] * (1 - fx) + a[y0 * w + x1] * fx) * (1 - fy) + (a[y1 * w + x0] * (1 - fx) + a[y1 * w + x1] * fx) * fy; }
+  function near(a, w, h, x, y) { const xi = Math.round(x), yi = Math.round(y); if (xi < 0 || yi < 0 || xi >= w || yi >= h) return -1; return a[yi * w + xi]; }
+  const dc = document.createElement('canvas'); dc.width = DW; dc.height = DH; const g = dc.getContext('2d', { willReadFrequently: true });
+  g.fillStyle = 'rgb(242,242,238)'; g.fillRect(0, 0, DW, DH); g.strokeStyle = 'rgb(120,120,120)'; g.lineWidth = 2; g.strokeRect(5, 5, DW - 10, DH - 10);
+  g.fillStyle = 'rgb(30,30,30)'; g.font = 'bold 19px system-ui, sans-serif'; g.fillText('A3-1 SCAN', 14, 32); g.fillRect(14, 40, 152, 2);
+  const r = rng(11); g.fillStyle = 'rgb(85,85,85)';
+  for (let k = 0; k < 8; k++) g.fillRect(14, 54 + k * 13, 70 + r() * 82, 5);
+  g.fillStyle = 'rgb(30,30,30)'; g.font = '12px system-ui, sans-serif'; g.fillText('가나다라 ABC 0123', 14, 168);
+  for (let y = 180; y < 220; y += 2) for (let x = 14; x < 166; x += 2) if (((x + y) / 2) % 2 === 0) g.fillRect(x, y, 2, 2);
+  const doc = grayFromCanvas(dc);
+  const src = new Float32Array(SW * SH); const Hsd = homography(Q0, [[0, 0], [DW - 1, 0], [DW - 1, DH - 1], [0, DH - 1]]); const rn = rng(5);
+  for (let y = 0; y < SH; y++) for (let x = 0; x < SW; x++) {
+    const [u, v, w] = apply(Hsd, x, y); const desk = 62 + 26 * (x / SW) + (rn() - 0.5) * 10;
+    const val = w > 0 ? bil(doc, DW, DH, u, v) : -1; src[y * SW + x] = val >= 0 ? val * (0.82 + 0.18 * (y / SH)) : desk;
+  }
+  putGray($('#warp-src'), src, SW, SH);
+  const sSvg = $('#warp-src-svg'), oSvg = $('#warp-out-svg'), txt = $('#warp-out-text'); const outCorners = [[0, 0], [OW - 1, 0], [OW - 1, OH - 1], [0, OH - 1]];
+  const mode = () => document.querySelector('input[name=wmode]:checked').value, order = () => document.querySelector('input[name=worder]:checked').value;
+  let pending = false; const schedule = () => { if (pending) return; pending = true; requestAnimationFrame(() => { pending = false; render(); }); };
+  function render() {
+    const om = order(); const S = om === 'swap' ? [Q[1], Q[0], Q[3], Q[2]] : om === 'dup' ? [Q[1], Q[1], Q[2], Q[3]] : Q;
+    let s = `<polygon points="${Q.map(p => p.join(',')).join(' ')}" class="ln-teal" style="fill:none;stroke-width:1.5"/>`;
+    const H = homography(S, outCorners), Hi = homography(outCorners, S);
+    const outArr = new Float32Array(OW * OH).fill(-1); let msg = '';
+    if (!H || !Hi) {
+      putGray($('#warp-out'), outArr, OW, OH, [120, 120, 120]); oSvg.innerHTML = '';
+      msg = '<span class="bad">공식을 정할 수 없다.</span> 같은 점이 두 번 들어가 서로 다른 점 쌍이 3개뿐이므로, 식 6개로 미지수 8개를 풀 수 없다.';
+    } else {
+      const m = mode();
+      if (m === 'fwd') {
+        const xs = S.map(p => p[0]), ys = S.map(p => p[1]);
+        for (let y = Math.floor(Math.min(...ys)); y <= Math.ceil(Math.max(...ys)); y++) for (let x = Math.floor(Math.min(...xs)); x <= Math.ceil(Math.max(...xs)); x++) {
+          if (x < 0 || y < 0 || x >= SW || y >= SH) continue; const [u, v, w] = apply(H, x, y); if (w <= 0) continue;
+          const iu = Math.round(u), iv = Math.round(v); if (iu >= 0 && iv >= 0 && iu < OW && iv < OH) outArr[iv * OW + iu] = src[y * SW + x];
+        }
+      } else {
+        const samp = m === 'near' ? near : bil;
+        for (let v = 0; v < OH; v++) for (let u = 0; u < OW; u++) { const [x, y] = apply(Hi, u, v); outArr[v * OW + u] = samp(src, SW, SH, x, y); }
+      }
+      putGray($('#warp-out'), outArr, OW, OH);
+      let o = '';
+      for (let k = 0; k <= 8; k++) { const v = k * (OH - 1) / 8; const a = apply(Hi, 0, v), b = apply(Hi, OW - 1, v); s += `<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" class="ln-coral" style="stroke-width:.8;opacity:.75;stroke-dasharray:3 3"/>`; o += `<line x1="0" y1="${v}" x2="${OW}" y2="${v}" class="ln-coral" style="stroke-width:.8;opacity:.75;stroke-dasharray:3 3"/>`; }
+      oSvg.innerHTML = o;
+      const n = v => apply(Hi, (OW - 1) / 2, v)[1]; const band = Math.round(OH * 0.1);
+      const topSrc = Math.abs(n(band) - n(0)), botSrc = Math.abs(n(OH - 1) - n(OH - 1 - band));
+      const holes = m === 'fwd' ? outArr.reduce((a, v) => a + (v < 0 ? 1 : 0), 0) : 0;
+      const fmt = v => (Math.abs(v) < 1e-4 ? '0' : Math.abs(v) >= 100 ? v.toFixed(1) : Math.abs(v) >= 1 ? v.toFixed(3) : v.toPrecision(3));
+      const wTop = H[6] * S[0][0] + H[7] * S[0][1] + 1, wBot = H[6] * S[3][0] + H[7] * S[3][1] + 1;
+      msg = `행렬 M <span class="matrix">${H.map(v => `<span>${fmt(v)}</span>`).join('')}</span>&nbsp; 분모 g·x + h·y + 1: TL에서 <b>${wTop.toFixed(2)}</b>, BL에서 <b>${wBot.toFixed(2)}</b><br>` +
+        `결과 맨 위 ${band}줄 ← 원본 약 <b>${topSrc.toFixed(0)}</b>줄 (${(band / topSrc).toFixed(1)}배 늘림) · 결과 맨 아래 ${band}줄 ← 원본 약 <b>${botSrc.toFixed(0)}</b>줄 (${(band / botSrc).toFixed(1)}배)` +
+        (m === 'fwd' ? `<br><span class="bad">구멍 ${holes.toLocaleString('ko-KR')}개 (${(holes / (OW * OH) * 100).toFixed(1)}%)</span> · 늘어나는 위쪽에 몰려 있다. 역참조로 바꾸면 0개가 된다.` : '') +
+        (om === 'swap' ? '<br>TL과 TR의 짝이 바뀌어 좌우가 뒤집힌 거울상이 나온다. 공식은 풀리므로 깨지지는 않는다.' : '');
+    }
+    s += Q.map((p, i) => `<circle cx="${p[0]}" cy="${p[1]}" r="7" class="handle" data-i="${i}"/><text x="${p[0]}" y="${p[1] + (i < 2 ? -11 : 20)}" class="tx" text-anchor="middle" style="font-weight:700;paint-order:stroke;stroke:var(--surface);stroke-width:3px">${['TL', 'TR', 'BR', 'BL'][i]}</text>`).join('');
+    sSvg.innerHTML = s; txt.innerHTML = msg;
+  }
+  draggable(sSvg, (i, x, y) => { Q[i] = [Math.round(clamp(x, 0, SW - 1)), Math.round(clamp(y, 0, SH - 1))]; schedule(); });
+  document.querySelectorAll('input[name=wmode], input[name=worder]').forEach(el => el.addEventListener('change', render));
+  $('#warp-reset').addEventListener('click', () => { Q = Q0.map(p => p.slice()); render(); });
+  render();
+})();
+
+/* ── 5장: 적응형 이진화 ── */
+(function () {
+  const W = 360, H = 150; const c = document.createElement('canvas'); c.width = W; c.height = H; const g = c.getContext('2d', { willReadFrequently: true });
+  g.fillStyle = 'rgb(222,222,218)'; g.fillRect(0, 0, W, H); g.fillStyle = 'rgb(40,40,40)';
+  g.font = '900 46px system-ui, sans-serif'; g.fillText('SCAN', 12, 56);
+  g.font = 'bold 28px system-ui, sans-serif'; g.fillText('문서 스캐너', 150, 52);
+  g.font = '20px Georgia, serif'; g.fillText('adaptive threshold', 12, 96); g.fillText('그림자 속 글자', 200, 96);
+  g.font = '14px system-ui, sans-serif'; g.fillText('작은 글씨도 살아남을까? 0123456789', 12, 130);
+  const base = grayFromCanvas(c); const r = rng(3); const src = new Float32Array(W * H);
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { const t = clamp((x + 0.35 * y - 30) / 200, 0, 1); const s = t * t * (3 - 2 * t); src[y * W + x] = clamp(base[y * W + x] * (0.36 + 0.64 * s) + (r() + r() + r() - 1.5) * 6, 0, 255); }
+  putGray($('#ad-src'), src, W, H);
+  const I = new Float64Array((W + 1) * (H + 1));
+  for (let y = 0; y < H; y++) { let row = 0; for (let x = 0; x < W; x++) { row += src[y * W + x]; I[(y + 1) * (W + 1) + x + 1] = I[y * (W + 1) + x + 1] + row; } }
+  const tS = $('#ad-t'), bS = $('#ad-b'), cS = $('#ad-c'), text = $('#ad-text');
+  const mode = () => document.querySelector('input[name=admode]:checked').value;
+  function render() {
+    const T = +tS.value, B = +bS.value, C = +cS.value, m = mode(); const rad = (B - 1) / 2;
+    $('#ad-t-o').textContent = T; $('#ad-b-o').textContent = B; $('#ad-c-o').textContent = C;
+    tS.disabled = m !== 'global'; bS.disabled = cS.disabled = m === 'global';
+    const thr = new Float32Array(W * H), out = new Float32Array(W * H);
+    for (let y = 0; y < H; y++) { const y0 = Math.max(0, y - rad), y1 = Math.min(H - 1, y + rad);
+      for (let x = 0; x < W; x++) {
+        let th = T;
+        if (m !== 'global') { const x0 = Math.max(0, x - rad), x1 = Math.min(W - 1, x + rad); const sum = I[(y1 + 1) * (W + 1) + x1 + 1] - I[y0 * (W + 1) + x1 + 1] - I[(y1 + 1) * (W + 1) + x0] + I[y0 * (W + 1) + x0]; th = sum / ((x1 - x0 + 1) * (y1 - y0 + 1)) - C; }
+        thr[y * W + x] = clamp(th, 0, 255); out[y * W + x] = src[y * W + x] > th ? 255 : 0;
+      } }
+    putGray($('#ad-thr'), thr, W, H); putGray($('#ad-out'), out, W, H);
+    let msg;
+    if (m === 'global') msg = `기준 = 모든 픽셀 <b>${T}</b>. 그림자 쪽(왼쪽)은 배경도 이 기준보다 어두워 검게 뭉개진다.`;
+    else { msg = `기준 = 주변 <b>${B} × ${B}</b> 평균 − <b>${C}</b>.`;
+      if (B <= 7) msg += ' 블록이 굵은 획보다 작아서 획 한가운데의 주변도 온통 어둡다. 글자 속이 비고 테두리만 남는다.';
+      else if (B >= 201) msg += ' 블록이 그림자보다 넓어서 기준이 그림자를 따라가지 못한다. 일반 이진화와 비슷해진다.';
+      else if (C <= 1) msg += ' C가 0에 가까워서 빈 종이의 잡음이 평균보다 살짝만 어두워도 검은 점이 된다.';
+      else msg += ' 기준이 그림자를 따라 내려가서 양쪽 글자가 모두 살아난다.'; }
+    text.innerHTML = msg;
+  }
+  [tS, bS, cS].forEach(el => el.addEventListener('input', render));
+  document.querySelectorAll('input[name=admode]').forEach(el => el.addEventListener('change', render));
+  document.querySelectorAll('[data-ad]').forEach(b => b.addEventListener('click', () => {
+    const k = b.dataset.ad; const set = v => { document.querySelector(`input[name=admode][value=${v}]`).checked = true; };
+    if (k === 'global') { set('global'); tS.value = 127; } else if (k === 'c0') { set('adaptive'); cS.value = 0; bS.value = 31; } else { set('adaptive'); bS.value = k; cS.value = 10; }
+    render();
+  }));
+  render();
+})();
+</script>
+</body>
+</html>
