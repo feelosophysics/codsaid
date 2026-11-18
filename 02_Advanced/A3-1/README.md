@@ -65,7 +65,20 @@
 
 ## 실행하기
 
-[uv](https://docs.astral.sh/uv/)가 필요해요. 이 README가 있는 폴더에서 실행해요.
+[uv](https://docs.astral.sh/uv/getting-started/installation/)가 필요해요. 없다면 먼저 설치하세요.
+
+```bash
+# macOS·Linux
+curl -LsSf https://astral.sh/uv/install.sh | sh
+source $HOME/.local/bin/env   # 터미널을 다시 열지 않고 바로 uv 쓰기
+```
+
+```powershell
+# Windows PowerShell
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
+
+이 README가 있는 폴더에서 실행해요.
 
 ```powershell
 uv sync                                          # 가상환경과 의존성 설치

@@ -98,7 +98,18 @@
 
 ## 실행하기
 
-[uv](https://docs.astral.sh/uv/getting-started/installation/)가 필요해요. 없다면 `pip install uv`로 설치할 수 있어요.
+[uv](https://docs.astral.sh/uv/getting-started/installation/)가 필요해요. 없다면 먼저 설치하세요.
+
+```bash
+# macOS·Linux
+curl -LsSf https://astral.sh/uv/install.sh | sh
+source $HOME/.local/bin/env   # 터미널을 다시 열지 않고 바로 uv 쓰기
+```
+
+```powershell
+# Windows PowerShell
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
 
 ```bash
 cd 02_Advanced/A5-2
