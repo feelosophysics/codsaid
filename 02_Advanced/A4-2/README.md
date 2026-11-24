@@ -39,9 +39,13 @@
 
 ## 어떻게 동작할까?
 
-**값 찾기:** 정규표현식으로 모양이 맞는 후보를 찾아요. 그다음 코드가 `2월 30일`처럼 없는 날짜를 버리고, `2024-03-15`처럼 형식을 통일해요.
+**값 찾기** ([`src/extract.py`](src/extract.py))
 
-**기분 판단:** 단어마다 -3(매우 나쁨)부터 +3(매우 좋음)까지 점수를 적어 두었어요. 문장에서 찾은 단어의 점수에 아래 규칙을 곱한 뒤 모두 더해요. 합이 0보다 크면 긍정, 그렇지 않으면 부정이에요.
+① 정규표현식으로 모양이 맞는 후보를 찾아요([`patterns.py`](src/patterns.py)). ② `2월 30일`처럼 없는 날짜를 버리고, `2024-03-15`처럼 형식을 통일해요([`normalize.py`](src/normalize.py)).
+
+**기분 판단** ([`src/sentiment.py`](src/sentiment.py))
+
+③ 문장에서 사전에 있는 단어를 찾아요([`lexicon.py`](src/lexicon.py)). 단어마다 -3(매우 나쁨)부터 +3(매우 좋음)까지 점수를 적어 두었어요([`sentiment.tsv`](data/lexicon/sentiment.tsv)). ④ 찾은 단어의 점수에 아래 규칙을 곱한 뒤 모두 더해요. 합이 0보다 크면 긍정, 그렇지 않으면 부정이에요.
 
 | 규칙 | 하는 일 | 예 |
 | --- | --- | --- |
@@ -114,70 +118,50 @@ uv run python main.py --text "이 식당은 정말 맛있지 않았어요"
 
 </details>
 
-## 더 알아보기
+## 폴더 지도
 
-| 이럴 때 | 여기를 보세요 |
-| --- | --- |
-| 정규식이나 감성 분석이 낯설어요 | [`study/a4-2-guide.html`](study/a4-2-guide.html): 코드를 몰라도 읽을 수 있어요. 레포를 받은 뒤 브라우저로 여세요 |
-| 규칙을 끄고 켜며 결과를 보고 싶어요 | [`study/a4-2.html`](study/a4-2.html): 패턴을 고치거나 규칙을 끄면 결과가 달라져요 |
-| 코드를 한 단계씩 따라가고 싶어요 | [`notebooks/rules_walkthrough.ipynb`](notebooks/rules_walkthrough.ipynb): 문장 하나가 처리되는 과정을 직접 실행해요 |
-| 정규식 실물이 궁금해요 | [`src/patterns.py`](src/patterns.py): 패턴마다 한국어 주석이 달려 있어요 |
-| 어떤 파일이 무슨 일을 하는지 알고 싶어요 | 아래 **폴더와 파일 구성**을 펼치세요 |
+처음이라면 [`study/a4-2-guide.html`](study/a4-2-guide.html)부터 보세요. 코드를 몰라도 읽을 수 있고, 레포를 받은 뒤 브라우저로 열면 돼요. 코드를 한 단계씩 따라가려면 [`notebooks/rules_walkthrough.ipynb`](notebooks/rules_walkthrough.ipynb)부터 보세요. ①–④는 [어떻게 동작할까?](#어떻게-동작할까)의 단계예요.
 
-<details>
-<summary>폴더와 파일 구성</summary>
+```text
+A4-2/
+├── main.py                               실행 파일. 문장을 넣으면 값과 기분을 알려 줘요
+├── src/
+│   ├── patterns.py                       ① 정규표현식 모음
+│   ├── normalize.py                      ② 찾은 값 검증, 형식 통일
+│   ├── extract.py                        ①②로 값 찾기, 개인정보 가리기
+│   ├── lexicon.py                        ③ 문장에서 사전 단어 찾기
+│   ├── sentiment.py                      ④ 감성 점수 계산과 판정
+│   ├── aspect.py                         보너스: 대상별 감성
+│   ├── bonus_tfidf.py                    보너스: TF-IDF와 규칙 비교
+│   ├── data.py                           평가: NSMC·KNU 내려받기, 개발용·시험용 분할
+│   ├── eval_extraction.py                평가: 값 찾기, 개인정보 가리기
+│   ├── eval_sentiment.py                 평가: 기분 판단, 틀린 리뷰 모으기
+│   ├── metrics.py                        평가: 정밀도, 재현율, F1
+│   └── run_all.py                        평가 전체 실행 → outputs/
+├── data/
+│   ├── lexicon/                          직접 만든 사전
+│   │   ├── sentiment.tsv                 감성어 점수 (-3부터 +3)
+│   │   ├── modifiers.tsv                 부정어, 강조어, 약화어
+│   │   └── aspects.tsv                   대상어 (음식, 가격 등)
+│   ├── handmade/                         직접 쓴 시험 문장
+│   │   ├── extraction_cases.jsonl        값 찾기
+│   │   ├── masking_cases.jsonl           개인정보 가리기
+│   │   ├── sentiment_rules.jsonl         부정어, 이중부정, 대조 동작 확인
+│   │   ├── intensity_pairs.jsonl         강조어, 약화어 쌍
+│   │   ├── aspect_cases.jsonl            대상별 감성
+│   │   └── test_error_annotations.json   틀린 리뷰의 원인 분류
+│   └── downloads/                        NSMC 영화 리뷰, KNU 사전 (실행하면 내려받음)
+├── outputs/                              평가 결과. 이 README의 숫자와 그림의 출처
+├── notebooks/
+│   ├── a4-2_overview.ipynb               미션 한 장 요약
+│   └── rules_walkthrough.ipynb           문장 하나를 단계별로 따라가는 실습
+├── study/
+│   ├── a4-2-guide.html                   코드를 몰라도 읽는 설명서
+│   └── a4-2.html                         규칙을 끄고 켜며 결과 보기
+└── pyproject.toml, uv.lock, ...          실행 환경
+```
 
-**자주 찾는 것**
-
-- 감성 점수를 계산하는 코드: [`src/sentiment.py`](src/sentiment.py)
-- 단어별 감성 점수: [`data/lexicon/sentiment.tsv`](data/lexicon/sentiment.tsv)
-- 정규표현식: [`src/patterns.py`](src/patterns.py)
-- 기분 판단을 평가한 영화 리뷰(NSMC): `data/downloads/ratings_train.txt`, `ratings_test.txt` (처음 실행할 때 내려받아요)
-
-**문장 하나를 분석할 때** (`main.py`)
-
-1. [`src/extract.py`](src/extract.py)가 값을 찾아요. [`patterns.py`](src/patterns.py)의 정규식으로 후보를 모으고, [`normalize.py`](src/normalize.py)가 `2월 30일` 같은 없는 값을 버리고 형식을 통일해요.
-2. `main.py`가 찾은 값의 자리를 `□`로 가려요. 날짜 속 숫자나 마침표가 감성 계산을 방해하지 않게 하려는 거예요.
-3. [`src/sentiment.py`](src/sentiment.py)가 기분을 계산해요. [`lexicon.py`](src/lexicon.py)가 [`data/lexicon/`](data/lexicon/)의 사전에서 감성어, 부정어, 강조어를 찾으면, `sentiment.py`가 규칙대로 곱하고 더해 긍정과 부정을 정해요.
-
-`--aspect`를 붙이면 [`aspect.py`](src/aspect.py)가 대상별 감성을 더하고, `--mask`를 붙이면 `extract.py`가 개인정보를 가린 문장을 만들어요.
-
-**전체 평가를 다시 잴 때** (`python -m src.run_all`)
-
-1. [`src/data.py`](src/data.py)가 NSMC와 KNU 감성사전을 `data/downloads/`에 내려받고, 개발용과 시험용 리뷰를 1,000건씩 뽑아요.
-2. [`eval_extraction.py`](src/eval_extraction.py)가 값 찾기와 개인정보 가리기를, [`eval_sentiment.py`](src/eval_sentiment.py)가 기분 판단을 평가해요. 보너스 과제는 [`bonus_tfidf.py`](src/bonus_tfidf.py)와 `aspect.py`가 평가해요. 정확도, F1 같은 지표 공식은 [`metrics.py`](src/metrics.py)에 있어요.
-3. [`run_all.py`](src/run_all.py)가 결과를 [`outputs/`](outputs/)에 저장해요.
-
-**폴더**
-
-| 폴더 | 들어 있는 것 |
-| --- | --- |
-| `data/downloads/` | NSMC 영화 리뷰(`ratings_train.txt`, `ratings_test.txt`)와 KNU 감성사전(`SentiWord_info.json`). 처음 실행할 때 내려받고, 저장소에는 없어요 |
-| [`data/handmade/`](data/handmade/) | 직접 쓴 시험 문장. 값 찾기 80문장, 개인정보 가리기 20문장, 규칙 동작 확인 40문장, 강조어 쌍 16개, 대상별 감성 48문장, 틀린 리뷰의 원인 분류 24건 |
-| [`data/lexicon/`](data/lexicon/) | 직접 만든 사전. 감성어 점수 `sentiment.tsv`, 부정어·강조어·약화어 `modifiers.tsv`, 대상별 감성에 쓰는 대상어 `aspects.tsv` |
-| [`src/`](src/) | 코드 (아래 표) |
-| [`outputs/`](outputs/) | `run_all`이 저장한 평가 결과. 이 README의 숫자와 그림이 여기서 나와요 |
-| [`notebooks/`](notebooks/) | `a4-2_overview.ipynb`는 미션 전체 요약, `rules_walkthrough.ipynb`는 문장 하나를 단계별로 따라가는 실습 |
-| [`study/`](study/) | 브라우저로 여는 학습 자료 (위 표 참고) |
-
-**`src/` 파일**
-
-| 파일 | 하는 일 | 구분 |
-| --- | --- | --- |
-| [`patterns.py`](src/patterns.py) | 이메일, 전화번호, 날짜, 금액, URL, 개인정보의 정규표현식 모음 | 필수 |
-| [`normalize.py`](src/normalize.py) | 찾은 후보를 검증하고 형식을 통일 | 필수 |
-| [`extract.py`](src/extract.py) | 후보 모으기, 겹친 값 정리, 개인정보 가리기 | 필수, 가리기는 보너스 |
-| [`lexicon.py`](src/lexicon.py) | 사전 읽기, 활용형 만들기(`지루하` → `지루한`, `지루해`), 문장에서 사전 단어 찾기 | 필수 |
-| [`sentiment.py`](src/sentiment.py) | 감성 점수 계산과 긍정·부정 판정, 판정 이유 설명 | 필수와 확장 규칙 |
-| [`aspect.py`](src/aspect.py) | 음식, 가격처럼 대상별로 감성 나누기 | 보너스 |
-| [`bonus_tfidf.py`](src/bonus_tfidf.py) | TF-IDF 분류와 규칙 비교 | 보너스 |
-| [`data.py`](src/data.py) | 공개 데이터 내려받기와 개발용·시험용 분할 | 평가 |
-| [`eval_extraction.py`](src/eval_extraction.py) | 값 찾기와 개인정보 가리기 평가 | 평가 |
-| [`eval_sentiment.py`](src/eval_sentiment.py) | 규칙 단계별 정확도, 사전 비교, 틀린 리뷰 모으기 | 평가 |
-| [`metrics.py`](src/metrics.py) | 정밀도, 재현율, F1, 정확도 계산 | 평가 |
-| [`run_all.py`](src/run_all.py) | 모든 평가를 실행하고 `outputs/`에 저장 | 평가 |
-
-</details>
+`data/downloads/`는 저장소에 없어요. 처음 실행할 때 내려받아요.
 
 ## 자세한 근거
 
